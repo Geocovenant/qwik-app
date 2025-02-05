@@ -1,6 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import { Dropdown } from "flowbite-qwik";
 import { LuUser, LuSettings, LuHelpCircle, LuLogOut } from "@qwikest/icons/lucide";
+import { _ } from "compiled-i18n";
 
 const LuUserIcon = component$(() => <LuUser class="h-4 w-4 text-gray-700" />)
 const LuSettingsIcon = component$(() => <LuSettings class="h-4 w-4 text-gray-700" />)
@@ -23,30 +24,31 @@ export default component$(() => {
         >
             <Dropdown.Item header>
                 <div class="px-4 py-2">
-                    <p class="text-sm font-semibold text-gray-900">Mi Cuenta</p>
+                    <p class="text-sm font-semibold text-gray-900">{_`My account`}</p>
                     <p class="text-sm text-gray-500 truncate">usuario@ejemplo.com</p>
                 </div>
             </Dropdown.Item>
+
             <Dropdown.Item divider />
 
             <Dropdown.Item>
                 <div class="flex items-center space-x-2">
                     <LuUserIcon />
-                    <span class="text-gray-700">Perfil</span>
+                    <span class="text-gray-700">{_`Profile`}</span>
                 </div>
             </Dropdown.Item>
 
             <Dropdown.Item>
                 <div class="flex items-center space-x-2">
                     <LuSettingsIcon />
-                    <span class="text-gray-700">Configuración</span>
+                    <span class="text-gray-700">{_`Settings`}</span>
                 </div>
             </Dropdown.Item>
 
             <Dropdown.Item>
                 <div class="flex items-center space-x-2">
                     <LuHelpCircleIcon />
-                    <span class="text-gray-700">Ayuda</span>
+                    <span class="text-gray-700">{_`Help`}</span>
                 </div>
             </Dropdown.Item>
 
@@ -55,7 +57,7 @@ export default component$(() => {
             <Dropdown.Item>
                 <div class="flex items-center space-x-2 text-red-600 hover:bg-red-50 focus:bg-red-50">
                     <LuLogOutIcon />
-                    <span>Cerrar sesión</span>
+                    <span>{_`Log out`}</span>
                 </div>
             </Dropdown.Item>
         </Dropdown>

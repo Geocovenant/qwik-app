@@ -1,6 +1,7 @@
 import { component$, useSignal } from "@builder.io/qwik";
 import { Dropdown } from "flowbite-qwik";
 import { LuBell } from "@qwikest/icons/lucide";
+import { _ } from "compiled-i18n";
 
 const LuBellIcon = component$(() => <LuBell class="h-5 w-5 text-gray-700" />)
 
@@ -23,7 +24,7 @@ export default component$(() => {
         },
         {
             id: 3,
-            title: "Recordatorio",
+            title: "Recordatorio", 
             description: "La encuesta termina en 24 horas",
             time: "hace 2 horas",
             unread: false,
@@ -47,12 +48,12 @@ export default component$(() => {
         >
             <Dropdown.Item header>
                 <div class="flex items-center justify-between px-4 py-2">
-                    <span class="text-sm font-semibold text-gray-900">Notificaciones</span>
+                    <span class="text-sm font-semibold text-gray-900">{_`Notifications`}</span>
                     <button
                         onClick$={() => (unreadCount.value = 0)}
                         class="text-blue-600 text-sm"
                     >
-                        Marcar todas como leídas
+                        {_`Mark all as read`}
                     </button>
                 </div>
             </Dropdown.Item>
@@ -63,7 +64,7 @@ export default component$(() => {
                         <div class="flex w-full items-center justify-between">
                             <span class="font-medium text-gray-900">{n.title}</span>
                             {n.unread && (
-                                <span class="rounded bg-blue-100 px-1 text-xs text-blue-600">Nuevo</span>
+                                <span class="rounded bg-blue-100 px-1 text-xs text-blue-600">{_`New`}</span>
                             )}
                         </div>
                         <p class="text-sm text-gray-500">{n.description}</p>
@@ -73,7 +74,7 @@ export default component$(() => {
             ))}
             <Dropdown.Item divider />
             <Dropdown.Item>
-                <span class="text-center text-blue-600">Ver todas las notificaciones</span>
+                <span class="text-center text-blue-600">{_`View all notifications`}</span>
             </Dropdown.Item>
         </Dropdown>
     );

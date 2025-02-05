@@ -2,6 +2,7 @@ import { component$, useSignal } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 import { Collapsible } from '@qwik-ui/headless';
 import { LuChevronRight } from "@qwikest/icons/lucide";
+import { _ } from "compiled-i18n";
 import { Button } from "flowbite-qwik";
 
 type Community = {
@@ -35,41 +36,41 @@ const communities: Community[] = [
             },
             {
                 id: "asia",
-                name: "Asia", 
+                name: "Asia",
                 path: "/international/asia",
                 icon: "🌏",
                 children: []
             },
             {
                 id: "africa",
-                name: "África",
+                name: "Africa",
                 path: "/international/africa", 
                 icon: "🌍",
                 children: []
             },
             {
                 id: "oceania",
-                name: "Oceanía",
+                name: "Oceania",
                 path: "/international/oceania",
                 icon: "🌏",
                 children: []
             },
             {
                 id: "americas",
-                name: "Américas",
+                name: "Americas",
                 path: "/international/americas",
                 icon: "🌎",
                 children: [
                     {
                         id: "north-america",
-                        name: "América del Norte",
+                        name: "North America",
                         path: "/international/americas/north-america",
                         icon: "🌎",
                         children: []
                     },
                     {
                         id: "south-america", 
-                        name: "América del Sur",
+                        name: "South America",
                         path: "/international/americas/south-america",
                         icon: "🌎",
                         children: []
@@ -82,7 +83,7 @@ const communities: Community[] = [
         id: "argentina",
         name: "Argentina",
         path: "/argentina",
-        icon: "🌎", // after change
+        icon: "🌎",
         children: [
             {
                 id: "buenos-aires",
@@ -113,7 +114,7 @@ const communities: Community[] = [
                         children: [
                             {
                                 id: "mar-del-plata",
-                                name: "Mar del Plata", 
+                                name: "Mar del Plata",
                                 path: "/argentina/buenos-aires/general-pueyrredon/mar-del-plata",
                                 icon: "🌎",
                                 children: []
@@ -128,7 +129,7 @@ const communities: Community[] = [
 
 const CommunityItem = component$(({ community, level = 0}: {community: Community, level?: number}) => {
     const isOpen = useSignal<boolean>(false)
-    const hasChildren = community.children && community.children.length > 0
+    const hasChildren = community.children.length > 0
     if(hasChildren) {
         return (
             <Collapsible.Root bind:open={isOpen}>
@@ -182,7 +183,7 @@ export default component$(() => {
             </div>
             <div class="p-4 border-t border-gray-700">
                 <Button class="bg-emerald-500 hover:bg-emerald-600 text-white">
-                    + Nueva comunidad
+                    {_`+ New community`}
                 </Button>
             </div>
         </aside>

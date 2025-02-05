@@ -1,5 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
+import { _ } from "compiled-i18n";
 import { Breadcrumb } from "flowbite-qwik";
 
 export default component$(() => {
@@ -31,6 +32,7 @@ export default component$(() => {
           ))}
         </Breadcrumb>
       </div>
+      <div>{_`Texto de prueba`}</div>
     </div>
   );
 });

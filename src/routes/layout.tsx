@@ -1,8 +1,14 @@
 import { component$, Slot } from "@builder.io/qwik";
 import type { RequestHandler } from "@builder.io/qwik-city";
+import { guessLocale } from 'compiled-i18n'
 import Header from "~/components/Header";
 import Sidebar from "~/components/Sidebar";
 
+export const onRequest: RequestHandler = async ({query, headers, locale}) => {
+	// Allow overriding locale with query param `locale`
+	const maybeLocale = query.get('locale') || headers.get('accept-language')
+	locale(guessLocale(maybeLocale))
+}
 export const onGet: RequestHandler = async ({ cacheControl }) => {
   // Control caching for this request for best performance and to reduce hosting costs:
   // https://qwik.dev/docs/caching/

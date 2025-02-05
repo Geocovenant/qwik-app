@@ -1,0 +1,20 @@
+{
+  "locale": "es_AR",
+  "name": "es (AR)", 
+  "translations": {
+    "Texto de prueba": "Texto de prueba",
+    "+ New community": "+ Nueva comunidad",
+    "Languages": "Idiomas",
+    "Spanish": "Español",
+    "English": "Inglés",
+    "Notifications": "Notificaciones",
+    "Mark all as read": "Marcar todo como leído",
+    "New": "Nuevo",
+    "View all notifications": "Ver todas las notificaciones",
+    "My account": "Mi cuenta",
+    "Profile": "Perfil",
+    "Settings": "Configuración",
+    "Help": "Ayuda",
+    "Log out": "Cerrar sesión"
+  }
+}
