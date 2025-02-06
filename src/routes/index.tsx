@@ -12,6 +12,10 @@ export default component$(() => {
     const label = segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ")
     return { path, label }
   })
+
+  //TODO: Esto es solo un ejemplo, despues lo traere del backend
+  const username = 'Sebastian'
+
   return (
     <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
       <div class="bg-gray-50 border-b p-3">
@@ -32,7 +36,7 @@ export default component$(() => {
           ))}
         </Breadcrumb>
       </div>
-      <div>{_`Texto de prueba`}</div>
+      <div>{_`Welcome ${username}`}</div>
     </div>
   );
 });

@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-import { Dropdown } from "flowbite-qwik";
+import { Avatar, Dropdown } from "flowbite-qwik";
 import { LuUser, LuSettings, LuHelpCircle, LuLogOut } from "@qwikest/icons/lucide";
 import { _ } from "compiled-i18n";
 
@@ -23,9 +23,13 @@ export default component$(() => {
             }
         >
             <Dropdown.Item header>
-                <div class="px-4 py-2">
-                    <p class="text-sm font-semibold text-gray-900">{_`My account`}</p>
-                    <p class="text-sm text-gray-500 truncate">usuario@ejemplo.com</p>
+                <div class="p-2">
+                    <Avatar img="https://sebastiancardoso.com/profile.png" rounded>
+                        <div class="space-y-1 font-medium dark:text-white">
+                            <div>User name</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">usuario@ejemplo.com</div>
+                        </div>
+                    </Avatar>
                 </div>
             </Dropdown.Item>
 

@@ -3,6 +3,7 @@ import { Input } from "flowbite-qwik";
 import UserDropdown from "./UserDropdown";
 import NotificationDropdown from "./NotificationDropdown";
 import LanguageDropdown from "./LanguageDropdown";
+import { _ } from "compiled-i18n";
 
 export default component$(() => {
     return (
@@ -14,7 +15,7 @@ export default component$(() => {
                 <div class="flex items-center space-x-4">
                     <Input
                         type="text"
-                        placeholder="Ej: Cambio climático"
+                        placeholder={_`Example: Climate Change`}
                         class="w-64"
                     />
                     <LanguageDropdown />

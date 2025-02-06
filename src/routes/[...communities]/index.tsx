@@ -30,20 +30,20 @@ export default component$(() => {
         </div>
 
         <Tabs>
-          <Tabs.Tab title={_`Encuestas`}>
-            {_`Encuestas`}
+          <Tabs.Tab title={_`Polls`}>
+            {_`Polls`}
           </Tabs.Tab>
           <Tabs.Tab title={_`Debates`}>
             {_`Debates`}
           </Tabs.Tab>
-          <Tabs.Tab title={_`Proyectos`}>
-            {_`Proyectos`}
+          <Tabs.Tab title={_`Proyects`}>
+            {_`Proyects`}
           </Tabs.Tab>
-          <Tabs.Tab title={_`Reportes`}>
-            {_`Reportes`}
+          <Tabs.Tab title={_`Issues`}>
+            {_`Issues`}
           </Tabs.Tab>
-          <Tabs.Tab title={_`Miembros`}>
-            {_`Miembros`}
+          <Tabs.Tab title={_`Members`}>
+            {_`Members`}
           </Tabs.Tab>
         </Tabs>
       </div>
