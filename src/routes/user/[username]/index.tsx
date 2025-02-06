@@ -1,9 +1,10 @@
 
-import { component$ } from "@builder.io/qwik";
+import { component$, useSignal } from "@builder.io/qwik";
 import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
 import { LuImageOff } from "@qwikest/icons/lucide";
 import { _ } from "compiled-i18n";
-import { Avatar, Button, Tabs } from "flowbite-qwik";
+import { Avatar, Button, Modal, Tabs } from "flowbite-qwik";
+import FormUser from "~/components/forms/FormUser";
 
 // TODO: traer info del usuario desde el backend
 const dataUser = {
@@ -22,6 +23,8 @@ const dataUser = {
 export default component$(() => {
     const location = useLocation();
     const { username } = location.params;
+
+    const editProfileModalVisible = useSignal<boolean>(false)
 
     return (
         <main class="w-full">
@@ -62,7 +65,11 @@ export default component$(() => {
                 </div>
                 {dataUser.username === username
                     ? (
-                        <Button class="mt-4">
+                        <Button class="mt-4"
+                            onClick$={() => {
+                                editProfileModalVisible.value = true
+                            }}
+                        >
                             {_`Edit Profile`}
                         </Button>
                     )
@@ -109,6 +116,32 @@ export default component$(() => {
                     </Tabs.Tab>
                 </Tabs>
             </section>
+            <Modal
+                header={<div class="flex items-center text-lg">{_`Edit Profile`}</div>}
+                footer={
+                    <div class="flex justify-between">
+                        <Button
+                        onClick$={() => {
+                            editProfileModalVisible.value = false
+                        }}
+                        color="alternative"
+                        >
+                            {_`Close`}
+                        </Button>
+                        <Button
+                            onClick$={() => {
+                                editProfileModalVisible.value = false
+                            }}
+                            color="green"
+                        >
+                            {_`Send`}
+                        </Button>
+                    </div>
+                }
+                bind:show={editProfileModalVisible}
+            >
+                <FormUser />
+            </Modal>
         </main>
     );
 });
