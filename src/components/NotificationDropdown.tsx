@@ -6,7 +6,8 @@ import { _ } from "compiled-i18n";
 const LuBellIcon = component$(() => <LuBell class="h-5 w-5 text-gray-700" />)
 
 export default component$(() => {
-    const unreadCount = useSignal(2);
+    const unreadCount = useSignal(0);
+    // TODO: traer las notificaciones de la API
     const notifications = [
         {
             id: 1,

@@ -1,14 +1,21 @@
 import { component$ } from "@builder.io/qwik";
 import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
+import { _ } from "compiled-i18n";
 import { Tabs } from "flowbite-qwik";
 import Breadcrumbs from "~/components/Breadcrumbs";
 
 export default component$(() => {
-  const location = useLocation()
-  const params = location.params
-  const segments = Array.isArray(params.segments) ? params.segments : [params.segments]
-  const communityName = segments[segments.length-1]?.replace(/-/g, " ")
-  const formattedName = communityName?.charAt(0).toUpperCase() + communityName?.slice(1)
+  const location = useLocation();
+  const params = location.params;
+  const communities = typeof params.communities === "string"
+    ? params.communities.split("/").filter(Boolean)
+    : Array.isArray(params.communities)
+      ? params.communities
+      : [];
+  
+  const communityName = communities[communities.length - 1]?.replace(/-/g, " ");
+  const formattedName = communityName?.charAt(0).toUpperCase() + communityName?.slice(1);
+
   return (
     <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
       <div class="bg-gray-50 border-b p-3">
@@ -18,25 +25,25 @@ export default component$(() => {
       <div class="flex flex-col min-h-0">
         <div class="p-6 border-b">
           <h1 class="text-2xl font-semibold">
-            Comunidad: {formattedName}
+            {_`Comunidad`}: {formattedName}
           </h1>
         </div>
 
         <Tabs>
-          <Tabs.Tab title="Encuestas">
-            Encuestas
+          <Tabs.Tab title={_`Encuestas`}>
+            {_`Encuestas`}
           </Tabs.Tab>
-          <Tabs.Tab title="Debates">
-            Debates
+          <Tabs.Tab title={_`Debates`}>
+            {_`Debates`}
           </Tabs.Tab>
-          <Tabs.Tab title="Proyectos">
-            Proyectos
+          <Tabs.Tab title={_`Proyectos`}>
+            {_`Proyectos`}
           </Tabs.Tab>
-          <Tabs.Tab title="Reportes">
-            Reportes
+          <Tabs.Tab title={_`Reportes`}>
+            {_`Reportes`}
           </Tabs.Tab>
-          <Tabs.Tab title="Miembros">
-            Miembros
+          <Tabs.Tab title={_`Miembros`}>
+            {_`Miembros`}
           </Tabs.Tab>
         </Tabs>
       </div>

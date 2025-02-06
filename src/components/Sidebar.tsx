@@ -1,7 +1,7 @@
 import { component$, useSignal } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
+import { Link, useLocation } from "@builder.io/qwik-city";
 import { Collapsible } from '@qwik-ui/headless';
-import { LuChevronRight } from "@qwikest/icons/lucide";
+import { LuBuilding, LuBuilding2, LuChevronRight, LuFlag, LuGlobe, LuPanelLeftClose, LuPanelLeftOpen } from "@qwikest/icons/lucide";
 import { _ } from "compiled-i18n";
 import { Button } from "flowbite-qwik";
 
@@ -12,6 +12,11 @@ type Community = {
     icon: any
     children: Community[]
 }
+
+const LuGlobeIcon = component$(() => <LuGlobe class="h-5 w-5" />)
+const LuFlagIcon = component$(() => <LuFlag class="h-5 w-5" />)
+const LuBuildingIcon = component$(() => <LuBuilding class="h-5 w-5" />)
+const LuBuilding2Icon = component$(() => <LuBuilding2 class="h-5 w-5" />)
 
 const communities: Community[] = [
     {
@@ -25,7 +30,7 @@ const communities: Community[] = [
         id: "international",
         name: "International",
         path: "/international",
-        icon: "🌎",
+        icon: <LuGlobeIcon />,
         children: [
             {
                 id: "europe",
@@ -83,25 +88,25 @@ const communities: Community[] = [
         id: "argentina",
         name: "Argentina",
         path: "/argentina",
-        icon: "🌎",
+        icon: "🇦🇷",
         children: [
             {
                 id: "buenos-aires",
                 name: "Buenos Aires",
                 path: "/argentina/buenos-aires",
-                icon: "🌎",
+                icon: <LuFlagIcon />,
                 children: [
                     {
                         id: "general-alvarado",
                         name: "General Alvarado",
                         path: "/argentina/buenos-aires/general-alvarado",
-                        icon: "🌎",
+                        icon: <LuBuildingIcon />,
                         children: [
                             {
                                 id: "miramar",
                                 name: "Miramar",
                                 path: "/argentina/buenos-aires/general-alvarado/miramar",
-                                icon: "🌎",
+                                icon: <LuBuilding2Icon />,
                                 children: []
                             }
                         ]
@@ -110,13 +115,13 @@ const communities: Community[] = [
                         id: "general-pueyrredon",
                         name: "General Pueyrredón",
                         path: "/argentina/buenos-aires/general-pueyrredon",
-                        icon: "🌎",
+                        icon: <LuBuildingIcon />,
                         children: [
                             {
                                 id: "mar-del-plata",
                                 name: "Mar del Plata",
                                 path: "/argentina/buenos-aires/general-pueyrredon/mar-del-plata",
-                                icon: "🌎",
+                                icon: <LuBuilding2Icon />,
                                 children: []
                             }
                         ]
@@ -127,31 +132,35 @@ const communities: Community[] = [
     }
 ]
 
-const CommunityItem = component$(({ community, level = 0}: {community: Community, level?: number}) => {
+const CommunityItem = component$(({ community, level = 0, isCollapsed}: {community: Community, level?: number, isCollapsed: boolean}) => {
     const isOpen = useSignal<boolean>(false)
     const hasChildren = community.children.length > 0
+    const location  = useLocation()
+    const pathname = location.url.pathname
+    const isActive = pathname === community.path
+
     if(hasChildren) {
         return (
             <Collapsible.Root bind:open={isOpen}>
                 <div class="relative">
-                    <div class="flex items-center">
+                    <div class={`flex items-center${isCollapsed ? "justify-center" : ""}`}>
                         <Link
                             href={community.path}
-                            class="flex flex-1 items-center px-3 py-2"
+                            class={`flex flex-1 items-center gap-2 px-3 py-2 rounded-md ${isActive ? "bg-gray-200 dark:bg-gray-700" : "hover:bg-gray-200 dark:hover:bg-gray-700"}`}
                         >
-                            <span>{community.icon}</span>
-                            <span>{community.name}</span>
+                            <div class="h-5 w-5">{community.icon}</div>
+                            {!isCollapsed && <span>{community.name}</span>}
                         </Link>
-                        <Collapsible.Trigger>
+                        {!isCollapsed && <Collapsible.Trigger>
                             <div class={`transition-transform duration-200 ${isOpen.value ? "rotate-90" : ""}`}>
                                 <LuChevronRight />
                             </div>
-                        </Collapsible.Trigger>
+                        </Collapsible.Trigger>}
                     </div>
                         <Collapsible.Content>
                             {community.children.map(child => (
                                 <div key={child.id} class="pl-4">
-                                    <CommunityItem community={child} level={level + 1} />
+                                    <CommunityItem community={child} level={level + 1} isCollapsed={isCollapsed} />
                                 </div>
                             ))}
                         </Collapsible.Content>
@@ -161,29 +170,37 @@ const CommunityItem = component$(({ community, level = 0}: {community: Community
     }
     return (
         <Link href={community.path}>
-            <div class={`flex items-center px-3 py-2 text-sm rounded-md ${level > 0 ? `ml-${level * 4}` : ""}`}>
-                <div class="h-5 w-5 mr-3">
+            <div class={`flex items-center gap-2 px-3 py-2 rounded-md ${isActive ? "bg-gray-200 dark:bg-gray-700" : "hover:bg-gray-200 dark:hover:bg-gray-700"} ${level > 0 ? `ml-${level * 4}` : ""} ${isCollapsed ? "justify-center" : ""}`}>
+                <div class="h-5 w-5">
                     {community.icon}
                 </div>
-                <span>{community.name}</span>
+                {!isCollapsed && <span>{community.name}</span>}
             </div>
         </Link>
     )
 })
 
 export default component$(() => {
+    const isCollapsed = useSignal<boolean>(false)
     return (
-        <aside class="w-64 border-r border-r-gray-700 bg-gray-80 h-screen flex flex-col">
+        <aside class={`transition-all duration-300 ease-in-out ${isCollapsed.value ? "w-16" : "w-64"} border-r border-border bg-background h-screen flex flex-col`}>
+            <button
+                class="p-2 m-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+                onClick$={() => isCollapsed.value = !isCollapsed.value}
+            >
+                
+                {isCollapsed.value ? <LuPanelLeftOpen /> : <LuPanelLeftClose />}
+            </button>
             <div class="flex-1 overflow-y-auto">
                 <div class="px-2 py-4">
                     {communities.map(community => (
-                        <CommunityItem key={community.id} community={community} />
+                        <CommunityItem key={community.id} community={community} isCollapsed={isCollapsed.value} />
                     ))}
                 </div>
             </div>
-            <div class="p-4 border-t border-gray-700">
+            <div class={`transition-all duration-300 ease-in-out mt-auto ${isCollapsed.value ? "p-2" : "p-4"} border-t border-border`}>
                 <Button class="bg-emerald-500 hover:bg-emerald-600 text-white">
-                    {_`+ New community`}
+                    {isCollapsed.value ? "+" : _`+ New community`}
                 </Button>
             </div>
         </aside>
