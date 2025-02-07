@@ -3,6 +3,7 @@ import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
 import { _ } from "compiled-i18n";
 import { Tabs } from "flowbite-qwik";
 import Breadcrumbs from "~/components/Breadcrumbs";
+import DebateList from "~/components/list/DebateList";
 import PollList from "~/components/list/PollList";
 
 export default component$(() => {
@@ -35,7 +36,7 @@ export default component$(() => {
             <PollList />
           </Tabs.Tab>
           <Tabs.Tab title={_`Debates`}>
-            {_`Debates`}
+            <DebateList />
           </Tabs.Tab>
           <Tabs.Tab title={_`Proyects`}>
             {_`Proyects`}
