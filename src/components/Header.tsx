@@ -9,7 +9,7 @@ export default component$(() => {
     return (
         <header class="bg-white border-b border-gray-200 h-16 flex items-center px-6 shadow-sm">
             <div class="flex justify-between items-center w-full">
-                <div class="flex items-center">
+                <div class="items-center hidden md:flex">
                     <h1 class="text-xl font-semibold text-gray-800">Geounity</h1>
                 </div>
                 <div class="flex items-center space-x-4">
