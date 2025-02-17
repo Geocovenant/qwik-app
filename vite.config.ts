@@ -30,6 +30,12 @@ export default defineConfig(({ command, mode }): UserConfig => {
         locales: ['en_US', 'es_AR'],
       }),
     ],
+    define: {
+      'import.meta.env.DATABASE_HOST': JSON.stringify(process.env.DATABASE_HOST),
+      'import.meta.env.DATABASE_USER': JSON.stringify(process.env.DATABASE_USER),
+      'import.meta.env.DATABASE_PASSWORD': JSON.stringify(process.env.DATABASE_PASSWORD),
+      'import.meta.env.DATABASE_NAME': JSON.stringify(process.env.DATABASE_NAME),
+    },
     // This tells Vite which dependencies to pre-build in dev mode.
     optimizeDeps: {
       // Put problematic deps that break bundling here, mostly those with binaries.
