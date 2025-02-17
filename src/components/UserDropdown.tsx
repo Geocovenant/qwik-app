@@ -21,15 +21,15 @@ export default component$(() => {
                 label=""
                 class="z-50"
                 as={
-                    <Avatar img={session.value?.user.image} rounded size="xs" />
+                    <Avatar img={session.value!.user!.image} rounded size="xs" />
                 }
             >
                 <Dropdown.Item header>
                     <div class="p-2">
-                        <Avatar img={session.value?.user.image} rounded>
+                        <Avatar img={session.value!.user!.image} rounded>
                             <div class="space-y-1 font-medium dark:text-white">
-                                <div>{session.value?.user.name}</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">{session.value?.user.email}</div>
+                                <div>{session.value!.user!.name}</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">{session.value!.user!.email}</div>
                             </div>
                         </Avatar>
                     </div>
