@@ -5,10 +5,10 @@ import pkg from 'pg';
 const {Pool} = pkg;
 
 const pool = new Pool({
-  host: import.meta.env.DATABASE_HOST,
-  user: import.meta.env.DATABASE_USER,
-  password: import.meta.env.DATABASE_PASSWORD,
-  database: import.meta.env.DATABASE_NAME,
+  host: 'localhost',
+  user: 'seba',
+  password: '123456',
+  database: 'geounity_db',
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
