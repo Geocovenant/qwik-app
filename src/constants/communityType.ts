@@ -1,0 +1,8 @@
+export enum CommunityType {
+    GLOBAL = "GLOBAL",
+    INTERNATIONAL = "INTERNATIONAL",
+    NATIONAL = "NATIONAL",
+    SUBNATIONAL = "SUBNATIONAL",
+    LOCAL = "LOCAL",
+    CUSTOM = "CUSTOM"
+}

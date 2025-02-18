@@ -44,9 +44,27 @@ export default component$(() => {
     // ];
 
     return (
-        <div class="space-y-4">
+        <div class="space-y-4 overflow-y-auto">
             {polls.value.length > 0 ? (
                 <ul class="space-y-3">
+                    {polls.value.map(poll => (
+                        <PollCard
+                            key={`poll-${poll.id}`}
+                            id={poll.id}
+                            description={poll.description}
+                            title={poll.title}
+                            options={poll.options}
+                        />
+                    ))}
+                    {polls.value.map(poll => (
+                        <PollCard
+                            key={`poll-${poll.id}`}
+                            id={poll.id}
+                            description={poll.description}
+                            title={poll.title}
+                            options={poll.options}
+                        />
+                    ))}
                     {polls.value.map(poll => (
                         <PollCard
                             key={`poll-${poll.id}`}

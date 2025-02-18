@@ -1,11 +1,12 @@
 import { component$ } from "@builder.io/qwik";
 import { Input } from "flowbite-qwik";
-import UserDropdown from "./UserDropdown";
 import NotificationDropdown from "./NotificationDropdown";
-import LanguageDropdown from "./LanguageDropdown";
 import { _ } from "compiled-i18n";
+import { NestedDropdown } from "~/components/NestedDropdown";
+import { useSession } from "~/routes/plugin@auth";
 
 export default component$(() => {
+    const session = useSession();
     return (
         <header class="bg-white border-b border-gray-200 h-16 flex items-center px-6 shadow-sm">
             <div class="flex justify-between items-center w-full">
@@ -18,9 +19,8 @@ export default component$(() => {
                         placeholder={_`Example: Climate Change`}
                         class="w-64"
                     />
-                    <LanguageDropdown />
                     <NotificationDropdown />
-                    <UserDropdown />
+                    <NestedDropdown name={_`John Doe`} email={_`john.doe@example.com`} image={session.value!.user!.image || ''} />
                 </div>
             </div>
         </header>

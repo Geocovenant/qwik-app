@@ -1,9 +1,10 @@
 import { component$, useSignal } from "@builder.io/qwik";
-import { Avatar, Button, Dropdown, Modal } from "flowbite-qwik";
+import { Button, Dropdown, Modal } from "flowbite-qwik";
 import { LuUser, LuSettings, LuHelpCircle, LuLogOut } from "@qwikest/icons/lucide";
 import { _ } from "compiled-i18n";
 import { useSession, useSignOut } from "~/routes/plugin@auth";
 import SocialLoginButtons from "./SocialLoginButtons";
+import { Avatar } from "~/components/ui";
 
 const LuUserIcon = component$(() => <LuUser class="h-4 w-4 text-gray-700" />)
 const LuSettingsIcon = component$(() => <LuSettings class="h-4 w-4 text-gray-700" />)
@@ -21,17 +22,18 @@ export default component$(() => {
                 label=""
                 class="z-50"
                 as={
-                    <Avatar img={session.value!.user!.image} rounded size="xs" />
+                    <Avatar.Root>
+                        <Avatar.Image src={session.value!.user!.image || ''} alt={`@${session.value!.user!.name}`} />
+                        <Avatar.Fallback>Avatar</Avatar.Fallback>
+                    </Avatar.Root>
                 }
             >
                 <Dropdown.Item header>
                     <div class="p-2">
-                        <Avatar img={session.value!.user!.image} rounded>
-                            <div class="space-y-1 font-medium dark:text-white">
-                                <div>{session.value!.user!.name}</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">{session.value!.user!.email}</div>
-                            </div>
-                        </Avatar>
+                        <Avatar.Root>
+                            <Avatar.Image src={session.value!.user!.image || ''} alt={`@${session.value!.user!.name}`} />
+                            <Avatar.Fallback>Avatar</Avatar.Fallback>
+                        </Avatar.Root>
                     </div>
                 </Dropdown.Item>
 
@@ -76,12 +78,14 @@ export default component$(() => {
                 >
                     {_`Login`}
                 </Button>
-                <Modal
-                    header={<div class="flex items-center text-lg">{_`Login`}</div>}
-                    bind:show={loginModalVisible}
-                >
-                    <SocialLoginButtons />
-                </Modal>
+                <div class="fixed inset-0 z-50">
+                    <Modal
+                        header={<div class="flex items-center text-lg">{_`Login`}</div>}
+                        bind:show={loginModalVisible}
+                    >
+                        <SocialLoginButtons />
+                    </Modal>
+                </div>
             </>
         );
 });

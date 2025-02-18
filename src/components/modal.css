@@ -1,0 +1,83 @@
+/* Modal General */
+.modal-panel {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto; /* Habilita el scroll vertical */
+    overscroll-behavior: contain;
+    padding: 20px; /* Espaciado interno */
+    scrollbar-width: thin; /* Firefox: hace más delgado el scroll */
+    scrollbar-color: #6f42c1 #f0f0f0; /* Púrpura para barra y gris para el track */
+}
+
+/* Scroll personalizado para navegadores WebKit */
+.modal-panel::-webkit-scrollbar {
+    width: 8px; /* Ancho del scroll */
+}
+
+.modal-panel::-webkit-scrollbar-thumb {
+    background-color: #6f42c1; /* Scroll púrpura */
+    border-radius: 8px; /* Redondeo del scroll */
+    transition: background-color 0.3s ease;
+}
+
+.modal-panel::-webkit-scrollbar-thumb:hover {
+    background-color: #5b34a8; /* Scroll más oscuro al pasar el mouse */
+}
+
+.modal-panel::-webkit-scrollbar-track {
+    background-color: #f0f0f0; /* Fondo gris claro */
+    border-radius: 8px; /* Redondeo del track */
+}
+
+/* Header del Modal */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Título */
+.modal-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Descripción */
+.modal-description {
+    font-size: 16px; /* Tamaño de texto */
+    color: #666; /* Color neutral */
+    margin-bottom: 20px; /* Separación del contenido */
+    line-height: 1.5; /* Espaciado entre líneas */
+}
+
+/* Inputs del Modal */
+.modal-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espaciado uniforme entre inputs */
+}
+
+/* Botón de Cerrar */
+.modal-close {
+    color: #666;
+    transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+    color: #333;
+}
+
+/* Expansión del Modal */
+.modal-expanded {
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    max-height: none;
+    border-radius: 0; /* Sin bordes redondeados en modo expandido */
+    padding: 40px; /* Más espacio interno */
+}

@@ -25,7 +25,7 @@ export default component$(() => {
     <Sidebar />
     <div class="flex flex-1 flex-col overflow-hidden">
       <Header />
-      <main class="flex-1 overflow-hidden"><Slot /></main>
+      <main class="flex-1 overflow-y-auto"><Slot /></main>
     </div>
   </div>;
 });
