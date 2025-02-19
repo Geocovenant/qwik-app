@@ -12,26 +12,21 @@ import { FormFooter } from '~/components/forms/FormFooter';
 import { PollType } from '~/constants/pollType';
 import { ScopeOptions } from '~/constants/scopeOption';
 import { _ } from 'compiled-i18n';
+import { CommunityType } from '~/constants/communityType';
+import { CountrySelectInput } from '~/components/input/CountrySelectInput';
+import { dataArray as countries } from "~/data/countries";
+import { Select } from '../input/Select';
 
-/**
- * Form example to create/edit a Poll.
- * 
- * Maps:
- * - `scope`: Poll scope (e.g.: GLOBAL, INTERNATIONAL, etc.)
- * - `title`: Poll title
- * - `description`: Poll description
- * - `type`: Poll type (BINARY, SINGLE_CHOICE, MULTIPLE_CHOICE)
- * - `options`: Answer options (FieldArray)
- * - `tags`: Associated tags (optional)
- * - `ends_at`: End date (shown if toggle is active)
- * - `is_anonymous`: Indicates if poll is anonymous
- */
-export default component$(() => {
+interface FormPollProps {
+    onSubmitCompleted: () => void;
+}
+
+export default component$<FormPollProps>(({ onSubmitCompleted }) => {
     const [pollForm, { Form, Field, FieldArray }] = useForm<PollForm, PollResponseData>({
         loader: useFormPollLoader(),
         action: useFormPollAction(),
         fieldArrays: ['options'],
-        validate: valiForm$(PollSchema),
+        validate: valiForm$(PollSchema)
     });
 
     // Control to show/hide end date
@@ -47,13 +42,18 @@ export default component$(() => {
 
     const isAnonymous = useSignal(false);
 
-    const handleSubmit = $((values: PollForm) => {
+    const handleSubmit = $((values: PollForm, event: any) => {
         console.log('Submitting Poll form:', values);
+        console.log('event', event);
+        // eslint-disable-next-line qwik/valid-lexical-scope
+        onSubmitCompleted()
         // Here you can perform the submit action (client-side or progressively enhanced with action)
     });
 
+    const countriesOptions = countries.map(c => ({ value: c.name, name: `${c.flag} ${c.name}` }))
+
     return (
-        <Form onSubmit$={handleSubmit} class="space-y-6">
+        <Form onSubmit$={handleSubmit} class="space-y-6" >
             {/* SCOPE */}
             <Field name="scope">
                 {(field, props) => (
@@ -69,7 +69,53 @@ export default component$(() => {
                     />
                 )}
             </Field>
+            {/* COMMUNITY_IDS */}
+            <Field name="community_ids" type="string[]">
+                {(field, props) => {
+                    const scope = pollForm.internal.fields.scope?.value;
 
+                    switch (scope) {
+                        case CommunityType.GLOBAL:
+                            return <input type="hidden" {...props} value="1" />;
+
+                        case CommunityType.INTERNATIONAL:
+                            return (
+                                <CountrySelectInput
+                                    {...props}
+                                    form={pollForm}
+                                    label={_`Countries involved`}
+                                    predefinedCountries={countriesOptions}
+                                    error={field.error}
+                                />
+                            );
+
+                        case CommunityType.NATIONAL:
+                            return (
+                                <Select
+                                    {...props}
+                                    options={countriesOptions}
+                                    label={_`Select a country`}
+                                    value={field.value}
+                                    error={field.error}
+                                />
+                            );
+
+                        case CommunityType.SUBNATIONAL:
+                            return (
+                                <Select
+                                    {...props}
+                                    options={[]}
+                                    label={_`Select a province`}
+                                    value={field.value}
+                                    error={field.error}
+                                />
+                            );
+
+                        default:
+                            return null;
+                    }
+                }}
+            </Field>
             {/* TITLE */}
             <Field name="title">
                 {(field, props) => (
@@ -119,7 +165,6 @@ export default component$(() => {
                 )}
             </Field>
 
-            {/* OPTIONS (FieldArray) */}
             <FieldArray name="options">
                 {(fieldArray) => (
                     <div class="space-y-4">
@@ -154,19 +199,6 @@ export default component$(() => {
                     </div>
                 )}
             </FieldArray>
-
-            {/* TAGS (optional) */}
-            <Field name="tags" type="string[]">
-                {(field, props) => (
-                    <TextInput
-                        {...props}
-                        label={_`Tags`}
-                        placeholder={_`Enter tags separated by commas`}
-                        value={field.value ? field.value.join(', ') : ''}
-                        error={field.error}
-                    />
-                )}
-            </Field>
 
             {/* END DATE */}
             <div>

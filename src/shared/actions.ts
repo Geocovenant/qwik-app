@@ -2,6 +2,7 @@ import { formAction$, valiForm$ } from '@modular-forms/qwik';
 import type { PollForm } from '~/schemas/pollSchema';
 import { PollSchema } from '~/schemas/pollSchema';
 import { _ } from 'compiled-i18n';
+import { routeAction$ } from '@builder.io/qwik-city';
 
 export interface PollResponseData {
     success: boolean; // Indica si la operación fue exitosa
@@ -18,27 +19,26 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
         console.log('############ useFormPollAction ############');
         console.log('values', values);
 
-        // Extraer sesión y token del sharedMap
-        const session = event.sharedMap.get('session');
-        const token = session?.accessToken;
+        const token = event.cookie.get('authjs.session-token')?.value;
         console.log('token', token);
 
         // Preparar payload con los valores del formulario
         const payload = {
             title: values.title,
             description: values.description,
-            poll_type: values.type,
+            type: values.type,
+            options: values.options.map(o => ({ text: o })),
             is_anonymous: values.is_anonymous,
+            scope: values.scope,
             ends_at: values.ends_at !== '' ? values.ends_at : null,
             community_ids: values.community_ids,
-            scope: values.scope,
-            options: values.options,
-            status: 'ACTIVE',
-            tags: values.tags,
+            // tags: values.tags,
         };
 
+        console.log('payload', payload);
+
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/polls`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -70,3 +70,28 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
     },
     valiForm$(PollSchema)
 );
+
+// eslint-disable-next-line qwik/loader-location
+export const useVotePoll = routeAction$(
+    async (data, { cookie }) => {
+        console.log('### useVotePoll ###')
+        const token = cookie.get('authjs.session-token')?.value;
+        const { pollId } = data
+        console.log('data: ', data)
+        try {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${pollId}/vote`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ option_ids: data.optionIds }),
+            });
+            return (await response.json());
+        } catch (err) {
+            console.error('err', err)
+            return err
+        }
+    }
+)

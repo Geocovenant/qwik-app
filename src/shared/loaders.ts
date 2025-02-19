@@ -1,9 +1,10 @@
 import { routeLoader$ } from "@builder.io/qwik-city";
-import { InitialValues } from "@modular-forms/qwik";
+import type { InitialValues } from "@modular-forms/qwik";
 import { CommunityType } from "~/constants/communityType";
 import { PollType } from "~/constants/pollType";
-import { PollForm } from "~/schemas/pollSchema";
+import type { PollForm } from "~/schemas/pollSchema";
 
+// eslint-disable-next-line qwik/loader-location
 export const useGetUser = routeLoader$(async ({ cookie }) => {
     const token = cookie.get('authjs.session-token')
     if (!token) {
@@ -16,10 +17,10 @@ export const useGetUser = routeLoader$(async ({ cookie }) => {
         }
     })
     const data = await response.json()
-    console.log('data', data)
     return data
 })
 
+// eslint-disable-next-line qwik/loader-location
 export const useGetPolls = routeLoader$(async ({ cookie }) => {
     const token = cookie.get('authjs.session-token')
     if (!token) {
@@ -32,21 +33,47 @@ export const useGetPolls = routeLoader$(async ({ cookie }) => {
         }
     })
     const data = await response.json()
-    console.log('data', data)
     return data
 })
 
+// eslint-disable-next-line qwik/loader-location
+export const useGetPollsByScope = routeLoader$(async ({ pathname }) => {
+    // Obtener el scope del pathname
+    const rawScope = pathname === "/" ? "GLOBAL" : pathname.split('/').filter(Boolean)[0].toUpperCase();
+    
+    // Verificar si el scope es válido
+    const isValidScope = Object.values(CommunityType).includes(rawScope as CommunityType);
+    
+    if (!isValidScope) {
+        console.warn(`Scope inválido: ${rawScope}`);
+        return [];
+    }
+
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=${rawScope}`);
+        if (!response.ok) {
+            throw new Error('Error al obtener las encuestas');
+        }
+        const polls = await response.json();
+        return polls;
+    } catch (error) {
+        console.error('Error al obtener las encuestas:', error);
+        return [];
+    }
+});
+
+// eslint-disable-next-line qwik/loader-location
 export const useFormPollLoader = routeLoader$<InitialValues<PollForm>>(({ pathname }) => {
     const segments = pathname.split('/').filter(Boolean);
-    const communityType = segments[0];
+    const communityType = segments[0] || '';
     return {
         community_ids: communityType.toUpperCase() === CommunityType.GLOBAL ? ['1'] : [],
         description: '',
-        endDate: '',
+        ends_at: '',
         is_anonymous: false,
         options: ['', ''],
         scope: communityType.toUpperCase(),
-        type: PollType.Binary,
+        type: PollType.BINARY,
         tags: [],
         title: '',
     };

@@ -13,7 +13,7 @@ export default component$<{ title: string, description: string, show: Signal<boo
                 {trigger}
             </Modal.Trigger>}
             <Modal.Panel class={`modal-panel ${isExpanded.value ? 'modal-expanded' : ''}`}>
-                <Modal.Title>{title}</Modal.Title>
+                <Modal.Title class="modal-title">{title}</Modal.Title>
                 <Modal.Description>
                     {description}
                 </Modal.Description>

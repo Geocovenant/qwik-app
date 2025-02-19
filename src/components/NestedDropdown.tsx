@@ -6,6 +6,7 @@ import styles from './nested-dropdown.css?inline';
 import { ThemeSwitch } from './theme-switch/ThemeSwitch';
 import { useSession, useSignOut } from '~/routes/plugin@auth';
 import { Avatar } from '~/components/ui';
+
 interface NestedDropdownProps {
     name?: string;
     email?: string;
@@ -26,7 +27,6 @@ const languages: Language[] = [
 export const NestedDropdown = component$<NestedDropdownProps>((props) => {
     useStylesScoped$(styles);
     const signOut = useSignOut();
-    const session = useSession();
     const isOpen = useSignal(false);
     const isSubOpen = useSignal(false);
     const dropdownRef = useSignal<HTMLDivElement>();
@@ -56,6 +56,7 @@ export const NestedDropdown = component$<NestedDropdownProps>((props) => {
         // Aquí podrías agregar lógica adicional para cambiar el idioma en la aplicación
     });
 
+    // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
@@ -83,7 +84,10 @@ export const NestedDropdown = component$<NestedDropdownProps>((props) => {
             </button>
             <div class={`dropdown-content ${isOpen.value ? 'show' : ''}`}>
                 <div class="dropdown-item" onClick$={() => isOpen.value = false}>
-                    <Link href={`/user/${session.value!.user!.name}`} class="flex items-center">
+                    <Link 
+                        href={props.name ? `/user/${props.name}` : '/login'} 
+                        class="flex items-center"
+                    >
                         <LuUser class="w-5 h-5" />
                         <span>{_`My Profile`}</span>
                     </Link>

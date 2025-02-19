@@ -1,4 +1,4 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { $, component$, useSignal } from "@builder.io/qwik";
 import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
 import { _ } from "compiled-i18n";
 import { Tabs } from "flowbite-qwik";
@@ -9,8 +9,8 @@ import FormPoll from "~/components/forms/FormPoll";
 import DebateList from "~/components/list/DebateList";
 import PollList from "~/components/list/PollList";
 
-export { useGetPolls, useFormPollLoader } from "~/shared/loaders";
-export { useFormPollAction } from "~/shared/actions";
+export { useGetPolls, useFormPollLoader, useGetPollsByScope } from "~/shared/loaders";
+export { useFormPollAction, useVotePoll } from "~/shared/actions";
 
 export default component$(() => {
   const location = useLocation();
@@ -26,6 +26,10 @@ export default component$(() => {
 
   const showModal = useSignal(false);
 
+  const onSubmitCompleted = $(() => {
+    showModal.value = false;
+  });
+
   return (
     <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
       <Modal
@@ -33,7 +37,7 @@ export default component$(() => {
         description={_`Create a poll for your community`}
         show={showModal}
       >
-        <FormPoll />
+        <FormPoll onSubmitCompleted={onSubmitCompleted} />
       </Modal>
       <div class="bg-gray-50 border-b p-3">
         <Breadcrumbs />
@@ -49,7 +53,7 @@ export default component$(() => {
         <div class="h-full overflow-y-auto">
           <Tabs>
             <Tabs.Tab title={_`Polls`}>
-              <Button onClick$={() => showModal.value = true}>
+              <Button class="m-2" onClick$={() => showModal.value = true}>
                 {_`Create poll`}
               </Button>
               <PollList />

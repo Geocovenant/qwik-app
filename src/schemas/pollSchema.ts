@@ -30,7 +30,7 @@ export const PollSchema = v.object({
         v.maxLength(10, _`You must have at most 10 options.`)
     ),
     scope: v.string(),
-    tags: v.array(v.string()),
+    // tags: v.array(v.string()),
     title: v.pipe(
         v.string(),
         v.nonEmpty(_`Please enter a title.`),

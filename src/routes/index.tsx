@@ -4,9 +4,10 @@ import { _ } from "compiled-i18n";
 import { Tabs } from "flowbite-qwik";
 import Breadcrumbs from "~/components/Breadcrumbs";
 import PollList from "~/components/list/PollList";
-import { useGetUser, useGetPolls } from "~/shared/loaders";
+import { useGetUser } from "~/shared/loaders";
 
-export { useGetUser, useGetPolls } from "~/shared/loaders"
+export { useGetUser, useGetPolls, useFormPollLoader, useGetPollsByScope } from "~/shared/loaders";
+export { useFormPollAction, useVotePoll } from "~/shared/actions";
 
 export default component$(() => {
   const user = useGetUser()

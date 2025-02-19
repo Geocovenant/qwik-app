@@ -1,77 +1,32 @@
 import { component$ } from "@builder.io/qwik";
 import { _ } from "compiled-i18n";
 import PollCard from "~/components/cards/PollCard";
-import { useGetPolls } from "~/shared/loaders";
-
+import { useGetPollsByScope } from "~/shared/loaders";
+import { type Poll } from "~/shared/types";
 export default component$(() => {
-    const polls = useGetPolls()
-    console.log('polls', polls.value)
-    // Datos de ejemplo para las polls (en una implementación real, estos datos vendran de una API)
-    // const polls = [
-    //     {
-    //         id: 1,
-    //         title: "¿Cuál es el mayor desafío global que enfrentamos actualmente?",
-    //         description: "Selecciona el desafío que consideras más importante.",
-    //         options: [
-    //             { text: "Cambio climático", percentage: 40 },
-    //             { text: "Desigualdad económica", percentage: 30 },
-    //             { text: "Pandemias", percentage: 20 },
-    //             { text: "Conflictos armados", percentage: 10 },
-    //         ],
-    //     },
-    //     {
-    //         id: 2,
-    //         title: "¿Qué acción crees que tendría el mayor impacto positivo a nivel global?",
-    //         description: "Selecciona la acción que consideras más relevante.",
-    //         options: [
-    //             { text: "Educación universal", percentage: 35 },
-    //             { text: "Energías renovables", percentage: 30 },
-    //             { text: "Reducción de la pobreza", percentage: 25 },
-    //             { text: "Cooperación internacional", percentage: 10 },
-    //         ],
-    //     },
-    //     {
-    //         id: 3,
-    //         title: "¿Cuál es la prioridad que crees que debería tener la inversión pública?",
-    //         description: "Selecciona el área en la que consideras más importante invertir.",
-    //         options: [
-    //             { text: "Salud", percentage: 25 },
-    //             { text: "Educación", percentage: 25 },
-    //             { text: "Infraestructura", percentage: 25 },
-    //             { text: "Innovación", percentage: 25 },
-    //         ],
-    //     },
-    // ];
+    const polls = useGetPollsByScope()
 
     return (
-        <div class="space-y-4 overflow-y-auto">
+        <div class="p-2 space-y-4 overflow-y-auto">
             {polls.value.length > 0 ? (
                 <ul class="space-y-3">
-                    {polls.value.map(poll => (
+                    {polls.value.map((poll: Poll) => (
                         <PollCard
                             key={`poll-${poll.id}`}
                             id={poll.id}
-                            description={poll.description}
                             title={poll.title}
-                            options={poll.options}
-                        />
-                    ))}
-                    {polls.value.map(poll => (
-                        <PollCard
-                            key={`poll-${poll.id}`}
-                            id={poll.id}
                             description={poll.description}
-                            title={poll.title}
                             options={poll.options}
-                        />
-                    ))}
-                    {polls.value.map(poll => (
-                        <PollCard
-                            key={`poll-${poll.id}`}
-                            id={poll.id}
-                            description={poll.description}
-                            title={poll.title}
-                            options={poll.options}
+                            status={poll.status}
+                            type={poll.type}
+                            is_anonymous={poll.is_anonymous}
+                            ends_at={poll.ends_at}
+                            created_at={poll.created_at}
+                            creator_username={'poll.creator_username'}
+                            comments_count={0}
+                            likes_count={1}
+                            dislikes_count={2}
+                            user_voted_options={[4]}
                         />
                     ))}
                 </ul>
