@@ -28,7 +28,7 @@ export default component$(() => {
                                 home={index === 0}
                                 homeIcon={index === 0 ? LuGlobeIcon : undefined}
                             >
-                                <span class={`ml-1 text-xs ${index === breadcrumbs.length - 1 ? "text-gray-900 dark:text-white" : ""}`}>
+                                <span class={`ml-1 text-md ${index === breadcrumbs.length - 1 ? "text-gray-900 dark:text-white" : ""}`}>
                                     {breadcrumb.label}
                                 </span>
                             </Breadcrumb.Item>

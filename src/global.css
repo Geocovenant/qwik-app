@@ -280,3 +280,192 @@ body {
 .header-search::placeholder {
   color: var(--header-input-placeholder);
 }
+
+/* Estilos para el redimensionamiento del sidebar */
+.cursor-col-resize {
+    cursor: col-resize;
+}
+
+/* Prevenir selección de texto durante el redimensionamiento */
+.user-select-none {
+    user-select: none;
+}
+
+/* Mejorar visualización de la jerarquía */
+.community-item-container {
+    position: relative;
+}
+
+.level-indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: var(--border-color);
+    opacity: 0.5;
+}
+
+/* Estilos para headers sticky */
+.sticky-header {
+    position: sticky;
+    background-color: var(--bg-secondary);
+    z-index: 10;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.sticky-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to bottom,
+        transparent,
+        var(--border-color)
+    );
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.sticky-header.is-sticky::after {
+    opacity: 1;
+}
+
+/* Ajustar z-index para niveles anidados */
+.sticky-header-level-0 { z-index: 30; }
+.sticky-header-level-1 { z-index: 29; }
+.sticky-header-level-2 { z-index: 28; }
+.sticky-header-level-3 { z-index: 27; }
+.sticky-header-level-4 { z-index: 26; }
+
+/* Actualizar los estilos para el sticky header */
+.sticky-community-header {
+    position: sticky;
+    background-color: var(--bg-secondary);
+    transition: box-shadow 0.2s ease-in-out;
+    margin-bottom: 1px;
+}
+
+.sticky-community-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+        to bottom,
+        var(--border-color) 0%,
+        transparent 100%
+    );
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.sticky-community-header.is-open::after {
+    opacity: 1;
+}
+
+/* Estilos para la indentación y líneas guía */
+.community-content {
+    position: relative;
+    transition: padding-top 0.2s ease-in-out;
+}
+
+.community-content::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: var(--border-color);
+    opacity: 0.5;
+}
+
+/* Estilos para la jerarquía del sidebar */
+.community-item {
+    position: relative;
+    transition: all 0.2s ease-in-out;
+}
+
+.community-item:hover .community-icon {
+    transform: scale(1.1);
+}
+
+.community-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 2px;
+    height: 0;
+    background-color: var(--primary);
+    transition: height 0.2s ease-in-out, transform 0.2s ease-in-out;
+    transform: translateY(-50%);
+    opacity: 0;
+}
+
+.community-item:hover::before {
+    height: 70%;
+    opacity: 1;
+}
+
+.community-item.active::before {
+    height: 100%;
+    opacity: 1;
+}
+
+/* Efecto de hover para los íconos */
+.community-icon {
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Línea divisoria con gradiente */
+.community-divider {
+    height: 1px;
+    background: linear-gradient(
+        to right,
+        transparent,
+        var(--border-color),
+        transparent
+    );
+    margin: 0.25rem 0;
+    opacity: 0.5;
+}
+
+/* Animación de loading */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.animate-pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Ajustar el espaciado del contenido colapsable */
+.collapsible-content {
+    overflow: hidden;
+    transition: all 0.2s ease-in-out;
+}
+
+.collapsible-content[data-state="open"] {
+    animation: slideDown 0.2s ease-out;
+}
+
+.collapsible-content[data-state="closed"] {
+    animation: slideUp 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from { height: 0; opacity: 0; }
+    to { height: var(--radix-collapsible-content-height); opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { height: var(--radix-collapsible-content-height); opacity: 1; }
+    to { height: 0; opacity: 0; }
+}
