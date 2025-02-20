@@ -3,7 +3,7 @@ import { LuThumbsUp, LuThumbsDown, LuMessageSquare, LuShare2, LuUser, LuTimer } 
 import { _ } from "compiled-i18n";
 import { Progress } from "~/components/Progress";
 import { timeAgo } from "~/utils/dateUtils";
-import { useVotePoll } from "~/shared/actions";
+import { useVotePoll, useReactPoll } from "~/shared/actions";
 
 interface PollCardProps {
     id: number
@@ -38,6 +38,7 @@ export default component$<PollCardProps>(({
     user_voted_options
 }) => {
     const actionVote = useVotePoll();
+    const actionReact = useReactPoll();
     const pollState = useStore({ options });
     const userVotedOptions = useSignal<number[]>(user_voted_options);
     const likesCount = useSignal(likes_count);
@@ -67,9 +68,25 @@ export default component$<PollCardProps>(({
             optionIds: newOptions 
         });
 
-        if(result.value.success) {
+        console.log('result', result)
+        if(result.status === 200) {
             userVotedOptions.value = newOptions;
-            pollState.options = result.value.updatedOptions;
+            pollState.options = result.value.options;
+        }
+    });
+
+    const handleReaction = $(async (reaction: 'LIKE' | 'DISLIKE') => {
+        console.log('handleReaction')
+        const result = await actionReact.submit({ 
+            pollId: id, 
+            reaction: reaction 
+        });
+
+        console.log('result2', result)
+        if(result.status === 200) {
+            pollState.options = result.value.options;
+            likesCount.value = result.value.reactions.LIKE;
+            dislikesCount.value = result.value.reactions.DISLIKE;
         }
     });
 
@@ -120,14 +137,20 @@ export default component$<PollCardProps>(({
 
                 {/* Estadísticas de interacción */}
                 <div class="flex items-center gap-4">
-                    <div class="flex items-center hover:text-blue-500 transition-colors cursor-pointer">
+                    <button 
+                        onClick$={() => handleReaction('LIKE')}
+                        class="flex items-center hover:text-blue-500 transition-colors cursor-pointer"
+                    >
                         <LuThumbsUp class="h-4 w-4 mr-1" />
                         <span class="font-medium">{likesCount.value}</span>
-                    </div>
-                    <div class="flex items-center hover:text-red-500 transition-colors cursor-pointer">
+                    </button>
+                    <button 
+                        onClick$={() => handleReaction('DISLIKE')}
+                        class="flex items-center hover:text-red-500 transition-colors cursor-pointer"
+                    >
                         <LuThumbsDown class="h-4 w-4 mr-1" />
                         <span class="font-medium">{dislikesCount.value}</span>
-                    </div>
+                    </button>
                     <div class="flex items-center hover:text-purple-500 transition-colors cursor-pointer">
                         <LuMessageSquare class="h-4 w-4 mr-1" />
                         <span class="font-medium">{comments_count}</span>

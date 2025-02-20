@@ -98,3 +98,31 @@ export const useVotePoll = routeAction$(
         }
     }
 )
+
+// eslint-disable-next-line qwik/loader-location
+export const useReactPoll = routeAction$(
+    async (data, { cookie }) => {
+        console.log('### useReactPoll ###')
+        console.log('data', data)
+        const token = cookie.get('authjs.session-token')?.value;
+        console.log('token', token)
+        const payload = { reaction: data.reaction }
+        console.log('payload', payload)
+        
+        try {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${data.pollId}/react`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(payload),
+            });
+            return (await response.json());
+        } catch (err) {
+            console.error('err', err)
+            return err
+        }
+    }
+)

@@ -10,7 +10,7 @@ import DebateList from "~/components/list/DebateList";
 import PollList from "~/components/list/PollList";
 
 export { useGetPolls, useFormPollLoader, useGetPollsByScope } from "~/shared/loaders";
-export { useFormPollAction, useVotePoll } from "~/shared/actions";
+export { useFormPollAction, useVotePoll, useReactPoll } from "~/shared/actions";
 
 export default component$(() => {
   const location = useLocation();
