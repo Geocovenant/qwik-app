@@ -28,11 +28,7 @@ export const CountrySelectInput = component$<CountrySelectProps>((props) => {
     });
 
     const handleSelectChange = $((event: Event, element: HTMLSelectElement) => {
-        console.log('handleSelectChange')
-        console.log('event', event)
-        console.log('element', element)
         const selectedCountry = element.value;
-        console.log('selectedCountry', selectedCountry)
         if (selectedCountry) {
             addCountry(selectedCountry);
             // Resetear el valor del select

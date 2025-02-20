@@ -39,21 +39,18 @@ export default component$(() => {
       >
         <FormPoll onSubmitCompleted={onSubmitCompleted} />
       </Modal>
-      <div class="bg-gray-50 border-b p-3">
+      <div class="bg-gray-50 border-b">
         <Breadcrumbs />
       </div>
 
       <div class="flex flex-col min-h-0">
-        <div class="p-6 border-b">
-          <h1 class="text-2xl font-semibold">
-            {_`Comunidad`}: {formattedName}
-          </h1>
-        </div>
-
         <div class="h-full overflow-y-auto">
           <Tabs>
             <Tabs.Tab title={_`Polls`}>
-              <Button class="m-2" onClick$={() => showModal.value = true}>
+              <Button 
+                class="m-2 bg-cyan-600 hover:bg-cyan-700 text-white dark:bg-cyan-500 dark:hover:bg-cyan-600" 
+                onClick$={() => showModal.value = true}
+              >
                 {_`Create poll`}
               </Button>
               <PollList />

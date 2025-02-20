@@ -8,7 +8,7 @@ export const buttonVariants = cva(
     variants: {
       look: {
         primary:
-          "border-base bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 active:shadow-base active:press",
+          "border-base bg-cyan-600 text-white hover:bg-cyan-700 dark:bg-cyan-500 dark:hover:bg-cyan-600 shadow-sm active:shadow-base active:press",
         secondary:
           "border-base bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/90 active:shadow-base active:press",
         alert:

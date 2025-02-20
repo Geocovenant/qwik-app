@@ -7,6 +7,33 @@
 @tailwind utilities;
 @layer base {
   :root {
+    /* Colores base */
+    --primary: #0891b2;  /* Cyan-600 */
+    --primary-hover: #0e7490;  /* Cyan-700 */
+    
+    /* Modo claro */
+    --bg-primary: #f9fafb;  /* gray-50 - contenido principal más claro */
+    --bg-secondary: #f3f4f6; /* gray-100 - sidebar un poco más oscuro */
+    --bg-tertiary: #f1f5f9;
+    
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-tertiary: #94a3b8;
+    
+    --border-color: #e2e8f0;
+    --card-bg: #ffffff;
+    --card-hover: #f8fafc;
+    
+    --poll-option-bg: #f1f5f9;
+    --poll-option-hover: #e2e8f0;
+    --poll-progress-bg: #e2e8f0;
+    
+    /* Estados */
+    --like-color: #3b82f6;
+    --dislike-color: #ef4444;
+    --comment-color: #8b5cf6;
+    --share-color: #10b981;
+    
     --background: 0 0% 100%;
     --foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
@@ -17,7 +44,6 @@
     --card-foreground: 222.2 47.4% 11.2%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --primary: 191.6 91.4% 36.5%;
     --primary-foreground: 0 0% 100%;
     --secondary: 222.2 47.4% 11.2%;
     --secondary-foreground: 0 0% 100%;
@@ -29,10 +55,9 @@
     --border-width: 0px;
     --border-radius: 0;
     --shadow-base: 0 1px 2px 0 rgba(0, 0, 0, 0.01);
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1), 0 1px 5px 0px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-      0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
       0 4px 6px -4px rgba(0, 0, 0, 0.1);
     --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
@@ -40,8 +65,52 @@
     --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 1);
     --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.01);
     --transform-press: scale(0.95);
+    
+    /* Sidebar y Header */
+    --sidebar-bg: #f8fafc;
+    --sidebar-hover: #f1f5f9;
+    --sidebar-active: #e2e8f0;
+    --sidebar-text: #64748b;
+    --sidebar-text-active: #0f172a;
+    --sidebar-border: #e2e8f0;
+    
+    --header-bg: linear-gradient(to right, var(--qwik-dark-purple), var(--qwik-purple));
+    --header-border: #e2e8f0;
+    --header-text: #ffffff;
+    --header-input-bg: #f8fafc;
+    --header-input-text: #0f172a;
+    --header-input-placeholder: #94a3b8;
+    
+    /* Colores Qwik */
+    --qwik-light-purple: #ac7ff4;
+    --qwik-purple: #9b60ed;
+    --qwik-dark-purple: #713fc2;
+    --qwik-darker-purple: #4e2d99;
   }
   .dark {
+    /* Modo oscuro */
+    --bg-primary: #111827;  /* gray-900 - contenido principal */
+    --bg-secondary: #1f2937; /* gray-800 - sidebar un poco más oscuro */
+    --bg-tertiary: #334155;
+    
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #94a3b8;
+    
+    --border-color: #334155;
+    --card-bg: #1e293b;
+    --card-hover: #334155;
+    
+    --poll-option-bg: #334155;
+    --poll-option-hover: #475569;
+    --poll-progress-bg: #475569;
+    
+    /* Estados en modo oscuro */
+    --like-color: #60a5fa;
+    --dislike-color: #f87171;
+    --comment-color: #a78bfa;
+    --share-color: #34d399;
+    
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
@@ -52,7 +121,7 @@
     --card-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --primary: 191.6 91.4% 36.5%;
+    --primary: #06b6d4;  /* Cyan-500 para modo oscuro */
     --primary-foreground: 0 0% 100%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 0 0% 0%;
@@ -75,6 +144,21 @@
     --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 1);
     --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.01);
     --transform-press: scale(0.95);
+    
+    /* Sidebar y Header en modo oscuro */
+    --sidebar-bg: #1e293b;
+    --sidebar-hover: #334155;
+    --sidebar-active: #475569;
+    --sidebar-text: #94a3b8;
+    --sidebar-text-active: #f8fafc;
+    --sidebar-border: #334155;
+    
+    --header-bg: linear-gradient(to right, var(--qwik-darker-purple), var(--qwik-dark-purple));
+    --header-border: #1e293b;
+    --header-text: #ffffff;
+    --header-input-bg: #1e293b;
+    --header-input-text: #f8fafc;
+    --header-input-placeholder: #64748b;
   }
 }
 
@@ -85,3 +169,114 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes spin-fast {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-fast {
+  animation: spin-fast 7s linear infinite;
+}
+
+/* Estilos generales */
+body {
+  @apply bg-gray-50 dark:bg-gray-900; /* Color del contenido principal */
+  color: var(--text-primary);
+}
+
+/* Estilos para las tarjetas de encuestas */
+.poll-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+  transition: all 0.2s ease-in-out;
+}
+
+.poll-card:hover {
+  background-color: var(--card-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.poll-option {
+  background-color: var(--poll-option-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 0.75rem 0;
+  transition: all 0.2s ease;
+}
+
+.poll-option:hover {
+  background-color: var(--poll-option-hover);
+  transform: translateY(-1px);
+}
+
+.poll-progress {
+  background-color: var(--poll-progress-bg);
+  border-radius: 9999px;
+  height: 0.5rem;
+  overflow: hidden;
+}
+
+.poll-progress-bar {
+  background-color: var(--primary);
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+/* Estilos para los botones de interacción */
+.btn-interaction {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+}
+
+.btn-like:hover { color: var(--like-color); }
+.btn-dislike:hover { color: var(--dislike-color); }
+.btn-comment:hover { color: var(--comment-color); }
+.btn-share:hover { color: var(--share-color); }
+
+/* Estilos para el Sidebar */
+.sidebar {
+  @apply bg-gray-100 dark:bg-gray-800; /* Color del sidebar */
+  border-right: 1px solid var(--border-color);
+}
+
+.sidebar-item {
+  color: var(--sidebar-text);
+  transition: all 0.2s ease;
+}
+
+.sidebar-item:hover {
+  background-color: var(--sidebar-hover);
+}
+
+.sidebar-item.active {
+  background-color: var(--sidebar-active);
+  color: var(--sidebar-text-active);
+}
+
+/* Estilos para el Header */
+.header {
+  background-color: var(--header-bg);
+  border-bottom: 1px solid var(--header-border);
+}
+
+.header-search {
+  background-color: var(--header-input-bg);
+  color: var(--header-input-text);
+}
+
+.header-search::placeholder {
+  color: var(--header-input-placeholder);
+}

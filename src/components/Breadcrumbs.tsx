@@ -15,11 +15,11 @@ export default component$(() => {
         return { path, label }
     })
     return (
-        <div class="flex items-center px-4 bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div class="flex items-center py-2 px-4 bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:bg-gray-900 dark:text-white">
             <Breadcrumb>
                 {breadcrumbs.length === 0
                     ? <Breadcrumb.Item href="/" home homeIcon={LuGlobeIcon}>
-                        <span class="ml-1 text-xs text-gray-900">Global</span>
+                        <span class="ml-1 text-xs text-gray-900 dark:text-white">Global</span>
                     </Breadcrumb.Item>
                     : breadcrumbs.map((breadcrumb, index) => (
                         <div key={breadcrumb.path} class="flex items-center">
@@ -28,7 +28,7 @@ export default component$(() => {
                                 home={index === 0}
                                 homeIcon={index === 0 ? LuGlobeIcon : undefined}
                             >
-                                <span class={`ml-1 text-xs ${index === breadcrumbs.length - 1 ? "text-gray-900" : ""}`}>
+                                <span class={`ml-1 text-xs ${index === breadcrumbs.length - 1 ? "text-gray-900 dark:text-white" : ""}`}>
                                     {breadcrumb.label}
                                 </span>
                             </Breadcrumb.Item>

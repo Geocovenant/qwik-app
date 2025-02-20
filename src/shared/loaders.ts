@@ -78,3 +78,21 @@ export const useFormPollLoader = routeLoader$<InitialValues<PollForm>>(({ pathna
         title: '',
     };
 });
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetCountryDivisions = routeLoader$(async ({ params }) => {
+    const cca2 = params.cca2;
+    if (!cca2) return [];
+    
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/countries/${cca2}/divisions`);
+        if (!response.ok) {
+            throw new Error('Error al obtener las divisiones del país');
+        }
+        const divisions = await response.json();
+        return divisions;
+    } catch (error) {
+        console.error('Error al obtener las divisiones:', error);
+        return [];
+    }
+});
