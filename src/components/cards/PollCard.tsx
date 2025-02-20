@@ -3,6 +3,7 @@ import { LuThumbsUp, LuThumbsDown, LuMessageSquare, LuShare2, LuUser, LuTimer } 
 import { _ } from "compiled-i18n";
 import { timeAgo } from "~/utils/dateUtils";
 import { useVotePoll, useReactPoll } from "~/shared/actions";
+import { dataArray } from "~/data/countries";
 
 interface PollCardProps {
     id: number
@@ -11,6 +12,7 @@ interface PollCardProps {
     options: { text: string; votes: number; id: number; voted: boolean }[]
     status: string
     type: string
+    scope: string
     is_anonymous: boolean
     ends_at?: string | null
     created_at: string
@@ -18,6 +20,7 @@ interface PollCardProps {
     comments_count: number
     likes_count: number
     dislikes_count: number
+    countries?: string[]
 }
 
 export default component$<PollCardProps>(({ 
@@ -26,6 +29,7 @@ export default component$<PollCardProps>(({
     description, 
     options, 
     type, 
+    scope,
     is_anonymous, 
     ends_at, 
     created_at,
@@ -33,7 +37,9 @@ export default component$<PollCardProps>(({
     comments_count,
     likes_count,
     dislikes_count,
+    countries = [],
 }) => {
+    console.log('options', options)
     const actionVote = useVotePoll();
     const actionReact = useReactPoll();
     const pollState = useStore({ options });
@@ -83,14 +89,49 @@ export default component$<PollCardProps>(({
         }
     });
 
+    const getCountryData = (code: string) => {
+        return dataArray.find(country => country.cca2 === code);
+    };
+
     return (
         <div class="poll-card">
             {/* Encabezado */}
             <div class="mb-6">
-                <h3 class="text-2xl font-bold mb-2 text-text-primary">{title}</h3>
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-2xl font-bold text-text-primary">{title}</h3>
+                    {scope === 'GLOBAL' && (
+                        <span 
+                            class="text-xl cursor-help"
+                            title={_`Global`}
+                        >
+                            🌍
+                        </span>
+                    )}
+                </div>
                 {description && (
                     <p class="text-text-secondary text-sm mb-4">{description}</p>
                 )}
+                
+                {countries.length > 0 && (
+                    <div class="flex items-center gap-1 mb-3">
+                        <span class="text-sm text-text-secondary mr-2">{_`Countries involved:`}</span>
+                        <div class="flex gap-1">
+                            {countries.map((code) => {
+                                const country = getCountryData(code);
+                                return country && (
+                                    <span 
+                                        key={code}
+                                        class="text-xl cursor-help"
+                                        title={country.name}
+                                    >
+                                        {country.flag}
+                                    </span>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
+
                 <div class="flex items-center gap-2 text-sm text-text-secondary">
                     <span>Total de votos:</span>
                     <span class="bg-poll-option-bg px-3 py-1 rounded-full font-medium">
@@ -110,13 +151,17 @@ export default component$<PollCardProps>(({
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-text-primary font-medium">{option.text}</span>
                             <span class="text-text-secondary text-sm">
-                                {option.votes} votos ({((option.votes / totalVotes.value) * 100).toFixed(1)}%)
+                                {option.votes} votos ({totalVotes.value > 0 
+                                    ? ((option.votes / totalVotes.value) * 100).toFixed(1) 
+                                    : '0'}%)
                             </span>
                         </div>
                         <div class="poll-progress">
                             <div 
                                 class="poll-progress-bar"
-                                style={{ width: `${(option.votes / totalVotes.value) * 100}%` }}
+                                style={{ width: `${totalVotes.value > 0 
+                                    ? (option.votes / totalVotes.value) * 100 
+                                    : 0}%` }}
                             />
                         </div>
                     </div>
@@ -125,7 +170,7 @@ export default component$<PollCardProps>(({
 
             {/* Footer */}
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-sm text-text-secondary">
-                <div class="flex items-center gap-3">
+                <div class="flex flex-wrap items-center gap-3">
                     <div class="flex items-center gap-2 bg-poll-option-bg px-3 py-1.5 rounded-full">
                         <LuUser class="w-4 h-4" />
                         <span>{is_anonymous ? _`Anonymous` : creator_username}</span>
@@ -135,6 +180,13 @@ export default component$<PollCardProps>(({
                         <LuTimer class="w-4 h-4" />
                         <span>{timeAgo(new Date(created_at))}</span>
                     </div>
+
+                    {ends_at && (
+                        <div class="flex items-center gap-2 bg-poll-option-bg/50 px-3 py-1.5 rounded-full border border-accent/20">
+                            <span class="text-xs uppercase font-medium">{_`Ends`}:</span>
+                            <span>{new Date(ends_at).toLocaleDateString()}</span>
+                        </div>
+                    )}
                 </div>
 
                 <div class="flex items-center gap-3">
@@ -152,11 +204,17 @@ export default component$<PollCardProps>(({
                         <LuThumbsDown class="w-5 h-5 mr-1.5" />
                         <span class="font-medium">{dislikesCount.value}</span>
                     </button>
-                    <button class="btn-interaction btn-comment">
+                    <button 
+                        onClick$={() => {}}
+                        class="btn-interaction btn-comment"
+                    >
                         <LuMessageSquare class="w-5 h-5 mr-1.5" />
                         <span class="font-medium">{comments_count}</span>
                     </button>
-                    <button class="btn-interaction btn-share">
+                    <button 
+                        onClick$={() => {}}
+                        class="btn-interaction btn-share"
+                    >
                         <LuShare2 class="w-5 h-5" />
                     </button>
                 </div>

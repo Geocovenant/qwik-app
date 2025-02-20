@@ -1,7 +1,7 @@
 import { component$, type QRL } from '@builder.io/qwik';
 import clsx from 'clsx';
 import { InputError } from './InputError';
-import { InputLabel } from './InputLabel';
+import { capitalizeFirst } from '~/utils/capitalizeFirst';
 
 export type ChipGroupOption = {
     label: string;
@@ -35,8 +35,13 @@ export const ChipGroup = component$((props: ChipGroupProps) => {
 
     return (
         <div class={clsx("space-y-2", className)}>
-            {label && <InputLabel name={name} label={label} required={required} />}
-            <div class="flex flex-wrap gap-2">
+            {label && (
+                <div class="flex items-center gap-1">
+                    <span class="text-sm text-foreground">{capitalizeFirst(label)}</span>
+                    {required && <span class="text-destructive">*</span>}
+                </div>
+            )}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                 {options.map((option) => (
                     <label key={option.value} class="relative cursor-pointer">
                         <input
@@ -51,37 +56,32 @@ export const ChipGroup = component$((props: ChipGroupProps) => {
                             aria-errormessage={`${name}-error`}
                             class="hidden"
                         />
-                        <span
+                        <div
                             class={clsx(
-                                "px-4 py-2 rounded-lg border-2 transition-all duration-200",
+                                "w-full p-3 rounded-lg border transition-all duration-200",
+                                "flex flex-col gap-1",
                                 value === option.value 
                                     ? [
-                                        "bg-primary/10 border-primary",
-                                        "text-primary-700 dark:text-primary-300",
-                                        "font-medium shadow-sm",
-                                        "dark:bg-primary/20 dark:border-primary/70"
+                                        "border-primary bg-primary/5",
+                                        "text-foreground",
                                       ]
                                     : [
-                                        "bg-white dark:bg-gray-800",
-                                        "border-gray-200 dark:border-gray-700",
-                                        "text-gray-700 dark:text-gray-300",
-                                        "hover:border-gray-300 dark:hover:border-gray-600",
-                                        "hover:bg-gray-50 dark:hover:bg-gray-700"
+                                        "border-input bg-card",
+                                        "text-foreground hover:border-primary/30",
                                       ]
                             )}
                         >
-                            {option.label}
-                        </span>
+                            <span class="font-medium">{option.label}</span>
+                            {option.description && (
+                                <span class="text-xs text-muted-foreground">
+                                    {option.description}
+                                </span>
+                            )}
+                        </div>
                     </label>
                 ))}
             </div>
-            {/* Si la opción seleccionada tiene descripción, se muestra */}
-            {options.find((option) => option.value === value)?.description && (
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                    {options.find((option) => option.value === value)?.description}
-                </p>
-            )}
-            {error && <InputError name={name} error={error} />}
+            <InputError name={name} error={error} />
         </div>
     );
 });

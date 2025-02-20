@@ -4,7 +4,15 @@ import { LuX } from '@qwikest/icons/lucide';
 import { Modal, buttonVariants } from '~/components/ui';
 import styles from './modal.css?inline';
 
-export default component$<{ title: string, description: string, show: Signal<boolean>, trigger?: string }>(({ title, description, show, trigger }) => {
+interface ModalProps {
+    title: string;
+    description: string;
+    show: Signal<boolean>;
+    trigger?: string;
+    position?: "center" | "top" | "bottom" | "left" | "right";
+}
+
+export default component$<ModalProps>(({ title, description, show, trigger, ...props }) => {
     useStyles$(styles);
     const isExpanded = useSignal<boolean>(false);
     return (
@@ -12,13 +20,16 @@ export default component$<{ title: string, description: string, show: Signal<boo
             {trigger && <Modal.Trigger>
                 {trigger}
             </Modal.Trigger>}
-            <Modal.Panel class={cn(
-                "modal-panel",
-                "bg-white dark:bg-gray-900",
-                "border dark:border-gray-700",
-                "shadow-lg",
-                isExpanded.value ? 'modal-expanded' : ''
-            )}>
+            <Modal.Panel
+                class={cn(
+                    "modal-panel",
+                    "bg-white dark:bg-gray-900",
+                    "border dark:border-gray-700",
+                    "shadow-lg",
+                    isExpanded.value ? 'modal-expanded' : ''
+                )}
+                position={props.position || 'center'}
+            >
                 <Modal.Title class="modal-title text-gray-900 dark:text-gray-100">{title}</Modal.Title>
                 <Modal.Description class="text-gray-600 dark:text-gray-300">
                     {description}

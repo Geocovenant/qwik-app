@@ -1,5 +1,5 @@
 import { $, component$, useSignal } from "@builder.io/qwik";
-import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
+import { type DocumentHead } from "@builder.io/qwik-city";
 import { _ } from "compiled-i18n";
 import { Tabs } from "flowbite-qwik";
 import { Button } from "~/components/ui";
@@ -13,17 +13,6 @@ export { useGetPolls, useFormPollLoader, useGetPollsByScope } from "~/shared/loa
 export { useFormPollAction, useVotePoll, useReactPoll } from "~/shared/actions";
 
 export default component$(() => {
-  const location = useLocation();
-  const params = location.params;
-  const communities = typeof params.communities === "string"
-    ? params.communities.split("/").filter(Boolean)
-    : Array.isArray(params.communities)
-      ? params.communities
-      : [];
-  
-  const communityName = communities[communities.length - 1]?.replace(/-/g, " ");
-  const formattedName = communityName?.charAt(0).toUpperCase() + communityName?.slice(1);
-
   const showModal = useSignal(false);
 
   const onSubmitCompleted = $(() => {

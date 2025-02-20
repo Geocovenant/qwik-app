@@ -1,78 +1,152 @@
 import { $, component$, useSignal } from '@builder.io/qwik';
-import { _ } from 'compiled-i18n';
-import { InputLabel } from './InputLabel';
-import { getValue, setValue } from '@modular-forms/qwik';
-import { Select } from 'flowbite-qwik';
+import type { PropFunction } from '@builder.io/qwik';
+import { InputError } from './InputError';
+import { capitalizeFirst } from '~/utils/capitalizeFirst';
+import clsx from 'clsx';
 
-interface CountrySelectProps {
-    error?: string;
-    form: any;
+type CountryOption = {
+    value: string;
+    name: string;
+};
+
+export type CountrySelectInputProps = {
     name: string;
     label?: string;
-    predefinedCountries: { name: string; value: string }[];
-}
+    error?: string;
+    required?: boolean;
+    form: any;
+    predefinedCountries: CountryOption[];
+    onInput$?: PropFunction<(event: Event, element: HTMLSelectElement) => void>;
+    onChange$?: PropFunction<(event: Event, element: HTMLSelectElement) => void>;
+    onBlur$?: PropFunction<(event: Event, element: HTMLSelectElement) => void>;
+};
 
-export const CountrySelectInput = component$<CountrySelectProps>((props) => {
-    const selectedValue = useSignal('');
+export const CountrySelectInput = component$((props: CountrySelectInputProps) => {
+    const { name, label, error, required, predefinedCountries, form } = props;
 
-    const addCountry = $((countryCode: string) => {
-        const currentValue = (getValue(props.form, props.name) as string[]);
-        if (countryCode && !currentValue.includes(countryCode)) {
-            setValue(props.form, props.name, [...currentValue, countryCode]);
+    const searchTerm = useSignal('');
+    const showDropdown = useSignal(false);
+
+    const filteredCountries = predefinedCountries.filter(country => 
+        country.name.toLowerCase().includes(searchTerm.value.toLowerCase())
+    );
+
+    const handleSelect = $((country: CountryOption) => {
+        const selectedCountries = form.internal.fields[name]?.value || [];
+        if (!selectedCountries.includes(country.value)) {
+            form.internal.fields[name].value = [...selectedCountries, country.value];
+        }
+        showDropdown.value = false;
+        searchTerm.value = '';
+    });
+
+    const handleRemove = $((countryValue: string) => {
+        const selectedCountries = form.internal.fields[name]?.value || [];
+        form.internal.fields[name].value = selectedCountries.filter((value: string) => value !== countryValue);
+    });
+
+    const handleKeyDown = $((e: KeyboardEvent) => {
+        if (e.key === 'Enter' && searchTerm.value && filteredCountries.length > 0) {
+            e.preventDefault();
+            handleSelect(filteredCountries[0]);
         }
     });
 
-    const removeCountry = $((countryCode: string) => {
-        const currentValue = (getValue(props.form, props.name) as string[]);
-        setValue(props.form, props.name, currentValue.filter((c) => c !== countryCode));
-    });
-
-    const handleSelectChange = $((event: Event, element: HTMLSelectElement) => {
-        const selectedCountry = element.value;
-        if (selectedCountry) {
-            addCountry(selectedCountry);
-            // Resetear el valor del select
-            selectedValue.value = '';
-        }
-    });
-
-    const value = getValue(props.form, props.name) as string[];
+    const selectedCountries = form.internal.fields[name]?.value || [];
 
     return (
-        <div>
-            {props.label && <InputLabel name={props.name} label={props.label} />}
+        <div class="space-y-2">
+            {label && (
+                <div class="flex items-center gap-1">
+                    <span class="text-sm text-foreground">{capitalizeFirst(label)}</span>
+                    {required && <span class="text-destructive">*</span>}
+                </div>
+            )}
 
-            {/* Países seleccionados como badges */}
-            <div class="flex items-center gap-2 flex-wrap mb-2">
-                {Array.isArray(value) && value.map((countryCode) => {
-                    const country = props.predefinedCountries.find((c) => c.value === countryCode);
+            {/* Selected countries chips */}
+            <div class="flex flex-wrap gap-2 mb-2">
+                {selectedCountries.map((countryValue: string) => {
+                    const country = predefinedCountries.find(c => c.value === countryValue);
+                    if (!country) return null;
                     return (
-                        <span
-                            key={countryCode}
-                            class="flex items-center bg-blue-100 text-blue-700 rounded-full px-3 py-1 text-sm font-medium"
+                        <div 
+                            key={country.value}
+                            class="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-full"
                         >
-                            {country?.name || countryCode}
-                            <button
+                            <span>{country.name}</span>
+                            <button 
                                 type="button"
-                                class="ml-2 text-blue-700 hover:text-blue-900"
-                                onClick$={() => removeCountry(countryCode)}
+                                class="hover:text-destructive transition-colors"
+                                onClick$={() => handleRemove(country.value)}
                             >
-                                ✕
+                                ×
                             </button>
-                        </span>
+                        </div>
                     );
                 })}
             </div>
 
-            <Select
-                bind:value={selectedValue}
-                options={props.predefinedCountries}
-                placeholder={_`Select a country`}
-                // onChange$={handleSelectChange}
-                onInput$={handleSelectChange}
-            />
+            {/* Search input */}
+            <div class="relative">
+                <input
+                    type="text"
+                    class={clsx(
+                        "w-full h-12 bg-background",
+                        "border rounded-lg px-3 focus:outline-none transition-all duration-200",
+                        "text-foreground placeholder:text-muted-foreground/60",
+                        error
+                            ? "border-destructive focus:ring-2 focus:ring-destructive/20"
+                            : "border-input hover:border-muted-foreground/50 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    )}
+                    placeholder="Search countries..."
+                    value={searchTerm.value}
+                    onFocus$={() => showDropdown.value = true}
+                    onInput$={(e) => searchTerm.value = (e.target as HTMLInputElement).value}
+                    onKeyDown$={handleKeyDown}
+                />
 
-            {props.error && <div class="text-red-500 text-sm mt-1">{props.error}</div>}
+                {/* Dropdown arrow */}
+                <div class="absolute top-1/2 -translate-y-1/2 right-3 text-muted-foreground">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m6 9 6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+
+            {/* Dropdown */}
+            {showDropdown.value && (
+                <div 
+                    class="absolute z-50 w-full mt-1 bg-background border rounded-lg shadow-lg max-h-60 overflow-y-auto"
+                    onBlur$={() => {
+                        setTimeout(() => {
+                            showDropdown.value = false;
+                            searchTerm.value = '';
+                        }, 200);
+                    }}
+                >
+                    {filteredCountries.length > 0 ? (
+                        filteredCountries.map((country) => (
+                            <div
+                                key={country.value}
+                                class={clsx(
+                                    "px-3 py-2 cursor-pointer flex items-center gap-2",
+                                    "hover:bg-muted/50 transition-colors",
+                                    selectedCountries.includes(country.value) && "bg-primary/10"
+                                )}
+                                onClick$={() => handleSelect(country)}
+                            >
+                                {country.name}
+                            </div>
+                        ))
+                    ) : (
+                        <div class="px-3 py-2 text-muted-foreground">
+                            No countries found
+                        </div>
+                    )}
+                </div>
+            )}
+
+            <InputError name={name} error={error} />
         </div>
     );
 });

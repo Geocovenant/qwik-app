@@ -18,4 +18,14 @@ export type Poll = {
     created_at: string;
     creator_username: string;
     reactions: { LIKE: number, DISLIKE: number };
+    comments_count: number;
+    countries: string[];
 };
+
+export interface Comment {
+    id: number;
+    content: string;
+    author_username: string;
+    created_at: string;
+    poll_id: number;
+}

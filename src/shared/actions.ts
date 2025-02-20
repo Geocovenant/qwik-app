@@ -22,7 +22,7 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
         const token = event.cookie.get('authjs.session-token')?.value;
         console.log('token', token);
 
-        // Preparar payload con los valores del formulario
+        // Preparar payload según el scope
         const payload = {
             title: values.title,
             description: values.description,
@@ -31,9 +31,21 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
             is_anonymous: values.is_anonymous,
             scope: values.scope,
             ends_at: values.ends_at !== '' ? values.ends_at : null,
-            community_ids: values.community_ids,
-            // tags: values.tags,
         };
+
+        // Añadir los campos específicos según el scope
+        switch (values.scope) {
+            case 'INTERNATIONAL':
+                Object.assign(payload, { country_codes: values.community_ids });
+                break;
+            case 'NATIONAL':
+                Object.assign(payload, { country_code: values.community_ids[0] });
+                break;
+            case 'SUBNATIONAL':
+                Object.assign(payload, { community_ids: values.community_ids });
+                break;
+            // Para GLOBAL no necesitamos añadir campos adicionales
+        }
 
         console.log('payload', payload);
 

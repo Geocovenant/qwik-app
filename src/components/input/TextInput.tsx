@@ -60,17 +60,18 @@ export const TextInput = component$(
                     aria-errormessage={`${name}-error`}
                     class={clsx(
                         'w-full bg-background dark:bg-background',
-                        'border-2 rounded-lg pt-8 pb-2 px-3 focus:outline-none transition-all duration-200',
+                        'border rounded-lg pt-8 pb-2 px-3 focus:outline-none transition-all duration-200',
                         'text-foreground dark:text-foreground placeholder:text-muted-foreground/60',
+                        'shadow-sm',
                         error
-                            ? 'border-destructive focus:border-destructive'
-                            : 'border-input hover:border-muted-foreground/50 focus:border-primary',
+                            ? 'border-destructive focus:ring-2 focus:ring-destructive/20'
+                            : 'border-input hover:border-muted-foreground/50 focus:border-primary focus:ring-2 focus:ring-primary/20',
                         className
                     )}
                 />
                 {label && (
                     <div class={clsx(
-                        "absolute top-2 left-3 text-sm pointer-events-none transition-colors duration-200",
+                        "absolute top-2 left-3 text-sm font-medium pointer-events-none transition-colors duration-200",
                         error ? 'text-destructive' : 'text-muted-foreground'
                     )}>
                         {capitalizeFirst(label)}
@@ -78,7 +79,7 @@ export const TextInput = component$(
                     </div>
                 )}
                 {props.value !== undefined && props.maxLength && (
-                    <div class="absolute top-2 right-3 text-sm text-muted-foreground">
+                    <div class="absolute top-2 right-3 text-sm text-muted-foreground/70">
                         {props.value.length} / {props.maxLength}
                     </div>
                 )}
