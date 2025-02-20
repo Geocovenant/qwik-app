@@ -5,6 +5,8 @@ import { useGetPollsByScope } from "~/shared/loaders";
 import { type Poll } from "~/shared/types";
 export default component$(() => {
     const polls = useGetPollsByScope()
+    console.log('polls', polls.value)
+    console.log('polls.options', polls.value[0].options)
 
     return (
         <div class="p-2 space-y-4 overflow-y-auto">
@@ -22,11 +24,11 @@ export default component$(() => {
                             is_anonymous={poll.is_anonymous}
                             ends_at={poll.ends_at}
                             created_at={poll.created_at}
-                            creator_username={'poll.creator_username'}
+                            creator_username={poll.creator_username}
                             comments_count={0}
-                            likes_count={1}
-                            dislikes_count={2}
-                            user_voted_options={[4]}
+                            likes_count={poll.reactions.LIKE}
+                            dislikes_count={poll.reactions.DISLIKE}
+                            user_voted_options={[]}
                         />
                     ))}
                 </ul>

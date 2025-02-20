@@ -76,8 +76,11 @@ export const useVotePoll = routeAction$(
     async (data, { cookie }) => {
         console.log('### useVotePoll ###')
         const token = cookie.get('authjs.session-token')?.value;
+        console.log('token', token)
         const { pollId } = data
         console.log('data: ', data)
+        const payload = { option_ids: data.optionIds }
+        console.log('payload', payload)
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${pollId}/vote`, {
                 method: 'POST',
@@ -86,7 +89,7 @@ export const useVotePoll = routeAction$(
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({ option_ids: data.optionIds }),
+                body: JSON.stringify(payload),
             });
             return (await response.json());
         } catch (err) {

@@ -16,4 +16,6 @@ export type Poll = {
     is_anonymous: boolean;
     ends_at: string;
     created_at: string;
+    creator_username: string;
+    reactions: { LIKE: number, DISLIKE: number };
 };

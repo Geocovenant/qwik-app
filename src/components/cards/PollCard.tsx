@@ -79,6 +79,12 @@ export default component$<PollCardProps>(({
             <div class="mb-4">
                 <h3 class="text-2xl font-semibold mb-2 text-gray-800">{title}</h3>
                 {description && <p class="text-gray-600 mb-4 text-sm">{description}</p>}
+                <div class="flex items-center gap-2 text-sm text-gray-600 mb-4">
+                    <span class="font-medium">Total de votos:</span>
+                    <span class="bg-gray-100 px-3 py-1 rounded-full font-semibold">
+                        {totalVotes.value}
+                    </span>
+                </div>
             </div>
 
             {/* Opciones de votación */}

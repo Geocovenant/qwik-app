@@ -57,9 +57,10 @@ export const Progress = component$<ProgressProps>(({
 
             {/* Percentage and number of votes at the end of the bar */}
             <div class="absolute top-0 right-4 h-full flex items-center text-gray-800">
-                <span class="text-sm">{Math.round(percentage.value)}%</span>
-                {/* Optional: Show number of votes per option */}
-                {/* <span class="text-xs ml-2">({votes} votes)</span> */}
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium">{Math.round(percentage.value)}%</span>
+                    <span class="text-sm text-gray-500">({option.votes} votos)</span>
+                </div>
             </div>
         </div>
     );
