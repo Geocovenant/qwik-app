@@ -12,16 +12,22 @@ export default component$<{ title: string, description: string, show: Signal<boo
             {trigger && <Modal.Trigger>
                 {trigger}
             </Modal.Trigger>}
-            <Modal.Panel class={`modal-panel ${isExpanded.value ? 'modal-expanded' : ''}`}>
-                <Modal.Title class="modal-title">{title}</Modal.Title>
-                <Modal.Description>
+            <Modal.Panel class={cn(
+                "modal-panel",
+                "bg-white dark:bg-gray-900",
+                "border dark:border-gray-700",
+                "shadow-lg",
+                isExpanded.value ? 'modal-expanded' : ''
+            )}>
+                <Modal.Title class="modal-title text-gray-900 dark:text-gray-100">{title}</Modal.Title>
+                <Modal.Description class="text-gray-600 dark:text-gray-300">
                     {description}
                 </Modal.Description>
                 <Slot />
                 <Modal.Close
                     class={cn(
                         buttonVariants({ size: 'icon', look: 'link' }),
-                        'absolute right-3 top-2',
+                        'absolute right-3 top-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200',
                     )}
                     type="submit"
                 >

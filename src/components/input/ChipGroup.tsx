@@ -36,7 +36,7 @@ export const ChipGroup = component$((props: ChipGroupProps) => {
     return (
         <div class={clsx("space-y-2", className)}>
             {label && <InputLabel name={name} label={label} required={required} />}
-            <div class="flex space-x-2">
+            <div class="flex flex-wrap gap-2">
                 {options.map((option) => (
                     <label key={option.value} class="relative cursor-pointer">
                         <input
@@ -53,8 +53,21 @@ export const ChipGroup = component$((props: ChipGroupProps) => {
                         />
                         <span
                             class={clsx(
-                                "px-4 py-2 rounded-full transition-colors duration-200",
-                                value === option.value ? "bg-primary text-white" : "bg-muted text-foreground"
+                                "px-4 py-2 rounded-lg border-2 transition-all duration-200",
+                                value === option.value 
+                                    ? [
+                                        "bg-primary/10 border-primary",
+                                        "text-primary-700 dark:text-primary-300",
+                                        "font-medium shadow-sm",
+                                        "dark:bg-primary/20 dark:border-primary/70"
+                                      ]
+                                    : [
+                                        "bg-white dark:bg-gray-800",
+                                        "border-gray-200 dark:border-gray-700",
+                                        "text-gray-700 dark:text-gray-300",
+                                        "hover:border-gray-300 dark:hover:border-gray-600",
+                                        "hover:bg-gray-50 dark:hover:bg-gray-700"
+                                      ]
                             )}
                         >
                             {option.label}
@@ -64,7 +77,7 @@ export const ChipGroup = component$((props: ChipGroupProps) => {
             </div>
             {/* Si la opción seleccionada tiene descripción, se muestra */}
             {options.find((option) => option.value === value)?.description && (
-                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
                     {options.find((option) => option.value === value)?.description}
                 </p>
             )}

@@ -39,6 +39,7 @@ export default {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
         },
+        'poll-option-hover': 'rgba(var(--color-primary-rgb), 0.05)',
       },
       borderRadius: {
         base: "var(--border-radius)",

@@ -104,7 +104,7 @@ export default component$<PollCardProps>(({
                 {pollState.options.map((option) => (
                     <div 
                         key={option.id} 
-                        class="poll-option"
+                        class="poll-option cursor-pointer hover:bg-accent/30 dark:hover:bg-accent/10 transition-colors"
                         onClick$={() => !isClosed.value && handleVote(option.id)}
                     >
                         <div class="flex justify-between items-center mb-2">

@@ -50,7 +50,6 @@ export const TextInput = component$(
                 class={clsx(
                     'w-full space-y-1 relative',
                     hidden && 'hidden',
-                    error ? 'text-red-500' : 'focus-within:text-blue-500'
                 )}
             >
                 <input
@@ -60,22 +59,26 @@ export const TextInput = component$(
                     aria-invalid={!!error}
                     aria-errormessage={`${name}-error`}
                     class={clsx(
-                        'w-full bg-white dark:bg-black text-black dark:text-white',
-                        'border-2 rounded-sm pt-8 pb-2 px-3 focus:outline-none transition-colors duration-200',
+                        'w-full bg-background dark:bg-background',
+                        'border-2 rounded-lg pt-8 pb-2 px-3 focus:outline-none transition-all duration-200',
+                        'text-foreground dark:text-foreground placeholder:text-muted-foreground/60',
                         error
-                            ? 'border-red-500 focus:border-red-500'
-                            : 'border-gray-300 focus:border-blue-500',
+                            ? 'border-destructive focus:border-destructive'
+                            : 'border-input hover:border-muted-foreground/50 focus:border-primary',
                         className
                     )}
                 />
                 {label && (
-                    <div class="absolute top-2 left-3 text-sm pointer-events-none transition-colors duration-200">
+                    <div class={clsx(
+                        "absolute top-2 left-3 text-sm pointer-events-none transition-colors duration-200",
+                        error ? 'text-destructive' : 'text-muted-foreground'
+                    )}>
                         {capitalizeFirst(label)}
-                        {props.required && <span class="text-red-500 ml-1">*</span>}
+                        {props.required && <span class="text-destructive ml-1">*</span>}
                     </div>
                 )}
                 {props.value !== undefined && props.maxLength && (
-                    <div class="absolute top-2 right-3 text-sm text-gray-600 dark:text-gray-300">
+                    <div class="absolute top-2 right-3 text-sm text-muted-foreground">
                         {props.value.length} / {props.maxLength}
                     </div>
                 )}
