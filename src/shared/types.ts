@@ -10,7 +10,7 @@ export type Poll = {
     title: string;
     description: string;
     scope: PollScope;
-    options: { text: string, votes: number, id: number }[];
+    options: { text: string, votes: number, id: number, voted: boolean }[];
     status: string;
     type: string;
     is_anonymous: boolean;

@@ -3,19 +3,18 @@ import type { QRL } from "@builder.io/qwik";
 import { LuCheck } from '@qwikest/icons/lucide';
 
 interface ProgressProps {
-    userVotedOptions: number[];  // The options that the user has voted for
-    votesCount: number;  // The total number of votes
-    onClick$: QRL<(ev: Event) => void>;  // Function to be executed on click
-    option: any;  // The option object
+    voted: boolean;  // Changed from userVotedOptions
+    votesCount: number;
+    onClick$: QRL<(ev: Event) => void>;
+    option: any;
 }
 
 export const Progress = component$<ProgressProps>(({
-    userVotedOptions,
+    voted,
     votesCount,
     option,
     onClick$
 }) => {
-    const voted = userVotedOptions.includes(option.id)
     const percentage = useComputed$(() =>
         votesCount > 0 ? (option.votes / (votesCount)) * 100 : 0
     )

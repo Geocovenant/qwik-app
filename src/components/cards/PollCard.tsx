@@ -9,7 +9,7 @@ interface PollCardProps {
     id: number
     title: string
     description: string
-    options: { text: string; votes: number; id: number }[]
+    options: { text: string; votes: number; id: number; voted: boolean }[]
     status: string
     type: string
     is_anonymous: boolean
@@ -19,7 +19,6 @@ interface PollCardProps {
     comments_count: number
     likes_count: number
     dislikes_count: number
-    user_voted_options: number[]
 }
 
 export default component$<PollCardProps>(({ 
@@ -35,12 +34,11 @@ export default component$<PollCardProps>(({
     comments_count,
     likes_count,
     dislikes_count,
-    user_voted_options
 }) => {
+    console.log('options', options)
     const actionVote = useVotePoll();
     const actionReact = useReactPoll();
     const pollState = useStore({ options });
-    const userVotedOptions = useSignal<number[]>(user_voted_options);
     const likesCount = useSignal(likes_count);
     const dislikesCount = useSignal(dislikes_count);
 
@@ -54,13 +52,14 @@ export default component$<PollCardProps>(({
 
     const handleVote = $(async (optionId: number) => {
         let newOptions: number[] = [];
+        const currentOption = pollState.options.find(opt => opt.id === optionId);
         
         if(type === 'BINARY' || type === 'SINGLE_CHOICE') {
-            newOptions = userVotedOptions.value.includes(optionId) ? [] : [optionId];
+            newOptions = currentOption?.voted ? [] : [optionId];
         } else if(type === 'MULTIPLE_CHOICE') {
-            newOptions = userVotedOptions.value.includes(optionId)
-                ? userVotedOptions.value.filter(id => id !== optionId)
-                : [...userVotedOptions.value, optionId];
+            newOptions = pollState.options
+                .filter(opt => opt.id === optionId ? !opt.voted : opt.voted)
+                .map(opt => opt.id);
         }
 
         const result = await actionVote.submit({ 
@@ -68,9 +67,7 @@ export default component$<PollCardProps>(({
             optionIds: newOptions 
         });
 
-        console.log('result', result)
         if(result.status === 200) {
-            userVotedOptions.value = newOptions;
             pollState.options = result.value.options;
         }
     });
@@ -111,7 +108,7 @@ export default component$<PollCardProps>(({
                         key={option.id}
                         option={option}
                         votesCount={totalVotes.value}
-                        userVotedOptions={userVotedOptions.value}
+                        voted={option.voted}
                         onClick$={() => handleVote(option.id)}
                     />
                 ))}

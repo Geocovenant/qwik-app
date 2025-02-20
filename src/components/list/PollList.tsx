@@ -5,8 +5,6 @@ import { useGetPollsByScope } from "~/shared/loaders";
 import { type Poll } from "~/shared/types";
 export default component$(() => {
     const polls = useGetPollsByScope()
-    console.log('polls', polls.value)
-    console.log('polls.options', polls.value[0].options)
 
     return (
         <div class="p-2 space-y-4 overflow-y-auto">
@@ -28,7 +26,6 @@ export default component$(() => {
                             comments_count={0}
                             likes_count={poll.reactions.LIKE}
                             dislikes_count={poll.reactions.DISLIKE}
-                            user_voted_options={[]}
                         />
                     ))}
                 </ul>
