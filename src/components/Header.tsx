@@ -14,19 +14,20 @@ export default component$(() => {
     const loginModalVisible = useSignal<boolean>(false);
 
     return (
-        <header class="bg-white dark:bg-gray-700 border-b border-gray-200 h-16 flex items-center px-6 shadow-sm">
+        <header class="dark:bg-[#713fc2] border-b border-[#A855F7] dark:border-[#8255c9] h-16 flex items-center px-6 shadow-sm">
             <div class="flex justify-between items-center w-full">
-                <Link href="/" aria-label="SF Homepage" class="inline-block text-white mr-auto">
+                <Link href="/" aria-label="Geounity Homepage" class="inline-block mr-auto">
                     <Logo
                         style={{ width: '48px', height: '48px' }}
-                        class="animate-spin-fast"
+                        class="text-white hover:text-gray-100 transition-colors duration-200"
                     />
                 </Link>
                 <div class="flex items-center space-x-4">
                     <Input
                         type="text"
                         placeholder={_`Example: Climate Change`}
-                        class="w-64"
+                        class="w-64 bg-white/90 dark:bg-gray-800/90 border-white/20 dark:border-gray-700/20 
+                               focus:ring-2 focus:ring-white/30 dark:focus:ring-gray-700/30"
                     />
                     <NotificationDropdown />
                     {session.value?.user ? (
@@ -36,11 +37,14 @@ export default component$(() => {
                             image={session.value.user.image || undefined}
                         />
                     ) : (
-                        <>
-                            <Button onClick$={() => loginModalVisible.value = true}>
-                                {_`Login`}
-                            </Button>
-                        </>
+                        <Button 
+                            onClick$={() => loginModalVisible.value = true}
+                            class="bg-white text-[#9333EA] hover:bg-gray-50 hover:text-[#A855F7] 
+                                   dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 
+                                   transition-colors duration-200"
+                        >
+                            {_`Login`}
+                        </Button>
                     )}
                 </div>
             </div>

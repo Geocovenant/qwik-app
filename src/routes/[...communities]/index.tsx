@@ -1,8 +1,7 @@
 import { $, component$, useSignal } from "@builder.io/qwik";
 import { type DocumentHead } from "@builder.io/qwik-city";
 import { _ } from "compiled-i18n";
-import { Tabs } from "flowbite-qwik";
-import { Button } from "~/components/ui";
+import { Tabs } from "~/components/ui";
 import Breadcrumbs from "~/components/Breadcrumbs";
 import Modal from "~/components/Modal";
 import FormPoll from "~/components/forms/FormPoll";
@@ -19,46 +18,68 @@ export default component$(() => {
     showModal.value = false;
   });
 
+  const onCreatePoll = $(() => {
+    showModal.value = true;
+  });
+
   return (
     <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
-      <Modal
-        title={_`Create poll`}
-        description={_`Create a poll for your community`}
-        show={showModal}
-      >
-        <FormPoll onSubmitCompleted={onSubmitCompleted} />
-      </Modal>
       <div class="bg-gray-50 border-b">
         <Breadcrumbs />
       </div>
 
       <div class="flex flex-col min-h-0">
         <div class="h-full overflow-y-auto">
-          <Tabs>
-            <Tabs.Tab title={_`Polls`}>
-              <Button 
-                class="m-2 bg-cyan-600 hover:bg-cyan-700 text-white dark:bg-cyan-500 dark:hover:bg-cyan-600" 
-                onClick$={() => showModal.value = true}
+          <Tabs.Root class="w-full">
+            <Tabs.List class="flex border-b border-gray-200">
+              <Tabs.Tab value="polls" class="px-4 py-2 hover:text-cyan-600 border-b-2 data-[state=selected]:border-cyan-600 data-[state=selected]:text-cyan-600">
+                {_`Polls`}
+              </Tabs.Tab>
+              <Tabs.Tab value="debates" class="px-4 py-2 hover:text-cyan-600 border-b-2 data-[state=selected]:border-cyan-600 data-[state=selected]:text-cyan-600">
+                {_`Debates`}
+              </Tabs.Tab>
+              <Tabs.Tab value="projects" class="px-4 py-2 hover:text-cyan-600 border-b-2 data-[state=selected]:border-cyan-600 data-[state=selected]:text-cyan-600">
+                {_`Proyects`}
+              </Tabs.Tab>
+              <Tabs.Tab value="issues" class="px-4 py-2 hover:text-cyan-600 border-b-2 data-[state=selected]:border-cyan-600 data-[state=selected]:text-cyan-600">
+                {_`Issues`}
+              </Tabs.Tab>
+              <Tabs.Tab value="members" class="px-4 py-2 hover:text-cyan-600 border-b-2 data-[state=selected]:border-cyan-600 data-[state=selected]:text-cyan-600">
+                {_`Members`}
+              </Tabs.Tab>
+            </Tabs.List>
+
+            <Tabs.Panel value="polls" class="p-4">
+              <Modal
+                title={_`Create poll`}
+                description={_`Create a poll for your community`}
+                show={showModal}
               >
-                {_`Create poll`}
-              </Button>
-              <PollList />
-            </Tabs.Tab>
-            <Tabs.Tab title={_`Debates`}>
+                <FormPoll onSubmitCompleted={onSubmitCompleted} />
+              </Modal>
+              <PollList onCreatePoll$={onCreatePoll} />
+            </Tabs.Panel>
+            
+            <Tabs.Panel value="debates" class="p-4">
               <DebateList />
-            </Tabs.Tab>
-            <Tabs.Tab title={_`Proyects`}>
+            </Tabs.Panel>
+            
+            <Tabs.Panel value="projects" class="p-4">
               {_`Proyects`}
-            </Tabs.Tab>
-            <Tabs.Tab title={_`Issues`}>
+            </Tabs.Panel>
+            
+            <Tabs.Panel value="issues" class="p-4">
               {_`Issues`}
-            </Tabs.Tab>
-            <Tabs.Tab title={_`Members`}>
+            </Tabs.Panel>
+            
+            <Tabs.Panel value="members" class="p-4">
               {_`Members`}
-            </Tabs.Tab>
-          </Tabs>
+            </Tabs.Panel>
+          </Tabs.Root>
         </div>
       </div>
+
+      
     </div>
   );
 });

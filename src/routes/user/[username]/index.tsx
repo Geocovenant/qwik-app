@@ -1,10 +1,10 @@
-
 import { component$, useSignal } from "@builder.io/qwik";
 import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
 import { LuImageOff } from "@qwikest/icons/lucide";
 import { _ } from "compiled-i18n";
-import { Avatar, Button, Modal, Tabs } from "flowbite-qwik";
+import { Avatar, Button, Modal } from "flowbite-qwik";
 import FormUser from "~/components/forms/FormUser";
+import { Tabs } from "~/components/ui";
 
 // TODO: traer info del usuario desde el backend
 const dataUser = {
@@ -98,23 +98,31 @@ export default component$(() => {
                 </div>
             </div>
             <section class="max-w-3xl mx-auto px-4 mt-16">
-                <Tabs>
-                    <Tabs.Tab title={_`Communities`}>
+                <Tabs.Root defaultValue="communities">
+                    <Tabs.List>
+                        <Tabs.Tab value="communities">{_`Communities`}</Tabs.Tab>
+                        <Tabs.Tab value="polls">{_`Polls`}</Tabs.Tab>
+                        <Tabs.Tab value="debates">{_`Debates`}</Tabs.Tab>
+                        <Tabs.Tab value="projects">{_`Proyects`}</Tabs.Tab>
+                        <Tabs.Tab value="issues">{_`Issues`}</Tabs.Tab>
+                    </Tabs.List>
+
+                    <Tabs.Panel value="communities">
                         {_`Communities`}
-                    </Tabs.Tab>
-                    <Tabs.Tab title={_`Polls`}>
+                    </Tabs.Panel>
+                    <Tabs.Panel value="polls">
                         {_`Polls`}
-                    </Tabs.Tab>
-                    <Tabs.Tab title={_`Debates`}>
+                    </Tabs.Panel>
+                    <Tabs.Panel value="debates">
                         {_`Debates`}
-                    </Tabs.Tab>
-                    <Tabs.Tab title={_`Proyects`}>
+                    </Tabs.Panel>
+                    <Tabs.Panel value="projects">
                         {_`Proyects`}
-                    </Tabs.Tab>
-                    <Tabs.Tab title={_`Issues`}>
+                    </Tabs.Panel>
+                    <Tabs.Panel value="issues">
                         {_`Issues`}
-                    </Tabs.Tab>
-                </Tabs>
+                    </Tabs.Panel>
+                </Tabs.Root>
             </section>
             <Modal
                 header={<div class="flex items-center text-lg">{_`Edit Profile`}</div>}

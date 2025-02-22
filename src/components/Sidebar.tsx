@@ -1,10 +1,10 @@
-import { $, component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
+import { $, component$, useSignal, useTask$ } from "@builder.io/qwik";
 import { Link, useLocation } from "@builder.io/qwik-city";
 import { Collapsible } from '@qwik-ui/headless';
-import { LuBuilding, LuChevronRight, LuGlobe, LuPanelLeftClose, LuPanelLeftOpen } from "@qwikest/icons/lucide";
+import { LuBuilding, LuChevronRight, LuGlobe, LuPanelLeftClose, LuPanelLeftOpen, LuPlusCircle } from "@qwikest/icons/lucide";
 import { _ } from "compiled-i18n";
-import { Button } from "flowbite-qwik";
 import { Resource, useResource$ } from "@builder.io/qwik";
+import { ThemeSwitch } from "./theme-switch/ThemeSwitch";
 
 type Community = {
     id: string
@@ -73,8 +73,7 @@ const CommunityItem = component$(({ community, level = 0, isCollapsed}: {communi
     const isActive = pathname.startsWith(community.path);
     
     // Determinamos si puede tener subdivisiones
-    const canHaveSubdivisions = community.id !== 'global' && 
-                               community.id !== 'international';
+    const canHaveSubdivisions = community.id !== 'global' && community.id !== 'international';
 
     const divisions = useResource$(async ({ track, cleanup }) => {
         track(() => isOpen.value);
@@ -240,135 +239,146 @@ const CommunityItem = component$(({ community, level = 0, isCollapsed}: {communi
 
 export default component$(() => {
     const isCollapsed = useSignal<boolean>(false);
-    const sidebarWidth = useSignal<number>(256); // 256px = 16rem (w-64 inicial)
+    const sidebarWidth = useSignal<number>(256);
     const isDragging = useSignal<boolean>(false);
+    const showNewCommunityModal = useSignal<boolean>(false);
 
-    // Añadir límites de ancho
-    const MIN_WIDTH = 64; // 4rem - cuando está colapsado
-    const MAX_WIDTH = 384; // 24rem - ancho máximo
+    const MIN_WIDTH = 64;
+    const MAX_WIDTH = 384;
 
-    // Sincronizar el colapso con el ancho
-    const toggleCollapse = $(() => {
-        isCollapsed.value = !isCollapsed.value;
-        sidebarWidth.value = isCollapsed.value ? MIN_WIDTH : 256; // Volver al ancho por defecto cuando se expande
-    });
+    // Manejar el resize del sidebar
+    useTask$(({ track, cleanup }) => {
+        track(() => isDragging.value);
+        
+        if (typeof window === 'undefined') return;
 
-    useVisibleTask$(() => {
-        const handleMouseMove = (e: MouseEvent) => {
+        const handleMouseMove = $((e: MouseEvent) => {
             if (!isDragging.value) return;
             
-            const newWidth = e.clientX;
-            // Actualizar isCollapsed basado en el ancho
-            if (newWidth <= MIN_WIDTH + 20) { // Un poco de margen para el colapso
-                isCollapsed.value = true;
-                sidebarWidth.value = MIN_WIDTH;
-            } else {
-                isCollapsed.value = false;
-                sidebarWidth.value = Math.min(newWidth, MAX_WIDTH);
-            }
-        };
+            const newWidth = Math.max(MIN_WIDTH, Math.min(e.clientX, MAX_WIDTH));
+            sidebarWidth.value = newWidth;
+            isCollapsed.value = newWidth <= MIN_WIDTH + 20;
+        });
 
-        const handleMouseUp = () => {
+        const handleMouseUp = $(() => {
+            if (!isDragging.value) return;
+            
             isDragging.value = false;
-            document.body.style.cursor = 'default';
-            document.body.style.userSelect = 'auto';
+            if (typeof document !== 'undefined') {
+                document.body.style.cursor = 'default';
+                document.body.style.userSelect = 'auto';
+            }
 
-            // Asegurar que el sidebar se ajuste al ancho mínimo si está cerca
             if (sidebarWidth.value < MIN_WIDTH + 20) {
                 sidebarWidth.value = MIN_WIDTH;
                 isCollapsed.value = true;
             }
-        };
+        });
 
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
+        if (isDragging.value && typeof document !== 'undefined') {
+            document.body.style.cursor = 'col-resize';
+            document.body.style.userSelect = 'none';
+            
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
 
-        return () => {
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
-        };
+            cleanup(() => {
+                document.removeEventListener('mousemove', handleMouseMove);
+                document.removeEventListener('mouseup', handleMouseUp);
+            });
+        }
+    });
+
+    // Manejar el colapso del sidebar
+    const toggleCollapse = $(() => {
+        const newCollapsed = !isCollapsed.value;
+        isCollapsed.value = newCollapsed;
+        sidebarWidth.value = newCollapsed ? MIN_WIDTH : 256;
     });
 
     const location = useLocation();
     const currentPath = location.url.pathname;
     
     return (
-        <aside 
-            class="relative flex flex-col border-r bg-gray-100 dark:bg-gray-900 h-screen transition-all duration-300 ease-in-out"
-            style={{ width: `${sidebarWidth.value}px` }}
-        >
-            <div class="sticky top-0 z-20 bg-gray-100 dark:bg-gray-900">
-                <div class={`p-4 border-b border-gray-200 dark:border-gray-700 flex items-center ${isCollapsed.value ? 'justify-center' : ''}`}>
-                    <button
-                        class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors duration-200"
-                        onClick$={toggleCollapse}
-                    >
-                        {isCollapsed.value ? <LuPanelLeftOpen class="h-5 w-5" /> : <LuPanelLeftClose class="h-5 w-5" />}
-                    </button>
-                    {!isCollapsed.value && (
-                        <span class="ml-2 font-semibold text-lg text-gray-900 dark:text-white">Geounity</span>
-                    )}
-                </div>
-            </div>
-
-            <div class="flex-1 overflow-y-auto">
-                <div class="px-2 py-4">
-                    <div class="space-y-2">
-                        {communities.slice(0, 2).map(community => (
-                            <CommunityItem key={community.id} community={community} isCollapsed={isCollapsed.value} />
-                        ))}
+        <div class="flex h-full">
+            <div 
+                class="flex flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 relative"
+                style={{ width: `${sidebarWidth.value}px` }}
+            >
+                <div class="sticky top-0 z-20 bg-gray-100 dark:bg-gray-900">
+                    <div class={`p-4 border-b border-gray-200 dark:border-gray-700 flex items-center ${isCollapsed.value ? 'justify-center' : ''}`}>
+                        <button
+                            onClick$={toggleCollapse}
+                            class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors duration-200"
+                        >
+                            {isCollapsed.value ? <LuPanelLeftOpen class="h-5 w-5" /> : <LuPanelLeftClose class="h-5 w-5" />}
+                        </button>
+                        {!isCollapsed.value && (
+                            <span class="ml-2 font-semibold text-lg text-gray-900 dark:text-white">Geounity</span>
+                        )}
                     </div>
-                    
-                    {!isCollapsed.value && (
-                        <div class="px-3 py-2 text-sm font-semibold text-gray-500 dark:text-gray-400 mt-4 mb-2">
-                            {_`Countries`}
+                </div>
+
+                <div class="flex-1 overflow-y-auto">
+                    <div class="px-2 py-4">
+                        <div class="space-y-2">
+                            {communities.slice(0, 2).map(community => (
+                                <CommunityItem key={community.id} community={community} isCollapsed={isCollapsed.value} />
+                            ))}
                         </div>
-                    )}
-                    
-                    <div class="space-y-1">
-                        {communities.slice(2).map(community => (
-                            <CommunityItem key={community.id} community={community} isCollapsed={isCollapsed.value} />
-                        ))}
+                        
+                        {!isCollapsed.value && (
+                            <div class="px-3 py-2 text-sm font-semibold text-gray-500 dark:text-gray-400 mt-4 mb-2">
+                                {_`Countries`}
+                            </div>
+                        )}
+                        
+                        <div class="space-y-1">
+                            {communities.slice(2).map(community => (
+                                <CommunityItem key={community.id} community={community} isCollapsed={isCollapsed.value} />
+                            ))}
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {!isCollapsed.value && currentPath.includes('/global') && (
-                <div class="border-t border-border">
-                    <nav class="flex flex-col p-2">
-                        {tabs.map((tab) => (
-                            <Link 
-                                key={tab.id}
-                                href={`/global${tab.path}`}
-                                class={`px-4 py-2 rounded-md transition-colors ${
-                                    currentPath.includes(tab.path) 
-                                        ? 'bg-gray-200 dark:bg-gray-700 font-medium text-gray-900 dark:text-white' 
-                                        : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                                }`}
-                            >
-                                {tab.name}
-                            </Link>
-                        ))}
-                    </nav>
+                {!isCollapsed.value && currentPath.includes('/global') && (
+                    <div class="border-t border-border">
+                        <nav class="flex flex-col p-2">
+                            {tabs.map((tab) => (
+                                <Link 
+                                    key={tab.id}
+                                    href={`/global${tab.path}`}
+                                    class={`px-4 py-2 rounded-md transition-colors ${
+                                        currentPath.includes(tab.path) 
+                                            ? 'bg-gray-200 dark:bg-gray-700 font-medium text-gray-900 dark:text-white' 
+                                            : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                                    }`}
+                                >
+                                    {tab.name}
+                                </Link>
+                            ))}
+                        </nav>
+                    </div>
+                )}
+
+                <div class="mt-auto border-t border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between p-4">
+                        <button
+                            onClick$={() => showNewCommunityModal.value = true}
+                            class="flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-[#713fc2] dark:hover:text-[#713fc2]"
+                        >
+                            <LuPlusCircle class="w-5 h-5 mr-2" />
+                            {_`Nueva Comunidad`}
+                        </button>
+                        <ThemeSwitch />
+                    </div>
                 </div>
-            )}
 
-            <div class={`transition-all duration-300 ease-in-out mt-auto ${isCollapsed.value ? "p-2" : "p-4"} border-t border-border`}>
-                <Button 
-                    class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-lg"
-                >
-                    {isCollapsed.value ? "+" : _`+ New community`}
-                </Button>
+                <div
+                    class="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-primary/20 active:bg-primary/40"
+                    onMouseDown$={() => isDragging.value = true}
+                />
             </div>
-
-            <div
-                class="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-primary/20 active:bg-primary/40"
-                onMouseDown$={() => {
-                    isDragging.value = true;
-                    document.body.style.cursor = 'col-resize';
-                    document.body.style.userSelect = 'none';
-                }}
-            />
-        </aside>
+        </div>
     );
 });

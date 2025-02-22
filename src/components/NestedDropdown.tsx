@@ -3,8 +3,7 @@ import { Link } from '@builder.io/qwik-city';
 import { LuUser, LuChevronRight, LuGlobe, LuMapPin, LuLogOut, LuCheck } from '@qwikest/icons/lucide';
 import { _ } from 'compiled-i18n';
 import styles from './nested-dropdown.css?inline';
-import { ThemeSwitch } from './theme-switch/ThemeSwitch';
-import { useSession, useSignOut } from '~/routes/plugin@auth';
+import { useSignOut } from '~/routes/plugin@auth';
 import { Avatar } from '~/components/ui';
 
 interface NestedDropdownProps {
@@ -113,9 +112,6 @@ export const NestedDropdown = component$<NestedDropdownProps>((props) => {
                 </div>
                 <div class="dropdown-item">
                     <LuMapPin class="w-5 h-5" /> <span>{_`Location`}</span>
-                </div>
-                <div class="dropdown-item">
-                    <ThemeSwitch />
                 </div>
                 <div class="dropdown-divider"></div>
                 <div class="dropdown-item" onClick$={() => signOut.submit({ redirectTo: "/" })}>

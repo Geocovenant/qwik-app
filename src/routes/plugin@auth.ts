@@ -1,5 +1,6 @@
 import { QwikAuth$ } from "@auth/qwik";
 import GitHub from "@auth/qwik/providers/github";
+import Google from "@auth/qwik/providers/google";
 import PostgresAdapter from "@auth/pg-adapter"
 import pkg from 'pg';
 
@@ -18,7 +19,7 @@ export const { onRequest, useSession, useSignIn, useSignOut } = QwikAuth$(
     });
 
     return {
-      providers: [GitHub],
+      providers: [GitHub, Google],
       adapter: PostgresAdapter(pool),
     };
   }
