@@ -131,6 +131,9 @@ const CommunityItem = component$(({ community, level = 0, isCollapsed}: {communi
         />
     ) : null;
 
+    // Determinamos si es una nación (tiene cca2 pero no es una subdivisión)
+    const isNation = community.cca2 && !community.divisionType;
+    
     if (canHaveSubdivisions) {
         return (
             <Collapsible.Root bind:open={isOpen}>
@@ -148,7 +151,7 @@ const CommunityItem = component$(({ community, level = 0, isCollapsed}: {communi
                     >
                         <div class="flex items-center group">
                             <Link
-                                href={community.path}
+                                href={`${community.path}${isNation ? '?scope=national' : ''}`}
                                 class={`flex flex-1 items-center gap-2 ${itemClass}`}
                             >
                                 <div class="h-5 w-5 flex-shrink-0 transition-transform group-hover:scale-110">

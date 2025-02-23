@@ -1,5 +1,5 @@
-import { $, component$, useSignal } from "@builder.io/qwik";
-import { type DocumentHead } from "@builder.io/qwik-city";
+import { $, component$, useComputed$, useSignal } from "@builder.io/qwik";
+import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
 import { _ } from "compiled-i18n";
 import { Tabs } from "~/components/ui";
 import Breadcrumbs from "~/components/Breadcrumbs";
@@ -7,12 +7,32 @@ import Modal from "~/components/Modal";
 import FormPoll from "~/components/forms/FormPoll";
 import DebateList from "~/components/list/DebateList";
 import PollList from "~/components/list/PollList";
+import { CommunityType } from "~/constants/communityType";
 
 export { useGetPolls, useFormPollLoader, useGetPollsByScope } from "~/shared/loaders";
 export { useFormPollAction, useVotePoll, useReactPoll } from "~/shared/actions";
 
 export default component$(() => {
+  const location = useLocation();
   const showModal = useSignal(false);
+  
+  // Añadir el scope como searchParam si no existe
+  const scope = location.url.searchParams.get('scope') || 'national';
+  if (!location.url.searchParams.has('scope')) {
+    location.url.searchParams.set('scope', scope);
+  }
+
+  const defaultScope = useComputed$(() => {
+    const pathname = location.url.pathname;
+    
+    // Si no, determinar por la ruta
+    if (pathname.startsWith('/global')) return CommunityType.GLOBAL;
+    if (pathname.startsWith('/international')) return CommunityType.INTERNATIONAL;
+    if (pathname.match(/^\/[^/]+\/?$/)) return CommunityType.NATIONAL;
+    if (pathname.includes('/')) return CommunityType.SUBNATIONAL;
+    
+    return CommunityType.GLOBAL; // default fallback
+  })
 
   const onSubmitCompleted = $(() => {
     showModal.value = false;
@@ -55,7 +75,10 @@ export default component$(() => {
                 description={_`Create a poll for your community`}
                 show={showModal}
               >
-                <FormPoll onSubmitCompleted={onSubmitCompleted} />
+                <FormPoll 
+                  onSubmitCompleted={onSubmitCompleted}
+                  defaultScope={defaultScope.value}
+                />
               </Modal>
               <PollList onCreatePoll$={onCreatePoll} />
             </Tabs.Panel>

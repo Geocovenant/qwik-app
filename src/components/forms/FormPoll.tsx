@@ -9,7 +9,6 @@ import { useFormPollLoader } from '~/shared/loaders';
 import { useFormPollAction, type PollResponseData } from '~/shared/actions';
 import { FormFooter } from '~/components/forms/FormFooter';
 import { PollType } from '~/constants/pollType';
-import { ScopeOptions } from '~/constants/scopeOption';
 import { _ } from 'compiled-i18n';
 import { CommunityType } from '~/constants/communityType';
 import { CountrySelectInput } from '~/components/input/CountrySelectInput';
@@ -19,14 +18,28 @@ import { CustomToggle } from '~/components/input/CustomToggle';
 
 interface FormPollProps {
     onSubmitCompleted: () => void;
+    defaultScope?: CommunityType.NATIONAL | CommunityType.GLOBAL | CommunityType.INTERNATIONAL | CommunityType.SUBNATIONAL;
 }
 
-export default component$<FormPollProps>(({ onSubmitCompleted }) => {
+export default component$<FormPollProps>(({ onSubmitCompleted, defaultScope }) => {
     const [pollForm, { Form, Field, FieldArray }] = useForm<PollForm, PollResponseData>({
         loader: useFormPollLoader(),
         action: useFormPollAction(),
         fieldArrays: ['options'],
         validate: valiForm$(PollSchema)
+    });
+
+    // Actualizar el scope cuando cambie defaultScope
+    useTask$(({ track }) => {
+        const scope = track(() => defaultScope);
+        if (scope) {
+            setValue(pollForm, 'scope', scope.toUpperCase());
+            
+            // Limpiar community_ids cuando cambie el scope
+            setValue(pollForm, 'community_ids', 
+                scope === CommunityType.GLOBAL ? ['1'] : []
+            );
+        }
     });
 
     // Control to show/hide end date
@@ -59,26 +72,21 @@ export default component$<FormPollProps>(({ onSubmitCompleted }) => {
         <Form onSubmit$={handleSubmit} class="space-y-6 p-6">
             {/* Sección de Poll Settings */}
             <div class="space-y-4">
-                <h2 class="font-medium text-foreground">{_`Poll Settings`}</h2>
-                
+                {/* <h2 class="font-medium text-foreground">{_`Poll Settings`}</h2> */}
+                {/* Campo oculto para el scope */}
                 <Field name="scope">
                     {(field, props) => (
-                        <ChipGroup
-                            {...props}
-                            onInput$={(ev: Event) => props.onInput$(ev, ev.target as HTMLTextAreaElement)}
-                            onChange$={(ev: Event) => props.onChange$(ev, ev.target as HTMLTextAreaElement)}
-                            label={_`Scope`}
-                            value={field.value || 'GLOBAL'}
-                            options={ScopeOptions}
-                            required
-                            error={field.error}
+                        <input 
+                            type="hidden" 
+                            {...props} 
+                            value={defaultScope || 'GLOBAL'} 
                         />
                     )}
                 </Field>
 
                 <Field name="community_ids" type="string[]">
                     {(field, props) => {
-                        const scope = pollForm.internal.fields.scope?.value;
+                        const scope = defaultScope?.toUpperCase() || 'GLOBAL';
                         switch (scope) {
                             case CommunityType.GLOBAL:
                                 return <input type="hidden" {...props} value="1" />;
@@ -126,7 +134,6 @@ export default component$<FormPollProps>(({ onSubmitCompleted }) => {
             {/* Sección de Poll Content */}
             <div class="space-y-4">
                 <h2 class="font-medium text-foreground">{_`Poll Content`}</h2>
-                
                 <Field name="title">
                     {(field, props) => (
                         <TextInput

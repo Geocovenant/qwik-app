@@ -3,6 +3,7 @@ import type { PollForm } from '~/schemas/pollSchema';
 import { PollSchema } from '~/schemas/pollSchema';
 import { _ } from 'compiled-i18n';
 import { routeAction$ } from '@builder.io/qwik-city';
+import { CommunityType } from '~/constants/communityType';
 
 export interface PollResponseData {
     success: boolean; // Indica si la operación fue exitosa
@@ -35,13 +36,16 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
 
         // Añadir los campos específicos según el scope
         switch (values.scope) {
-            case 'INTERNATIONAL':
+            case CommunityType.GLOBAL:
+                Object.assign(payload, { community_ids: [1] });
+                break;
+            case CommunityType.INTERNATIONAL:
                 Object.assign(payload, { country_codes: values.community_ids });
                 break;
-            case 'NATIONAL':
+            case CommunityType.NATIONAL:
                 Object.assign(payload, { country_code: values.community_ids[0] });
                 break;
-            case 'SUBNATIONAL':
+            case CommunityType.SUBNATIONAL:
                 Object.assign(payload, { community_ids: values.community_ids });
                 break;
             // Para GLOBAL no necesitamos añadir campos adicionales

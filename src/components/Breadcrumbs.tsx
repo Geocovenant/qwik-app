@@ -19,7 +19,7 @@ export default component$(() => {
             <Breadcrumb>
                 {breadcrumbs.length === 0
                     ? <Breadcrumb.Item href="/" home homeIcon={LuGlobeIcon}>
-                        <span class="ml-1 text-xs text-gray-900 dark:text-white">Global</span>
+                        <span class="ml-1 text-lg text-gray-900 dark:text-white">Global</span>
                     </Breadcrumb.Item>
                     : breadcrumbs.map((breadcrumb, index) => (
                         <div key={breadcrumb.path} class="flex items-center">
@@ -28,7 +28,7 @@ export default component$(() => {
                                 home={index === 0}
                                 homeIcon={index === 0 ? LuGlobeIcon : undefined}
                             >
-                                <span class={`ml-1 text-md ${index === breadcrumbs.length - 1 ? "text-gray-900 dark:text-white" : ""}`}>
+                                <span class={`ml-1 text-lg ${index === breadcrumbs.length - 1 ? "text-gray-900 dark:text-white" : ""}`}>
                                     {breadcrumb.label}
                                 </span>
                             </Breadcrumb.Item>
