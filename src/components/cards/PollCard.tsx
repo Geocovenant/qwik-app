@@ -4,6 +4,7 @@ import { _ } from "compiled-i18n";
 import { timeAgo } from "~/utils/dateUtils";
 import { useVotePoll, useReactPoll } from "~/shared/actions";
 import { dataArray } from "~/data/countries";
+import { CommunityType } from "~/constants/communityType";
 
 interface PollCardProps {
     id: number
@@ -39,7 +40,6 @@ export default component$<PollCardProps>(({
     dislikes_count,
     countries = [],
 }) => {
-    console.log('options', options)
     const actionVote = useVotePoll();
     const actionReact = useReactPoll();
     const pollState = useStore({ options });
@@ -99,7 +99,7 @@ export default component$<PollCardProps>(({
             <div class="mb-6">
                 <div class="flex justify-between items-start mb-2">
                     <h3 class="text-2xl font-bold text-text-primary">{title}</h3>
-                    {scope === 'GLOBAL' && (
+                    {scope === CommunityType.GLOBAL && (
                         <span 
                             class="text-xl cursor-help"
                             title={_`Global`}

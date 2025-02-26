@@ -6,7 +6,7 @@ import styles from './modal.css?inline';
 
 interface ModalProps {
     title: string;
-    description: string;
+    description?: string;
     show: Signal<boolean>;
     trigger?: string;
     position?: "center" | "top" | "bottom" | "left" | "right";

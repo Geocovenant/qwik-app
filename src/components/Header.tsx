@@ -31,17 +31,21 @@ export default component$(() => {
                     />
                     <NotificationDropdown />
                     {session.value?.user ? (
-                        <NestedDropdown 
+                        <NestedDropdown
                             name={session.value.user.name || undefined}
                             email={session.value.user.email || undefined}
                             image={session.value.user.image || undefined}
                         />
                     ) : (
-                        <Button 
+                        <Button
                             onClick$={() => loginModalVisible.value = true}
-                            class="bg-white text-[#9333EA] hover:bg-gray-50 hover:text-[#A855F7] 
-                                   dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 
-                                   transition-colors duration-200"
+                            class="bg-gradient-to-r from-[#9333EA] to-[#A855F7] text-white 
+                                   hover:from-[#A855F7] hover:to-[#9333EA] 
+                                   dark:from-[#8255c9] dark:to-[#713fc2]
+                                   dark:hover:from-[#713fc2] dark:hover:to-[#8255c9]
+                                   shadow-lg hover:shadow-xl
+                                   transform hover:scale-105
+                                   transition-all duration-200"
                         >
                             {_`Login`}
                         </Button>

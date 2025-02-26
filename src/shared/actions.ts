@@ -21,7 +21,6 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
         console.log('values', values);
 
         const token = event.cookie.get('authjs.session-token')?.value;
-        console.log('token', token);
 
         // Preparar payload según el scope
         const payload = {
@@ -45,8 +44,11 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
             case CommunityType.NATIONAL:
                 Object.assign(payload, { country_code: values.community_ids[0] });
                 break;
-            case CommunityType.SUBNATIONAL:
-                Object.assign(payload, { community_ids: values.community_ids });
+            case CommunityType.REGIONAL:
+                Object.assign(payload, { region_id: values.community_ids[0] });
+                break;
+            case CommunityType.SUBREGIONAL:
+                Object.assign(payload, { subregion_id: values.community_ids[0] });
                 break;
             // Para GLOBAL no necesitamos añadir campos adicionales
         }
@@ -121,7 +123,6 @@ export const useReactPoll = routeAction$(
         console.log('### useReactPoll ###')
         console.log('data', data)
         const token = cookie.get('authjs.session-token')?.value;
-        console.log('token', token)
         const payload = { reaction: data.reaction }
         console.log('payload', payload)
         

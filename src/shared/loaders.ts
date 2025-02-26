@@ -22,94 +22,203 @@ export const useGetUser = routeLoader$(async ({ cookie }) => {
 })
 
 // eslint-disable-next-line qwik/loader-location
-export const useGetPolls = routeLoader$(async ({ cookie, url, params }) => {
-    console.log('params', params)
-    const token = cookie.get('authjs.session-token')
+export const useGetGlobalPolls = routeLoader$(async ({ cookie, params, pathname }) => {
+    console.log('============ useGetGlobalPolls ============')
+    const token = cookie.get('authjs.session-token');
     if (!token) {
-        return null
-    }
-
-    // Obtener el scope del query parameter
-    const scope = url.searchParams.get('scope')
-    
-    // Obtener el código del país del pathname
-    const countryPath = url.pathname.split('/')[1]
-    const countryCode = getCountryCode(countryPath) // Necesitaremos implementar esta función
-
-    let endpoint = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls`
-
-    // Si estamos en una ruta de país y el scope es national
-    if (countryCode && scope === 'national') {
-        endpoint = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls/country/${countryCode}`
+        return [];
     }
 
     try {
-        const response = await fetch(endpoint, {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=GLOBAL`, {
             headers: {
                 Accept: 'application/json',
                 Authorization: token.value
             }
-        })
-        
+        });
+
         if (!response.ok) {
-            throw new Error('Error al obtener las encuestas')
+            throw new Error('Error al obtener las encuestas');
         }
-        
-        const data = await response.json()
-        return data
+
+        const data = await response.json();
+        return data;
     } catch (error) {
-        console.error('Error al obtener las encuestas:', error)
-        return null
+        console.error('Error al obtener las encuestas globales:', error);
+        return [];
     }
 })
 
 // eslint-disable-next-line qwik/loader-location
-export const useGetPollsByScope = routeLoader$(async ({ pathname, cookie }) => {
-    const token = cookie.get('authjs.session-token')
-    
-    const pathSegments = pathname.split('/').filter(Boolean)
-    const countryPath = pathSegments[0]
-    const countryCode = getCountryCode(countryPath)
-
-    let endpoint = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls`
-
-    // Si estamos en una ruta de país
-    if (countryCode) {
-        endpoint = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls/country/${countryCode}?scope=NATIONAL`
-    } else {
-        // Mantener la lógica existente para otros casos
-        const rawScope = pathname === "/" ? "GLOBAL" : pathSegments[0].toUpperCase()
-        const isValidScope = Object.values(CommunityType).includes(rawScope as CommunityType)
-        
-        if (!isValidScope) {
-            console.warn(`Scope inválido: ${rawScope}`)
-            return []
-        }
-        
-        endpoint = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=${rawScope}`
+export const useGetInternationalPolls = routeLoader$(async ({ cookie, params }) => {
+    console.log('============ useGetInternationalPolls ============')
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return [];
     }
 
     try {
-        const headers: Record<string, string> = {
-            Accept: 'application/json'
-        }
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=INTERNATIONAL`, {
+            headers: {
+                Accept: 'application/json',
+                Authorization: token.value
+            }
+        });
 
-        // Añadir el token de autorización si existe
-        if (token) {
-            headers.Authorization = token.value
-        }
-
-        const response = await fetch(endpoint, { headers })
-        
         if (!response.ok) {
-            throw new Error('Error al obtener las encuestas')
+            throw new Error('Error al obtener las encuestas');
         }
-        
-        const polls = await response.json()
-        return polls
+
+        const data = await response.json();
+        return data;
     } catch (error) {
-        console.error('Error al obtener las encuestas:', error)
-        return []
+        console.error('Error al obtener las encuestas internacionales:', error);
+        return [];
+    }
+})
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetNationalPolls = routeLoader$(async ({ cookie, params }) => {
+    console.log('============ useGetNationalPolls ============')
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return [];
+    }
+    const cca2 = getCountryCode(params.nation);
+    if (!cca2) {
+        console.error('País no encontrado:', params.nation);
+        return [];
+    }
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=NATIONAL&country=${cca2}`, {
+            headers: {
+                Accept: 'application/json',
+                Authorization: token.value
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al obtener las encuestas');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error al obtener las encuestas:', error);
+        return [];
+    }
+})
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetRegionalPolls = routeLoader$(async ({ cookie, params, resolveValue }) => {
+    console.log('============ useGetRegionalPolls ============')
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return [];
+    }
+    
+    const regions = await resolveValue(useGetRegions);
+    console.log('regions', regions)
+
+    const normalizedRegionName = params.region
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
+    console.log('regionData', regionData)
+
+    const regionId = regionData?.id
+    if (!regionId) {
+        console.error('Región no encontrada:', params.region);
+        return [];
+    }
+
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=REGIONAL&region=${regionId}`, {
+            headers: {
+                Accept: 'application/json',
+                Authorization: token.value
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al obtener las encuestas');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error al obtener las encuestas:', error);
+        return [];
+    }
+})
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetSubregionalPolls = routeLoader$(async ({ cookie, params, resolveValue }) => {
+    console.log('============ useGetSubregionalPolls ============')
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return [];
+    }
+    const regions = await resolveValue(useGetRegions);
+
+    const normalizedRegionName = params.region
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
+    console.log('regionData', regionData)
+
+    const regionId = regionData?.id
+    if (!regionId) {
+        console.error('Región no encontrada:', params.region);
+        return [];
+    }
+
+    // Normalizar el nombre de la subregión
+    const normalizedSubregionName = params.subregion
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+
+    // Obtener los datos de la subregión
+    try {
+        const subregionResponse = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/regions/${regionId}/subregions?name=${normalizedSubregionName}`, {
+            headers: {
+                Accept: 'application/json',
+                Authorization: token.value
+            }
+        });
+
+        if (!subregionResponse.ok) {
+            throw new Error('Error al obtener datos de la subregión');
+        }
+
+        const subregionData = await subregionResponse.json();
+        console.log('subregionData', subregionData);
+
+        const subregionId = subregionData?.[0]?.id;
+        if (!subregionId) {
+            console.error('Subregión no encontrada:', normalizedSubregionName);
+            return [];
+        }
+
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=SUBREGIONAL&subregion=${subregionId}`, {
+            headers: {
+                Accept: 'application/json',
+                Authorization: token.value
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al obtener las encuestas');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error al obtener las encuestas:', error);
+        return [];
     }
 })
 
@@ -151,10 +260,16 @@ export const useFormPollLoader = routeLoader$<InitialValues<PollForm>>(() => {
 });
 
 // eslint-disable-next-line qwik/loader-location
-export const useGetCountryDivisions = routeLoader$(async ({ params }) => {
-    const cca2 = params.cca2;
-    if (!cca2) return [];
+export const useGetRegions = routeLoader$(async ({ params }) => {
+    const nationPath = params.nation;
+    if (!nationPath) return [];
     
+    const cca2 = getCountryCode(nationPath);
+    if (!cca2) {
+        console.error('País no encontrado:', nationPath);
+        return [];
+    }
+
     try {
         const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/countries/${cca2}/divisions`);
         if (!response.ok) {
@@ -167,3 +282,39 @@ export const useGetCountryDivisions = routeLoader$(async ({ params }) => {
         return [];
     }
 });
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetSubregions = routeLoader$(async ({ params, resolveValue }) => {
+    const nationPath = params.nation;
+    const regionPath = params.region;
+    const subregionPath = params.subregion;
+
+    if (!nationPath || !regionPath || !subregionPath) return [];
+    
+    const regions = await resolveValue(useGetRegions);
+    console.log('regions', regions)
+
+    const normalizedRegionName = regionPath
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
+
+    const regionId = regionData?.id
+    if (!regionId) {
+        console.error('Región no encontrada:', regionPath);
+        return [];
+    }
+
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/regions/${regionId}/subregions`);
+        if (!response.ok) {
+            throw new Error('Error al obtener las subregiones');
+        }
+        const subregions = await response.json();
+        return subregions;
+    } catch (error) {
+        console.error('Error al obtener las subregiones:', error);
+        return [];
+    }
+}); 

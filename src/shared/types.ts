@@ -1,7 +1,8 @@
 export enum PollScope {
     GLOBAL = 'GLOBAL',
     INTERNATIONAL = 'INTERNATIONAL',
-    ARGENTINA = 'ARGENTINA',
+    NATIONAL = 'NATIONAL',
+    REGIONAL = 'REGIONAL',
     // ... otros scopes según necesites
 }
 
@@ -20,6 +21,7 @@ export type Poll = {
     reactions: { LIKE: number, DISLIKE: number };
     comments_count: number;
     countries: string[];
+    provinces?: string[];
 };
 
 export interface Comment {

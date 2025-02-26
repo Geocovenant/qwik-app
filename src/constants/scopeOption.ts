@@ -24,8 +24,8 @@ export const ScopeOptions: ScopeOption[] = [
         description: 'Encuesta para un solo país.',
     },
     {
-        value: 'SUBNATIONAL',
-        label: 'Subnational',
+        value: 'REGIONAL',
+        label: 'regional',
         description: 'Encuesta para provincias o regiones subnacionales.',
     },
 ];

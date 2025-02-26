@@ -86,10 +86,10 @@ const CommunityItem = component$(({ community, level = 0, isCollapsed}: {communi
         
         try {
             // Si es un país (tiene cca2), usamos la ruta de países
-            // Si no, usamos la ruta de subnations
+            // Si no, usamos la ruta de regions
             const url = community.cca2 
                 ? `/api/v1/countries/${community.cca2}/divisions`
-                : `/api/v1/subnations/${community.id}/divisions`;
+                : `/api/v1/regions/${community.id}/subregions`;
             
             const response = await fetch(url, {
                 signal: controller.signal,

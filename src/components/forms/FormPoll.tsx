@@ -1,4 +1,4 @@
-import { $, component$, useSignal, useTask$ } from '@builder.io/qwik';
+import { $, component$, useSignal, useTask$, useVisibleTask$ } from '@builder.io/qwik';
 import { useForm, valiForm$, insert, remove, setValue } from '@modular-forms/qwik';
 import { TextInput } from '~/components/input/TextInput';
 import { TextArea } from '~/components/input/TextArea';
@@ -11,25 +11,36 @@ import { FormFooter } from '~/components/forms/FormFooter';
 import { PollType } from '~/constants/pollType';
 import { _ } from 'compiled-i18n';
 import { CommunityType } from '~/constants/communityType';
-import { CountrySelectInput } from '~/components/input/CountrySelectInput';
 import { dataArray as countries } from "~/data/countries";
-import { Select } from '../input/Select';
+import { Select } from '~/components/ui';
 import { CustomToggle } from '~/components/input/CustomToggle';
+import { useLocation } from '@builder.io/qwik-city';
+import { useComputed$ } from '@builder.io/qwik';
+import { CountrySelectInput } from '../input/CountrySelectInput';
 
-interface FormPollProps {
+export interface FormPollProps {
     onSubmitCompleted: () => void;
-    defaultScope?: CommunityType.NATIONAL | CommunityType.GLOBAL | CommunityType.INTERNATIONAL | CommunityType.SUBNATIONAL;
+    defaultScope?: CommunityType;
+    defaultRegionId?: number;
+    defaultSubregionId?: number;
+    regions?: any[];
+    subregions?: any[];
 }
 
-export default component$<FormPollProps>(({ onSubmitCompleted, defaultScope }) => {
+export default component$<FormPollProps>(({ 
+    onSubmitCompleted,
+    defaultScope = CommunityType.NATIONAL,
+    defaultRegionId = null,
+    defaultSubregionId = null,
+    regions = [],
+    subregions = []
+}) => {
     const [pollForm, { Form, Field, FieldArray }] = useForm<PollForm, PollResponseData>({
         loader: useFormPollLoader(),
         action: useFormPollAction(),
         fieldArrays: ['options'],
         validate: valiForm$(PollSchema)
     });
-
-    // Actualizar el scope cuando cambie defaultScope
     useTask$(({ track }) => {
         const scope = track(() => defaultScope);
         if (scope) {
@@ -39,6 +50,22 @@ export default component$<FormPollProps>(({ onSubmitCompleted, defaultScope }) =
             setValue(pollForm, 'community_ids', 
                 scope === CommunityType.GLOBAL ? ['1'] : []
             );
+        }
+    });
+
+    // eslint-disable-next-line qwik/no-use-visible-task
+    useVisibleTask$(({ track }) => {
+        track(() => defaultScope);
+        track(() => defaultRegionId);
+        track(() => defaultSubregionId);
+        
+        if (defaultScope === CommunityType.REGIONAL && defaultRegionId) {
+            // En lugar de asignar a provinces, deberíamos usar setValue para community_ids
+            setValue(pollForm, 'community_ids', [defaultRegionId.toString()]);
+        }
+
+        if (defaultScope === CommunityType.SUBREGIONAL && defaultSubregionId) {
+            setValue(pollForm, 'community_ids', [defaultSubregionId.toString()]);
         }
     });
 
@@ -55,6 +82,24 @@ export default component$<FormPollProps>(({ onSubmitCompleted, defaultScope }) =
 
     const isAnonymous = useSignal(false);
 
+    // Obtener el país de la URL
+    const location = useLocation();
+    const nationName = location.params.nation;
+    const defaultCountry = useComputed$(() => {
+        if (!nationName) return null;
+        return countries.find(country => 
+            country.name.toLowerCase() === nationName.toLowerCase()
+        );
+    });
+
+    // Establecer el país por defecto cuando se monta el componente
+    useTask$(({ track }) => {
+        const country = track(() => defaultCountry.value);
+        if (country) {
+            setValue(pollForm, 'community_ids', [country.cca2]);
+        }
+    });
+
     const handleSubmit = $((values: PollForm, event: any) => {
         console.log('Submitting Poll form:', values);
         console.log('event', event);
@@ -69,7 +114,49 @@ export default component$<FormPollProps>(({ onSubmitCompleted, defaultScope }) =
     }))
 
     return (
-        <Form onSubmit$={handleSubmit} class="space-y-6 p-6">
+        <Form onSubmit$={handleSubmit} class="space-y-6">
+            {/* Indicador de tipo de encuesta */}
+            {defaultScope === CommunityType.GLOBAL && (
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="inline-flex items-center rounded-full bg-cyan-100 px-2.5 py-1 text-xs font-medium text-cyan-800">
+                        {_`Global poll`}
+                    </div>
+                    <span class="text-sm text-muted-foreground">
+                        {_`This poll will be visible to all Geounity users`}
+                    </span>
+                </div>
+            )}
+            {defaultScope === CommunityType.INTERNATIONAL && (
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="inline-flex items-center rounded-full bg-cyan-100 px-2.5 py-1 text-xs font-medium text-cyan-800">
+                        {_`International poll`}
+                    </div>
+                    <span class="text-sm text-muted-foreground">
+                        {_`This poll will be visible to users from selected countries`}
+                    </span>
+                </div>
+            )}
+            {defaultScope === CommunityType.NATIONAL && (
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="inline-flex items-center rounded-full bg-cyan-100 px-2.5 py-1 text-xs font-medium text-cyan-800">
+                        {_`National poll`}
+                    </div>
+                    <span class="text-sm text-muted-foreground">
+                        {_`This poll will be visible to users from selected country`}
+                    </span>
+                </div>
+            )}
+            {defaultScope === CommunityType.REGIONAL && (
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="inline-flex items-center rounded-full bg-cyan-100 px-2.5 py-1 text-xs font-medium text-cyan-800">
+                        {_`Regional poll`}
+                    </div>
+                    <span class="text-sm text-muted-foreground">
+                        {_`This poll will be visible to users from selected region`}
+                    </span>
+                </div>
+            )}
+
             {/* Sección de Poll Settings */}
             <div class="space-y-4">
                 {/* <h2 class="font-medium text-foreground">{_`Poll Settings`}</h2> */}
@@ -79,49 +166,116 @@ export default component$<FormPollProps>(({ onSubmitCompleted, defaultScope }) =
                         <input 
                             type="hidden" 
                             {...props} 
-                            value={defaultScope || 'GLOBAL'} 
+                            value={defaultScope} 
                         />
                     )}
                 </Field>
 
                 <Field name="community_ids" type="string[]">
                     {(field, props) => {
-                        const scope = defaultScope?.toUpperCase() || 'GLOBAL';
-                        switch (scope) {
+                        switch (defaultScope) {
                             case CommunityType.GLOBAL:
                                 return <input type="hidden" {...props} value="1" />;
 
                             case CommunityType.INTERNATIONAL:
                                 return (
-                                    <CountrySelectInput
-                                        {...props}
-                                        form={pollForm}
-                                        label={_`Countries involved`}
-                                        predefinedCountries={countriesOptions}
-                                        error={field.error}
-                                    />
+                                    <div class="space-y-2">
+                                        <CountrySelectInput
+                                            {...props}
+                                            form={pollForm}
+                                            label={_`Countries involved`}
+                                            predefinedCountries={countriesOptions}
+                                            error={field.error}
+                                        />
+                                    </div>
                                 );
 
                             case CommunityType.NATIONAL:
                                 return (
-                                    <Select
-                                        {...props}
-                                        options={countriesOptions}
-                                        label={_`Select a country`}
-                                        placeholder={_`Search country...`}
-                                        error={field.error}
-                                    />
+                                    <div class="space-y-2">
+                                        <Select.Root 
+                                            {...props} 
+                                            value={defaultCountry.value?.cca2 || (Array.isArray(field.value) ? field.value[0] : field.value)}
+                                        >
+                                            <Select.Label>{_`Select a country`}</Select.Label>
+                                            <Select.Trigger>
+                                                <Select.DisplayValue placeholder={_`Search country...`} />
+                                            </Select.Trigger>
+                                            <Select.Popover>
+                                                {countries.map((country) => (
+                                                    <Select.Item key={country.cca2} value={country.cca2}>
+                                                        <Select.ItemLabel>
+                                                            {`${country.flag} ${country.name}`}
+                                                        </Select.ItemLabel>
+                                                        <Select.ItemIndicator />
+                                                    </Select.Item>
+                                                ))}
+                                            </Select.Popover>
+                                        </Select.Root>
+                                        {field.error && (
+                                            <div class="text-sm text-destructive">{field.error}</div>
+                                        )}
+                                    </div>
                                 );
 
-                            case CommunityType.SUBNATIONAL:
+                            case CommunityType.REGIONAL:
                                 return (
-                                    <Select
-                                        {...props}
-                                        options={[]}
-                                        label={_`Select a province`}
-                                        value={field.value}
-                                        error={field.error}
-                                    />
+                                    <div class="space-y-2">
+                                        <Select.Root {...props} value={defaultRegionId}>
+                                            <Select.Label>{_`Select a region`}</Select.Label>
+                                            <Select.Trigger>
+                                                <Select.DisplayValue placeholder={_`Select region...`} />
+                                            </Select.Trigger>
+                                            <Select.Popover>
+                                                {regions.length > 0 ? regions.map((region) => (
+                                                    <Select.Item key={region.id} value={region.id}>
+                                                        <Select.ItemLabel>
+                                                            {region.name}
+                                                        </Select.ItemLabel>
+                                                        <Select.ItemIndicator />
+                                                    </Select.Item>
+                                                )) : (
+                                                    <Select.Item value="placeholder">
+                                                        <Select.ItemLabel>{_`No region available`}</Select.ItemLabel>
+                                                        <Select.ItemIndicator />
+                                                    </Select.Item>
+                                                )}
+                                            </Select.Popover>
+                                        </Select.Root>
+                                        {field.error && (
+                                            <div class="text-sm text-destructive">{field.error}</div>
+                                        )}
+                                    </div>
+                                );
+                            
+                            case CommunityType.SUBREGIONAL:
+                                return (
+                                    <div class="space-y-2">
+                                        <Select.Root {...props} value={defaultSubregionId}>
+                                            <Select.Label>{_`Select a region`}</Select.Label>
+                                            <Select.Trigger>
+                                                <Select.DisplayValue placeholder={_`Select subregion...`} />
+                                            </Select.Trigger>
+                                            <Select.Popover>
+                                                {subregions.length > 0 ? subregions.map((subregion) => (
+                                                    <Select.Item key={subregion.id} value={subregion.id}>
+                                                        <Select.ItemLabel>
+                                                            {subregion.name}
+                                                        </Select.ItemLabel>
+                                                        <Select.ItemIndicator />
+                                                    </Select.Item>
+                                                )) : (
+                                                    <Select.Item value="placeholder">
+                                                        <Select.ItemLabel>{_`No subregion available`}</Select.ItemLabel>
+                                                        <Select.ItemIndicator />
+                                                    </Select.Item>
+                                                )}
+                                            </Select.Popover>
+                                        </Select.Root>
+                                        {field.error && (
+                                            <div class="text-sm text-destructive">{field.error}</div>
+                                        )}
+                                    </div>
                                 );
 
                             default:
