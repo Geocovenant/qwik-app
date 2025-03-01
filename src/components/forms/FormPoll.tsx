@@ -43,14 +43,12 @@ export default component$<FormPollProps>(({
     });
     useTask$(({ track }) => {
         const scope = track(() => defaultScope);
-        if (scope) {
-            setValue(pollForm, 'scope', scope.toUpperCase());
-            
-            // Limpiar community_ids cuando cambie el scope
-            setValue(pollForm, 'community_ids', 
-                scope === CommunityType.GLOBAL ? ['1'] : []
-            );
-        }
+        setValue(pollForm, 'scope', scope.toUpperCase());
+        
+        // Limpiar community_ids cuando cambie el scope
+        setValue(pollForm, 'community_ids', 
+            scope === CommunityType.GLOBAL ? ['1'] : []
+        );
     });
 
     // eslint-disable-next-line qwik/no-use-visible-task
@@ -221,7 +219,7 @@ export default component$<FormPollProps>(({
                             case CommunityType.REGIONAL:
                                 return (
                                     <div class="space-y-2">
-                                        <Select.Root {...props} value={defaultRegionId}>
+                                        <Select.Root {...props} value={defaultRegionId ? defaultRegionId.toString() : undefined}>
                                             <Select.Label>{_`Select a region`}</Select.Label>
                                             <Select.Trigger>
                                                 <Select.DisplayValue placeholder={_`Select region...`} />
@@ -251,7 +249,7 @@ export default component$<FormPollProps>(({
                             case CommunityType.SUBREGIONAL:
                                 return (
                                     <div class="space-y-2">
-                                        <Select.Root {...props} value={defaultSubregionId}>
+                                        <Select.Root {...props} value={defaultSubregionId ? defaultSubregionId.toString() : undefined}>
                                             <Select.Label>{_`Select a region`}</Select.Label>
                                             <Select.Trigger>
                                                 <Select.DisplayValue placeholder={_`Select subregion...`} />

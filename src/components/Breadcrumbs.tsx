@@ -1,7 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
 import { LuGlobe } from "@qwikest/icons/lucide";
-import { Breadcrumb } from "flowbite-qwik";
+import { Breadcrumb } from "~/components/ui";
 
 const LuGlobeIcon = component$(() => <LuGlobe />)
 
@@ -15,28 +15,20 @@ export default component$(() => {
         return { path, label }
     })
     return (
-        <div class="flex items-center py-2 px-4 bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:bg-gray-900 dark:text-white">
-            <Breadcrumb>
-                {breadcrumbs.length === 0
-                    ? <Breadcrumb.Item href="/" home homeIcon={LuGlobeIcon}>
-                        <span class="ml-1 text-lg text-gray-900 dark:text-white">Global</span>
-                    </Breadcrumb.Item>
-                    : breadcrumbs.map((breadcrumb, index) => (
-                        <div key={breadcrumb.path} class="flex items-center">
-                            <Breadcrumb.Item
-                                href={breadcrumb.path}
-                                home={index === 0}
-                                homeIcon={index === 0 ? LuGlobeIcon : undefined}
-                            >
-                                <span class={`ml-1 text-lg ${index === breadcrumbs.length - 1 ? "text-gray-900 dark:text-white" : ""}`}>
-                                    {breadcrumb.label}
-                                </span>
-                            </Breadcrumb.Item>
-                        </div>
-                    ))
-                }
-                
-            </Breadcrumb>
-        </div>
+        <Breadcrumb.Root>
+            <Breadcrumb.List>
+                <Breadcrumb.Item>
+                    <Breadcrumb.Link href="/">Home</Breadcrumb.Link>
+                </Breadcrumb.Item>
+                <Breadcrumb.Separator />
+                <Breadcrumb.Item>
+                    <Breadcrumb.Link href="/docs/styled/introduction/">Components</Breadcrumb.Link>
+                </Breadcrumb.Item>
+                <Breadcrumb.Separator />
+                <Breadcrumb.Item>
+                    <Breadcrumb.Page>Breadcrumb</Breadcrumb.Page>
+                </Breadcrumb.Item>
+            </Breadcrumb.List>
+        </Breadcrumb.Root>
     );
 });

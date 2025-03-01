@@ -5,21 +5,20 @@ import { type Poll, PollScope } from "~/shared/types";
 import EmptyPolls from "~/components/empty-states/EmptyPolls";
 import { Button } from "~/components/ui";
 import { useComputed$ } from "@builder.io/qwik";
-import {  } from "@builder.io/qwik";
 
 export interface PollListProps {
     onCreatePoll: QRL<() => void>;
-    province?: string | null;
+    region?: string | null;
     polls: Poll[];
     communityName?: string;
 }
 
-export const PollList = component$<PollListProps>(({ polls, onCreatePoll, province, communityName }) => {
+export const PollList = component$<PollListProps>(({ polls, onCreatePoll, region, communityName }) => {
     // Filtrar las encuestas por provincia cuando estemos en una vista provincial
     const filteredPolls = useComputed$(() => {
-        return province ? polls.filter(poll => 
+        return region ? polls.filter(poll => 
             poll.scope === PollScope.REGIONAL && 
-            poll.provinces?.includes(province)
+            poll.regions?.includes(region)
         ) : polls;
     });
 
@@ -46,14 +45,16 @@ export const PollList = component$<PollListProps>(({ polls, onCreatePoll, provin
                         status={poll.status}
                         scope={poll.scope}
                         type={poll.type}
-                        is_anonymous={poll.is_anonymous}
-                        ends_at={poll.ends_at}
-                        created_at={poll.created_at}
-                        creator_username={poll.creator_username}
-                        comments_count={poll.comments_count}
-                        likes_count={poll.reactions.LIKE}
-                        dislikes_count={poll.reactions.DISLIKE}
+                        isAnonymous={poll.is_anonymous}
+                        endsAt={poll.ends_at}
+                        createdAt={poll.created_at}
+                        creatorUsername={poll.creator_username}
+                        commentsCount={poll.comments_count}
+                        likesCount={poll.reactions.LIKE}
+                        dislikesCount={poll.reactions.DISLIKE}
                         countries={poll.countries}
+                        userVotedOptions={poll.user_voted_options}
+                        userReaction={poll.user_reaction}
                     />
                 ))}
             </ul>

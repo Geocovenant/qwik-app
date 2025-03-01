@@ -1,36 +1,50 @@
 import { $, component$, useSignal } from "@builder.io/qwik";
 import { type DocumentHead } from "@builder.io/qwik-city";
 import { _ } from "compiled-i18n";
-import { Tabs } from "~/components/ui";
-import Breadcrumbs from "~/components/Breadcrumbs";
+import { Breadcrumb, Tabs } from "~/components/ui";
 import Modal from "~/components/Modal";
 import FormPoll from "~/components/forms/FormPoll";
 import DebateList from "~/components/list/DebateList";
 import { PollList } from "~/components/list/PollList";
 import { CommunityType } from "~/constants/communityType";
-import { useGetInternationalPolls } from "~/shared/loaders";
+import { useGetInternationalDebates, useGetInternationalPolls, useGetTags } from "~/shared/loaders";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
-export { useGetInternationalPolls, useFormPollLoader } from "~/shared/loaders";
-export { useFormPollAction, useVotePoll, useReactPoll } from "~/shared/actions";
+import FormDebate from "~/components/forms/FormDebate";
+export { useGetInternationalPolls, useGetInternationalDebates, useFormPollLoader, useFormDebateLoader, useGetTags } from "~/shared/loaders";
+export { useFormPollAction, useVotePoll, useReactPoll, useFormDebateAction } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
-    const showModal = useSignal(false);
+    const showModalPoll = useSignal(false);
+    const showModalDebate = useSignal(false);
+    const tags = useGetTags();
     const polls = useGetInternationalPolls();
+    const debates = useGetInternationalDebates();
 
     const onSubmitCompleted = $(() => {
-        showModal.value = false;
+        showModalPoll.value = false;
+        showModalDebate.value = false;
     });
 
     const onCreatePoll = $(() => {
-        showModal.value = true;
+        showModalPoll.value = true;
+    });
+
+    const onCreateDebate = $(() => {
+        showModalDebate.value = true;
     });
 
     return (
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
-            <div class="bg-gray-50 border-b">
-                <Breadcrumbs />
+            <div class="bg-gray-50 border-b p-1">
+                <Breadcrumb.Root>
+                    <Breadcrumb.List>
+                        <Breadcrumb.Item>
+                            <Breadcrumb.Link href="/">International</Breadcrumb.Link>
+                        </Breadcrumb.Item>
+                    </Breadcrumb.List>
+                </Breadcrumb.Root>
             </div>
 
             <div class="flex flex-col min-h-0">
@@ -54,7 +68,7 @@ export default component$(() => {
                         <Tabs.Panel value="polls" class="p-4">
                             <Modal
                                 title={_`Create poll`}
-                                show={showModal}
+                                show={showModalPoll}
                             >
                                 {session.value?.user
                                     ? <FormPoll
@@ -73,7 +87,24 @@ export default component$(() => {
                         </Tabs.Panel>
 
                         <Tabs.Panel value="debates" class="p-4">
-                            <DebateList />
+                            <Modal
+                                title={_`Crear debate`}
+                                show={showModalDebate}
+                            >
+                                {session.value?.user
+                                    ? <FormDebate
+                                        onSubmitCompleted={onSubmitCompleted}
+                                        defaultScope={CommunityType.INTERNATIONAL}
+                                        tags={tags.value}
+                                    />
+                                    : <SocialLoginButtons />
+                                }
+                            </Modal>
+                            <DebateList
+                                communityName="the international community"
+                                onCreateDebate={onCreateDebate}
+                                debates={Array.isArray(debates.value) ? debates.value : []}
+                            />
                         </Tabs.Panel>
 
                         <Tabs.Panel value="projects" class="p-4">
@@ -86,18 +117,16 @@ export default component$(() => {
                     </Tabs.Root>
                 </div>
             </div>
-
-
         </div>
     );
 });
 
 export const head: DocumentHead = {
-    title: "Geounity National",
+    title: "Geounity International",
     meta: [
         {
             name: "description",
-            content: "Geounity National",
+            content: "Geounity International",
         },
     ],
 };

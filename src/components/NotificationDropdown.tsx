@@ -1,8 +1,6 @@
 import { component$, useSignal } from "@builder.io/qwik";
-import { Dropdown } from "flowbite-qwik";
 import { LuBell } from "@qwikest/icons/lucide";
 import { _ } from "compiled-i18n";
-
 const LuBellIcon = component$(() => <LuBell class="h-5 w-5 text-gray-700" />)
 
 export default component$(() => {

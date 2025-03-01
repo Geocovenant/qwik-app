@@ -5,3 +5,8 @@ export * from "./label/label";
 export * from "./avatar/avatar";
 export * from "./tabs/tabs";
 export * from "./select/select";
+export * from "./popover/popover";
+export * from "./alert/alert";
+export * from "./breadcrumb/breadcrumb";
+export * from "./badge/badge";
+export * from "./textarea/textarea";

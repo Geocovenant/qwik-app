@@ -16,12 +16,6 @@ type Community = {
     divisionType?: string
 }
 
-type TabItem = {
-    id: string;
-    name: string;
-    path: string;
-}
-
 const LuGlobeIcon = component$(() => <LuGlobe class="h-5 w-5" />)
 const LuBuildingIcon = component$(() => <LuBuilding class="h-5 w-5" />)
 
@@ -56,14 +50,6 @@ const communities: Community[] = [
         icon: "🇺🇾",
         children: []
     }
-]
-
-const tabs: TabItem[] = [
-    { id: 'polls', name: 'Polls', path: '/polls' },
-    { id: 'debates', name: 'Debates', path: '/debates' },
-    { id: 'projects', name: 'Projects', path: '/projects' },
-    { id: 'issues', name: 'Issues', path: '/issues' },
-    { id: 'members', name: 'Members', path: '/members' },
 ]
 
 const CommunityItem = component$(({ community, level = 0, isCollapsed}: {community: Community, level?: number, isCollapsed: boolean}) => {
@@ -115,8 +101,8 @@ const CommunityItem = component$(({ community, level = 0, isCollapsed}: {communi
     const itemClass = `
         flex items-center gap-2 px-3 py-1.5 rounded-lg
         ${isActive 
-            ? "bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-foreground font-medium border-l-2 border-primary" 
-            : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-primary dark:hover:text-primary-foreground"
+            ? "bg-primary/20 dark:bg-primary/20 text-primary dark:text-primary-foreground font-medium border-l-2 border-primary shadow-sm" 
+            : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-primary dark:hover:text-primary-foreground"
         }
         ${indentClass}
         ${isCollapsed ? "justify-center" : ""}
@@ -343,26 +329,6 @@ export default component$(() => {
                         </div>
                     </div>
                 </div>
-
-                {!isCollapsed.value && currentPath.includes('/global') && (
-                    <div class="border-t border-border">
-                        <nav class="flex flex-col p-2">
-                            {tabs.map((tab) => (
-                                <Link 
-                                    key={tab.id}
-                                    href={`/global${tab.path}`}
-                                    class={`px-4 py-2 rounded-md transition-colors ${
-                                        currentPath.includes(tab.path) 
-                                            ? 'bg-gray-200 dark:bg-gray-700 font-medium text-gray-900 dark:text-white' 
-                                            : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                                    }`}
-                                >
-                                    {tab.name}
-                                </Link>
-                            ))}
-                        </nav>
-                    </div>
-                )}
 
                 <div class="mt-auto border-t border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between p-4">

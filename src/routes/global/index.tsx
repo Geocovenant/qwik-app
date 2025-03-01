@@ -1,8 +1,7 @@
 import { $, component$, useSignal } from "@builder.io/qwik";
 import { type DocumentHead } from "@builder.io/qwik-city";
 import { _ } from "compiled-i18n";
-import { Tabs } from "~/components/ui";
-import Breadcrumbs from "~/components/Breadcrumbs";
+import { Breadcrumb, Tabs } from "~/components/ui";
 import Modal from "~/components/Modal";
 import FormPoll from "~/components/forms/FormPoll";
 import DebateList from "~/components/list/DebateList";
@@ -10,71 +9,111 @@ import { PollList } from "~/components/list/PollList";
 import { CommunityType } from "~/constants/communityType";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
-import { useGetGlobalPolls } from "~/shared/loaders";
-export { useGetGlobalPolls, useFormPollLoader } from "~/shared/loaders";
-export { useFormPollAction, useVotePoll, useReactPoll } from "~/shared/actions";
+import { useGetGlobalPolls, useGetGlobalDebates, useGetTags } from "~/shared/loaders";
+import FormDebate from "~/components/forms/FormDebate";
+export { useGetGlobalPolls, useGetGlobalDebates, useFormPollLoader, useFormDebateLoader, useGetTags } from "~/shared/loaders";
+export { useFormPollAction, useVotePoll, useReactPoll, useFormDebateAction } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
-    const showModal = useSignal(false);
+    const showModalPoll = useSignal(false);
+    const showModalDebate = useSignal(false);
+    const tags = useGetTags();
     const polls = useGetGlobalPolls();
+    const debates = useGetGlobalDebates();
+    console.log('debates', debates.value)
 
     const onSubmitCompleted = $(() => {
-        showModal.value = false;
+        showModalPoll.value = false;
+        showModalDebate.value = false;
     });
 
     const onCreatePoll = $(() => {
-        showModal.value = true;
+        showModalPoll.value = true;
+    });
+
+    const onCreateDebate = $(() => {
+        showModalDebate.value = true;
     });
 
     return (
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
-            <div class="bg-gray-50 border-b">
-                <Breadcrumbs />
+            <div class="bg-gray-50 border-b p-1">
+                <Breadcrumb.Root>
+                    <Breadcrumb.List>
+                        <Breadcrumb.Item>
+                            <Breadcrumb.Link href="/">Global</Breadcrumb.Link>
+                        </Breadcrumb.Item>
+                    </Breadcrumb.List>
+                </Breadcrumb.Root>
             </div>
 
             <div class="flex flex-col min-h-0">
                 <div class="h-full overflow-y-auto">
                     <Tabs.Root class="w-full">
                         <Tabs.List class="flex border-b border-gray-200">
-                            <Tabs.Tab value="polls" class="px-4 py-2 hover:text-cyan-600 border-b-2 data-[state=selected]:border-cyan-600 data-[state=selected]:text-cyan-600">
+                            <Tabs.Tab value="polls" class="px-4 py-2 hover:text-cyan-600 border-b-2 border-gray-100 data-[state=selected]:border-cyan-600 data-[state=selected]:text-cyan-600">
                                 {_`Polls`}
                             </Tabs.Tab>
-                            <Tabs.Tab value="debates" class="px-4 py-2 hover:text-cyan-600 border-b-2 data-[state=selected]:border-cyan-600 data-[state=selected]:text-cyan-600">
+                            <Tabs.Tab value="debates" class="px-4 py-2 hover:text-cyan-600 border-b-2 border-gray-100 data-[state=selected]:border-cyan-600 data-[state=selected]:text-cyan-600">
                                 {_`Debates`}
                             </Tabs.Tab>
-                            <Tabs.Tab value="projects" class="px-4 py-2 hover:text-cyan-600 border-b-2 data-[state=selected]:border-cyan-600 data-[state=selected]:text-cyan-600">
+                            <Tabs.Tab value="projects" class="px-4 py-2 hover:text-cyan-600 border-b-2 border-gray-100 data-[state=selected]:border-cyan-600 data-[state=selected]:text-cyan-600">
                                 {_`Proyects`}
                             </Tabs.Tab>
-                            <Tabs.Tab value="members" class="px-4 py-2 hover:text-cyan-600 border-b-2 data-[state=selected]:border-cyan-600 data-[state=selected]:text-cyan-600">
+                            <Tabs.Tab value="members" class="px-4 py-2 hover:text-cyan-600 border-b-2 border-gray-100 data-[state=selected]:border-cyan-600 data-[state=selected]:text-cyan-600">
                                 {_`Members`}
                             </Tabs.Tab>
                         </Tabs.List>
-
                         <Tabs.Panel value="polls" class="p-4">
-                            <Modal
-                                title={_`Create poll`}
-                                show={showModal}
-                            >
-                                {session.value?.user
-                                    ? <FormPoll
+                            {session.value?.user
+                                ? <Modal
+                                    title={_`Create poll`}
+                                    show={showModalPoll}
+                                >
+                                    <FormPoll
                                         onSubmitCompleted={onSubmitCompleted}
                                         defaultScope={CommunityType.GLOBAL}
                                     />
-                                    :
+                                </Modal>
+                                : <Modal
+                                    title={_`Create poll`}
+                                    show={showModalPoll}
+                                >
                                     <SocialLoginButtons />
-                                }
-
-                            </Modal>
+                                </Modal>
+                            }
                             <PollList
                                 onCreatePoll={onCreatePoll}
                                 polls={Array.isArray(polls.value) ? polls.value : []}
-                                communityName="the global community"
+                                communityName="The global community"
                             />
                         </Tabs.Panel>
 
                         <Tabs.Panel value="debates" class="p-4">
-                            <DebateList />
+                            {session.value?.user
+                                ? <Modal
+                                    title={_`Crear debate`}
+                                    show={showModalDebate}
+                                >
+                                    <FormDebate
+                                        onSubmitCompleted={onSubmitCompleted}
+                                        defaultScope={CommunityType.GLOBAL}
+                                        tags={tags.value}
+                                    />
+                                </Modal>
+                                : <Modal
+                                    title={_`Crear debate`}
+                                    show={showModalDebate}
+                                >
+                                    <SocialLoginButtons />
+                                </Modal>
+                            }
+                            <DebateList
+                                communityName="The global community"
+                                debates={Array.isArray(debates.value) ? debates.value : []}
+                                onCreateDebate={onCreateDebate}
+                            />
                         </Tabs.Panel>
 
                         <Tabs.Panel value="projects" class="p-4">

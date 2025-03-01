@@ -1,5 +1,4 @@
 import { component$, getLocale } from "@builder.io/qwik";
-import { Dropdown } from "flowbite-qwik";
 import { LuLanguages } from "@qwikest/icons/lucide";
 import { _, locales } from "compiled-i18n";
 

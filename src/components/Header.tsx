@@ -1,5 +1,4 @@
 import { component$, useSignal } from "@builder.io/qwik";
-import { Input, Link } from "flowbite-qwik";
 import NotificationDropdown from "./NotificationDropdown";
 import { _ } from "compiled-i18n";
 import { NestedDropdown } from "~/components/NestedDropdown";
@@ -8,6 +7,7 @@ import { Button } from "./ui";
 import SocialLoginButtons from "./SocialLoginButtons";
 import Modal from "~/components/Modal";
 import Logo from '~/icons/logo.svg?jsx';
+import { Link } from "@builder.io/qwik-city";
 
 export default component$(() => {
     const session = useSession();
@@ -23,15 +23,15 @@ export default component$(() => {
                     />
                 </Link>
                 <div class="flex items-center space-x-4">
-                    <Input
+                    <input
+                        disabled
                         type="text"
                         placeholder={_`Example: Climate Change`}
-                        class="w-64 bg-white/90 dark:bg-gray-800/90 border-white/20 dark:border-gray-700/20 
-                               focus:ring-2 focus:ring-white/30 dark:focus:ring-gray-700/30"
                     />
-                    <NotificationDropdown />
+                    {/* <NotificationDropdown /> */}
                     {session.value?.user ? (
                         <NestedDropdown
+                            userId={session.value.user.username || session.value.user.id}
                             name={session.value.user.name || undefined}
                             email={session.value.user.email || undefined}
                             image={session.value.user.image || undefined}

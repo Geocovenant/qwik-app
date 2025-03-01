@@ -8,25 +8,29 @@ import FormPoll from "~/components/forms/FormPoll";
 import DebateList from "~/components/list/DebateList";
 import { PollList } from "~/components/list/PollList";
 import { CommunityType } from "~/constants/communityType";
-import { useGetRegions, useGetRegionalPolls } from "~/shared/loaders";
+import { useGetRegions, useGetRegionalPolls, useGetTags, useGetRegionalDebates } from "~/shared/loaders";
 import { useSession } from "~/routes/plugin@auth";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
+import FormDebate from "~/components/forms/FormDebate";
 
-export { useGetRegionalPolls, useFormPollLoader, useGetRegions } from "~/shared/loaders";
-export { useFormPollAction, useVotePoll, useReactPoll } from "~/shared/actions";
+export { useGetRegionalPolls, useGetRegionalDebates, useFormPollLoader, useFormDebateLoader, useGetRegions, useGetTags } from "~/shared/loaders";
+export { useFormPollAction, useFormDebateAction, useVotePoll, useReactPoll } from "~/shared/actions";
 
 export default component$(() => {
+    const session = useSession();
     const location = useLocation();
-    const showModal = useSignal(false);
-    const region = location.params.region;
+    const showModalPoll = useSignal(false);
+    const showModalDebate = useSignal(false);
+    const regionName = location.params.region;
     
     // useGetRegions is used to populate the select options in the regional poll form
     const regions = useGetRegions();
+    const tags = useGetTags();
     const polls = useGetRegionalPolls();
-    const session = useSession();
+    const debates = useGetRegionalDebates();
 
     const defaultRegion = useComputed$(() => {
-        const normalizedRegionName = region
+        const normalizedRegionName = regionName
             .split('-')
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))
             .join(' ');
@@ -35,11 +39,15 @@ export default component$(() => {
     });
 
     const onSubmitCompleted = $(() => {
-        showModal.value = false;
+        showModalPoll.value = false;
     });
 
     const onCreatePoll = $(() => {
-        showModal.value = true;
+        showModalPoll.value = true;
+    });
+
+    const onCreateDebate = $(() => {
+        showModalDebate.value = true;
     });
 
     return (
@@ -73,14 +81,14 @@ export default component$(() => {
                             <Modal
                                 title={_`Create poll for "${defaultRegion.value?.name}"`}
                                 description={_`Create a poll for your community`}
-                                show={showModal}
+                                show={showModalPoll}
                             >
                                 {session.value?.user
                                     ? <FormPoll
                                         onSubmitCompleted={onSubmitCompleted}
                                         defaultScope={CommunityType.REGIONAL}
-                                        regions={Array.isArray(regions.value) ? regions.value : []}
                                         defaultRegionId={defaultRegion.value?.id}
+                                        regions={Array.isArray(regions.value) ? regions.value : []}
                                     />
                                     : <SocialLoginButtons />
                                 }
@@ -93,7 +101,26 @@ export default component$(() => {
                         </Tabs.Panel>
 
                         <Tabs.Panel value="debates" class="p-4">
-                            <DebateList />
+                            <Modal
+                                title={_`Crear debate para "${defaultRegion.value?.name}"`}
+                                show={showModalDebate}
+                            >
+                                {session.value?.user
+                                    ? <FormDebate
+                                        onSubmitCompleted={onSubmitCompleted}
+                                        defaultScope={CommunityType.REGIONAL}
+                                        defaultRegionId={defaultRegion.value?.id}
+                                        regions={Array.isArray(regions.value) ? regions.value : []}
+                                        tags={tags.value}
+                                    />
+                                    : <SocialLoginButtons />
+                                }
+                            </Modal>
+                            <DebateList
+                                debates={Array.isArray(debates.value) ? debates.value : []}
+                                onCreateDebate={onCreateDebate}
+                                communityName={defaultRegion.value?.name}
+                            />
                         </Tabs.Panel>
 
                         <Tabs.Panel value="issues" class="p-4">

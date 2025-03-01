@@ -1,90 +1,197 @@
-import { component$, useStore, $ } from "@builder.io/qwik";
+import { $, component$ } from "@builder.io/qwik";
+import { useForm, valiForm$ } from '@modular-forms/qwik';
+import { TextInput } from '~/components/input/TextInput';
+import { TextArea } from '~/components/input/TextArea';
+import { _ } from "compiled-i18n";
+import { FormFooter } from '~/components/forms/FormFooter';
+import type { UserForm } from "~/schemas/userSchema";
+import { UserSchema } from "~/schemas/userSchema";
+import { useFormUserLoader } from "~/shared/loaders";
+import { useFormUserAction, type UserResponseData } from "~/shared/actions";
 
-export default component$(() => {
-    const formData = useStore({
-        nombre: "",
-        correo: "",
-        bio: "",
-        ubicacion: "",
-        sitioWeb: ""
-    });
+export interface FormUserProps {
+  onSubmitCompleted?: () => void;
+}
 
-    const handleSubmit = $((event: Event) => {
-        event.preventDefault();
-        // Aquí se puede enviar el formulario a la API para actualizar el perfil del usuario
-        console.log("Datos del formulario:", formData);
-    });
+export default component$<FormUserProps>(({ onSubmitCompleted }) => {
+  const [userForm, { Form, Field }] = useForm<UserForm, UserResponseData>({
+    loader: useFormUserLoader(),
+    action: useFormUserAction(),
+    validate: valiForm$(UserSchema)
+  });
 
-    return (
-        <form onSubmit$={handleSubmit} class="space-y-4 p-4">
-            <div>
-                <label for="nombre" class="block text-sm font-medium text-gray-700">
-                    Nombre Completo
-                </label>
+  const handleSubmit = $((values: UserForm, event: any) => {
+    console.log('Submitting User form:', values);
+    console.log('event', event);
+    if (onSubmitCompleted) {
+      onSubmitCompleted();
+    }
+  });
+
+  return (
+    <Form onSubmit$={handleSubmit} class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Field name="name">
+          {(field, props) => (
+            <TextInput
+              {...props}
+              label={_`Full Name`}
+              placeholder={_`Enter your full name`}
+              required
+              value={field.value}
+              error={field.error}
+            />
+          )}
+        </Field>
+        
+        <Field name="username">
+          {(field, props) => (
+            <TextInput
+              {...props}
+              label={_`Username`}
+              placeholder={_`Enter your username`}
+              required
+              value={field.value}
+              error={field.error}
+            />
+          )}
+        </Field>
+      </div>
+
+      <Field name="email">
+        {(field, props) => (
+          <TextInput
+            {...props}
+            type="email"
+            label={_`Email Address`}
+            placeholder={_`Enter your email address`}
+            required
+            value={field.value}
+            error={field.error}
+          />
+        )}
+      </Field>
+
+      <Field name="bio">
+        {(field, props) => (
+          <TextArea
+            {...props}
+            label={_`Bio`}
+            placeholder={_`Tell us something about yourself`}
+            value={field.value || ''}
+            error={field.error}
+            rows={3}
+            maxLength={500}
+          />
+        )}
+      </Field>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Field name="location">
+          {(field, props) => (
+            <TextInput
+              {...props}
+              label={_`Location`}
+              placeholder={_`Enter your location`}
+              value={field.value || ''}
+              error={field.error}
+            />
+          )}
+        </Field>
+        
+        <Field name="website">
+          {(field, props) => (
+            <TextInput
+              {...props}
+              type="url"
+              label={_`Website`}
+              placeholder={_`Enter your website URL`}
+              value={field.value || ''}
+              error={field.error}
+            />
+          )}
+        </Field>
+      </div>
+
+      <Field name="gender">
+        {(field, props) => (
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              {_`Gender`}
+            </label>
+            <select
+              {...props}
+              class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
+              value={field.value || 'prefer-not-to-say'}
+            >
+              <option value="male">{_`Male`}</option>
+              <option value="female">{_`Female`}</option>
+              <option value="non-binary">{_`Non-binary`}</option>
+              <option value="prefer-not-to-say">{_`Prefer not to say`}</option>
+            </select>
+            {field.error && (
+              <div class="text-sm text-destructive">{field.error}</div>
+            )}
+          </div>
+        )}
+      </Field>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Field name="profileImage">
+          {(field, props) => (
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {_`Profile Image URL`}
+              </label>
+              <div class="mt-1 flex items-center space-x-5">
+                <div class="flex-shrink-0 h-16 w-16 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden border border-gray-300 dark:border-gray-600">
+                  {field.value && <img src={field.value} alt="Preview" class="h-full w-full object-cover" />}
+                </div>
                 <input
-                    id="nombre"
-                    type="text"
-                    value={formData.nombre}
-                    placeholder="Ingresa tu nombre completo"
-                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  {...props}
+                  type="text"
+                  placeholder={_`Enter image URL`}
+                  class="flex-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
+                  value={field.value || ''}
                 />
+              </div>
+              {field.error && (
+                <div class="text-sm text-destructive">{field.error}</div>
+              )}
             </div>
-            <div>
-                <label for="correo" class="block text-sm font-medium text-gray-700">
-                    Correo Electrónico
-                </label>
+          )}
+        </Field>
+        
+        <Field name="coverImage">
+          {(field, props) => (
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {_`Cover Image URL`}
+              </label>
+              <div class="mt-1 flex items-center space-x-5">
+                <div class="flex-shrink-0 h-16 w-24 bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden rounded-md border border-gray-300 dark:border-gray-600">
+                  {field.value && <img src={field.value} alt="Preview" class="h-full w-full object-cover" />}
+                </div>
                 <input
-                    id="correo"
-                    type="email"
-                    value={formData.correo}
-                    placeholder="Ingresa tu correo electrónico"
-                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  {...props}
+                  type="text"
+                  placeholder={_`Enter image URL`}
+                  class="flex-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
+                  value={field.value || ''}
                 />
+              </div>
+              {field.error && (
+                <div class="text-sm text-destructive">{field.error}</div>
+              )}
             </div>
-            <div>
-                <label for="bio" class="block text-sm font-medium text-gray-700">
-                    Biografía
-                </label>
-                <textarea
-                    id="bio"
-                    value={formData.bio}
-                    placeholder="Cuéntanos algo sobre ti"
-                    rows={3}
-                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                ></textarea>
-            </div>
-            <div>
-                <label for="ubicacion" class="block text-sm font-medium text-gray-700">
-                    Ubicación
-                </label>
-                <input
-                    id="ubicacion"
-                    type="text"
-                    value={formData.ubicacion}
-                    placeholder="Ingresa tu ubicación"
-                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
-            </div>
-            <div>
-                <label for="sitioWeb" class="block text-sm font-medium text-gray-700">
-                    Sitio Web
-                </label>
-                <input
-                    id="sitioWeb"
-                    type="url"
-                    value={formData.sitioWeb}
-                    placeholder="Ingresa tu sitio web"
-                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
-            </div>
-            <div class="flex justify-end">
-                <button
-                    type="submit"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                >
-                    Guardar cambios
-                </button>
-            </div>
-        </form>
-    );
+          )}
+        </Field>
+      </div>
+
+      {/* Form footer */}
+      <div class="sticky bottom-0 bg-background py-4 border-t mt-4">
+        <FormFooter of={userForm} />
+      </div>
+    </Form>
+  );
 });

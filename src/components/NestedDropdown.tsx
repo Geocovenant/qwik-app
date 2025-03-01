@@ -7,6 +7,7 @@ import { useSignOut } from '~/routes/plugin@auth';
 import { Avatar } from '~/components/ui';
 
 interface NestedDropdownProps {
+    userId?: string;
     name?: string;
     email?: string;
     image?: string;
@@ -84,7 +85,7 @@ export const NestedDropdown = component$<NestedDropdownProps>((props) => {
             <div class={`dropdown-content ${isOpen.value ? 'show' : ''}`}>
                 <div class="dropdown-item" onClick$={() => isOpen.value = false}>
                     <Link 
-                        href={props.name ? `/user/${props.name}` : '/login'} 
+                        href={props.userId ? `/user/${props.userId}` : '/login'} 
                         class="flex items-center"
                     >
                         <LuUser class="w-5 h-5" />

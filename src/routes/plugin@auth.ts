@@ -21,6 +21,11 @@ export const { onRequest, useSession, useSignIn, useSignOut } = QwikAuth$(
     return {
       providers: [GitHub, Google],
       adapter: PostgresAdapter(pool),
+      callbacks: {
+        session({ session }) {
+          return session;
+        },
+      },
     };
   }
 );

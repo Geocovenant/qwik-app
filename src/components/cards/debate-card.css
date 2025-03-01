@@ -1,0 +1,7 @@
+li {
+  transition: all 0.2s ease-in-out;
+}
+
+li:hover {
+  transform: translateY(-2px);
+} 

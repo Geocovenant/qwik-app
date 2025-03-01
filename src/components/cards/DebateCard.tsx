@@ -1,21 +1,120 @@
-import { component$ } from "@builder.io/qwik";
-import { _ } from "compiled-i18n";
-import { Button } from "flowbite-qwik";
+import { $, component$, useStylesScoped$ } from "@builder.io/qwik";
+import { LuCalendar, LuMessageSquare, LuTag, LuClock } from '@qwikest/icons/lucide';
+import { Link, useNavigate } from "@builder.io/qwik-city";
+import { PollScope } from "~/shared/types";
+import { timeAgo } from "~/utils/dateUtils";
+import styles from "./debate-card.css?inline";
+import { Avatar } from "~/components/ui";
 
-interface DebateCardProps {
+export interface DebateCardProps {
     id: number;
     title: string;
     description: string;
+    images?: string[];
+    creator_username: string;
+    creator_avatar: string;
+    created_at: string;
+    last_comment_at?: string;
+    tags?: string[];
+    slug?: string;
+    comments_count: number;
+    scope: PollScope;
 }
 
-export default component$<DebateCardProps>(({ id, title, description }) => {
+export default component$<DebateCardProps>(({
+    title,
+    description,
+    images,
+    creator_username,
+    creator_avatar,
+    created_at,
+    last_comment_at,
+    slug,
+    tags = [],
+    comments_count,
+    scope
+}) => {
+    useStylesScoped$(styles);
+    const nav = useNavigate();
+    const onClickUsername = $((username: string) => nav(`/user/${username}`));
+
+    const mainImage = images && images.length > 0 ? images[0] : undefined;
+
     return (
-        <li key={id} class="p-4 border rounded-md shadow-sm hover:shadow-md">
-            <h3 class="text-xl font-semibold">{_`${title}`}</h3>
-            <p class="text-gray-700">{_`${description}`}</p>
-            <Button class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white">
-                {_`Join Debate`}
-            </Button>
-        </li>
+        <Link href={`/debates/${slug}`}>
+            <li class="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden">
+                <div class="p-5">
+                    {/* Cabecera con título y badge de ámbito */}
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-white">{title}</h3>
+                        {scope === PollScope.GLOBAL && 
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                🌎 Global
+                            </span>
+                        }
+                    </div>
+
+                    {/* Descripción */}
+                    <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">{description}</p>
+
+                    {/* Imagen si existe */}
+                    {mainImage && (
+                        <div class="mb-4 rounded-lg overflow-hidden">
+                            <img src={mainImage} alt={title} class="w-full h-48 object-cover" />
+                        </div>
+                    )}
+
+                    {/* Etiquetas */}
+                    {tags.length > 0 && (
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            {tags.map((tag) => (
+                                <span key={tag} class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs font-medium px-2.5 py-1 rounded-full flex items-center">
+                                    <LuTag class="w-3 h-3 mr-1" />
+                                    {tag}
+                                </span>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Información del creador y fechas */}
+                    <div class="flex flex-wrap justify-between items-center mt-4 text-gray-500 dark:text-gray-400 text-xs">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center" onClick$={() => onClickUsername(creator_username)}>
+                                <Avatar.Root>
+                                    <Avatar.Image
+                                        src={creator_avatar}
+                                        alt={creator_username}
+                                        class="w-6 h-6 rounded-full"
+                                    />
+                                </Avatar.Root>
+                                <span class="hover:text-cyan-600 dark:hover:text-cyan-400 cursor-pointer">
+                                    {creator_username}
+                                </span>
+                            </div>
+                            <div class="flex items-center">
+                                <LuCalendar class="w-4 h-4 mr-1" />
+                                <span title={new Date(created_at).toLocaleString()}>
+                                    {timeAgo(new Date(created_at))}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center mt-2 sm:mt-0">
+                            <LuMessageSquare class="w-4 h-4 mr-1" />
+                            <span>{comments_count} comentarios</span>
+                            
+                            {last_comment_at && (
+                                <div class="flex items-center ml-3">
+                                    <LuClock class="w-4 h-4 mr-1" />
+                                    <span title="Último comentario">
+                                        {timeAgo(new Date(last_comment_at))}
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </Link>
     );
 }); 

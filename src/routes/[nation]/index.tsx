@@ -9,29 +9,39 @@ import DebateList from "~/components/list/DebateList";
 import { PollList } from "~/components/list/PollList";
 import { CommunityType } from "~/constants/communityType";
 import { dataArray as countries } from "~/data/countries";
-import { useGetNationalPolls } from "~/shared/loaders";
+import { useGetNationalDebates, useGetNationalPolls, useGetTags } from "~/shared/loaders";
 import { useSession } from "~/routes/plugin@auth";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
-export { useGetNationalPolls, useFormPollLoader } from "~/shared/loaders";
-export { useFormPollAction, useVotePoll, useReactPoll } from "~/shared/actions";
+import FormDebate from "~/components/forms/FormDebate";
+
+export { useGetNationalPolls, useGetNationalDebates, useFormPollLoader, useFormDebateLoader, useGetTags } from "~/shared/loaders";
+export { useFormPollAction, useVotePoll, useReactPoll, useFormDebateAction } from "~/shared/actions";
 
 export default component$(() => {
+    const session = useSession();
     const location = useLocation();
+    const showModalPoll = useSignal(false);
+    const showModalDebate = useSignal(false);
     const nationName = location.params.nation;
     const nation = useComputed$(() => {
         return countries.find(country => country.name.toLowerCase() === nationName.toLowerCase());
     });
 
+    const tags = useGetTags();
     const polls = useGetNationalPolls();
-    const showModal = useSignal(false);
-    const session = useSession();
-
+    const debates = useGetNationalDebates();
+    
     const onSubmitCompleted = $(() => {
-        showModal.value = false;
+        showModalPoll.value = false;
+        showModalDebate.value = false;
     });
 
     const onCreatePoll = $(() => {
-        showModal.value = true;
+        showModalPoll.value = true;
+    });
+
+    const onCreateDebate = $(() => {
+        showModalDebate.value = true;
     });
 
     return (
@@ -64,7 +74,7 @@ export default component$(() => {
                         <Tabs.Panel value="polls" class="p-4">
                             <Modal
                                 title={_`Create poll for ${nation.value?.name} (${nation.value?.cca2}) ${nation.value?.flag}`}
-                                show={showModal}
+                                show={showModalPoll}
                             >
                                 {session.value?.user
                                     ? <FormPoll
@@ -82,7 +92,24 @@ export default component$(() => {
                         </Tabs.Panel>
 
                         <Tabs.Panel value="debates" class="p-4">
-                            <DebateList />
+                            <Modal
+                                title={_`Crear debate para ${nation.value?.name} (${nation.value?.cca2}) ${nation.value?.flag}`}
+                                show={showModalDebate}
+                            >
+                                {session.value?.user
+                                    ? <FormDebate
+                                        onSubmitCompleted={onSubmitCompleted}
+                                        defaultScope={CommunityType.NATIONAL}
+                                        tags={tags.value}
+                                    />
+                                    : <SocialLoginButtons />
+                                }
+                            </Modal>
+                            <DebateList
+                                debates={Array.isArray(debates.value) ? debates.value : []}
+                                onCreateDebate={onCreateDebate}
+                                communityName={nation.value?.name}
+                            />
                         </Tabs.Panel>
 
                         <Tabs.Panel value="issues" class="p-4">

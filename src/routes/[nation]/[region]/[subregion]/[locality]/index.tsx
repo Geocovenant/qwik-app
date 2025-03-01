@@ -10,13 +10,18 @@ import {PollList} from "~/components/list/PollList";
 import { CommunityType } from "~/constants/communityType";
 import { useSession } from "~/routes/plugin@auth";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
+import FormDebate from "~/components/forms/FormDebate";
+import { useGetTags } from "~/shared/loaders";
 
-export { useFormPollLoader } from "~/shared/loaders";
-export { useFormPollAction, useVotePoll, useReactPoll } from "~/shared/actions";
+export { useFormPollLoader, useGetTags, useFormDebateLoader } from "~/shared/loaders";
+export { useFormPollAction, useVotePoll, useReactPoll, useFormDebateAction } from "~/shared/actions";
 
 export default component$(() => {
     const showModal = useSignal(false);
     const session = useSession();
+    const showModalDebate = useSignal(false);
+
+    const tags = useGetTags();
 
     const onSubmitCompleted = $(() => {
         showModal.value = false;
@@ -24,6 +29,10 @@ export default component$(() => {
 
     const onCreatePoll = $(() => {
         showModal.value = true;
+    });
+
+    const onCreateDebate = $(() => {
+        showModalDebate.value = true;
     });
 
     return (
@@ -68,37 +77,55 @@ export default component$(() => {
                                 }
                             </Modal>
                             <PollList
-                                onCreatePoll$={onCreatePoll}
-                                communityName="this locality"
+                                onCreatePoll={onCreatePoll}
+                                polls={[]}
                             />
                         </Tabs.Panel>
 
                         <Tabs.Panel value="debates" class="p-4">
-                            <DebateList />
+                            <Modal
+                                title={_`Crear debate`}
+                                show={showModalDebate}
+                            >
+                                {session.value?.user
+                                    ? <FormDebate
+                                        onSubmitCompleted={onSubmitCompleted}
+                                        defaultScope={CommunityType.LOCALITY}
+                                        tags={tags.value}
+                                    />
+                                    : <SocialLoginButtons />
+                                }
+                            </Modal>
+                            <DebateList
+                                debates={[]}
+                                onCreateDebate={onCreateDebate}
+                            />
                         </Tabs.Panel>
 
                         <Tabs.Panel value="projects" class="p-4">
                             {_`Proyects`}
                         </Tabs.Panel>
 
+                        <Tabs.Panel value="issues" class="p-4">
+                            {_`Issues`}
+                        </Tabs.Panel>
+                        
                         <Tabs.Panel value="members" class="p-4">
                             {_`Members`}
                         </Tabs.Panel>
                     </Tabs.Root>
                 </div>
             </div>
-
-
         </div>
     );
 });
 
 export const head: DocumentHead = {
-    title: "Geounity National",
+    title: "Geounity Locality",
     meta: [
         {
             name: "description",
-            content: "Geounity National",
+            content: "Geounity Locality",
         },
     ],
 };

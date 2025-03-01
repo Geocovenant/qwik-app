@@ -1,13 +1,16 @@
 import { routeLoader$ } from "@builder.io/qwik-city";
 import type { InitialValues } from "@modular-forms/qwik";
-import { CommunityType } from "~/constants/communityType";
 import { PollType } from "~/constants/pollType";
 import type { PollForm } from "~/schemas/pollSchema";
 import { dataArray } from "~/data/countries";
+import type { DebateForm } from "~/schemas/debateSchema";
+import type { UserForm } from "~/schemas/userSchema";
+import type { OpinionForm } from "~/schemas/opinionSchema";
 
 // eslint-disable-next-line qwik/loader-location
 export const useGetUser = routeLoader$(async ({ cookie }) => {
     const token = cookie.get('authjs.session-token')
+    console.log('token', token)
     if (!token) {
         return null
     }
@@ -22,7 +25,7 @@ export const useGetUser = routeLoader$(async ({ cookie }) => {
 })
 
 // eslint-disable-next-line qwik/loader-location
-export const useGetGlobalPolls = routeLoader$(async ({ cookie, params, pathname }) => {
+export const useGetGlobalPolls = routeLoader$(async ({ cookie }) => {
     console.log('============ useGetGlobalPolls ============')
     const token = cookie.get('authjs.session-token');
     if (!token) {
@@ -38,19 +41,19 @@ export const useGetGlobalPolls = routeLoader$(async ({ cookie, params, pathname 
         });
 
         if (!response.ok) {
-            throw new Error('Error al obtener las encuestas');
+            throw new Error('Error fetching global polls');
         }
 
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error al obtener las encuestas globales:', error);
+        console.error('Error fetching global polls:', error);
         return [];
     }
 })
 
 // eslint-disable-next-line qwik/loader-location
-export const useGetInternationalPolls = routeLoader$(async ({ cookie, params }) => {
+export const useGetInternationalPolls = routeLoader$(async ({ cookie }) => {
     console.log('============ useGetInternationalPolls ============')
     const token = cookie.get('authjs.session-token');
     if (!token) {
@@ -66,13 +69,13 @@ export const useGetInternationalPolls = routeLoader$(async ({ cookie, params }) 
         });
 
         if (!response.ok) {
-            throw new Error('Error al obtener las encuestas');
+            throw new Error('Error fetching international polls');
         }
 
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error al obtener las encuestas internacionales:', error);
+        console.error('Error fetching international polls:', error);
         return [];
     }
 })
@@ -86,7 +89,7 @@ export const useGetNationalPolls = routeLoader$(async ({ cookie, params }) => {
     }
     const cca2 = getCountryCode(params.nation);
     if (!cca2) {
-        console.error('País no encontrado:', params.nation);
+        console.error('Country not found:', params.nation);
         return [];
     }
     try {
@@ -98,13 +101,13 @@ export const useGetNationalPolls = routeLoader$(async ({ cookie, params }) => {
         });
 
         if (!response.ok) {
-            throw new Error('Error al obtener las encuestas');
+            throw new Error('Error fetching national polls');
         }
 
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error al obtener las encuestas:', error);
+        console.error('Error fetching national polls:', error);
         return [];
     }
 })
@@ -118,7 +121,6 @@ export const useGetRegionalPolls = routeLoader$(async ({ cookie, params, resolve
     }
     
     const regions = await resolveValue(useGetRegions);
-    console.log('regions', regions)
 
     const normalizedRegionName = params.region
         .split('-')
@@ -129,7 +131,7 @@ export const useGetRegionalPolls = routeLoader$(async ({ cookie, params, resolve
 
     const regionId = regionData?.id
     if (!regionId) {
-        console.error('Región no encontrada:', params.region);
+        console.error('Region not found:', params.region);
         return [];
     }
 
@@ -142,13 +144,13 @@ export const useGetRegionalPolls = routeLoader$(async ({ cookie, params, resolve
         });
 
         if (!response.ok) {
-            throw new Error('Error al obtener las encuestas');
+            throw new Error('Error fetching regional polls');
         }
 
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error al obtener las encuestas:', error);
+        console.error('Error fetching regional polls:', error);
         return [];
     }
 })
@@ -171,17 +173,17 @@ export const useGetSubregionalPolls = routeLoader$(async ({ cookie, params, reso
 
     const regionId = regionData?.id
     if (!regionId) {
-        console.error('Región no encontrada:', params.region);
+        console.error('Region not found:', params.region);
         return [];
     }
 
-    // Normalizar el nombre de la subregión
+    // Normalize subregion name
     const normalizedSubregionName = params.subregion
         .split('-')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
 
-    // Obtener los datos de la subregión
+    // Fetch subregion data
     try {
         const subregionResponse = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/regions/${regionId}/subregions?name=${normalizedSubregionName}`, {
             headers: {
@@ -191,7 +193,7 @@ export const useGetSubregionalPolls = routeLoader$(async ({ cookie, params, reso
         });
 
         if (!subregionResponse.ok) {
-            throw new Error('Error al obtener datos de la subregión');
+            throw new Error('Error fetching subregion data');
         }
 
         const subregionData = await subregionResponse.json();
@@ -199,7 +201,7 @@ export const useGetSubregionalPolls = routeLoader$(async ({ cookie, params, reso
 
         const subregionId = subregionData?.[0]?.id;
         if (!subregionId) {
-            console.error('Subregión no encontrada:', normalizedSubregionName);
+            console.error('Subregion not found:', normalizedSubregionName);
             return [];
         }
 
@@ -211,28 +213,200 @@ export const useGetSubregionalPolls = routeLoader$(async ({ cookie, params, reso
         });
 
         if (!response.ok) {
-            throw new Error('Error al obtener las encuestas');
+            throw new Error('Error fetching subregional polls');
         }
 
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error al obtener las encuestas:', error);
+        console.error('Error fetching subregional polls:', error);
         return [];
     }
 })
 
-// Función auxiliar para obtener el código del país usando el archivo countries.ts
+// eslint-disable-next-line qwik/loader-location
+export const useGetGlobalDebates = routeLoader$(async ({ cookie }) => {
+    console.log('============ useGetGlobalDebates ============')
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return [];
+    }
+
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates?type=GLOBAL`, {
+            headers: {
+                Accept: 'application/json',
+                Authorization: token.value
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Error fetching global debates');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching global debates:', error);
+        return [];
+    }
+})
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetDebateBySlug = routeLoader$(async ({ cookie, params }) => {
+    console.log('============ useGetDebateBySlug ============')
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return undefined;
+    }
+    const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/${params.slug}`, {
+        headers: {
+            Accept: 'application/json',
+            Authorization: token.value
+        },
+    });
+    return (await response.json()) as {
+        id: string;
+        tags: Array<any>;
+        type: string;
+        title: string;
+        slug: string;
+        description: string;
+        images: string[];
+        public: boolean;
+        status: string; 
+        views_count: number;
+        likes_count: number;
+        dislikes_count: number;
+        last_comment_at: string;
+        language: string;
+        creator: {
+            id: number;
+            username: string;
+            image: string;
+        };
+        points_of_view: Array<any>;
+        created_at: string;
+        updated_at: string;
+    };
+});
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetInternationalDebates = routeLoader$(async ({ cookie }) => {
+    console.log('============ useGetInternationalDebates ============')
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return [];
+    }
+
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates?type=INTERNATIONAL`, {
+            headers: {
+                Accept: 'application/json',
+                Authorization: token.value
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Error fetching international debates');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching international debates:', error);
+        return [];
+    }
+})
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetNationalDebates = routeLoader$(async ({ cookie, params }) => {
+    console.log('============ useGetNationalDebates ============')
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return [];
+    }
+
+    const cca2 = getCountryCode(params.nation);
+    if (!cca2) {
+        console.error('Country not found:', params.nation);
+        return [];
+    }
+
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates?type=NATIONAL&country=${cca2}`, {
+            headers: {
+                Accept: 'application/json',
+                Authorization: token.value
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Error fetching national debates');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching national debates:', error);
+        return [];
+    }
+})
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetRegionalDebates = routeLoader$(async ({ cookie, params, resolveValue }) => {
+    console.log('============ useGetRegionalDebates ============')
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return [];
+    }
+    
+    const regions = await resolveValue(useGetRegions);
+
+    const normalizedRegionName = params.region
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
+
+    const regionId = regionData?.id
+    if (!regionId) {
+        console.error('Region not found:', params.region);
+        return [];
+    }
+
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates?type=REGIONAL&region=${regionId}`, {
+            headers: {
+                Accept: 'application/json',
+                Authorization: token.value
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Error fetching regional polls');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching regional polls:', error);
+        return [];
+    }
+})
+
+
+// Helper function to get country code using countries.ts file
 function getCountryCode(countryPath: string): string | null {
     if (!countryPath) return null
     
-    // Normalizar el nombre del país (quitar acentos, convertir a minúsculas)
+    // Normalize country name (remove accents, convert to lowercase)
     const normalizedPath = countryPath
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
         .toLowerCase()
 
-    // Buscar el país en el array de países
+    // Find the country in the array of countries
     const country = dataArray.find(country => {
         const normalizedName = country.name
             .normalize('NFD')
@@ -266,19 +440,19 @@ export const useGetRegions = routeLoader$(async ({ params }) => {
     
     const cca2 = getCountryCode(nationPath);
     if (!cca2) {
-        console.error('País no encontrado:', nationPath);
+        console.error('Country not found:', nationPath);
         return [];
     }
 
     try {
         const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/countries/${cca2}/divisions`);
         if (!response.ok) {
-            throw new Error('Error al obtener las divisiones del país');
+            throw new Error('Error fetching country divisions');
         }
         const divisions = await response.json();
         return divisions;
     } catch (error) {
-        console.error('Error al obtener las divisiones:', error);
+        console.error('Error fetching country divisions:', error);
         return [];
     }
 });
@@ -292,7 +466,6 @@ export const useGetSubregions = routeLoader$(async ({ params, resolveValue }) =>
     if (!nationPath || !regionPath || !subregionPath) return [];
     
     const regions = await resolveValue(useGetRegions);
-    console.log('regions', regions)
 
     const normalizedRegionName = regionPath
         .split('-')
@@ -302,19 +475,128 @@ export const useGetSubregions = routeLoader$(async ({ params, resolveValue }) =>
 
     const regionId = regionData?.id
     if (!regionId) {
-        console.error('Región no encontrada:', regionPath);
+        console.error('Region not found:', regionPath);
         return [];
     }
 
     try {
         const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/regions/${regionId}/subregions`);
         if (!response.ok) {
-            throw new Error('Error al obtener las subregiones');
+            throw new Error('Error fetching subregions');
         }
         const subregions = await response.json();
         return subregions;
     } catch (error) {
-        console.error('Error al obtener las subregiones:', error);
+        console.error('Error fetching subregions:', error);
         return [];
     }
+});
+
+// eslint-disable-next-line qwik/loader-location
+export const useFormDebateLoader = routeLoader$<InitialValues<DebateForm>>(() => {
+    return {
+        community_ids: [],
+        description: '',
+        is_anonymous: false,
+        scope: '',
+        tags: [],
+        title: '',
+    };
 }); 
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetTags = routeLoader$(async ({ cookie }) => {
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return [];
+    }
+    const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/tags`, {
+        headers: {
+            Accept: 'application/json',
+            Authorization: token.value
+        },
+    });
+    return (await response.json()) as Array<{
+        id: string;
+        name: string;
+    }>;
+});
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetUserByUsername = routeLoader$(async ({ params }) => {
+    const username = params.username;
+    if (!username) return null;
+    
+    const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/${username}`);
+    if (!response.ok) {
+        throw new Error('Error fetching user by username');
+    }
+    const data = await response.json();
+    return data;
+});
+
+// eslint-disable-next-line qwik/loader-location
+export const useFormUserLoader = routeLoader$<InitialValues<UserForm>>(async ({ cookie }) => {
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return {
+            name: '',
+            username: '',
+            email: '',
+            bio: '',
+            location: '',
+            website: '',
+            gender: 'prefer-not-to-say',
+            profileImage: '',
+            coverImage: ''
+        };
+    }
+
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/me`, {
+            headers: {
+                Accept: 'application/json',
+                Authorization: token.value
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch user data');
+        }
+
+        const userData = await response.json();
+        
+        return {
+            name: userData.name || '',
+            username: userData.username || '',
+            email: userData.email || '',
+            bio: userData.bio || '',
+            location: userData.location || '',
+            website: userData.website || '',
+            gender: userData.gender || 'prefer-not-to-say',
+            profileImage: userData.image || '',
+            coverImage: userData.banner || ''
+        };
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        return {
+            name: '',
+            username: '',
+            email: '',
+            bio: '',
+            location: '',
+            website: '',
+            gender: 'prefer-not-to-say',
+            profileImage: '',
+            coverImage: ''
+        };
+    }
+});
+
+// eslint-disable-next-line qwik/loader-location
+export const useFormOpinionLoader = routeLoader$<InitialValues<OpinionForm>>(() => {
+    return {
+        opinion: '',
+        country: '',
+    };
+});
