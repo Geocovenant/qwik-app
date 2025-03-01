@@ -11,6 +11,7 @@ import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 import { useGetGlobalPolls, useGetGlobalDebates, useGetTags } from "~/shared/loaders";
 import FormDebate from "~/components/forms/FormDebate";
+
 export { useGetGlobalPolls, useGetGlobalDebates, useFormPollLoader, useFormDebateLoader, useGetTags } from "~/shared/loaders";
 export { useFormPollAction, useVotePoll, useReactPoll, useFormDebateAction } from "~/shared/actions";
 
@@ -43,7 +44,7 @@ export default component$(() => {
                 <Breadcrumb.Root>
                     <Breadcrumb.List>
                         <Breadcrumb.Item>
-                            <Breadcrumb.Link href="/">Global</Breadcrumb.Link>
+                            <Breadcrumb.Link href="/">{_`Global`}</Breadcrumb.Link>
                         </Breadcrumb.Item>
                     </Breadcrumb.List>
                 </Breadcrumb.Root>
@@ -93,7 +94,7 @@ export default component$(() => {
                                     size: polls.value?.size || 10,
                                     pages: polls.value?.pages || 1
                                 }}
-                                communityName="The global community"
+                                communityName="The Global community"
                                 onPageChange$={async (page: number) => {
                                     currentPage.value = page;
                                     await nav(`/global?page=${page}`);
@@ -121,7 +122,7 @@ export default component$(() => {
                                 </Modal>
                             }
                             <DebateList
-                                communityName="The global community"
+                                communityName="The Global community"
                                 debates={Array.isArray(debates.value) ? debates.value : []}
                                 onCreateDebate={onCreateDebate}
                             />

@@ -14,10 +14,15 @@ export interface Poll {
     status: string;
     scope: PollScope;
     type: string;
+    slug: string;
     is_anonymous: boolean;
     ends_at?: string | null;
     created_at: string;
-    creator_username: string;
+    creator: {
+        username: string;
+        name: string;
+        image: string;
+    };
     comments_count: number;
     reactions: {
         LIKE: number;

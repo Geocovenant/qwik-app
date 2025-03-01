@@ -25,12 +25,8 @@ export const useGetUser = routeLoader$(async ({ cookie }) => {
 })
 
 // eslint-disable-next-line qwik/loader-location
-export const useGetGlobalPolls = routeLoader$(async ({ cookie, query }) => {
+export const useGetGlobalPolls = routeLoader$(async ({ query }) => {
     console.log('============ useGetGlobalPolls ============')
-    const token = cookie.get('authjs.session-token');
-    if (!token) {
-        return [];
-    }
     const page = query.get('page');
     try {
         let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=GLOBAL`;
@@ -40,7 +36,6 @@ export const useGetGlobalPolls = routeLoader$(async ({ cookie, query }) => {
         const response = await fetch(url, {
             headers: {
                 Accept: 'application/json',
-                Authorization: token.value
             }
         });
 
@@ -229,13 +224,9 @@ export const useGetSubregionalPolls = routeLoader$(async ({ cookie, params, reso
 })
 
 // eslint-disable-next-line qwik/loader-location
-export const useGetGlobalDebates = routeLoader$(async ({ cookie, query }) => {
+export const useGetGlobalDebates = routeLoader$(async ({ query }) => {
     console.log('============ useGetGlobalDebates ============')
     const page = query.get('page');
-    const token = cookie.get('authjs.session-token');
-    if (!token) {
-        return [];
-    }
 
     try {
         let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates?type=GLOBAL`;
@@ -246,7 +237,6 @@ export const useGetGlobalDebates = routeLoader$(async ({ cookie, query }) => {
         const response = await fetch(url, {
             headers: {
                 Accept: 'application/json',
-                Authorization: token.value
             }
         });
 

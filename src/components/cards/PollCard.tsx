@@ -14,6 +14,8 @@ import { timeAgo } from "~/utils/dateUtils"
 import { useVotePoll, useReactPoll } from "~/shared/actions"
 import { dataArray } from "~/data/countries"
 import { CommunityType } from "~/constants/communityType"
+import { Avatar } from "../ui"
+import { useNavigate } from "@builder.io/qwik-city"
 
 interface PollCardProps {
     id: number
@@ -28,6 +30,7 @@ interface PollCardProps {
     endsAt?: string | null
     createdAt: string
     creatorUsername: string
+    creatorAvatar: string
     commentsCount: number
     likesCount: number
     dislikesCount: number
@@ -49,6 +52,7 @@ export default component$<PollCardProps>(
         endsAt,
         createdAt,
         creatorUsername,
+        creatorAvatar,
         commentsCount,
         likesCount: initialLikesCount,
         dislikesCount: initialDislikesCount,
@@ -56,6 +60,9 @@ export default component$<PollCardProps>(
         userVotedOptions = [],
         userReaction: initialUserReaction = null,
     }) => {
+        const nav = useNavigate();
+        const onClickUsername = $((username: string) => nav(`/user/${username}`));
+        
         const actionVote = useVotePoll()
         const actionReact = useReactPoll()
 
@@ -322,20 +329,16 @@ export default component$<PollCardProps>(
                 {/* Footer */}
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-sm">
                     <div class="flex flex-wrap items-center gap-3">
-                        <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-full">
-                            {isAnonymous ? (
-                                <LuShield class="w-4 h-4 text-yellow-500" />
-                            ) : (
-                                <LuUser class="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                            )}
-                            <span
-                                class={
-                                    isAnonymous
-                                        ? "font-semibold text-yellow-600 dark:text-yellow-400"
-                                        : "text-gray-700 dark:text-gray-300"
-                                }
-                            >
-                                {isAnonymous ? _`Anonymous` : creatorUsername}
+                        <div class="flex items-center" onClick$={() => onClickUsername(creatorUsername)}>
+                            <Avatar.Root>
+                                <Avatar.Image
+                                    src={creatorAvatar}
+                                    alt={creatorUsername}
+                                    class="w-6 h-6 rounded-full"
+                                />
+                            </Avatar.Root>
+                            <span class="hover:text-cyan-600 dark:hover:text-cyan-400 cursor-pointer">
+                                {creatorUsername}
                             </span>
                         </div>
 

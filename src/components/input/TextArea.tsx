@@ -4,35 +4,35 @@ import { InputError } from './InputError';
 import { capitalizeFirst } from '~/utils/capitalizeFirst';
 
 export type TextAreaProps = {
-    /** Nombre del input, usado para el id y atributos de accesibilidad */
+    /** Input name, used for id and accessibility attributes */
     name: string;
-    /** Etiqueta descriptiva del textarea */
+    /** Descriptive label for the textarea */
     label?: string;
-    /** Placeholder del textarea */
+    /** Textarea placeholder */
     placeholder?: string;
-    /** Valor actual */
+    /** Current value */
     value?: string;
-    /** Mensaje de error (si lo hay) */
+    /** Error message (if any) */
     error?: string;
-    /** Indica si el campo es obligatorio */
+    /** Indicates if the field is required */
     required?: boolean;
-    /** Clase CSS adicional */
+    /** Additional CSS class */
     class?: string;
-    /** Longitud máxima permitida */
+    /** Maximum allowed length */
     maxLength?: number;
-    /** Número de filas a mostrar */
+    /** Number of rows to display */
     rows?: number;
-    /** Autofoco al renderizar */
+    /** Autofocus when rendering */
     autofocus?: boolean;
-    /** Si se debe ocultar el textarea */
+    /** Whether to hide the textarea */
     hidden?: boolean;
-    /** Referencia al elemento para integrarse con Modular Forms */
+    /** Reference to the element to integrate with Modular Forms */
     ref?: QRL<(element: HTMLTextAreaElement) => void>;
-    /** Evento onInput */
+    /** onInput event */
     onInput$?: (event: Event, element: HTMLTextAreaElement) => void;
-    /** Evento onChange */
+    /** onChange event */
     onChange$?: (event: Event, element: HTMLTextAreaElement) => void;
-    /** Evento onBlur */
+    /** onBlur event */
     onBlur$?: (event: Event, element: HTMLTextAreaElement) => void;
 };
 
@@ -42,7 +42,6 @@ export const TextArea = component$(
         name,
         error,
         rows = 4,
-        class: className,
         ...props
     }: TextAreaProps) => {
         return (
@@ -67,7 +66,7 @@ export const TextArea = component$(
                         error
                             ? 'border-destructive focus:border-destructive'
                             : 'border-input hover:border-muted-foreground/50 focus:border-primary',
-                        className
+                        props.class
                     )}
                 />
                 {label && (
