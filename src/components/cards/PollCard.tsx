@@ -3,11 +3,9 @@ import {
     LuArrowBigUp,
     LuArrowBigDown,
     LuMessageSquare,
-    LuUser,
     LuTimer,
     LuLink,
     LuGlobe,
-    LuShield,
 } from "@qwikest/icons/lucide"
 import { _ } from "compiled-i18n"
 import { timeAgo } from "~/utils/dateUtils"
@@ -16,6 +14,7 @@ import { dataArray } from "~/data/countries"
 import { CommunityType } from "~/constants/communityType"
 import { Avatar } from "../ui"
 import { useNavigate } from "@builder.io/qwik-city"
+import type { QRL } from "@builder.io/qwik"
 
 interface PollCardProps {
     id: number
@@ -37,6 +36,8 @@ interface PollCardProps {
     countries?: string[]
     userVotedOptions?: number[]
     userReaction?: "LIKE" | "DISLIKE" | null
+    isAuthenticated?: boolean
+    onShowLoginModal$: QRL<() => void>
 }
 
 export default component$<PollCardProps>(
@@ -59,6 +60,8 @@ export default component$<PollCardProps>(
         countries = [],
         userVotedOptions = [],
         userReaction: initialUserReaction = null,
+        isAuthenticated = true,
+        onShowLoginModal$,
     }) => {
         const nav = useNavigate();
         const onClickUsername = $((username: string) => nav(`/user/${username}`));
@@ -83,6 +86,11 @@ export default component$<PollCardProps>(
         const isClosed = useComputed$(() => (endsAt && new Date(endsAt) < new Date()) || false)
 
         const handleVote = $(async (optionId: number) => {
+            if (!isAuthenticated) {
+                onShowLoginModal$();
+                return;
+            }
+
             let newVotedOptions: number[] = []
             const isVoted = pollState.userVotedOptions.includes(optionId)
 
@@ -131,6 +139,11 @@ export default component$<PollCardProps>(
         })
 
         const handleReaction = $(async (newReaction: "LIKE" | "DISLIKE") => {
+            if (!isAuthenticated) {
+                onShowLoginModal$();
+                return;
+            }
+
             const previousReaction = reactionState.userReaction
 
             // Optimistic update

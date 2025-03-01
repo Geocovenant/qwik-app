@@ -1,4 +1,4 @@
-import { $, component$, useSignal } from "@builder.io/qwik";
+import { $, component$, useSignal, useComputed$ } from "@builder.io/qwik";
 import { type DocumentHead, useNavigate } from "@builder.io/qwik-city";
 import { _ } from "compiled-i18n";
 import { Breadcrumb, Tabs } from "~/components/ui";
@@ -24,6 +24,8 @@ export default component$(() => {
     const currentPage = useSignal(1);
     const debates = useGetGlobalDebates();
     const nav = useNavigate();
+    
+    const isAuthenticated = useComputed$(() => !!session.value?.user);
 
     const onSubmitCompleted = $(() => {
         showModalPoll.value = false;
@@ -79,7 +81,7 @@ export default component$(() => {
                                     />
                                 </Modal>
                                 : <Modal
-                                    title={_`Create poll`}
+                                    title={_`Sign in to create a poll`}
                                     show={showModalPoll}
                                 >
                                     <SocialLoginButtons />
@@ -99,13 +101,14 @@ export default component$(() => {
                                     currentPage.value = page;
                                     await nav(`/global?page=${page}`);
                                 }}
+                                isAuthenticated={isAuthenticated.value}
                             />
                         </Tabs.Panel>
 
                         <Tabs.Panel value="debates" class="p-4">
                             {session.value?.user
                                 ? <Modal
-                                    title={_`Crear debate`}
+                                    title={_`Create debate`}
                                     show={showModalDebate}
                                 >
                                     <FormDebate
@@ -115,7 +118,7 @@ export default component$(() => {
                                     />
                                 </Modal>
                                 : <Modal
-                                    title={_`Crear debate`}
+                                    title={_`Sign in to create a debate`}
                                     show={showModalDebate}
                                 >
                                     <SocialLoginButtons />

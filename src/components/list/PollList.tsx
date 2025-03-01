@@ -1,4 +1,4 @@
-import { component$, type QRL } from "@builder.io/qwik"
+import { $, component$, type QRL } from "@builder.io/qwik"
 import { _ } from "compiled-i18n"
 import PollCard from "~/components/cards/PollCard"
 import { type Poll, PollScope } from "~/shared/types"
@@ -7,6 +7,8 @@ import { Button } from "~/components/ui"
 import { useComputed$, useSignal } from "@builder.io/qwik"
 import { Pagination } from "@qwik-ui/headless"
 import { LuPlus, LuFilter, LuSearch } from "@qwikest/icons/lucide"
+import Modal from "~/components/Modal"
+import SocialLoginButtons from "~/components/SocialLoginButtons"
 
 export interface PollListProps {
     onCreatePoll: QRL<() => void>
@@ -20,10 +22,12 @@ export interface PollListProps {
     }
     communityName?: string
     onPageChange$: QRL<(page: number) => void>
+    isAuthenticated?: boolean
 }
 
-export const PollList = component$<PollListProps>(({ polls, onCreatePoll, region, communityName, onPageChange$ }) => {
+export const PollList = component$<PollListProps>(({ polls, onCreatePoll, region, communityName, onPageChange$, isAuthenticated = true }) => {
     const searchTerm = useSignal('');
+    const showLoginModal = useSignal(false);
     
     // Filter polls by region and search term
     const filteredPolls = useComputed$(() => {
@@ -42,7 +46,7 @@ export const PollList = component$<PollListProps>(({ polls, onCreatePoll, region
         return filtered;
     });
 
-    // Componente de búsqueda reutilizable
+    // Reusable search component
     const SearchBar = (
         <div class="flex items-center gap-3 w-full sm:w-auto">
             {/* Search bar */}
@@ -133,8 +137,23 @@ export const PollList = component$<PollListProps>(({ polls, onCreatePoll, region
         return <EmptyPolls onCreatePoll={onCreatePoll} communityName={communityName} />;
     }
 
+    const onShowLoginModal = $(() => {
+        showLoginModal.value = true;
+    });
+
     return (
         <div class="space-y-6 overflow-y-auto">
+            {/* Login modal */}
+            <Modal
+                title={_`Sign in to participate`}
+                show={showLoginModal}
+            >
+                <div class="p-4 text-center">
+                    <p class="mb-6 text-gray-600 dark:text-gray-300">{_`You need to sign in to vote on polls and participate in the community.`}</p>
+                    <SocialLoginButtons />
+                </div>
+            </Modal>
+            
             {/* Header with actions */}
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-2">
                 <div class="flex-1">
@@ -176,12 +195,14 @@ export const PollList = component$<PollListProps>(({ polls, onCreatePoll, region
                             countries={poll.countries}
                             userVotedOptions={poll.user_voted_options}
                             userReaction={poll.user_reaction}
+                            isAuthenticated={isAuthenticated}
+                            onShowLoginModal$={onShowLoginModal}
                         />
                     </li>
                 ))}
             </ul>
 
-            {/* Pagination - solo mostrar si hay resultados y más de una página */}
+            {/* Pagination - only show if there are results and more than one page */}
             {polls.pages > 1 && !searchTerm.value.trim() && (
                 <div class="mt-4 flex justify-center">
                     <Pagination
