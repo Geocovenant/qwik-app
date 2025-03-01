@@ -6,6 +6,7 @@ import {
     LuTimer,
     LuLink,
     LuGlobe,
+    LuUser2,
 } from "@qwikest/icons/lucide"
 import { _ } from "compiled-i18n"
 import { timeAgo } from "~/utils/dateUtils"
@@ -342,18 +343,29 @@ export default component$<PollCardProps>(
                 {/* Footer */}
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-sm">
                     <div class="flex flex-wrap items-center gap-3">
-                        <div class="flex items-center" onClick$={() => onClickUsername(creatorUsername)}>
-                            <Avatar.Root>
-                                <Avatar.Image
-                                    src={creatorAvatar}
-                                    alt={creatorUsername}
-                                    class="w-6 h-6 rounded-full"
-                                />
-                            </Avatar.Root>
-                            <span class="hover:text-cyan-600 dark:hover:text-cyan-400 cursor-pointer">
-                                {creatorUsername}
-                            </span>
-                        </div>
+                        {isAnonymous ? (
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                    <LuUser2 class="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                                </div>
+                                <span class="text-gray-600 dark:text-gray-400 italic ml-1">
+                                    {_`Anonymous`}
+                                </span>
+                            </div>
+                        ) : (
+                            <div class="flex items-center" onClick$={() => onClickUsername(creatorUsername)}>
+                                <Avatar.Root>
+                                    <Avatar.Image
+                                        src={creatorAvatar}
+                                        alt={creatorUsername}
+                                        class="w-6 h-6 rounded-full"
+                                    />
+                                </Avatar.Root>
+                                <span class="hover:text-cyan-600 dark:hover:text-cyan-400 cursor-pointer ml-1">
+                                    {creatorUsername}
+                                </span>
+                            </div>
+                        )}
 
                         <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-full">
                             <LuTimer class="w-4 h-4 text-gray-500 dark:text-gray-400" />
