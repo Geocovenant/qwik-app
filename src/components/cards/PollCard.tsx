@@ -1,14 +1,24 @@
-import { component$, $, useStore, useComputed$ } from "@builder.io/qwik";
-import { LuArrowBigUp, LuArrowBigDown, LuMessageSquare, LuUser, LuTimer, LuLink } from '@qwikest/icons/lucide';
-import { _ } from "compiled-i18n";
-import { timeAgo } from "~/utils/dateUtils";
-import { useVotePoll, useReactPoll } from "~/shared/actions";
-import { dataArray } from "~/data/countries";
-import { CommunityType } from "~/constants/communityType";
+import { component$, $, useStore, useComputed$ } from "@builder.io/qwik"
+import {
+    LuArrowBigUp,
+    LuArrowBigDown,
+    LuMessageSquare,
+    LuUser,
+    LuTimer,
+    LuLink,
+    LuGlobe,
+    LuShield,
+} from "@qwikest/icons/lucide"
+import { _ } from "compiled-i18n"
+import { timeAgo } from "~/utils/dateUtils"
+import { useVotePoll, useReactPoll } from "~/shared/actions"
+import { dataArray } from "~/data/countries"
+import { CommunityType } from "~/constants/communityType"
 
 interface PollCardProps {
     id: number
     title: string
+    slug: string
     description: string
     options: { text: string; votes: number; id: number; voted: boolean }[]
     status: string
@@ -23,335 +33,430 @@ interface PollCardProps {
     dislikesCount: number
     countries?: string[]
     userVotedOptions?: number[]
-    userReaction?: 'LIKE' | 'DISLIKE' | null
+    userReaction?: "LIKE" | "DISLIKE" | null
 }
 
-export default component$<PollCardProps>(({ 
-    id, 
-    title, 
-    description, 
-    options, 
-    type, 
-    scope,
-    isAnonymous,
-    endsAt,
-    createdAt,
-    creatorUsername,
-    commentsCount,
-    likesCount: initialLikesCount,
-    dislikesCount: initialDislikesCount,
-    countries = [],
-    userVotedOptions = [],
-    userReaction: initialUserReaction = null,
-}) => {
-    const actionVote = useVotePoll();
-    const actionReact = useReactPoll();
-    
-    // Estado interno para votos y reacciones
-    const pollState = useStore({ 
+export default component$<PollCardProps>(
+    ({
+        id,
+        title,
+        slug,
+        description,
         options,
-        userVotedOptions: userVotedOptions
-    });
-    
-    const reactionState = useStore({
-        userReaction: initialUserReaction,
+        type,
+        scope,
+        isAnonymous,
+        endsAt,
+        createdAt,
+        creatorUsername,
+        commentsCount,
         likesCount: initialLikesCount,
-        dislikesCount: initialDislikesCount
-    });
+        dislikesCount: initialDislikesCount,
+        countries = [],
+        userVotedOptions = [],
+        userReaction: initialUserReaction = null,
+    }) => {
+        const actionVote = useVotePoll()
+        const actionReact = useReactPoll()
 
-    const totalVotes = useComputed$(() => 
-        pollState.options.reduce((sum, option) => sum + option.votes, 0)
-    );
+        // Internal state for votes and reactions
+        const pollState = useStore({
+            options,
+            userVotedOptions: userVotedOptions,
+        })
 
-    const isClosed = useComputed$(() => 
-        endsAt && new Date(endsAt) < new Date() || false
-    );
+        const reactionState = useStore({
+            userReaction: initialUserReaction,
+            likesCount: initialLikesCount,
+            dislikesCount: initialDislikesCount,
+        })
 
-    const handleVote = $(async (optionId: number) => {
-        let newVotedOptions: number[] = [];
-        const isVoted = pollState.userVotedOptions.includes(optionId);
-        
-        // Actualización optimista
-        if(type === 'BINARY' || type === 'SINGLE_CHOICE') {
-            newVotedOptions = isVoted ? [] : [optionId];
-            
-            // Actualizar contadores de votos
-            pollState.options = pollState.options.map(opt => ({
-                ...opt,
-                votes: opt.id === optionId 
-                    ? opt.votes + (isVoted ? -1 : 1)
-                    : isVoted ? opt.votes : opt.votes - (opt.voted ? 1 : 0),
-                voted: opt.id === optionId ? !isVoted : false
-            }));
-        } else if(type === 'MULTIPLE_CHOICE') {
-            newVotedOptions = isVoted 
-                ? pollState.userVotedOptions.filter(id => id !== optionId)
-                : [...pollState.userVotedOptions, optionId];
-            
-            // Actualizar contador de votos
-            pollState.options = pollState.options.map(opt => ({
-                ...opt,
-                votes: opt.id === optionId 
-                    ? opt.votes + (isVoted ? -1 : 1)
-                    : opt.votes,
-                voted: opt.id === optionId ? !isVoted : opt.voted
-            }));
-        }
+        const totalVotes = useComputed$(() => pollState.options.reduce((sum, option) => sum + option.votes, 0))
 
-        // Actualizar estado de opciones votadas
-        pollState.userVotedOptions = newVotedOptions;
+        const isClosed = useComputed$(() => (endsAt && new Date(endsAt) < new Date()) || false)
 
-        // Llamada a la API
-        const result = await actionVote.submit({ 
-            pollId: id, 
-            optionIds: newVotedOptions 
-        });
+        const handleVote = $(async (optionId: number) => {
+            let newVotedOptions: number[] = []
+            const isVoted = pollState.userVotedOptions.includes(optionId)
 
-        // Si hay error, revertimos los cambios
-        if(result.status !== 200) {
-            pollState.options = options;
-            pollState.userVotedOptions = userVotedOptions;
-        }
-    });
+            // Optimistic update
+            if (type === "BINARY" || type === "SINGLE_CHOICE") {
+                newVotedOptions = isVoted ? [] : [optionId]
 
-    const handleReaction = $(async (newReaction: 'LIKE' | 'DISLIKE') => {
-        const previousReaction = reactionState.userReaction;
-        
-        // Actualización optimista
-        if (newReaction === previousReaction) {
-            // Si clickea en la misma reacción, la quitamos
-            reactionState.userReaction = null;
-            if (newReaction === 'LIKE') {
-                reactionState.likesCount--;
+                // Update vote counters
+                pollState.options = pollState.options.map((opt) => ({
+                    ...opt,
+                    votes:
+                        opt.id === optionId
+                            ? opt.votes + (isVoted ? -1 : 1)
+                            : isVoted
+                                ? opt.votes
+                                : opt.votes - (opt.voted ? 1 : 0),
+                    voted: opt.id === optionId ? !isVoted : false,
+                }))
+            } else if (type === "MULTIPLE_CHOICE") {
+                newVotedOptions = isVoted
+                    ? pollState.userVotedOptions.filter((id) => id !== optionId)
+                    : [...pollState.userVotedOptions, optionId]
+
+                // Update vote counter
+                pollState.options = pollState.options.map((opt) => ({
+                    ...opt,
+                    votes: opt.id === optionId ? opt.votes + (isVoted ? -1 : 1) : opt.votes,
+                    voted: opt.id === optionId ? !isVoted : opt.voted,
+                }))
+            }
+
+            // Update voted options state
+            pollState.userVotedOptions = newVotedOptions
+
+            // API call
+            const result = await actionVote.submit({
+                pollId: id,
+                optionIds: newVotedOptions,
+            })
+
+            // If there's an error, revert changes
+            if (result.status !== 200) {
+                pollState.options = options
+                pollState.userVotedOptions = userVotedOptions
+            }
+        })
+
+        const handleReaction = $(async (newReaction: "LIKE" | "DISLIKE") => {
+            const previousReaction = reactionState.userReaction
+
+            // Optimistic update
+            if (newReaction === previousReaction) {
+                // If clicking on the same reaction, remove it
+                reactionState.userReaction = null
+                if (newReaction === "LIKE") {
+                    reactionState.likesCount--
+                } else {
+                    reactionState.dislikesCount--
+                }
             } else {
-                reactionState.dislikesCount--;
+                // If changing reaction or adding a new one
+                reactionState.userReaction = newReaction
+
+                if (previousReaction === "LIKE") {
+                    reactionState.likesCount--
+                } else if (previousReaction === "DISLIKE") {
+                    reactionState.dislikesCount--
+                }
+
+                if (newReaction === "LIKE") {
+                    reactionState.likesCount++
+                } else {
+                    reactionState.dislikesCount++
+                }
             }
-        } else {
-            // Si cambia la reacción o agrega una nueva
-            reactionState.userReaction = newReaction;
-            
-            if (previousReaction === 'LIKE') {
-                reactionState.likesCount--;
-            } else if (previousReaction === 'DISLIKE') {
-                reactionState.dislikesCount--;
+
+            // API call
+            const result = await actionReact.submit({
+                pollId: id,
+                reaction: newReaction,
+            })
+
+            // If there's an error, revert changes
+            if (result.status !== 200) {
+                reactionState.userReaction = previousReaction
+                reactionState.likesCount = initialLikesCount
+                reactionState.dislikesCount = initialDislikesCount
             }
-            
-            if (newReaction === 'LIKE') {
-                reactionState.likesCount++;
+        })
+
+        const getCountryData = (code: string) => {
+            return dataArray.find((country) => country.cca2 === code)
+        }
+
+        const copyPollLink = $(() => {
+            try {
+                const pollUrl = `${window.location.origin}/polls/${slug}`
+                navigator.clipboard.writeText(pollUrl)
+                // We could show a toast here
+                console.log("Link copied")
+            } catch (error) {
+                console.error("Error copying link:", error)
+            }
+        })
+
+        // Determine poll type to show an icon
+        const getPollTypeIcon = () => {
+            switch (type) {
+                case "BINARY":
+                    return "⚖️"
+                case "SINGLE_CHOICE":
+                    return "🔘"
+                case "MULTIPLE_CHOICE":
+                    return "✅"
+                default:
+                    return "📊"
+            }
+        }
+
+        // Get background color for progress bar based on type
+        const getProgressBarColor = (isSelected: boolean) => {
+            if (isSelected) {
+                switch (type) {
+                    case "BINARY":
+                        return "bg-cyan-500"
+                    case "SINGLE_CHOICE":
+                        return "bg-purple-500"
+                    case "MULTIPLE_CHOICE":
+                        return "bg-emerald-500"
+                    default:
+                        return "bg-blue-500"
+                }
             } else {
-                reactionState.dislikesCount++;
+                switch (type) {
+                    case "BINARY":
+                        return "bg-cyan-300"
+                    case "SINGLE_CHOICE":
+                        return "bg-purple-300"
+                    case "MULTIPLE_CHOICE":
+                        return "bg-emerald-300"
+                    default:
+                        return "bg-blue-300"
+                }
             }
         }
 
-        // Llamada a la API
-        const result = await actionReact.submit({ 
-            pollId: id, 
-            reaction: newReaction 
-        });
-
-        // Si hay error, revertimos los cambios
-        if (result.status !== 200) {
-            reactionState.userReaction = previousReaction;
-            reactionState.likesCount = initialLikesCount;
-            reactionState.dislikesCount = initialDislikesCount;
-        }
-    });
-
-    const getCountryData = (code: string) => {
-        return dataArray.find(country => country.cca2 === code);
-    };
-
-    const copyPollLink = $(() => {
-        try {
-            const pollUrl = `${window.location.origin}/poll/${id}`;
-            navigator.clipboard.writeText(pollUrl);
-            console.log('Enlace copiado');
-        } catch (error) {
-            console.error('Error al copiar el enlace:', error);
-        }
-    });
-
-    return (
-        <div class="poll-card bg-card-bg dark:bg-gray-800/60 rounded-lg p-5 shadow-sm border border-border-light dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-800/90 transition-colors">
-            {/* Header */}
-            <div class="mb-5">
-                <div class="flex justify-between items-start mb-3">
-                    <h3 class="text-2xl font-bold text-text-primary">{title}</h3>
-                    {scope === CommunityType.GLOBAL && (
-                        <span 
-                            class="text-xl cursor-help"
-                            title={_`Global`}
-                        >
-                            🌍
-                        </span>
-                    )}
-                </div>
-                {description && (
-                    <p class="text-text-secondary text-sm mb-4">{description}</p>
-                )}
-                
-                {countries.length > 0 && (
-                    <div class="flex items-center gap-1 mb-3">
-                        <span class="text-sm text-text-secondary mr-2">{_`Countries involved:`}</span>
-                        <div class="flex gap-1">
-                            {countries.map((code) => {
-                                const country = getCountryData(code);
-                                return country && (
-                                    <span 
-                                        key={code}
-                                        class="text-xl cursor-help"
-                                        title={country.name}
-                                    >
-                                        {country.flag}
-                                    </span>
-                                );
-                            })}
-                        </div>
+        return (
+            <div class="poll-card bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 overflow-hidden">
+                {/* Ribbon for closed polls */}
+                {isClosed.value && (
+                    <div class="absolute top-0 right-0 bg-red-500 text-white px-4 py-1 transform rotate-45 translate-x-8 translate-y-4 shadow-md">
+                        {_`Closed`}
                     </div>
                 )}
 
-                <div class="flex items-center gap-2 text-sm text-text-secondary">
-                    <span>{_`Total votes:`}</span>
-                    <span class="bg-poll-option-bg px-3 py-1 rounded-full font-medium">
-                        {totalVotes.value}
-                    </span>
-                </div>
-            </div>
-
-            {/* Voting options */}
-            <div class="space-y-3 mb-6">
-                {pollState.options.map((option) => (
-                    <div 
-                        key={option.id} 
-                        class={`poll-option p-3 rounded-lg cursor-pointer transition-colors ${
-                            pollState.userVotedOptions.includes(option.id) 
-                                ? 'bg-accent/15 dark:bg-accent/10 border-2 border-accent shadow-md' 
-                                : 'bg-white dark:bg-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700 border border-border-light dark:border-border-dark'
-                        }`}
-                        onClick$={() => !isClosed.value && handleVote(option.id)}
-                    >
-                        <div class="flex justify-between items-center mb-2">
-                            <span class={`${
-                                pollState.userVotedOptions.includes(option.id) 
-                                    ? 'text-accent-dark dark:text-accent-light text-lg font-bold' 
-                                    : 'text-text-primary font-medium'
-                            }`}>{option.text}</span>
-                            <span class={`text-sm font-medium ${
-                                pollState.userVotedOptions.includes(option.id)
-                                    ? 'text-accent-dark dark:text-accent-light bg-accent/10 px-2 py-1 rounded-full'
-                                    : 'text-text-secondary'
-                            }`}>
-                                {option.votes} {_`votes`} ({totalVotes.value > 0 
-                                    ? ((option.votes / totalVotes.value) * 100).toFixed(1) 
-                                    : '0'}%)
+                {/* Header */}
+                <div class="mb-5">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl" title={type}>
+                                {getPollTypeIcon()}
                             </span>
+                            <h3 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white line-clamp-2">{title}</h3>
                         </div>
-                        <div class="poll-progress h-2.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                            <div 
-                                class={`poll-progress-bar h-full transition-all duration-300 ease-out ${
-                                    pollState.userVotedOptions.includes(option.id)
-                                        ? 'bg-accent shadow-sm'
-                                        : 'bg-accent/40'
-                                }`}
-                                style={{ width: `${totalVotes.value > 0 
-                                    ? (option.votes / totalVotes.value) * 100 
-                                    : 0}%` }}
-                            />
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            {/* Footer */}
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-sm text-text-secondary">
-                <div class="flex flex-wrap items-center gap-3">
-                    <div class="flex items-center gap-2 bg-poll-option-bg px-3 py-1.5 rounded-full">
-                        <LuUser class={`w-4 h-4 ${isAnonymous ? 'text-yellow-500' : ''}`} />
-                        <span class={isAnonymous ? 'font-semibold text-yellow-600 dark:text-yellow-400' : ''}>{isAnonymous ? _`Anonymous` : creatorUsername}</span>
-                        {isAnonymous && (
-                            <span class="ml-1 inline-flex items-center justify-center w-4 h-4 bg-yellow-200 dark:bg-yellow-700 rounded-full text-yellow-700 dark:text-yellow-200 text-xs" title={_`Anonymous poll`}>!</span>
+                        {scope === CommunityType.GLOBAL && (
+                            <div
+                                class="flex items-center justify-center w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400"
+                                title={_`Global`}
+                            >
+                                <LuGlobe class="w-5 h-5" />
+                            </div>
                         )}
                     </div>
-                    
-                    <div class="flex items-center gap-2 bg-poll-option-bg px-3 py-1.5 rounded-full">
-                        <LuTimer class="w-4 h-4" />
-                        <span>{timeAgo(new Date(createdAt))}</span>
-                    </div>
 
-                    {endsAt && (
-                        <div class="flex items-center gap-2 bg-red-50 dark:bg-red-900/20 px-3 py-1.5 rounded-full border border-red-200 dark:border-red-700 animate-pulse">
-                            <span class="text-xs uppercase font-bold text-red-600 dark:text-red-400">{_`Ends`}:</span>
-                            <span class="font-medium text-red-700 dark:text-red-300">{new Date(endsAt).toLocaleDateString()}</span>
+                    {description && <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">{description}</p>}
+
+                    {countries.length > 0 && (
+                        <div class="flex items-center gap-1 mb-3 flex-wrap">
+                            <span class="text-xs font-medium text-gray-500 dark:text-gray-400 mr-2">{_`Countries:`}</span>
+                            <div class="flex gap-1 flex-wrap">
+                                {countries.map((code) => {
+                                    const country = getCountryData(code)
+                                    return (
+                                        country && (
+                                            <span
+                                                key={code}
+                                                class="text-xl cursor-help hover:transform hover:scale-125 transition-transform"
+                                                title={country.name}
+                                            >
+                                                {country.flag}
+                                            </span>
+                                        )
+                                    )
+                                })}
+                            </div>
                         </div>
                     )}
+
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-gray-500 dark:text-gray-400">{_`Total votes:`}</span>
+                        <span class="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full font-medium text-gray-700 dark:text-gray-300">
+                            {totalVotes.value}
+                        </span>
+                    </div>
                 </div>
 
-                <div class="flex items-center gap-3">
-                    {/* Vote buttons group */}
-                    <div class="vote-buttons-container flex border border-border-light dark:border-border-dark rounded-md overflow-hidden shadow-sm">
-                        <button 
-                            onClick$={() => handleReaction('LIKE')}
-                            class={`group btn-interaction btn-like py-2 px-3 flex items-center bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border-r border-border-light dark:border-border-dark transition-colors duration-300 ${
-                                reactionState.userReaction === 'LIKE' ? 'bg-green-100 dark:bg-green-900/30' : ''
-                            }`}
-                            title={_`Upvote`}
+                {/* Voting options */}
+                <div class="space-y-3 mb-6">
+                    {pollState.options.map((option) => {
+                        const isSelected = pollState.userVotedOptions.includes(option.id)
+                        const percentage = totalVotes.value > 0 ? (option.votes / totalVotes.value) * 100 : 0
+
+                        return (
+                            <div
+                                key={option.id}
+                                class={`poll-option p-4 rounded-lg cursor-pointer transition-all duration-300 transform ${isSelected
+                                        ? "bg-gray-50 dark:bg-gray-700 border-2 shadow-md scale-[1.01]"
+                                        : "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border hover:scale-[1.01] border-gray-200 dark:border-gray-700"
+                                    } ${isSelected ? getBorderColorClass() : ""}`}
+                                onClick$={() => !isClosed.value && handleVote(option.id)}
+                            >
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class={`${isSelected ? "text-lg font-bold" : "text-gray-700 dark:text-gray-300 font-medium"}`}>
+                                        {option.text}
+                                    </span>
+                                    <span
+                                        class={`text-sm font-medium ${isSelected ? "px-2 py-1 rounded-full" : "text-gray-500 dark:text-gray-400"
+                                            } ${isSelected ? getBadgeColorClass() : ""}`}
+                                    >
+                                        {option.votes} {_`votes`} ({percentage.toFixed(1)}%)
+                                    </span>
+                                </div>
+                                <div class="poll-progress h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                    <div
+                                        class={`poll-progress-bar h-full transition-all duration-500 ease-out ${getProgressBarColor(isSelected)}`}
+                                        style={{ width: `${percentage}%` }}
+                                    />
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+
+                {/* Footer */}
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-sm">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-full">
+                            {isAnonymous ? (
+                                <LuShield class="w-4 h-4 text-yellow-500" />
+                            ) : (
+                                <LuUser class="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                            )}
+                            <span
+                                class={
+                                    isAnonymous
+                                        ? "font-semibold text-yellow-600 dark:text-yellow-400"
+                                        : "text-gray-700 dark:text-gray-300"
+                                }
+                            >
+                                {isAnonymous ? _`Anonymous` : creatorUsername}
+                            </span>
+                        </div>
+
+                        <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-full">
+                            <LuTimer class="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                            <span class="text-gray-700 dark:text-gray-300">{timeAgo(new Date(createdAt))}</span>
+                        </div>
+
+                        {endsAt && (
+                            <div
+                                class={`flex items-center gap-2 px-3 py-1.5 rounded-full ${isClosed.value
+                                        ? "bg-red-100 dark:bg-red-900/20 border border-red-200 dark:border-red-700"
+                                        : "bg-amber-100 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 animate-pulse"
+                                    }`}
+                            >
+                                <span class="text-xs uppercase font-bold text-red-600 dark:text-red-400">
+                                    {isClosed.value ? _`Ended` : _`Ends`}:
+                                </span>
+                                <span class="font-medium text-red-700 dark:text-red-300">{new Date(endsAt).toLocaleDateString()}</span>
+                            </div>
+                        )}
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        {/* Vote buttons group */}
+                        <div class="vote-buttons-container flex rounded-md overflow-hidden shadow-sm">
+                            <button
+                                onClick$={() => handleReaction("LIKE")}
+                                class={`group btn-interaction btn-like py-2 px-3 flex items-center hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 rounded-l-md transition-colors duration-300 ${reactionState.userReaction === "LIKE"
+                                        ? "bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700"
+                                        : "bg-white dark:bg-gray-800"
+                                    }`}
+                                title={_`Upvote`}
+                            >
+                                <LuArrowBigUp
+                                    class={`w-5 h-5 mr-1.5 ${reactionState.userReaction === "LIKE"
+                                            ? "text-green-500"
+                                            : "text-gray-500 group-hover:text-green-500"
+                                        } transition-colors duration-300`}
+                                />
+                                <span
+                                    class={`font-medium ${reactionState.userReaction === "LIKE"
+                                            ? "text-green-600 dark:text-green-400"
+                                            : "text-gray-700 dark:text-gray-300 group-hover:text-green-500"
+                                        } transition-colors duration-300`}
+                                >
+                                    {reactionState.likesCount}
+                                </span>
+                            </button>
+                            <button
+                                onClick$={() => handleReaction("DISLIKE")}
+                                class={`group btn-interaction btn-dislike py-2 px-3 flex items-center hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 border-l-0 rounded-r-md transition-colors duration-300 ${reactionState.userReaction === "DISLIKE"
+                                        ? "bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700"
+                                        : "bg-white dark:bg-gray-800"
+                                    }`}
+                                title={_`Downvote`}
+                            >
+                                <LuArrowBigDown
+                                    class={`w-5 h-5 mr-1.5 ${reactionState.userReaction === "DISLIKE" ? "text-red-500" : "text-gray-500 group-hover:text-red-500"
+                                        } transition-colors duration-300`}
+                                />
+                                <span
+                                    class={`font-medium ${reactionState.userReaction === "DISLIKE"
+                                            ? "text-red-600 dark:text-red-400"
+                                            : "text-gray-700 dark:text-gray-300 group-hover:text-red-500"
+                                        } transition-colors duration-300`}
+                                >
+                                    {reactionState.dislikesCount}
+                                </span>
+                            </button>
+                        </div>
+
+                        <button
+                            onClick$={() => { }}
+                            class="group btn-interaction btn-comment py-2 px-3 flex items-center bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-700 transition-colors duration-300 shadow-sm"
+                            title={_`Comments`}
                         >
-                            <LuArrowBigUp class={`w-5 h-5 mr-1.5 ${
-                                reactionState.userReaction === 'LIKE' 
-                                    ? 'text-green-500' 
-                                    : 'text-gray-500 group-hover:text-green-500'
-                            } transition-colors duration-300`} />
-                            <span class={`font-medium ${
-                                reactionState.userReaction === 'LIKE'
-                                    ? 'text-green-600 dark:text-green-400'
-                                    : 'text-gray-700 dark:text-gray-300 group-hover:text-green-500'
-                            } transition-colors duration-300`}>{reactionState.likesCount}</span>
+                            <LuMessageSquare class="w-5 h-5 mr-1.5 text-gray-500 group-hover:text-blue-500 transition-colors duration-300" />
+                            <span class="font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-500 transition-colors duration-300">
+                                {commentsCount}
+                            </span>
                         </button>
-                        <button 
-                            onClick$={() => handleReaction('DISLIKE')}
-                            class={`group btn-interaction btn-dislike py-2 px-3 flex items-center bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300 ${
-                                reactionState.userReaction === 'DISLIKE' ? 'bg-red-100 dark:bg-red-900/30' : ''
-                            }`}
-                            title={_`Downvote`}
+
+                        <button
+                            onClick$={copyPollLink}
+                            class="group btn-interaction btn-share p-2 flex items-center justify-center bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-700 transition-colors duration-300 shadow-sm"
+                            title={_`Copy link`}
                         >
-                            <LuArrowBigDown class={`w-5 h-5 mr-1.5 ${
-                                reactionState.userReaction === 'DISLIKE' 
-                                    ? 'text-red-500' 
-                                    : 'text-gray-500 group-hover:text-red-500'
-                            } transition-colors duration-300`} />
-                            <span class={`font-medium ${
-                                reactionState.userReaction === 'DISLIKE'
-                                    ? 'text-red-600 dark:text-red-400'
-                                    : 'text-gray-700 dark:text-gray-300 group-hover:text-red-500'
-                            } transition-colors duration-300`}>{reactionState.dislikesCount}</span>
+                            <LuLink class="w-5 h-5 text-gray-500 group-hover:text-purple-500 transition-colors duration-300" />
                         </button>
                     </div>
-                    
-                    <button 
-                        onClick$={() => {}}
-                        class="group btn-interaction btn-comment py-2 px-3 flex items-center bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md border border-border-light dark:border-border-dark transition-colors duration-300 shadow-sm"
-                        title={_`Comments`}
-                    >
-                        <LuMessageSquare class="w-5 h-5 mr-1.5 text-gray-500 group-hover:text-blue-500 transition-colors duration-300" />
-                        <span class="font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-500 transition-colors duration-300">{commentsCount}</span>
-                    </button>
-                    
-                    <button 
-                        onClick$={copyPollLink}
-                        class="group btn-interaction btn-share p-2 flex items-center justify-center bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md border border-border-light dark:border-border-dark transition-colors duration-300 shadow-sm"
-                        title={_`Copy link`}
-                    >
-                        <LuLink class="w-5 h-5 text-gray-500 group-hover:text-purple-500 transition-colors duration-300" />
-                    </button>
                 </div>
             </div>
+        )
 
-            {/* Closed state */}
-            {isClosed.value && (
-                <div class="mt-4 py-2 px-4 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm font-medium text-center rounded-full">
-                    {_`This poll is closed`}
-                </div>
-            )}
-        </div>
-    );
-});
+        // Function to get border color based on poll type
+        function getBorderColorClass() {
+            switch (type) {
+                case "BINARY":
+                    return "border-cyan-400 dark:border-cyan-600"
+                case "SINGLE_CHOICE":
+                    return "border-purple-400 dark:border-purple-600"
+                case "MULTIPLE_CHOICE":
+                    return "border-emerald-400 dark:border-emerald-600"
+                default:
+                    return "border-blue-400 dark:border-blue-600"
+            }
+        }
+
+        // Function to get badge color based on poll type
+        function getBadgeColorClass() {
+            switch (type) {
+                case "BINARY":
+                    return "bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300"
+                case "SINGLE_CHOICE":
+                    return "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
+                case "MULTIPLE_CHOICE":
+                    return "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300"
+                default:
+                    return "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
+            }
+        }
+    },
+)

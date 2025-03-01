@@ -469,3 +469,132 @@ body {
     from { height: var(--radix-collapsible-content-height); opacity: 1; }
     to { height: 0; opacity: 0; }
 }
+
+.pagination-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.pagination-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  color: #475569;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.pagination-btn:hover {
+  background-color: #f0f9ff;
+  border-color: #0ea5e9;
+  color: #0ea5e9;
+}
+
+.pagination-selected-btn {
+  background-color: #0ea5e9;
+  color: white;
+  border-color: #0ea5e9;
+}
+
+.pagination-selected-btn:hover {
+  background-color: #0284c7;
+  color: white;
+  border-color: #0284c7;
+}
+
+.pagination-divider {
+  color: #94a3b8;
+  margin: 0 0.25rem;
+}
+
+.prevNextButtons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  color: #475569;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.prevNextButtons:hover {
+  background-color: #f0f9ff;
+  border-color: #0ea5e9;
+  color: #0ea5e9;
+}
+
+.prevNextButtons:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+}
+
+/* Asegurarse de que los botones no tengan el estilo por defecto */
+.pagination-btn,
+.prevNextButtons {
+  cursor: pointer;
+  outline: none;
+}
+
+.pagination-btn:focus,
+.prevNextButtons:focus {
+  outline: 2px solid #0ea5e9;
+  outline-offset: 2px;
+}
+
+/* Estilos para modo oscuro */
+@media (prefers-color-scheme: dark) {
+  .pagination-btn,
+  .prevNextButtons {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+  }
+
+  .pagination-btn:hover,
+  .prevNextButtons:hover {
+    background-color: #0f172a;
+    border-color: #0ea5e9;
+    color: #0ea5e9;
+  }
+
+  .pagination-selected-btn {
+    background-color: #0ea5e9;
+    color: white;
+    border-color: #0ea5e9;
+  }
+
+  .pagination-selected-btn:hover {
+    background-color: #0284c7;
+    color: white;
+    border-color: #0284c7;
+  }
+
+  .pagination-divider {
+    color: #64748b;
+  }
+
+  .prevNextButtons:disabled {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #475569;
+  }
+}
+

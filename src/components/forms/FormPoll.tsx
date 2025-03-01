@@ -45,7 +45,7 @@ export default component$<FormPollProps>(({
         const scope = track(() => defaultScope);
         setValue(pollForm, 'scope', scope.toUpperCase());
         
-        // Limpiar community_ids cuando cambie el scope
+        // Clear community_ids when scope changes
         setValue(pollForm, 'community_ids', 
             scope === CommunityType.GLOBAL ? ['1'] : []
         );
@@ -58,7 +58,7 @@ export default component$<FormPollProps>(({
         track(() => defaultSubregionId);
         
         if (defaultScope === CommunityType.REGIONAL && defaultRegionId) {
-            // En lugar de asignar a provinces, deberíamos usar setValue para community_ids
+            // Instead of assigning to provinces, we should use setValue for community_ids
             setValue(pollForm, 'community_ids', [defaultRegionId.toString()]);
         }
 
@@ -80,7 +80,7 @@ export default component$<FormPollProps>(({
 
     const isAnonymous = useSignal(false);
 
-    // Obtener el país de la URL
+    // Get country from URL
     const location = useLocation();
     const nationName = location.params.nation;
     const defaultCountry = useComputed$(() => {
@@ -90,7 +90,7 @@ export default component$<FormPollProps>(({
         );
     });
 
-    // Establecer el país por defecto cuando se monta el componente
+    // Set default country when component mounts
     useTask$(({ track }) => {
         const country = track(() => defaultCountry.value);
         if (country) {
@@ -113,7 +113,7 @@ export default component$<FormPollProps>(({
 
     return (
         <Form onSubmit$={handleSubmit} class="space-y-6">
-            {/* Indicador de tipo de encuesta */}
+            {/* Poll type indicator */}
             {defaultScope === CommunityType.GLOBAL && (
                 <div class="flex items-center gap-2 mb-4">
                     <div class="inline-flex items-center rounded-full bg-cyan-100 px-2.5 py-1 text-xs font-medium text-cyan-800">
@@ -155,10 +155,10 @@ export default component$<FormPollProps>(({
                 </div>
             )}
 
-            {/* Sección de Poll Settings */}
+            {/* Poll Settings Section */}
             <div class="space-y-4">
                 {/* <h2 class="font-medium text-foreground">{_`Poll Settings`}</h2> */}
-                {/* Campo oculto para el scope */}
+                {/* Hidden field for scope */}
                 <Field name="scope">
                     {(field, props) => (
                         <input 
@@ -283,7 +283,7 @@ export default component$<FormPollProps>(({
                 </Field>
             </div>
 
-            {/* Sección de Poll Content */}
+            {/* Poll Content Section */}
             <div class="space-y-4">
                 <h2 class="font-medium text-foreground">{_`Poll Content`}</h2>
                 <Field name="title">
@@ -308,13 +308,13 @@ export default component$<FormPollProps>(({
                             placeholder={_`Provide additional context or details about your poll`}
                             value={field.value}
                             error={field.error}
-                            maxLength={500}
+                            maxLength={5000}
                         />
                     )}
                 </Field>
             </div>
 
-            {/* Sección de Poll Options */}
+            {/* Poll Options Section */}
             <div class="space-y-4">
                 <h2 class="font-medium text-foreground">{_`Poll Options`}</h2>
 
@@ -382,7 +382,7 @@ export default component$<FormPollProps>(({
                 </FieldArray>
             </div>
 
-            {/* Sección de Additional Settings */}
+            {/* Additional Settings Section */}
             <div class="space-y-4">
                 <h2 class="font-medium text-foreground">{_`Additional Settings`}</h2>
 

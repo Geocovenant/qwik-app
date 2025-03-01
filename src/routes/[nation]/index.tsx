@@ -1,8 +1,7 @@
 import { $, component$, useComputed$, useSignal } from "@builder.io/qwik";
 import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
 import { _ } from "compiled-i18n";
-import { Tabs } from "~/components/ui";
-import Breadcrumbs from "~/components/Breadcrumbs";
+import { Breadcrumb, Tabs } from "~/components/ui";
 import Modal from "~/components/Modal";
 import FormPoll from "~/components/forms/FormPoll";
 import DebateList from "~/components/list/DebateList";
@@ -13,6 +12,7 @@ import { useGetNationalDebates, useGetNationalPolls, useGetTags } from "~/shared
 import { useSession } from "~/routes/plugin@auth";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
 import FormDebate from "~/components/forms/FormDebate";
+import { capitalizeFirst } from '~/utils/capitalizeFirst';
 
 export { useGetNationalPolls, useGetNationalDebates, useFormPollLoader, useFormDebateLoader, useGetTags } from "~/shared/loaders";
 export { useFormPollAction, useVotePoll, useReactPoll, useFormDebateAction } from "~/shared/actions";
@@ -47,7 +47,17 @@ export default component$(() => {
     return (
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
             <div class="bg-gray-50 border-b">
-                <Breadcrumbs />
+                <Breadcrumb.Root>
+                    <Breadcrumb.List>
+                        <Breadcrumb.Item>
+                            <Breadcrumb.Link href="/global">Global</Breadcrumb.Link>
+                        </Breadcrumb.Item>
+                        <Breadcrumb.Separator />
+                        <Breadcrumb.Item>
+                            <Breadcrumb.Link href={`/${nationName}`}>{capitalizeFirst(nationName)}</Breadcrumb.Link>
+                        </Breadcrumb.Item>
+                    </Breadcrumb.List>
+                </Breadcrumb.Root>
             </div>
 
             <div class="flex flex-col min-h-0">

@@ -153,12 +153,13 @@ const CountryViewCard = component$(
 export default component$(() => {
     const session = useSession()
     const debate = useGetDebateBySlug()
+    console.log('debate', debate.value)
     const searchTerm = useSignal("")
     const isDescriptionExpanded = useSignal(false)
 
     const hasCommented = useComputed$(() => {
         if (!session.value?.user) return false
-        return debate.value?.points_of_view.some((view) =>
+        return debate.value?.points_of_view?.some((view) =>
             view.opinions.some((opinion: any) => opinion.user === session.value.user?.name),
         )
     })
@@ -301,7 +302,7 @@ export default component$(() => {
         <div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
             {/* Hero Header */}
             <div class="relative h-[450px] overflow-hidden rounded-b-[2.5rem] shadow-xl">
-                {debate.value?.images.length > 0 && (
+                {debate.value?.images?.length > 0 && (
                     <Image
                         alt={_`Debate Cover Image`}
                         class="w-full h-full object-cover"
@@ -331,14 +332,63 @@ export default component$(() => {
                             >
                                 {_`${debate.value?.status}`}
                             </Badge>
+                            
+                            {/* Badge for national debates */}
+                            {debate.value?.type === "NATIONAL" && (
+                                <Badge
+                                    look="secondary"
+                                    class="bg-purple-600/90 backdrop-blur-sm text-white border border-purple-500/30 px-3 py-1.5 rounded-full shadow-md"
+                                >
+                                    {countriesList.find(
+                                        country => country.cca2 === debate.value?.communities?.[0]?.cca2
+                                    )?.flag || "🏳️"}{" "}
+                                    {debate.value?.communities?.[0]?.name}
+                                </Badge>
+                            )}
+                            
+                            {/* Badge for international debates */}
+                            {debate.value?.type === "INTERNATIONAL" && debate.value?.points_of_view && (
+                                <div class="relative group">
+                                    <Badge
+                                        look="secondary"
+                                        class="bg-indigo-600/90 backdrop-blur-sm text-white border border-indigo-500/30 px-3 py-1.5 rounded-full shadow-md cursor-pointer"
+                                    >
+                                        <LuGlobe class="w-4 h-4 mr-1.5 inline" />
+                                        {debate.value.points_of_view.length} {_`countries`}
+                                    </Badge>
+                                    
+                                    {/* Tooltip with country list */}
+                                    <div class="absolute left-0 top-full mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                        <div class="p-2 max-h-48 overflow-y-auto scrollbar-thin">
+                                            {debate.value.points_of_view.map((pov) => {
+                                                const country = countriesList.find(
+                                                    country => country.cca2 === pov.community.cca2
+                                                )
+                                                return (
+                                                    <div 
+                                                        key={pov.community.cca2}
+                                                        class="flex items-center gap-2 p-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg"
+                                                    >
+                                                        <span class="text-xl">{country?.flag || "🏳️"}</span>
+                                                        <span class="text-sm text-gray-700 dark:text-gray-300">
+                                                            {pov.community.name}
+                                                        </span>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            
                             <div class="ml-auto flex gap-2">
                                 <button class="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-full p-2 transition-colors duration-200">
                                     <LuShare2 class="w-5 h-5" />
-                                    <span class="sr-only">Share</span>
+                                    <span class="sr-only">{_`Share`}</span>
                                 </button>
                                 <button class="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-full p-2 transition-colors duration-200">
                                     <LuBookmark class="w-5 h-5" />
-                                    <span class="sr-only">Bookmark</span>
+                                    <span class="sr-only">{_`Bookmark`}</span>
                                 </button>
                             </div>
                         </div>
@@ -358,7 +408,7 @@ export default component$(() => {
                                 </span>
                                 <span class="flex items-center gap-2 bg-black/20 backdrop-blur-sm rounded-full px-3 py-1.5">
                                     <LuUsers class="w-4 h-4" />
-                                    <span class="text-sm font-medium">{debate.value?.points_of_view.length} countries</span>
+                                    <span class="text-sm font-medium">{debate.value?.points_of_view.length} {_`countries`}</span>
                                 </span>
                             </div>
                         </div>
@@ -380,7 +430,7 @@ export default component$(() => {
                             <div>
                                 <p class="text-sm text-gray-600 dark:text-gray-400">{_`Created by`}</p>
                                 <Link
-                                    href={`/users/${debate.value?.creator.username}`}
+                                    href={`/user/${debate.value?.creator.username}`}
                                     class="text-lg font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                                 >
                                     @{debate.value?.creator.username}
@@ -401,7 +451,7 @@ export default component$(() => {
                             onClick$={toggleDescription}
                             class="mt-3 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium transition-colors flex items-center gap-1"
                         >
-                            {isDescriptionExpanded.value ? "Show less" : "Read more"}
+                            {isDescriptionExpanded.value ? _`Show less` : _`Read more`}
                         </button>
 
                         <div class="flex flex-wrap gap-2 mt-6">
@@ -491,7 +541,7 @@ export default component$(() => {
                                 direction="left"
                                 onClick$={() => handleScroll("left")}
                                 disabled={!showLeftArrow.value}
-                                class="left-2"
+                                class="left-2 -ml-12"
                             />
                         )}
                         {showRightArrow.value && (
@@ -499,7 +549,7 @@ export default component$(() => {
                                 direction="right"
                                 onClick$={() => handleScroll("right")}
                                 disabled={!showRightArrow.value}
-                                class="right-2"
+                                class="right-2 -mr-12"
                             />
                         )}
 

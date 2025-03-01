@@ -1,5 +1,5 @@
 import { $, component$, useSignal } from "@builder.io/qwik";
-import { type DocumentHead } from "@builder.io/qwik-city";
+import { type DocumentHead, useNavigate } from "@builder.io/qwik-city";
 import { _ } from "compiled-i18n";
 import { Breadcrumb, Tabs } from "~/components/ui";
 import Modal from "~/components/Modal";
@@ -20,8 +20,9 @@ export default component$(() => {
     const showModalDebate = useSignal(false);
     const tags = useGetTags();
     const polls = useGetGlobalPolls();
+    const currentPage = useSignal(1);
     const debates = useGetGlobalDebates();
-    console.log('debates', debates.value)
+    const nav = useNavigate();
 
     const onSubmitCompleted = $(() => {
         showModalPoll.value = false;
@@ -85,8 +86,18 @@ export default component$(() => {
                             }
                             <PollList
                                 onCreatePoll={onCreatePoll}
-                                polls={Array.isArray(polls.value) ? polls.value : []}
+                                polls={{
+                                    items: Array.isArray(polls.value?.items) ? polls.value.items : [],
+                                    total: polls.value?.total || 0,
+                                    page: polls.value?.page || 1,
+                                    size: polls.value?.size || 10,
+                                    pages: polls.value?.pages || 1
+                                }}
                                 communityName="The global community"
+                                onPageChange$={async (page: number) => {
+                                    currentPage.value = page;
+                                    await nav(`/global?page=${page}`);
+                                }}
                             />
                         </Tabs.Panel>
 

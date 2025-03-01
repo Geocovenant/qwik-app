@@ -25,15 +25,19 @@ export const useGetUser = routeLoader$(async ({ cookie }) => {
 })
 
 // eslint-disable-next-line qwik/loader-location
-export const useGetGlobalPolls = routeLoader$(async ({ cookie }) => {
+export const useGetGlobalPolls = routeLoader$(async ({ cookie, query }) => {
     console.log('============ useGetGlobalPolls ============')
     const token = cookie.get('authjs.session-token');
     if (!token) {
         return [];
     }
-
+    const page = query.get('page');
     try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=GLOBAL`, {
+        let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=GLOBAL`;
+        if (page) {
+            url += `&page=${page}`;
+        }
+        const response = await fetch(url, {
             headers: {
                 Accept: 'application/json',
                 Authorization: token.value
@@ -225,15 +229,21 @@ export const useGetSubregionalPolls = routeLoader$(async ({ cookie, params, reso
 })
 
 // eslint-disable-next-line qwik/loader-location
-export const useGetGlobalDebates = routeLoader$(async ({ cookie }) => {
+export const useGetGlobalDebates = routeLoader$(async ({ cookie, query }) => {
     console.log('============ useGetGlobalDebates ============')
+    const page = query.get('page');
     const token = cookie.get('authjs.session-token');
     if (!token) {
         return [];
     }
 
     try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates?type=GLOBAL`, {
+        let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates?type=GLOBAL`;
+        if (page) {
+            url += `&page=${page}`;
+        }
+        
+        const response = await fetch(url, {
             headers: {
                 Accept: 'application/json',
                 Authorization: token.value
@@ -599,4 +609,33 @@ export const useFormOpinionLoader = routeLoader$<InitialValues<OpinionForm>>(() 
         opinion: '',
         country: '',
     };
+});
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetPollBySlug = routeLoader$(async ({ cookie, params }) => {
+    console.log('============ useGetPollBySlug ============')
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return undefined;
+    }
+    
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${params.slug}`, {
+            headers: {
+                Accept: 'application/json',
+                Authorization: token.value
+            },
+        });
+        
+        if (!response.ok) {
+            console.error('Error fetching poll details:', response.statusText);
+            return undefined;
+        }
+        
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching poll details:', error);
+        return undefined;
+    }
 });

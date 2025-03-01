@@ -26,6 +26,7 @@ export interface Poll {
     countries?: string[];
     user_voted_options?: number[];
     user_reaction?: 'LIKE' | 'DISLIKE' | null;
+    regions?: string[];
 }
 
 export interface Comment {
