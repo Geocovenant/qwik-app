@@ -6,6 +6,7 @@ import { dataArray } from "~/data/countries";
 import type { DebateForm } from "~/schemas/debateSchema";
 import type { UserForm } from "~/schemas/userSchema";
 import type { OpinionForm } from "~/schemas/opinionSchema";
+import { CommunityType } from "~/constants/communityType";
 
 // eslint-disable-next-line qwik/loader-location
 export const useGetUser = routeLoader$(async ({ cookie }) => {
@@ -616,3 +617,49 @@ export const useGetPollBySlug = routeLoader$(async ({ cookie, params }) => {
         return undefined;
     }
 });
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetNationalProjects = routeLoader$(async ({ params }) => {
+    const cca2 = getCountryCode(params.nation);
+    if (!cca2) {
+        console.error('Country not found:', params.nation);
+        return [];
+    }
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects?scope=NATIONAL&country=${cca2}`, {
+            headers: {
+                Accept: 'application/json',
+            }
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching national projects:', error);
+        return [];
+    }
+});
+
+// eslint-disable-next-line qwik/loader-location
+export const useFormProjectLoader = () => {
+    return {
+        value: {
+            title: '',
+            description: '',
+            goal_amount: '',
+            status: 'OPEN',
+            scope: CommunityType.NATIONAL,
+            community_ids: [],
+            is_anonymous: false,
+            tags: [],
+            steps: [
+                {
+                    title: '',
+                    description: '',
+                    order: '0',
+                    status: 'PENDING',
+                    resources: []
+                }
+            ]
+        }
+    };
+};

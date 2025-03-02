@@ -8,13 +8,15 @@ import DebateList from "~/components/list/DebateList";
 import { PollList } from "~/components/list/PollList";
 import { CommunityType } from "~/constants/communityType";
 import { dataArray as countries } from "~/data/countries";
-import { useGetNationalDebates, useGetNationalPolls, useGetTags } from "~/shared/loaders";
+import { useGetNationalDebates, useGetNationalPolls, useGetNationalProjects, useGetTags } from "~/shared/loaders";
 import { useSession } from "~/routes/plugin@auth";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
 import FormDebate from "~/components/forms/FormDebate";
 import { capitalizeFirst } from '~/utils/capitalizeFirst';
+import { ProjectList } from "~/components/list/ProjectList";
+import FormProject from "~/components/forms/FormProject";
 
-export { useGetNationalPolls, useGetNationalDebates, useFormPollLoader, useFormDebateLoader, useGetTags } from "~/shared/loaders";
+export { useGetNationalPolls, useGetNationalDebates, useGetNationalProjects, useFormPollLoader, useFormDebateLoader, useGetTags } from "~/shared/loaders";
 export { useFormPollAction, useVotePoll, useReactPoll, useFormDebateAction } from "~/shared/actions";
 
 export default component$(() => {
@@ -22,6 +24,7 @@ export default component$(() => {
     const location = useLocation();
     const showModalPoll = useSignal(false);
     const showModalDebate = useSignal(false);
+    const showModalProject = useSignal(false);
     const nationName = location.params.nation;
     const nation = useComputed$(() => {
         return countries.find(country => country.name.toLowerCase() === nationName.toLowerCase());
@@ -30,11 +33,13 @@ export default component$(() => {
     const tags = useGetTags();
     const polls = useGetNationalPolls();
     const debates = useGetNationalDebates();
+    const projects = useGetNationalProjects();
+    
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
     const isAuthenticated = useComputed$(() => !!session.value?.user);
-    
+
     const onSubmitCompleted = $(() => {
         showModalPoll.value = false;
         showModalDebate.value = false;
@@ -48,13 +53,17 @@ export default component$(() => {
         showModalDebate.value = true;
     });
 
+    const onCreateProject = $(() => {
+        showModalProject.value = true;
+    });
+
     return (
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
             <div class="bg-gray-50 border-b py-1 px-2">
                 <Breadcrumb.Root>
                     <Breadcrumb.List class="text-lg">
                         <Breadcrumb.Item>
-                            <Breadcrumb.Link href="/global">Global</Breadcrumb.Link>
+                            <Breadcrumb.Link href="/global">{_`Global`}</Breadcrumb.Link>
                         </Breadcrumb.Item>
                         <Breadcrumb.Separator />
                         <Breadcrumb.Item>
@@ -137,12 +146,35 @@ export default component$(() => {
                             />
                         </Tabs.Panel>
 
-                        <Tabs.Panel value="issues" class="p-4">
-                            {_`Issues`}
+                        <Tabs.Panel value="projects" class="p-4">
+                            <Modal title={_`Create project for ${nationName}`} show={showModalProject}>
+                                {session.value?.user ? (
+                                    <FormProject onSubmitCompleted={onSubmitCompleted} defaultScope={CommunityType.NATIONAL} />
+                                ) : (
+                                    <SocialLoginButtons />
+                                )}
+                            </Modal>
+
+                            <ProjectList
+                                onCreateProject={onCreateProject}
+                                projects={{
+                                    items: Array.isArray(projects.value?.items) ? projects.value.items : [],
+                                    total: projects.value?.total || 0,
+                                    page: projects.value?.page || 1,
+                                    size: projects.value?.size || 10,
+                                    pages: projects.value?.pages || 1,
+                                }}
+                                communityName={nationName}
+                                onPageChange$={async (page: number) => {
+                                    currentPage.value = page
+                                    await nav(`/${nationName}?page=${page}`)
+                                }}
+                                isAuthenticated={isAuthenticated.value}
+                            />
                         </Tabs.Panel>
 
-                        <Tabs.Panel value="projects" class="p-4">
-                            {_`Proyects`}
+                        <Tabs.Panel value="issues" class="p-4">
+                            {_`Issues`}
                         </Tabs.Panel>
 
                         <Tabs.Panel value="members" class="p-4">

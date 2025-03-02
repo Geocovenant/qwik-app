@@ -131,3 +131,90 @@ export interface PollComment {
 
 // Renombrar el tipo Comment actual a PollComment
 export type { Comment as PollComment } from './types';
+
+// Add these types to your shared/types.ts file
+
+export enum ProjectStatus {
+    DRAFT = "DRAFT",
+    OPEN = "OPEN",
+    IN_PROGRESS = "IN_PROGRESS",
+    COMPLETED = "COMPLETED",
+    CANCELLED = "CANCELLED",
+}
+
+export enum ResourceType {
+    LABOR = "LABOR",
+    MATERIAL = "MATERIAL",
+    ECONOMIC = "ECONOMIC",
+}
+
+export enum CommitmentType {
+    TIME = "TIME",
+    MATERIAL = "MATERIAL",
+    ECONOMIC = "ECONOMIC",
+}
+
+export interface ProjectResourceRead {
+    id: number
+    type: ResourceType
+    description: string
+    quantity?: number
+    unit?: string
+}
+
+export interface ProjectStepRead {
+    id: number
+    title: string
+    description?: string
+    order: number
+    status: string
+    resources: ProjectResourceRead[]
+}
+
+export interface UserMinimal {
+    id: number
+    username: string
+    image?: string
+}
+
+export interface CommunityMinimal {
+    id: number
+    name: string
+    cca2?: string
+}
+
+export interface ProjectCommitmentRead {
+    id: number
+    user: UserMinimal
+    type: CommitmentType
+    description: string
+    quantity?: number
+    unit?: string
+    fulfilled: boolean
+}
+
+export interface ProjectDonationRead {
+    id: number
+    user: UserMinimal
+    amount: number
+    donated_at: string
+}
+
+export interface ProjectRead {
+    id: number
+    title: string
+    description?: string
+    status: ProjectStatus
+    goal_amount?: number
+    current_amount: number
+    scope: string
+    slug: string
+    created_at: string
+    updated_at: string
+    creator: UserMinimal
+    steps: ProjectStepRead[]
+    commitments: ProjectCommitmentRead[]
+    donations: ProjectDonationRead[]
+    communities: CommunityMinimal[]
+}
+
