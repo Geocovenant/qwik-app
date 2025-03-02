@@ -5,6 +5,7 @@ import { LuBuilding, LuChevronRight, LuGlobe, LuPanelLeftClose, LuPanelLeftOpen,
 import { _ } from "compiled-i18n";
 import { Resource, useResource$ } from "@builder.io/qwik";
 import { ThemeSwitch } from "./theme-switch/ThemeSwitch";
+import { dataArray } from "../data/countries"; // Importamos el array de países
 
 type Community = {
     id: string
@@ -19,7 +20,8 @@ type Community = {
 const LuGlobeIcon = component$(() => <LuGlobe class="h-5 w-5" />)
 const LuBuildingIcon = component$(() => <LuBuilding class="h-5 w-5" />)
 
-const communities: Community[] = [
+// Creamos las comunidades base (Global e International)
+const baseCommunities: Community[] = [
     {
         id: "global",
         name: "Global",
@@ -33,24 +35,24 @@ const communities: Community[] = [
         path: "/international",
         icon: <LuGlobeIcon />,
         children: []
-    },
-    {
-        id: "argentina",
-        cca2: "AR",
-        name: "Argentina",
-        path: "/argentina",
-        icon: "🇦🇷",
-        children: []
-    },
-    {
-        id: "uruguay",
-        cca2: "UY",
-        name: "Uruguay",
-        path: "/uruguay",
-        icon: "🇺🇾",
-        children: []
     }
-]
+];
+
+// Convertimos los países del dataArray a comunidades
+const countryCommunities: Community[] = dataArray.map(country => ({
+    id: country.cca2.toLowerCase(),
+    cca2: country.cca2,
+    name: country.name,
+    path: country.path, // Usamos el path definido en countries.ts
+    icon: country.flag,
+    children: []
+}));
+
+// Combinamos las comunidades base con las de países
+const communities: Community[] = [
+    ...baseCommunities,
+    ...countryCommunities
+];
 
 const CommunityItem = component$(({ community, level = 0, isCollapsed}: {community: Community, level?: number, isCollapsed: boolean}) => {
     const isOpen = useSignal<boolean>(false);
@@ -231,6 +233,7 @@ export default component$(() => {
     const sidebarWidth = useSignal<number>(256);
     const isDragging = useSignal<boolean>(false);
     const showNewCommunityModal = useSignal<boolean>(false);
+    const searchQuery = useSignal<string>('');
 
     const MIN_WIDTH = 64;
     const MAX_WIDTH = 384;
@@ -288,6 +291,13 @@ export default component$(() => {
     const location = useLocation();
     const currentPath = location.url.pathname;
     
+    // Filtramos los países según la búsqueda
+    const filteredCountries = !searchQuery.value 
+        ? countryCommunities // Mostramos todos los países siempre
+        : countryCommunities.filter(country => 
+            country.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+          );
+
     return (
         <div class="flex h-full">
             <div 
@@ -311,21 +321,41 @@ export default component$(() => {
                 <div class="flex-1 overflow-y-auto">
                     <div class="px-2 py-4">
                         <div class="space-y-2">
-                            {communities.slice(0, 2).map(community => (
+                            {baseCommunities.map(community => (
                                 <CommunityItem key={community.id} community={community} isCollapsed={isCollapsed.value} />
                             ))}
                         </div>
                         
                         {!isCollapsed.value && (
                             <div class="px-3 py-2 text-sm font-semibold text-gray-500 dark:text-gray-400 mt-4 mb-2">
-                                {_`Countries`}
+                                <span>{_`Countries`}</span>
+                            </div>
+                        )}
+                        
+                        {!isCollapsed.value && (
+                            <div class="px-3 mb-2">
+                                <input
+                                    type="text"
+                                    placeholder={_`Search countries...`}
+                                    value={searchQuery.value}
+                                    onInput$={(e: any) => searchQuery.value = e.target.value}
+                                    class="w-full px-3 py-1.5 text-sm rounded-md border border-gray-300 dark:border-gray-600 
+                                           bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
+                                           focus:outline-none focus:ring-2 focus:ring-primary"
+                                />
                             </div>
                         )}
                         
                         <div class="space-y-1">
-                            {communities.slice(2).map(community => (
+                            {filteredCountries.map(community => (
                                 <CommunityItem key={community.id} community={community} isCollapsed={isCollapsed.value} />
                             ))}
+                            
+                            {!isCollapsed.value && filteredCountries.length === 0 && (
+                                <div class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
+                                    {_`No countries found`}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -337,7 +367,7 @@ export default component$(() => {
                             class="flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-[#713fc2] dark:hover:text-[#713fc2]"
                         >
                             <LuPlusCircle class="w-5 h-5 mr-2" />
-                            {_`Nueva Comunidad`}
+                            {!isCollapsed.value && _`Nueva Comunidad`}
                         </button>
                         <ThemeSwitch />
                     </div>
