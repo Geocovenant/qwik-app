@@ -601,3 +601,7 @@ body {
 textarea {
   field-sizing: content;
 }
+
+.animate-spin-fast {
+  animation: spin-fast 7s linear infinite;
+}

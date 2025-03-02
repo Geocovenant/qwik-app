@@ -20,7 +20,7 @@ export default component$(() => {
                     <div class="flex items-center">
                         <Logo
                             style={{ width: '48px', height: '48px' }}
-                            class="text-white hover:text-gray-100 transition-colors duration-200"
+                            class="text-white hover:text-gray-100 transition-colors duration-200 animate-spin-fast"
                         />
                         <span class="ml-2 font-semibold text-xl text-white">Geounity</span>
                     </div>

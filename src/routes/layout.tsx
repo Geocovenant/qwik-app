@@ -28,6 +28,7 @@ export const onGet: RequestHandler = async ({ cacheControl }) => {
 
 export default component$(() => {
   const session = useSession();
+
   const location = useLocation();
   const isHome = location.url.pathname === '/';
 

@@ -1,4 +1,5 @@
 import plugin from "tailwindcss/plugin";
+import animatePlugin from "tailwindcss-animate";
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
@@ -91,7 +92,7 @@ export default {
     },
   },
   plugins: [
-    require("tailwindcss-animate"),
+    animatePlugin,
     plugin(function ({ addUtilities }) {
       addUtilities({
         ".press": {

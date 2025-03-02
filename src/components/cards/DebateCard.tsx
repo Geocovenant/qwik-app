@@ -90,7 +90,6 @@ export default component$<DebateCardProps>(({
                                     <Avatar.Image
                                         src={creator_avatar}
                                         alt={creator_username}
-                                        class="w-6 h-6 rounded-full"
                                     />
                                 </Avatar.Root>
                                 <span class="hover:text-cyan-600 dark:hover:text-cyan-400 cursor-pointer">
