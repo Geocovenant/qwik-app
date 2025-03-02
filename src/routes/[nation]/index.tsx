@@ -3,20 +3,22 @@ import { useLocation, useNavigate, type DocumentHead } from "@builder.io/qwik-ci
 import { _ } from "compiled-i18n";
 import { Breadcrumb, Tabs } from "~/components/ui";
 import Modal from "~/components/Modal";
-import FormPoll from "~/components/forms/FormPoll";
-import DebateList from "~/components/list/DebateList";
-import { PollList } from "~/components/list/PollList";
 import { CommunityType } from "~/constants/communityType";
 import { dataArray as countries } from "~/data/countries";
-import { useGetNationalDebates, useGetNationalPolls, useGetNationalProjects, useGetTags } from "~/shared/loaders";
 import { useSession } from "~/routes/plugin@auth";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
-import FormDebate from "~/components/forms/FormDebate";
 import { capitalizeFirst } from '~/utils/capitalizeFirst';
+import DebateList from "~/components/list/DebateList";
+import { PollList } from "~/components/list/PollList";
 import { ProjectList } from "~/components/list/ProjectList";
+import { IssueList } from "~/components/list/IssueList";
+import FormPoll from "~/components/forms/FormPoll";
+import FormDebate from "~/components/forms/FormDebate";
 import FormProject from "~/components/forms/FormProject";
+import FormIssue from "~/components/forms/FormIssue";
+import { useGetNationalDebates, useGetNationalPolls, useGetNationalProjects, useGetNationalIssues, useGetTags } from "~/shared/loaders";
 
-export { useGetNationalPolls, useGetNationalDebates, useGetNationalProjects, useFormPollLoader, useFormDebateLoader, useGetTags } from "~/shared/loaders";
+export { useGetNationalPolls, useGetNationalDebates, useGetNationalProjects, useGetNationalIssues, useFormPollLoader, useFormDebateLoader, useGetTags } from "~/shared/loaders";
 export { useFormPollAction, useVotePoll, useReactPoll, useFormDebateAction } from "~/shared/actions";
 
 export default component$(() => {
@@ -25,6 +27,7 @@ export default component$(() => {
     const showModalPoll = useSignal(false);
     const showModalDebate = useSignal(false);
     const showModalProject = useSignal(false);
+    const showModalIssue = useSignal(false);
     const nationName = location.params.nation;
     const nation = useComputed$(() => {
         return countries.find(country => country.name.toLowerCase() === nationName.toLowerCase());
@@ -34,7 +37,7 @@ export default component$(() => {
     const polls = useGetNationalPolls();
     const debates = useGetNationalDebates();
     const projects = useGetNationalProjects();
-    
+    const issues = useGetNationalIssues();
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
@@ -55,6 +58,10 @@ export default component$(() => {
 
     const onCreateProject = $(() => {
         showModalProject.value = true;
+    });
+
+    const onCreateIssue = $(() => {
+        showModalIssue.value = true;
     });
 
     return (
@@ -174,7 +181,30 @@ export default component$(() => {
                         </Tabs.Panel>
 
                         <Tabs.Panel value="issues" class="p-4">
-                            {_`Issues`}
+                            <Modal title={_`Report an Issue`} show={showModalIssue}>
+                                {session.value?.user ? (
+                                    <FormIssue onSubmitCompleted={onSubmitCompleted} defaultScope={CommunityType.NATIONAL} tags={tags.value} />
+                                ) : (
+                                    <SocialLoginButtons />
+                                )}
+                            </Modal>
+
+                            <IssueList
+                                onCreateIssue={onCreateIssue}
+                                issues={{
+                                    items: Array.isArray(issues.value?.items) ? issues.value.items : [],
+                                    total: issues.value?.total || 0,
+                                    page: issues.value?.page || 1,
+                                    size: issues.value?.size || 10,
+                                    pages: issues.value?.pages || 1,
+                                }}
+                                communityName={_`this community`}
+                                onPageChange$={async (page: number) => {
+                                    currentPage.value = page
+                                    await nav(`?page=${page}`)
+                                }}
+                                isAuthenticated={isAuthenticated.value}
+                            />
                         </Tabs.Panel>
 
                         <Tabs.Panel value="members" class="p-4">

@@ -12,6 +12,8 @@ import type { OpinionForm } from "~/schemas/opinionSchema";
 import { OpinionSchema } from "~/schemas/opinionSchema";
 import type { ProjectForm } from '~/schemas/projectSchema';
 import { ProjectSchema } from '~/schemas/projectSchema';
+import type { IssueForm } from '~/schemas/issueSchema';
+import { IssueSchema } from '~/schemas/issueSchema';
 
 export interface PollResponseData {
     success: boolean; // Indica si la operación fue exitosa
@@ -465,4 +467,84 @@ export const useFormProjectAction = formAction$<ProjectForm, ProjectResponseData
         }
     },
     valiForm$(ProjectSchema)
+);
+
+export interface IssueResponseData {
+    success: boolean;
+    message: string;
+    data?: {
+        issue_id: string;
+        share_link: string;
+    };
+}
+
+export const useFormIssueAction = formAction$<IssueForm, IssueResponseData>(
+    async (values, event) => {
+        console.log('############ useFormIssueAction ############');
+        console.log('values', values);
+
+        const token = event.cookie.get('authjs.session-token')?.value;
+
+        // Preparar payload según el scope
+        const payload = {
+            title: values.title,
+            description: values.description,
+            status: values.status,
+            is_anonymous: values.is_anonymous,
+            scope: values.scope,
+            tags: values.tags || [],
+        };
+
+        // Añadir los campos específicos según el scope
+        switch (values.scope) {
+            case CommunityType.GLOBAL:
+                Object.assign(payload, { community_ids: [1] });
+                break;
+            case CommunityType.INTERNATIONAL:
+                Object.assign(payload, { country_codes: values.community_ids });
+                break;
+            case CommunityType.NATIONAL:
+                Object.assign(payload, { country_code: values.community_ids[0] });
+                break;
+            case CommunityType.REGIONAL:
+                Object.assign(payload, { region_id: values.community_ids[0] });
+                break;
+            case CommunityType.SUBREGIONAL:
+                Object.assign(payload, { subregion_id: values.community_ids[0] });
+                break;
+        }
+
+        console.log('payload', payload);
+
+        try {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/issues`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to create issue');
+            }
+
+            const data = await response.json();
+
+            return {
+                success: true,
+                message: _`Issue reported successfully`,
+                data: data,
+            };
+        } catch (error: any) {
+            console.error('Error in useFormIssueAction:', error);
+            return {
+                success: false,
+                message: error.message || 'An unexpected error occurred',
+            };
+        }
+    },
+    valiForm$(IssueSchema)
 );

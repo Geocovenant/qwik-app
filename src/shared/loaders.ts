@@ -663,3 +663,39 @@ export const useFormProjectLoader = () => {
         }
     };
 };
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetNationalIssues = routeLoader$(async ({ params }) => {
+    const cca2 = getCountryCode(params.nation);
+    if (!cca2) {
+        console.error('Country not found:', params.nation);
+        return [];
+    }
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/issues?scope=NATIONAL&country=${cca2}`, {
+            headers: {
+                Accept: 'application/json'
+            }
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching national issues:', error);
+        return [];
+    }
+});
+
+// eslint-disable-next-line qwik/loader-location
+export const useFormIssueLoader = () => {
+    return {
+        value: {
+            title: '',
+            description: '',
+            status: 'OPEN',
+            scope: CommunityType.NATIONAL,
+            community_ids: [],
+            is_anonymous: false,
+            tags: []
+        }
+    };
+};

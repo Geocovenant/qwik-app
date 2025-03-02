@@ -218,3 +218,24 @@ export interface ProjectRead {
     communities: CommunityMinimal[]
 }
 
+export enum IssueStatus {
+    OPEN = "OPEN",
+    IN_PROGRESS = "IN_PROGRESS",
+    RESOLVED = "RESOLVED",
+    CLOSED = "CLOSED"
+}
+
+export interface IssueRead {
+    id: number;
+    title: string;
+    description: string;
+    status: IssueStatus;
+    scope: string;
+    slug: string;
+    created_at: string;
+    updated_at: string;
+    views_count: number;
+    creator: UserMinimal;
+    communities: CommunityMinimal[];
+}
+
