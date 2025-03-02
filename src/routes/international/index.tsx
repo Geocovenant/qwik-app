@@ -1,5 +1,5 @@
-import { $, component$, useSignal } from "@builder.io/qwik";
-import { type DocumentHead } from "@builder.io/qwik-city";
+import { $, component$, useComputed$, useSignal } from "@builder.io/qwik";
+import { useNavigate, type DocumentHead } from "@builder.io/qwik-city";
 import { _ } from "compiled-i18n";
 import { Breadcrumb, Tabs } from "~/components/ui";
 import Modal from "~/components/Modal";
@@ -20,7 +20,11 @@ export default component$(() => {
     const showModalDebate = useSignal(false);
     const tags = useGetTags();
     const polls = useGetInternationalPolls();
+    const currentPage = useSignal(1);
     const debates = useGetInternationalDebates();
+    const nav = useNavigate();
+
+    const isAuthenticated = useComputed$(() => !!session.value?.user);
 
     const onSubmitCompleted = $(() => {
         showModalPoll.value = false;
@@ -37,11 +41,11 @@ export default component$(() => {
 
     return (
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
-            <div class="bg-gray-50 border-b p-1">
+            <div class="bg-gray-50 border-b py-1 px-2">
                 <Breadcrumb.Root>
-                    <Breadcrumb.List>
+                    <Breadcrumb.List class="text-lg">
                         <Breadcrumb.Item>
-                            <Breadcrumb.Link href="/">International</Breadcrumb.Link>
+                            <Breadcrumb.Link href="/">{_`International`}</Breadcrumb.Link>
                         </Breadcrumb.Item>
                     </Breadcrumb.List>
                 </Breadcrumb.Root>
@@ -81,8 +85,19 @@ export default component$(() => {
                             </Modal>
                             <PollList
                                 onCreatePoll={onCreatePoll}
-                                polls={Array.isArray(polls.value) ? polls.value : []}
-                                communityName="the international community"
+                                polls={{
+                                    items: Array.isArray(polls.value?.items) ? polls.value.items : [],
+                                    total: polls.value?.total || 0,
+                                    page: polls.value?.page || 1,
+                                    size: polls.value?.size || 10,
+                                    pages: polls.value?.pages || 1
+                                }}
+                                communityName="The International community"
+                                onPageChange$={async (page: number) => {
+                                    currentPage.value = page;
+                                    await nav(`/global?page=${page}`);
+                                }}
+                                isAuthenticated={isAuthenticated.value}
                             />
                         </Tabs.Panel>
 

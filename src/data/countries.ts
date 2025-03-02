@@ -5,7 +5,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "AF",
         "adminDivisionName": "ولایت‌ها",  // Wilayat-ha (Provincias)
-        "path": "/afganistan"
+        "path": "afganistan"
     },
     {
         "name": "Albania",
@@ -13,7 +13,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "AL",
         "adminDivisionName": "Qark",  // Condados
-        "path": "/albania"
+        "path": "albania"
     },
     {
         "name": "Argelia",
@@ -21,7 +21,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "DZ",
         "adminDivisionName": "ولايات",  // Wilayas (Provincias)
-        "path": "/argelia"
+        "path": "argelia"
     },
     {
         "name": "Andorra",
@@ -29,7 +29,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "AD",
         "adminDivisionName": "Parròquies",  // Parroquias
-        "path": "/andorra"
+        "path": "andorra"
     },
     {
         "name": "Angola",
@@ -37,7 +37,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "AO",
         "adminDivisionName": "Províncias",  // Provincias
-        "path": "/angola"
+        "path": "angola"
     },
     {
         "name": "Antigua y Barbuda",
@@ -45,7 +45,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "AG",
         "adminDivisionName": "Parishes",  // Parroquias
-        "path": "/antigua-y-barbuda"
+        "path": "antigua-y-barbuda"
     },
     {
         "name": "Argentina",
@@ -53,7 +53,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "AR",
         "adminDivisionName": "Provincias",  // Provincias
-        "path": "/argentina"
+        "path": "argentina"
     },
     {
         "name": "Armenia",
@@ -61,7 +61,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "AM",
         "adminDivisionName": "մարզեր",  // Marzer (Provincias)
-        "path": "/armenia"
+        "path": "armenia"
     },
     {
         "name": "Australia",
@@ -69,7 +69,7 @@ export const dataArray = [
         "continent": "Oceanía",
         "cca2": "AU",
         "adminDivisionName": "States and Territories",  // Estados y Territorios
-        "path": "/australia"
+        "path": "australia"
     },
     {
         "name": "Austria",
@@ -77,7 +77,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "AT",
         "adminDivisionName": "Bundesländer",  // Estados Federados
-        "path": "/austria"
+        "path": "austria"
     },
     {
         "name": "Azerbaiyán",
@@ -85,7 +85,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "AZ",
         "adminDivisionName": "Rayonlar",  // Distritos
-        "path": "/azerbaiyan"
+        "path": "azerbaiyan"
     },
     {
         "name": "Bahamas",
@@ -93,7 +93,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "BS",
         "adminDivisionName": "Districts",  // Distritos
-        "path": "/bahamas"
+        "path": "bahamas"
     },
     {
         "name": "Baréin",
@@ -101,7 +101,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "BH",
         "adminDivisionName": "محافظات",  // Muhafazat (Gobernaciones)
-        "path": "/barein"
+        "path": "barein"
     },
     {
         "name": "Bangladés",
@@ -109,7 +109,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "BD",
         "adminDivisionName": "বিভাগ",  // Bibhag (Divisiones)
-        "path": "/banglades"
+        "path": "banglades"
     },
     {
         "name": "Barbados",
@@ -117,7 +117,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "BB",
         "adminDivisionName": "Parishes",  // Parroquias
-        "path": "/barbados"
+        "path": "barbados"
     },
     {
         "name": "Bielorrusia",
@@ -125,7 +125,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "BY",
         "adminDivisionName": "Вобласці",  // Voblastsi (Regiones)
-        "path": "/bielorrusia"
+        "path": "bielorrusia"
     },
     {
         "name": "Bélgica",
@@ -133,7 +133,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "BE",
         "adminDivisionName": "Provincies/Provinces/Provinzen",  // Provincias
-        "path": "/belgica"
+        "path": "belgica"
     },
     {
         "name": "Belice",
@@ -141,7 +141,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "BZ",
         "adminDivisionName": "Districts",  // Distritos
-        "path": "/belice"
+        "path": "belice"
     },
     {
         "name": "Benín",
@@ -149,7 +149,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "BJ",
         "adminDivisionName": "Départements",  // Departamentos
-        "path": "/benin"
+        "path": "benin"
     },
     {
         "name": "Bután",
@@ -157,7 +157,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "BT",
         "adminDivisionName": "Dzongkhags",  // Distritos
-        "path": "/butan"
+        "path": "butan"
     },
     {
         "name": "Bolivia",
@@ -165,7 +165,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "BO",
         "adminDivisionName": "Departamentos",  // Departamentos
-        "path": "/bolivia"
+        "path": "bolivia"
     },
     {
         "name": "Bosnia y Herzegovina",
@@ -173,7 +173,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "BA",
         "adminDivisionName": "Entidades",  // Entidades
-        "path": "/bosnia-y-herzegovina"
+        "path": "bosnia-y-herzegovina"
     },
     {
         "name": "Botsuana",
@@ -181,7 +181,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "BW",
         "adminDivisionName": "Districts",  // Distritos
-        "path": "/botsuana"
+        "path": "botsuana"
     },
     {
         "name": "Brasil",
@@ -189,7 +189,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "BR",
         "adminDivisionName": "Estados",  // Estados
-        "path": "/brasil"
+        "path": "brasil"
     },
     {
         "name": "Brunéi",
@@ -197,7 +197,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "BN",
         "adminDivisionName": "Daerah",  // Distritos
-        "path": "/brunei"
+        "path": "brunei"
     },
     {
         "name": "Bulgaria",
@@ -205,7 +205,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "BG",
         "adminDivisionName": "Области",  // Oblasti (Provincias)
-        "path": "/bulgaria"
+        "path": "bulgaria"
     },
     {
         "name": "Burkina Faso",
@@ -213,7 +213,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "BF",
         "adminDivisionName": "Régions",  // Regiones
-        "path": "/burkina-faso"
+        "path": "burkina-faso"
     },
     {
         "name": "Burundi",
@@ -221,7 +221,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "BI",
         "adminDivisionName": "Intara",  // Provincias
-        "path": "/burundi"
+        "path": "burundi"
     },
     {
         "name": "Cabo Verde",
@@ -229,7 +229,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "CV",
         "adminDivisionName": "Concelhos",  // Municipios
-        "path": "/cabo-verde"
+        "path": "cabo-verde"
     },
     {
         "name": "Camboya",
@@ -237,7 +237,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "KH",
         "adminDivisionName": "ខេត្ត",  // Khaet (Provincias)
-        "path": "/camboya"
+        "path": "camboya"
     },
     {
         "name": "Camerún",
@@ -245,7 +245,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "CM",
         "adminDivisionName": "Régions",  // Regiones
-        "path": "/camerun"
+        "path": "camerun"
     },
     {
         "name": "Canadá",
@@ -253,7 +253,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "CA",
         "adminDivisionName": "Provinces and Territories",  // Provincias y Territorios
-        "path": "/canada"
+        "path": "canada"
     },
     {
         "name": "Chad",
@@ -261,7 +261,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "TD",
         "adminDivisionName": "Régions",  // Regiones
-        "path": "/chad"
+        "path": "chad"
     },
     {
         "name": "Chile",
@@ -269,7 +269,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "CL",
         "adminDivisionName": "Regiones",  // Regiones
-        "path": "/chile"
+        "path": "chile"
     },
     {
         "name": "China",
@@ -277,7 +277,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "CN",
         "adminDivisionName": "省",  // Sheng (Provincias)
-        "path": "/china"
+        "path": "china"
     },
     {
         "name": "Colombia",
@@ -285,7 +285,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "CO",
         "adminDivisionName": "Departamentos",  // Departamentos
-        "path": "/colombia"
+        "path": "colombia"
     },
     {
         "name": "Comoras",
@@ -293,7 +293,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "KM",
         "adminDivisionName": "Îles",  // Islas
-        "path": "/comoras"
+        "path": "comoras"
     },
     {
         "name": "República del Congo",
@@ -301,7 +301,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "CG",
         "adminDivisionName": "Départements",  // Departamentos
-        "path": "/republica-del-congo"
+        "path": "republica-del-congo"
     },
     {
         "name": "República Democrática del Congo",
@@ -309,7 +309,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "CD",
         "adminDivisionName": "Provinces",  // Provincias
-        "path": "/republica-democratica-del-congo"
+        "path": "republica-democratica-del-congo"
     },
     {
         "name": "Costa Rica",
@@ -317,7 +317,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "CR",
         "adminDivisionName": "Provincias",  // Provincias
-        "path": "/costa-rica"
+        "path": "costa-rica"
     },
     {
         "name": "Costa de Marfil",
@@ -325,7 +325,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "CI",
         "adminDivisionName": "Districts",  // Distritos
-        "path": "/costa-de-marfil"
+        "path": "costa-de-marfil"
     },
     {
         "name": "Croacia",
@@ -333,7 +333,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "HR",
         "adminDivisionName": "Županije",  // Condados
-        "path": "/croacia"
+        "path": "croacia"
     },
     {
         "name": "Cuba",
@@ -341,7 +341,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "CU",
         "adminDivisionName": "Provincias",  // Provincias
-        "path": "/cuba"
+        "path": "cuba"
     },
     {
         "name": "Chipre",
@@ -349,7 +349,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "CY",
         "adminDivisionName": "Επαρχίες",  // Eparchies (Distritos)
-        "path": "/chipre"
+        "path": "chipre"
     },
     {
         "name": "República Checa",
@@ -357,7 +357,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "CZ",
         "adminDivisionName": "Kraje",  // Regiones
-        "path": "/republica-checa"
+        "path": "republica-checa"
     },
     {
         "name": "Dinamarca",
@@ -365,7 +365,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "DK",
         "adminDivisionName": "Regioner",  // Regiones
-        "path": "/dinamarca"
+        "path": "dinamarca"
     },
     {
         "name": "Yibuti",
@@ -373,7 +373,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "DJ",
         "adminDivisionName": "Régions",  // Regiones
-        "path": "/yibuti"
+        "path": "yibuti"
     },
     {
         "name": "Dominica",
@@ -381,7 +381,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "DM",
         "adminDivisionName": "Parishes",  // Parroquias
-        "path": "/dominica"
+        "path": "dominica"
     },
     {
         "name": "República Dominicana",
@@ -389,7 +389,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "DO",
         "adminDivisionName": "Provincias",  // Provincias
-        "path": "/republica-dominicana"
+        "path": "republica-dominicana"
     },
     {
         "name": "Ecuador",
@@ -397,7 +397,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "EC",
         "adminDivisionName": "Provincias",  // Provincias
-        "path": "/ecuador"
+        "path": "ecuador"
     },
     {
         "name": "Egipto",
@@ -405,7 +405,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "EG",
         "adminDivisionName": "محافظات",  // Muhafazat (Gobernaciones)
-        "path": "/egipto"
+        "path": "egipto"
     },
     {
         "name": "El Salvador",
@@ -413,7 +413,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "SV",
         "adminDivisionName": "Departamentos",  // Departamentos
-        "path": "/el-salvador"
+        "path": "el-salvador"
     },
     {
         "name": "Guinea Ecuatorial",
@@ -421,7 +421,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "GQ",
         "adminDivisionName": "Provincias",  // Provincias
-        "path": "/guinea-ecuatorial"
+        "path": "guinea-ecuatorial"
     },
     {
         "name": "Eritrea",
@@ -429,7 +429,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "ER",
         "adminDivisionName": "Zobas",  // Regiones
-        "path": "/eritrea"
+        "path": "eritrea"
     },
     {
         "name": "Estonia",
@@ -437,7 +437,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "EE",
         "adminDivisionName": "Maakonnad",  // Condados
-        "path": "/estonia"
+        "path": "estonia"
     },
     {
         "name": "Esuatini",
@@ -445,7 +445,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "SZ",
         "adminDivisionName": "Tindzawo",  // Regiones
-        "path": "/esuatini"
+        "path": "esuatini"
     },
     {
         "name": "Etiopía",
@@ -453,7 +453,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "ET",
         "adminDivisionName": "ክልሎች",  // Kililoch (Regiones)
-        "path": "/etiopia"
+        "path": "etiopia"
     },
     {
         "name": "Fiyi",
@@ -461,7 +461,7 @@ export const dataArray = [
         "continent": "Oceanía",
         "cca2": "FJ",
         "adminDivisionName": "Divisions",  // Divisiones
-        "path": "/fiyi"
+        "path": "fiyi"
     },
     {
         "name": "Finlandia",
@@ -469,7 +469,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "FI",
         "adminDivisionName": "Maakunnat",  // Regiones
-        "path": "/finlandia"
+        "path": "finlandia"
     },
     {
         "name": "Francia",
@@ -477,7 +477,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "FR",
         "adminDivisionName": "Régions",  // Regiones
-        "path": "/francia"
+        "path": "francia"
     },
     {
         "name": "Gabón",
@@ -485,7 +485,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "GA",
         "adminDivisionName": "Provinces",  // Provincias
-        "path": "/gabon"
+        "path": "gabon"
     },
     {
         "name": "Gambia",
@@ -493,7 +493,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "GM",
         "adminDivisionName": "Divisions",  // Divisiones
-        "path": "/gambia"
+        "path": "gambia"
     },
     {
         "name": "Georgia",
@@ -501,7 +501,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "GE",
         "adminDivisionName": "მხარეები",  // Mkhareebi (Regiones)
-        "path": "/georgia"
+        "path": "georgia"
     },
     {
         "name": "Alemania",
@@ -509,7 +509,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "DE",
         "adminDivisionName": "Bundesländer",  // Estados Federados
-        "path": "/alemania"
+        "path": "alemania"
     },
     {
         "name": "Ghana",
@@ -517,7 +517,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "GH",
         "adminDivisionName": "Regions",  // Regiones
-        "path": "/ghana"
+        "path": "ghana"
     },
     {
         "name": "Grecia",
@@ -525,7 +525,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "GR",
         "adminDivisionName": "Περιφέρειες",  // Periféries (Regiones)
-        "path": "/grecia"
+        "path": "grecia"
     },
     {
         "name": "Granada",
@@ -533,7 +533,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "GD",
         "adminDivisionName": "Parishes",  // Parroquias
-        "path": "/granada"
+        "path": "granada"
     },
     {
         "name": "Guatemala",
@@ -541,7 +541,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "GT",
         "adminDivisionName": "Departamentos",  // Departamentos
-        "path": "/guatemala"
+        "path": "guatemala"
     },
     {
         "name": "Guinea",
@@ -549,7 +549,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "GN",
         "adminDivisionName": "Régions",  // Regiones
-        "path": "/guinea"
+        "path": "guinea"
     },
     {
         "name": "Guinea-Bisáu",
@@ -557,7 +557,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "GW",
         "adminDivisionName": "Regiões",  // Regiones
-        "path": "/guinea-bisau"
+        "path": "guinea-bisau"
     },
     {
         "name": "Guyana",
@@ -565,7 +565,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "GY",
         "adminDivisionName": "Regions",  // Regiones
-        "path": "/guyana"
+        "path": "guyana"
     },
     {
         "name": "Haití",
@@ -573,7 +573,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "HT",
         "adminDivisionName": "Départements",  // Departamentos
-        "path": "/haiti"
+        "path": "haiti"
     },
     {
         "name": "Honduras",
@@ -581,7 +581,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "HN",
         "adminDivisionName": "Departamentos",  // Departamentos
-        "path": "/honduras"
+        "path": "honduras"
     },
     {
         "name": "Hungría",
@@ -589,7 +589,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "HU",
         "adminDivisionName": "Megyék",  // Condados
-        "path": "/hungria"
+        "path": "hungria"
     },
     {
         "name": "Islandia",
@@ -597,7 +597,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "IS",
         "adminDivisionName": "Sýslur",  // Condados
-        "path": "/islandia"
+        "path": "islandia"
     },
     {
         "name": "India",
@@ -605,7 +605,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "IN",
         "adminDivisionName": "राज्य",  // Rajya (Estados)
-        "path": "/india"
+        "path": "india"
     },
     {
         "name": "Indonesia",
@@ -613,7 +613,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "ID",
         "adminDivisionName": "Provinsi",  // Provincias
-        "path": "/indonesia"
+        "path": "indonesia"
     },
     {
         "name": "Irán",
@@ -621,7 +621,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "IR",
         "adminDivisionName": "استان‌ها",  // Ostan-ha (Provincias)
-        "path": "/iran"
+        "path": "iran"
     },
     {
         "name": "Irak",
@@ -629,7 +629,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "IQ",
         "adminDivisionName": "محافظات",  // Muhafazat (Gobernaciones)
-        "path": "/irak"
+        "path": "irak"
     },
     {
         "name": "Irlanda",
@@ -637,7 +637,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "IE",
         "adminDivisionName": "Counties",  // Condados
-        "path": "/irlanda"
+        "path": "irlanda"
     },
     {
         "name": "Israel",
@@ -645,7 +645,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "IL",
         "adminDivisionName": "מחוזות",  // Mehozot (Distritos)
-        "path": "/israel"
+        "path": "israel"
     },
     {
         "name": "Italia",
@@ -653,7 +653,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "IT",
         "adminDivisionName": "Regioni",  // Regiones
-        "path": "/italia"
+        "path": "italia"
     },
     {
         "name": "Jamaica",
@@ -661,7 +661,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "JM",
         "adminDivisionName": "Parishes",  // Parroquias
-        "path": "/jamaica"
+        "path": "jamaica"
     },
     {
         "name": "Japón",
@@ -669,7 +669,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "JP",
         "adminDivisionName": "都道府県",  // Todōfuken (Prefecturas)
-        "path": "/japon"
+        "path": "japon"
     },
     {
         "name": "Jordania",
@@ -677,7 +677,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "JO",
         "adminDivisionName": "محافظات",  // Muhafazat (Gobernaciones)
-        "path": "/jordania"
+        "path": "jordania"
     },
     {
         "name": "Kazajistán",
@@ -685,7 +685,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "KZ",
         "adminDivisionName": "Облыстар",  // Oblystar (Regiones)
-        "path": "/kazajistan"
+        "path": "kazajistan"
     },
     {
         "name": "Kenia",
@@ -693,7 +693,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "KE",
         "adminDivisionName": "Counties",  // Condados
-        "path": "/kenia"
+        "path": "kenia"
     },
     {
         "name": "Kiribati",
@@ -701,7 +701,7 @@ export const dataArray = [
         "continent": "Oceanía",
         "cca2": "KI",
         "adminDivisionName": "Islands",  // Islas
-        "path": "/kiribati"
+        "path": "kiribati"
     },
     {
         "name": "Corea del Norte",
@@ -709,7 +709,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "KP",
         "adminDivisionName": "도",  // Do (Provincias)
-        "path": "/corea-del-norte"
+        "path": "corea-del-norte"
     },
     {
         "name": "Corea del Sur",
@@ -717,7 +717,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "KR",
         "adminDivisionName": "도",  // Do (Provincias)
-        "path": "/corea-del-sur"
+        "path": "corea-del-sur"
     },
     {
         "name": "Kosovo",
@@ -725,7 +725,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "XK",
         "adminDivisionName": "Komunat",  // Municipios
-        "path": "/kosovo"
+        "path": "kosovo"
     },
     {
         "name": "Kuwait",
@@ -733,7 +733,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "KW",
         "adminDivisionName": "محافظات",  // Muhafazat (Gobernaciones)
-        "path": "/kuwait"
+        "path": "kuwait"
     },
     {
         "name": "Kirguistán",
@@ -741,7 +741,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "KG",
         "adminDivisionName": "Областтар",  // Oblastar (Regiones)
-        "path": "/kirguistan"
+        "path": "kirguistan"
     },
     {
         "name": "Laos",
@@ -749,7 +749,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "LA",
         "adminDivisionName": "ພາກ",  // Khoueng (Provincias)
-        "path": "/laos"
+        "path": "laos"
     },
     {
         "name": "Letonia",
@@ -757,7 +757,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "LV",
         "adminDivisionName": "Novadi",  // Municipios
-        "path": "/letonia"
+        "path": "letonia"
     },
     {
         "name": "Líbano",
@@ -765,7 +765,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "LB",
         "adminDivisionName": "محافظات",  // Muhafazat (Gobernaciones)
-        "path": "/libano"
+        "path": "libano"
     },
     {
         "name": "Lesoto",
@@ -773,7 +773,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "LS",
         "adminDivisionName": "Districts",  // Distritos
-        "path": "/lesoto"
+        "path": "lesoto"
     },
     {
         "name": "Liberia",
@@ -781,7 +781,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "LR",
         "adminDivisionName": "Counties",  // Condados
-        "path": "/liberia"
+        "path": "liberia"
     },
     {
         "name": "Libia",
@@ -789,7 +789,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "LY",
         "adminDivisionName": "شعبيات",  // Shabiyat (Distritos)
-        "path": "/libia"
+        "path": "libia"
     },
     {
         "name": "Liechtenstein",
@@ -797,7 +797,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "LI",
         "adminDivisionName": "Gemeinden",  // Municipios
-        "path": "/liechtenstein"
+        "path": "liechtenstein"
     },
     {
         "name": "Lituania",
@@ -805,7 +805,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "LT",
         "adminDivisionName": "Apskritys",  // Condados
-        "path": "/lituania"
+        "path": "lituania"
     },
     {
         "name": "Luxemburgo",
@@ -813,7 +813,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "LU",
         "adminDivisionName": "Cantons",  // Cantones
-        "path": "/luxemburgo"
+        "path": "luxemburgo"
     },
     {
         "name": "Madagascar",
@@ -821,7 +821,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "MG",
         "adminDivisionName": "Faritra",  // Regiones
-        "path": "/madagascar"
+        "path": "madagascar"
     },
     {
         "name": "Malaui",
@@ -829,7 +829,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "MW",
         "adminDivisionName": "Regions",  // Regiones
-        "path": "/malaui"
+        "path": "malaui"
     },
     {
         "name": "Malasia",
@@ -837,7 +837,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "MY",
         "adminDivisionName": "Negeri",  // Estados
-        "path": "/malasia"
+        "path": "malasia"
     },
     {
         "name": "Maldivas",
@@ -845,7 +845,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "MV",
         "adminDivisionName": "Atolls",  // Atolones
-        "path": "/maldivas"
+        "path": "maldivas"
     },
     {
         "name": "Malí",
@@ -853,7 +853,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "ML",
         "adminDivisionName": "Régions",  // Regiones
-        "path": "/mali"
+        "path": "mali"
     },
     {
         "name": "Malta",
@@ -861,7 +861,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "MT",
         "adminDivisionName": "Reġjuni",  // Regiones
-        "path": "/malta"
+        "path": "malta"
     },
     {
         "name": "Islas Marshall",
@@ -869,7 +869,7 @@ export const dataArray = [
         "continent": "Oceanía",
         "cca2": "MH",
         "adminDivisionName": "Atolls",  // Atolones
-        "path": "/islas-marshall"
+        "path": "islas-marshall"
     },
     {
         "name": "Mauritania",
@@ -877,7 +877,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "MR",
         "adminDivisionName": "Régions",  // Regiones
-        "path": "/mauritania"
+        "path": "mauritania"
     },
     {
         "name": "Mauricio",
@@ -885,7 +885,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "MU",
         "adminDivisionName": "Districts",  // Distritos
-        "path": "/mauricio"
+        "path": "mauricio"
     },
     {
         "name": "México",
@@ -893,7 +893,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "MX",
         "adminDivisionName": "Estados",  // Estados
-        "path": "/mexico"
+        "path": "mexico"
     },
     {
         "name": "Micronesia",
@@ -901,7 +901,7 @@ export const dataArray = [
         "continent": "Oceanía",
         "cca2": "FM",
         "adminDivisionName": "States",  // Estados
-        "path": "/micronesia"
+        "path": "micronesia"
     },
     {
         "name": "Moldavia",
@@ -909,7 +909,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "MD",
         "adminDivisionName": "Raioane",  // Distritos
-        "path": "/moldavia"
+        "path": "moldavia"
     },
     {
         "name": "Mónaco",
@@ -917,7 +917,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "MC",
         "adminDivisionName": "Quartiers",  // Barrios
-        "path": "/monaco"
+        "path": "monaco"
     },
     {
         "name": "Mongolia",
@@ -925,7 +925,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "MN",
         "adminDivisionName": "Аймаг",  // Aimag (Provincias)
-        "path": "/mongolia"
+        "path": "mongolia"
     },
     {
         "name": "Montenegro",
@@ -933,7 +933,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "ME",
         "adminDivisionName": "Opštine",  // Municipios
-        "path": "/montenegro"
+        "path": "montenegro"
     },
     {
         "name": "Marruecos",
@@ -941,7 +941,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "MA",
         "adminDivisionName": "جهات",  // Jiha (Regiones)
-        "path": "/marruecos"
+        "path": "marruecos"
     },
     {
         "name": "Mozambique",
@@ -949,7 +949,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "MZ",
         "adminDivisionName": "Províncias",  // Provincias
-        "path": "/mozambique"
+        "path": "mozambique"
     },
     {
         "name": "Namibia",
@@ -957,7 +957,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "NA",
         "adminDivisionName": "Regions",  // Regiones
-        "path": "/namibia"
+        "path": "namibia"
     },
     {
         "name": "Nauru",
@@ -965,7 +965,7 @@ export const dataArray = [
         "continent": "Oceanía",
         "cca2": "NR",
         "adminDivisionName": "Districts",  // Distritos
-        "path": "/nauru"
+        "path": "nauru"
     },
     {
         "name": "Nepal",
@@ -973,7 +973,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "NP",
         "adminDivisionName": "प्रदेशहरू",  // Pradesh-haru (Provincias)
-        "path": "/nepal"
+        "path": "nepal"
     },
     {
         "name": "Países Bajos",
@@ -981,7 +981,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "NL",
         "adminDivisionName": "Provincies",  // Provincias
-        "path": "/paises-bajos"
+        "path": "paises-bajos"
     },
     {
         "name": "Nueva Zelanda",
@@ -989,7 +989,7 @@ export const dataArray = [
         "continent": "Oceanía",
         "cca2": "NZ",
         "adminDivisionName": "Regions",  // Regiones
-        "path": "/nueva-zelanda"
+        "path": "nueva-zelanda"
     },
     {
         "name": "Nicaragua",
@@ -997,7 +997,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "NI",
         "adminDivisionName": "Departamentos",  // Departamentos
-        "path": "/nicaragua"
+        "path": "nicaragua"
     },
     {
         "name": "Níger",
@@ -1005,7 +1005,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "NE",
         "adminDivisionName": "Régions",  // Regiones
-        "path": "/niger"
+        "path": "niger"
     },
     {
         "name": "Nigeria",
@@ -1013,7 +1013,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "NG",
         "adminDivisionName": "States",  // Estados
-        "path": "/nigeria"
+        "path": "nigeria"
     },
     {
         "name": "Noruega",
@@ -1021,7 +1021,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "NO",
         "adminDivisionName": "Fylker",  // Condados
-        "path": "/noruega"
+        "path": "noruega"
     },
     {
         "name": "Omán",
@@ -1029,7 +1029,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "OM",
         "adminDivisionName": "محافظات",  // Muhafazat (Gobernaciones)
-        "path": "/oman"
+        "path": "oman"
     },
     {
         "name": "Pakistán",
@@ -1037,7 +1037,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "PK",
         "adminDivisionName": "صوبے",  // Subah (Provincias)
-        "path": "/pakistan"
+        "path": "pakistan"
     },
     {
         "name": "Palaos",
@@ -1045,7 +1045,7 @@ export const dataArray = [
         "continent": "Oceanía",
         "cca2": "PW",
         "adminDivisionName": "States",  // Estados
-        "path": "/palaos"
+        "path": "palaos"
     },
     {
         "name": "Palestina",
@@ -1053,7 +1053,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "PS",
         "adminDivisionName": "محافظات",  // Muhafazat (Gobernaciones)
-        "path": "/palestina"
+        "path": "palestina"
     },
     {
         "name": "Panamá",
@@ -1061,7 +1061,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "PA",
         "adminDivisionName": "Provincias",  // Provincias
-        "path": "/panama"
+        "path": "panama"
     },
     {
         "name": "Papúa Nueva Guinea",
@@ -1069,7 +1069,7 @@ export const dataArray = [
         "continent": "Oceanía",
         "cca2": "PG",
         "adminDivisionName": "Provinces",  // Provincias
-        "path": "/papua-nueva-guinea"
+        "path": "papua-nueva-guinea"
     },
     {
         "name": "Paraguay",
@@ -1077,7 +1077,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "PY",
         "adminDivisionName": "Departamentos",  // Departamentos
-        "path": "/paraguay"
+        "path": "paraguay"
     },
     {
         "name": "Perú",
@@ -1085,7 +1085,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "PE",
         "adminDivisionName": "Departamentos",  // Departamentos
-        "path": "/peru"
+        "path": "peru"
     },
     {
         "name": "Filipinas",
@@ -1093,7 +1093,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "PH",
         "adminDivisionName": "Mga Lalawigan",  // Provincias
-        "path": "/filipinas"
+        "path": "filipinas"
     },
     {
         "name": "Polonia",
@@ -1101,7 +1101,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "PL",
         "adminDivisionName": "Województwa",  // Voivodías
-        "path": "/polonia"
+        "path": "polonia"
     },
     {
         "name": "Portugal",
@@ -1109,7 +1109,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "PT",
         "adminDivisionName": "Distritos",  // Distritos
-        "path": "/portugal"
+        "path": "portugal"
     },
     {
         "name": "Catar",
@@ -1117,7 +1117,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "QA",
         "adminDivisionName": "بلديات",  // Baladiyat (Municipios)
-        "path": "/catar"
+        "path": "catar"
     },
     {
         "name": "Rumania",
@@ -1125,7 +1125,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "RO",
         "adminDivisionName": "Județe",  // Condados
-        "path": "/rumania"
+        "path": "rumania"
     },
     {
         "name": "Rusia",
@@ -1133,7 +1133,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "RU",
         "adminDivisionName": "Субъекты",  // Subyekty (Sujetos Federales)
-        "path": "/rusia"
+        "path": "rusia"
     },
     {
         "name": "Ruanda",
@@ -1141,7 +1141,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "RW",
         "adminDivisionName": "Intara",  // Provincias
-        "path": "/ruanda"
+        "path": "ruanda"
     },
     {
         "name": "San Cristóbal y Nieves",
@@ -1149,7 +1149,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "KN",
         "adminDivisionName": "Parishes",  // Parroquias
-        "path": "/san-cristobal-y-nieves"
+        "path": "san-cristobal-y-nieves"
     },
     {
         "name": "Santa Lucía",
@@ -1157,7 +1157,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "LC",
         "adminDivisionName": "Parishes",  // Parroquias
-        "path": "/santa-lucia"
+        "path": "santa-lucia"
     },
     {
         "name": "San Vicente y las Granadinas",
@@ -1165,7 +1165,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "VC",
         "adminDivisionName": "Parishes",  // Parroquias
-        "path": "/san-vicente-y-las-granadinas"
+        "path": "san-vicente-y-las-granadinas"
     },
     {
         "name": "Samoa",
@@ -1173,7 +1173,7 @@ export const dataArray = [
         "continent": "Oceanía",
         "cca2": "WS",
         "adminDivisionName": "Itūmālō",  // Distritos
-        "path": "/samoa"
+        "path": "samoa"
     },
     {
         "name": "San Marino",
@@ -1181,7 +1181,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "SM",
         "adminDivisionName": "Castelli",  // Municipios
-        "path": "/san-marino"
+        "path": "san-marino"
     },
     {
         "name": "Arabia Saudita",
@@ -1189,7 +1189,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "SA",
         "adminDivisionName": "مناطق",  // Mintaqat (Regiones)
-        "path": "/arabia-saudita"
+        "path": "arabia-saudita"
     },
     {
         "name": "Senegal",
@@ -1197,7 +1197,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "SN",
         "adminDivisionName": "Régions",  // Regiones
-        "path": "/senegal"
+        "path": "senegal"
     },
     {
         "name": "Serbia",
@@ -1205,7 +1205,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "RS",
         "adminDivisionName": "Окрузи",  // Okruzi (Distritos)
-        "path": "/serbia"
+        "path": "serbia"
     },
     {
         "name": "Seychelles",
@@ -1213,7 +1213,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "SC",
         "adminDivisionName": "Districts",  // Distritos
-        "path": "/seychelles"
+        "path": "seychelles"
     },
     {
         "name": "Sierra Leona",
@@ -1221,7 +1221,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "SL",
         "adminDivisionName": "Provinces",  // Provincias
-        "path": "/sierra-leona"
+        "path": "sierra-leona"
     },
     {
         "name": "Singapur",
@@ -1229,7 +1229,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "SG",
         "adminDivisionName": "Regions",  // Regiones
-        "path": "/singapur"
+        "path": "singapur"
     },
     {
         "name": "Eslovaquia",
@@ -1237,7 +1237,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "SK",
         "adminDivisionName": "Kraje",  // Regiones
-        "path": "/eslovaquia"
+        "path": "eslovaquia"
     },
     {
         "name": "Eslovenia",
@@ -1245,7 +1245,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "SI",
         "adminDivisionName": "Statistične regije",  // Regiones estadísticas
-        "path": "/eslovenia"
+        "path": "eslovenia"
     },
     {
         "name": "Islas Salomón",
@@ -1253,7 +1253,7 @@ export const dataArray = [
         "continent": "Oceanía",
         "cca2": "SB",
         "adminDivisionName": "Provinces",  // Provincias
-        "path": "/islas-salomon"
+        "path": "islas-salomon"
     },
     {
         "name": "Somalia",
@@ -1261,7 +1261,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "SO",
         "adminDivisionName": "Gobollada",  // Regiones
-        "path": "/somalia"
+        "path": "somalia"
     },
     {
         "name": "Sudáfrica",
@@ -1269,7 +1269,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "ZA",
         "adminDivisionName": "Provinces",  // Provincias
-        "path": "/sudafrica"
+        "path": "sudafrica"
     },
     {
         "name": "España",
@@ -1277,14 +1277,14 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "ES",
         "adminDivisionName": "Comunidades Autónomas",  // Comunidades Autónomas
-        "path": "/espana"
+        "path": "espana"
     },
     {
         "name": "Sri Lanka",
         "flag": "🇱🇰",
         "continent": "Asia",
         "cca2": "පළාත්",  // Paḷāt (Provincias)
-        "path": "/sri-lanka"
+        "path": "sri-lanka"
     },
     {
         "name": "Sudán",
@@ -1292,7 +1292,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "SD",
         "adminDivisionName": "ولايات",  // Wilayat (Estados)
-        "path": "/sudan"
+        "path": "sudan"
     },
     {
         "name": "Surinam",
@@ -1300,7 +1300,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "SR",
         "adminDivisionName": "Districten",  // Distritos
-        "path": "/surinam"
+        "path": "surinam"
     },
     {
         "name": "Suecia",
@@ -1308,7 +1308,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "SE",
         "adminDivisionName": "Län",  // Condados
-        "path": "/suecia"
+        "path": "suecia"
     },
     {
         "name": "Suiza",
@@ -1316,7 +1316,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "CH",
         "adminDivisionName": "Kantone/Cantons/Cantoni",  // Cantones
-        "path": "/suiza"
+        "path": "suiza"
     },
     {
         "name": "Siria",
@@ -1324,7 +1324,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "SY",
         "adminDivisionName": "محافظات",  // Muhafazat (Gobernaciones)
-        "path": "/siria"
+        "path": "siria"
     },
     {
         "name": "Tayikistán",
@@ -1332,7 +1332,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "TJ",
         "adminDivisionName": "Вилоятҳо",  // Viloyatho (Regiones)
-        "path": "/tayikistan"
+        "path": "tayikistan"
     },
     {
         "name": "Tanzania",
@@ -1340,14 +1340,14 @@ export const dataArray = [
         "continent": "África",
         "cca2": "TZ",
         "adminDivisionName": "Mikoa",  // Regiones
-        "path": "/tanzania"
+        "path": "tanzania"
     },
     {
         "name": "Tailandia",
         "flag": "🇹🇭",
         "continent": "Asia",
         "cca2": "จังหวัด",  // Changwat (Provincias)
-        "path": "/tailandia"
+        "path": "tailandia"
     },
     {
         "name": "Timor Oriental",
@@ -1355,7 +1355,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "TL",
         "adminDivisionName": "Municípios",  // Municipios
-        "path": "/timor-oriental"
+        "path": "timor-oriental"
     },
     {
         "name": "Togo",
@@ -1363,14 +1363,14 @@ export const dataArray = [
         "continent": "África",
         "cca2": "TG",
         "adminDivisionName": "Régions",  // Regiones
-        "path": "/togo"
+        "path": "togo"
     },
     {
         "name": "Tonga",
         "flag": "🇹🇴",
         "continent": "Oceanía",
         "cca2": "Vahefonua",  // Divisiones
-        "path": "/tonga"
+        "path": "tonga"
     },
     {
         "name": "Trinidad y Tobago",
@@ -1378,7 +1378,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "TT",
         "adminDivisionName": "Regions",  // Regiones
-        "path": "/trinidad-y-tobago"
+        "path": "trinidad-y-tobago"
     },
     {
         "name": "Túnez",
@@ -1386,7 +1386,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "TN",
         "adminDivisionName": "ولايات",  // Wilayat (Gobernaciones)
-        "path": "/tunez"
+        "path": "tunez"
     },
     {
         "name": "Turquía",
@@ -1394,7 +1394,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "TR",
         "adminDivisionName": "İller",  // Provincias
-        "path": "/turquia"
+        "path": "turquia"
     },
     {
         "name": "Turkmenistán",
@@ -1402,7 +1402,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "TM",
         "adminDivisionName": "Welayatlar",  // Regiones
-        "path": "/turkmenistan"
+        "path": "turkmenistan"
     },
     {
         "name": "Uganda",
@@ -1410,7 +1410,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "UG",
         "adminDivisionName": "Regions",  // Regiones
-        "path": "/uganda"
+        "path": "uganda"
     },
     {
         "name": "Ucrania",
@@ -1418,7 +1418,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "UA",
         "adminDivisionName": "Області",  // Oblasti (Provincias)
-        "path": "/ucrania"
+        "path": "ucrania"
     },
     {
         "name": "Emiratos Árabes Unidos",
@@ -1426,7 +1426,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "AE",
         "adminDivisionName": "إمارات",  // Imarat (Emiratos)
-        "path": "/emiratos-arabes-unidos"
+        "path": "emiratos-arabes-unidos"
     },
     {
         "name": "Reino Unido",
@@ -1434,7 +1434,7 @@ export const dataArray = [
         "continent": "Europa",
         "cca2": "GB",
         "adminDivisionName": "Countries",  // Países
-        "path": "/reino-unido"
+        "path": "reino-unido"
     },
     {
         "name": "Estados Unidos",
@@ -1442,7 +1442,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "US",
         "adminDivisionName": "States",  // Estados
-        "path": "/estados-unidos"
+        "path": "estados-unidos"
     },
     {
         "name": "Uruguay",
@@ -1450,7 +1450,7 @@ export const dataArray = [
         "continent": "América",
         "cca2": "UY",
         "adminDivisionName": "Departamentos",  // Departamentos
-        "path": "/uruguay"
+        "path": "uruguay"
     },
     {
         "name": "Uzbekistán",
@@ -1458,7 +1458,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "UZ",
         "adminDivisionName": "Viloyatlar",  // Regiones
-        "path": "/uzbekistan"
+        "path": "uzbekistan"
     },
     {
         "name": "Vanuatu",
@@ -1466,7 +1466,7 @@ export const dataArray = [
         "continent": "Oceanía",
         "cca2": "VU",
         "adminDivisionName": "Provinces",  // Provincias
-        "path": "/vanuatu"
+        "path": "vanuatu"
     },
     {
         "name": "Venezuela",
@@ -1474,14 +1474,14 @@ export const dataArray = [
         "continent": "América",
         "cca2": "VE",
         "adminDivisionName": "Estados",  // Estados
-        "path": "/venezuela"
+        "path": "venezuela"
     },
     {
         "name": "Vietnam",
         "flag": "🇻🇳",
         "continent": "Asia",
         "cca2": "Tỉnh",  // Provincias
-        "path": "/vietnam"
+        "path": "vietnam"
     },
     {
         "name": "Yemen",
@@ -1489,7 +1489,7 @@ export const dataArray = [
         "continent": "Asia",
         "cca2": "YE",
         "adminDivisionName": "محافظات",  // Muhafazat (Gobernaciones)
-        "path": "/yemen"
+        "path": "yemen"
     },
     {
         "name": "Zambia",
@@ -1497,7 +1497,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "ZM",
         "adminDivisionName": "Provinces",  // Provincias
-        "path": "/zambia"
+        "path": "zambia"
     },
     {
         "name": "Zimbabue",
@@ -1505,7 +1505,7 @@ export const dataArray = [
         "continent": "África",
         "cca2": "ZW",
         "adminDivisionName": "Provinces",  // Provincias
-        "path": "/zimbabue"
+        "path": "zimbabue"
     }
 ]
 

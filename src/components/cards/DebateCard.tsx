@@ -5,7 +5,8 @@ import { PollScope } from "~/shared/types";
 import { timeAgo } from "~/utils/dateUtils";
 import styles from "./debate-card.css?inline";
 import { Avatar } from "~/components/ui";
-
+import { Image } from "@unpic/qwik"
+import { _ } from "compiled-i18n";
 export interface DebateCardProps {
     id: number;
     title: string;
@@ -44,27 +45,32 @@ export default component$<DebateCardProps>(({
         <Link href={`/debates/${slug}`}>
             <li class="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden">
                 <div class="p-5">
-                    {/* Cabecera con título y badge de ámbito */}
+                    {/* Header with title and scope badge */}
                     <div class="flex justify-between items-start mb-3">
                         <h3 class="text-xl font-bold text-gray-800 dark:text-white">{title}</h3>
                         {scope === PollScope.GLOBAL && 
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                🌎 Global
+                                🌎 {_`Global`}
                             </span>
                         }
                     </div>
 
-                    {/* Descripción */}
+                    {/* Description */}
                     <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">{description}</p>
 
-                    {/* Imagen si existe */}
+                    {/* Image if exists */}
                     {mainImage && (
                         <div class="mb-4 rounded-lg overflow-hidden">
-                            <img src={mainImage} alt={title} class="w-full h-48 object-cover" />
+                            <Image
+                                alt={title}
+                                class="w-full h-48 object-cover"
+                                src={mainImage}
+                                layout="fill"
+                            />
                         </div>
                     )}
 
-                    {/* Etiquetas */}
+                    {/* Tags */}
                     {tags.length > 0 && (
                         <div class="flex flex-wrap gap-2 mb-3">
                             {tags.map((tag) => (
@@ -76,7 +82,7 @@ export default component$<DebateCardProps>(({
                         </div>
                     )}
 
-                    {/* Información del creador y fechas */}
+                    {/* Creator information and dates */}
                     <div class="flex flex-wrap justify-between items-center mt-4 text-gray-500 dark:text-gray-400 text-xs">
                         <div class="flex items-center space-x-4">
                             <div class="flex items-center" onClick$={() => onClickUsername(creator_username)}>
@@ -101,12 +107,12 @@ export default component$<DebateCardProps>(({
                         
                         <div class="flex items-center mt-2 sm:mt-0">
                             <LuMessageSquare class="w-4 h-4 mr-1" />
-                            <span>{comments_count} comentarios</span>
+                            <span>{_`${comments_count} comments`}</span>
                             
                             {last_comment_at && (
                                 <div class="flex items-center ml-3">
                                     <LuClock class="w-4 h-4 mr-1" />
-                                    <span title="Último comentario">
+                                    <span title="Last comment">
                                         {timeAgo(new Date(last_comment_at))}
                                     </span>
                                 </div>

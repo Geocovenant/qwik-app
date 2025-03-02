@@ -48,17 +48,25 @@ const countryCommunities: Community[] = dataArray.map(country => ({
     children: []
 }));
 
-// Combinamos las comunidades base con las de países
-const communities: Community[] = [
-    ...baseCommunities,
-    ...countryCommunities
-];
-
 const CommunityItem = component$(({ community, level = 0, isCollapsed}: {community: Community, level?: number, isCollapsed: boolean}) => {
     const isOpen = useSignal<boolean>(false);
     const location = useLocation();
     const pathname = location.url.pathname;
-    const isActive = pathname.startsWith(community.path);
+    
+    // Modificamos la lógica para detectar si el elemento está activo
+    // Comprobamos si la ruta actual coincide exactamente con la ruta de la comunidad
+    // o si es una subruta (para mantener activo el elemento padre)
+    const isExactMatch = pathname === community.path || pathname === `${community.path}/`;
+    const isParentMatch = pathname.startsWith(`${community.path}/`);
+    const isActive = isExactMatch || isParentMatch;
+    
+    // Si es una coincidencia exacta o es un padre de la ruta actual, abrimos automáticamente el elemento
+    useTask$(({ track }) => {
+        track(() => pathname);
+        if (isActive && !isOpen.value) {
+            isOpen.value = true;
+        }
+    });
     
     // Determinamos si puede tener subdivisiones
     const canHaveSubdivisions = community.id !== 'global' && community.id !== 'international';
@@ -139,7 +147,7 @@ const CommunityItem = component$(({ community, level = 0, isCollapsed}: {communi
                     >
                         <div class="flex items-center group">
                             <Link
-                                href={`${community.path}${isNation ? '?scope=national' : ''}`}
+                                href={`/${community.path}${isNation ? '?scope=national' : ''}`}
                                 class={`flex flex-1 items-center gap-2 ${itemClass}`}
                             >
                                 <div class="h-5 w-5 flex-shrink-0 transition-transform group-hover:scale-110">
@@ -288,15 +296,12 @@ export default component$(() => {
         sidebarWidth.value = newCollapsed ? MIN_WIDTH : 256;
     });
 
-    const location = useLocation();
-    const currentPath = location.url.pathname;
-    
     // Filtramos los países según la búsqueda
     const filteredCountries = !searchQuery.value 
         ? countryCommunities // Mostramos todos los países siempre
         : countryCommunities.filter(country => 
             country.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-          );
+        );
 
     return (
         <div class="flex h-full">

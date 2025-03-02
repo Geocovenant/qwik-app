@@ -88,7 +88,7 @@ export const useGetNationalPolls = routeLoader$(async ({ cookie, params }) => {
     }
     const cca2 = getCountryCode(params.nation);
     if (!cca2) {
-        console.error('Country not found:', params.nation);
+        console.error('Country not found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!:', params.nation);
         return [];
     }
     try {
@@ -400,21 +400,8 @@ export const useGetRegionalDebates = routeLoader$(async ({ cookie, params, resol
 function getCountryCode(countryPath: string): string | null {
     if (!countryPath) return null
     
-    // Normalize country name (remove accents, convert to lowercase)
-    const normalizedPath = countryPath
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase()
-
     // Find the country in the array of countries
-    const country = dataArray.find(country => {
-        const normalizedName = country.name
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .toLowerCase()
-        return normalizedName === normalizedPath
-    })
-
+    const country = dataArray.find(country => country.path === countryPath)
     return country ? country.cca2 : null
 }
 
