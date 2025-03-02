@@ -106,7 +106,19 @@ const CommunityItem = component$(({ community, level = 0, isCollapsed}: {communi
         }
     });
 
-    const indentClass = level > 0 ? `ml-${Math.min(level * 4, 12)}` : "";
+    // Aumentamos significativamente la indentación para cada nivel
+    const calculateIndent = (level: number) => {
+        if (isCollapsed) return "";
+        switch (level) {
+            case 0: return "";
+            case 1: return "ml-8";
+            case 2: return "ml-16";
+            case 3: return "ml-24";
+            default: return `ml-${8 * level}`;
+        }
+    };
+    
+    const indentClass = calculateIndent(level);
     
     const itemClass = `
         flex items-center gap-2 px-3 py-1.5 rounded-lg
@@ -119,12 +131,17 @@ const CommunityItem = component$(({ community, level = 0, isCollapsed}: {communi
         transition-all duration-200 ease-in-out
     `;
 
-    // Añadir indicador visual de nivel
+    // Indicador visual mejorado para niveles
     const levelIndicator = !isCollapsed && level > 0 ? (
-        <div 
-            class="absolute left-0 h-full w-px bg-gray-300 dark:bg-gray-600"
-            style={{ left: `${level * 12}px` }}
-        />
+        <div class="absolute left-0 top-0 bottom-0 flex h-full">
+            {[...Array(level)].map((_, i) => (
+                <div 
+                    key={i}
+                    class="h-full w-0.5 bg-gray-200 dark:bg-gray-700"
+                    style={{ marginLeft: `${i * 8 + 3}px` }}
+                />
+            ))}
+        </div>
     ) : null;
 
     // Determinamos si es una nación (tiene cca2 pero no es una subdivisión)
@@ -159,7 +176,7 @@ const CommunityItem = component$(({ community, level = 0, isCollapsed}: {communi
                             </Link>
                             {!isCollapsed && canHaveSubdivisions && (
                                 <Collapsible.Trigger 
-                                    class="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 
+                                    class="p-1.5 mr-2 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 
                                            hover:text-primary dark:hover:text-primary-foreground rounded-md 
                                            transition-all duration-200 ease-in-out"
                                 >
@@ -175,7 +192,7 @@ const CommunityItem = component$(({ community, level = 0, isCollapsed}: {communi
                     </div>
 
                     <Collapsible.Content>
-                        <div class="relative pl-4 py-0.5">
+                        <div class="relative pl-0">
                             <Resource
                                 value={divisions}
                                 onPending={() => (
@@ -189,7 +206,7 @@ const CommunityItem = component$(({ community, level = 0, isCollapsed}: {communi
                                     </div>
                                 )}
                                 onResolved={(divisions) => (
-                                    <div class="space-y-0.5">
+                                    <div class="space-y-1 py-1">
                                         {divisions.map((division: any) => {
                                             const slug = division.name
                                                 .toLowerCase()
@@ -226,7 +243,8 @@ const CommunityItem = component$(({ community, level = 0, isCollapsed}: {communi
 
     return (
         <Link href={community.path}>
-            <div class={itemClass}>
+            <div class={`relative ${itemClass}`}>
+                {levelIndicator}
                 <div class="h-5 w-5 flex-shrink-0">
                     {community.icon}
                 </div>

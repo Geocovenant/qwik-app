@@ -1,4 +1,4 @@
-import { $, component$ } from "@builder.io/qwik"
+import { $, component$, type QRL } from "@builder.io/qwik"
 import { useForm, valiForm$ } from "@modular-forms/qwik"
 import { _ } from "compiled-i18n"
 import { Button } from "~/components/ui"
@@ -8,12 +8,16 @@ import { useFormIssueAction, type IssueResponseData } from "~/shared/actions"
 import { useFormIssueLoader } from "~/shared/loaders"
 
 export interface FormIssueProps {
-    onSubmitCompleted: () => void
+    onSubmitCompleted: QRL<() => void>
     defaultScope?: string
     tags?: { id: string; name: string }[]
 }
 
-export default component$<FormIssueProps>(({ onSubmitCompleted, defaultScope = CommunityType.NATIONAL, tags = [] }) => {
+export default component$<FormIssueProps>(({
+    onSubmitCompleted,
+    defaultScope = CommunityType.NATIONAL,
+    tags = []
+}) => {
     const [issueForm, { Form, Field }] = useForm<IssueForm, IssueResponseData>({
         loader: useFormIssueLoader(),
         action: useFormIssueAction(),
@@ -25,7 +29,7 @@ export default component$<FormIssueProps>(({ onSubmitCompleted, defaultScope = C
     })
 
     return (
-        <Form class="space-y-6" onSubmitCompleted$={handleSubmitCompleted}>
+        <Form class="space-y-6" onSubmit$={handleSubmitCompleted}>
             <div>
                 <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
                     {_`Title`}

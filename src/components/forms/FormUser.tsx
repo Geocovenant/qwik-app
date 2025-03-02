@@ -8,6 +8,7 @@ import type { UserForm } from "~/schemas/userSchema";
 import { UserSchema } from "~/schemas/userSchema";
 import { useFormUserLoader } from "~/shared/loaders";
 import { useFormUserAction, type UserResponseData } from "~/shared/actions";
+import { Image } from "@unpic/qwik";
 
 export interface FormUserProps {
   onSubmitCompleted?: () => void;
@@ -145,7 +146,7 @@ export default component$<FormUserProps>(({ onSubmitCompleted }) => {
               </label>
               <div class="mt-1 flex items-center space-x-5">
                 <div class="flex-shrink-0 h-16 w-16 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden border border-gray-300 dark:border-gray-600">
-                  {field.value && <img src={field.value} alt="Preview" class="h-full w-full object-cover" />}
+                  {field.value && <Image src={field.value} alt="Preview" class="h-full w-full object-cover" />}
                 </div>
                 <input
                   {...props}
@@ -170,7 +171,7 @@ export default component$<FormUserProps>(({ onSubmitCompleted }) => {
               </label>
               <div class="mt-1 flex items-center space-x-5">
                 <div class="flex-shrink-0 h-16 w-24 bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden rounded-md border border-gray-300 dark:border-gray-600">
-                  {field.value && <img src={field.value} alt="Preview" class="h-full w-full object-cover" />}
+                  {field.value && <Image src={field.value} alt="Preview" class="h-full w-full object-cover" />}
                 </div>
                 <input
                   {...props}

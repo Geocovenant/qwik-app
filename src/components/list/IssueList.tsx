@@ -4,6 +4,7 @@ import { Badge, Button } from "~/components/ui"
 import { LuPlus } from "@qwikest/icons/lucide"
 import { timeAgo } from "~/utils/dateUtils"
 import EmptyIssue from "~/components/empty-states/EmptyIssue"
+import { Image } from "@unpic/qwik"
 
 export interface Issue {
     id: number
@@ -101,7 +102,7 @@ export const IssueList = component$<IssueListProps>(
 
                                 <div class="flex items-center mt-4 gap-2">
                                     <div class="flex items-center">
-                                        <img
+                                        <Image
                                             src={issue.creator.image || "/placeholder.svg?height=24&width=24"}
                                             alt={issue.creator.username}
                                             class="w-6 h-6 rounded-full mr-2"

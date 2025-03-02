@@ -7,6 +7,7 @@ import type { DebateForm } from "~/schemas/debateSchema";
 import type { UserForm } from "~/schemas/userSchema";
 import type { OpinionForm } from "~/schemas/opinionSchema";
 import { CommunityType } from "~/constants/communityType";
+import { IssueForm } from "~/schemas/issueSchema";
 
 // eslint-disable-next-line qwik/loader-location
 export const useGetUser = routeLoader$(async ({ cookie }) => {
@@ -686,16 +687,14 @@ export const useGetNationalIssues = routeLoader$(async ({ params }) => {
 });
 
 // eslint-disable-next-line qwik/loader-location
-export const useFormIssueLoader = () => {
+export const useFormIssueLoader = routeLoader$<InitialValues<IssueForm>>(() => {
     return {
-        value: {
-            title: '',
-            description: '',
-            status: 'OPEN',
-            scope: CommunityType.NATIONAL,
-            community_ids: [],
-            is_anonymous: false,
-            tags: []
-        }
+        title: '',
+        description: '',
+        status: 'OPEN',
+        scope: CommunityType.NATIONAL,
+        community_ids: [],
+        is_anonymous: false,
+        tags: []
     };
-};
+});

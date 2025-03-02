@@ -9,6 +9,7 @@ import ImgVenus from '~/icons/venus.svg?jsx';
 import ImgMars from '~/icons/male.svg?jsx';
 import { useSession } from "~/routes/plugin@auth";
 import { useGetUserByUsername } from "~/shared/loaders";
+import { Image } from "@unpic/qwik";
 
 export { useGetUserByUsername, useFormUserLoader } from "~/shared/loaders";
 export { useFormUserAction } from "~/shared/actions";
@@ -51,7 +52,7 @@ export default component$(() => {
             <div class="relative">
                 {user.value.banner
                     ? (
-                        <img
+                        <Image
                             src={user.value.banner}
                             alt={_`Profile Banner`}
                             class="w-full h-60 object-cover"

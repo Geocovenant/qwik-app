@@ -17,6 +17,7 @@ import type { ProjectRead, ProjectStatus } from "~/shared/types"
 import { useNavigate } from "@builder.io/qwik-city"
 import { Pagination } from "@qwik-ui/headless"
 import EmptyProjects from "~/components/empty-states/EmptyProjects"
+import { Image } from "@unpic/qwik"
 
 export interface ProjectListProps {
     onCreateProject: QRL<() => void>
@@ -358,7 +359,7 @@ export const ProjectList = component$<ProjectListProps>(
                                 <div class="bg-gray-50 dark:bg-gray-900/30 px-4 py-3 flex items-center justify-between">
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0">
-                                            <img
+                                            <Image
                                                 class="h-8 w-8 rounded-full"
                                                 src={project.creator.image || "/placeholder-user.svg"}
                                                 alt={project.creator.username}

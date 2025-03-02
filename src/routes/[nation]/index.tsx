@@ -18,7 +18,7 @@ import FormProject from "~/components/forms/FormProject";
 import FormIssue from "~/components/forms/FormIssue";
 import { useGetNationalDebates, useGetNationalPolls, useGetNationalProjects, useGetNationalIssues, useGetTags } from "~/shared/loaders";
 
-export { useGetNationalPolls, useGetNationalDebates, useGetNationalProjects, useGetNationalIssues, useFormPollLoader, useFormDebateLoader, useGetTags } from "~/shared/loaders";
+export { useGetNationalPolls, useGetNationalDebates, useGetNationalProjects, useGetNationalIssues, useFormPollLoader, useFormDebateLoader, useFormIssueLoader, useGetTags } from "~/shared/loaders";
 export { useFormPollAction, useVotePoll, useReactPoll, useFormDebateAction } from "~/shared/actions";
 
 export default component$(() => {
