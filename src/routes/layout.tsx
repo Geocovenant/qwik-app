@@ -44,11 +44,11 @@ export default component$(() => {
   });
 
   return (
-    <div class="flex h-screen bg-gray-50 dark:bg-gray-800">
-      <Sidebar />
-      <div class="flex flex-1 flex-col overflow-hidden">
-        {!isHome && <Header />}
-        <main class={`flex-1 overflow-y-auto ${isHome ? 'h-screen' : ''}`}>
+    <div class="flex flex-col h-screen bg-gray-50 dark:bg-gray-800">
+      {!isHome && <Header />}
+      <div class="flex flex-1 overflow-hidden">
+        <Sidebar />
+        <main class="flex-1 overflow-y-auto">
           <Slot />
         </main>
       </div>

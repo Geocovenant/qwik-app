@@ -309,17 +309,17 @@ export default component$(() => {
                 class="flex flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 relative"
                 style={{ width: `${sidebarWidth.value}px` }}
             >
-                <div class="sticky top-0 z-20 bg-gray-100 dark:bg-gray-900">
-                    <div class={`p-4 border-b border-gray-200 dark:border-gray-700 flex items-center ${isCollapsed.value ? 'justify-center' : ''}`}>
+                <div class="sticky top-0 z-20 bg-white dark:bg-gray-900">
+                    <div class={`p-2 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between ${isCollapsed.value ? 'justify-center' : ''}`}>
+                        {!isCollapsed.value && (
+                            <span class="font-semibold text-sm text-gray-500 dark:text-gray-400">{_`Menu`}</span>
+                        )}
                         <button
                             onClick$={toggleCollapse}
-                            class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors duration-200"
+                            class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors duration-200"
                         >
                             {isCollapsed.value ? <LuPanelLeftOpen class="h-5 w-5" /> : <LuPanelLeftClose class="h-5 w-5" />}
                         </button>
-                        {!isCollapsed.value && (
-                            <span class="ml-2 font-semibold text-lg text-gray-900 dark:text-white">Geounity</span>
-                        )}
                     </div>
                 </div>
 

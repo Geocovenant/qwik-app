@@ -16,7 +16,7 @@ const List = component$<PropsOf<"ol">>((props) => {
     <ol
       {...props}
       class={cn(
-        " flex flex-wrap items-center gap-1.5 break-words text-sm sm:gap-2.5",
+        "flex flex-wrap items-center gap-1.5 break-words text-sm sm:gap-2.5 text-gray-700 dark:text-gray-300",
         props.class,
       )}
     >
@@ -39,7 +39,7 @@ const Link = component$<PropsOf<"a"> & { asChild?: boolean }>((props) => {
     <Comp
       {...props}
       class={cn(
-        "text-muted-foreground transition-colors hover:text-foreground",
+        "text-muted-foreground dark:text-gray-400 transition-colors hover:text-foreground dark:hover:text-gray-200",
         props.class,
       )}
     >
@@ -51,7 +51,7 @@ const Link = component$<PropsOf<"a"> & { asChild?: boolean }>((props) => {
 const Separator = component$<PropsOf<"li">>((props) => {
   return (
     <li role="presentation" aria-hidden="true" {...props}>
-      <LuChevronRight class="size-3.5 stroke-muted-foreground stroke-2" />
+      <LuChevronRight class="size-3.5 stroke-muted-foreground dark:stroke-gray-400 stroke-2" />
     </li>
   );
 });
@@ -63,7 +63,7 @@ const Page = component$<PropsOf<"span">>((props) => {
       aria-disabled="true"
       aria-current="page"
       {...props}
-      class={cn("font-normal text-foreground", props.class)}
+      class={cn("font-normal text-foreground dark:text-white", props.class)}
     >
       <Slot />
     </span>

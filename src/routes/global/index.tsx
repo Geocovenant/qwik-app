@@ -42,7 +42,7 @@ export default component$(() => {
 
     return (
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
-            <div class="bg-gray-50 border-b py-1 px-2">
+            <div class="bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-700 py-1 px-2">
                 <Breadcrumb.Root>
                     <Breadcrumb.List class="text-lg">
                         <Breadcrumb.Item>
