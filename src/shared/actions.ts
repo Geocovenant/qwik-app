@@ -14,6 +14,8 @@ import type { ProjectForm } from '~/schemas/projectSchema';
 import { ProjectSchema } from '~/schemas/projectSchema';
 import type { IssueForm } from '~/schemas/issueSchema';
 import { IssueSchema } from '~/schemas/issueSchema';
+import type { CommentForm } from '~/schemas/commentSchema';
+import { CommentSchema } from '~/schemas/commentSchema';
 
 export interface PollResponseData {
     success: boolean; // Indica si la operación fue exitosa
@@ -547,4 +549,58 @@ export const useFormIssueAction = formAction$<IssueForm, IssueResponseData>(
         }
     },
     valiForm$(IssueSchema)
+);
+
+export interface CommentResponseData {
+    success: boolean;
+    message: string;
+    data?: {
+        comment_id: string;
+    };
+}
+
+export const useFormCommentAction = formAction$<CommentForm, CommentResponseData>(
+    async (values, event) => {
+        console.log('############ useFormCommentAction ############');
+        console.log('values', values);
+
+        const token = event.cookie.get('authjs.session-token')?.value;
+
+        const payload = {
+            content: values.text,
+        };
+
+        console.log('payload', payload);
+
+        try {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${values.pollId}/comments`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error al crear el comentario');
+            }
+
+            const data = await response.json();
+
+            return {
+                success: true,
+                message: _`Comentario añadido exitosamente`,
+                data: data,
+            };
+        } catch (error: any) {
+            console.error('Error in useFormCommentAction:', error);
+            return {
+                success: false,
+                message: error.message || 'Ocurrió un error inesperado',
+            };
+        }
+    },
+    valiForm$(CommentSchema)
 );

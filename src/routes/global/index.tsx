@@ -21,6 +21,7 @@ export default component$(() => {
     const showModalDebate = useSignal(false);
     const tags = useGetTags();
     const polls = useGetGlobalPolls();
+    console.log('polls', polls.value)
     const currentPage = useSignal(1);
     const debates = useGetGlobalDebates();
     const nav = useNavigate();

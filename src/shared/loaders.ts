@@ -27,18 +27,29 @@ export const useGetUser = routeLoader$(async ({ cookie }) => {
 })
 
 // eslint-disable-next-line qwik/loader-location
-export const useGetGlobalPolls = routeLoader$(async ({ query }) => {
+export const useGetGlobalPolls = routeLoader$(async ({ query, cookie }) => {
     console.log('============ useGetGlobalPolls ============')
     const page = query.get('page');
+    const token = cookie.get('authjs.session-token');
+    
     try {
         let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=GLOBAL`;
         if (page) {
             url += `&page=${page}`;
         }
+        
+        // Configurar headers con o sin token
+        const headers: Record<string, string> = {
+            Accept: 'application/json',
+        };
+        
+        // Añadir el token a los headers si existe
+        if (token) {
+            headers.Authorization = token.value;
+        }
+        
         const response = await fetch(url, {
-            headers: {
-                Accept: 'application/json',
-            }
+            headers
         });
 
         if (!response.ok) {

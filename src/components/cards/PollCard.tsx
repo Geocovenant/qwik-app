@@ -1,4 +1,4 @@
-import { component$, $, useStore, useComputed$ } from "@builder.io/qwik"
+import { component$, $, useStore, useComputed$, useSignal } from "@builder.io/qwik"
 import {
     LuArrowBigUp,
     LuArrowBigDown,
@@ -16,6 +16,7 @@ import { CommunityType } from "~/constants/communityType"
 import { Avatar } from "../ui"
 import { useNavigate } from "@builder.io/qwik-city"
 import type { QRL } from "@builder.io/qwik"
+import { Button } from "~/components/ui"
 
 interface PollCardProps {
     id: number
@@ -85,6 +86,11 @@ export default component$<PollCardProps>(
         const totalVotes = useComputed$(() => pollState.options.reduce((sum, option) => sum + option.votes, 0))
 
         const isClosed = useComputed$(() => (endsAt && new Date(endsAt) < new Date()) || false)
+
+        // Reemplazar con una función simple de navegación
+        const handleCommentsClick = $(() => {
+            nav(`/polls/${slug}`);
+        });
 
         const handleVote = $(async (optionId: number) => {
             if (!isAuthenticated) {
@@ -437,9 +443,9 @@ export default component$<PollCardProps>(
                         </div>
 
                         <button
-                            onClick$={() => { }}
+                            onClick$={handleCommentsClick}
                             class="group btn-interaction btn-comment py-2 px-3 flex items-center bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-700 transition-colors duration-300 shadow-sm"
-                            title={_`Comments`}
+                            title={_`Comentarios`}
                         >
                             <LuMessageSquare class="w-5 h-5 mr-1.5 text-gray-500 group-hover:text-blue-500 transition-colors duration-300" />
                             <span class="font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-500 transition-colors duration-300">
