@@ -197,12 +197,19 @@ export default component$<PollCardProps>(
             return dataArray.find((country) => country.cca2 === code)
         }
 
+        // Agregar signal para controlar la visibilidad del mensaje de copiado
+        const showCopiedMessage = useSignal(false);
+        
         const copyPollLink = $(() => {
             try {
                 const pollUrl = `${window.location.origin}/polls/${slug}`
                 navigator.clipboard.writeText(pollUrl)
-                // We could show a toast here
-                console.log("Link copied")
+                // Mostrar mensaje de copiado
+                showCopiedMessage.value = true;
+                // Ocultar mensaje después de 3 segundos
+                setTimeout(() => {
+                    showCopiedMessage.value = false;
+                }, 3000);
             } catch (error) {
                 console.error("Error copying link:", error)
             }
@@ -455,9 +462,15 @@ export default component$<PollCardProps>(
 
                         <button
                             onClick$={copyPollLink}
-                            class="group btn-interaction btn-share p-2 flex items-center justify-center bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-700 transition-colors duration-300 shadow-sm"
+                            class="group relative btn-interaction btn-share p-2 flex items-center justify-center bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-700 transition-colors duration-300 shadow-sm"
                             title={_`Copy link`}
                         >
+                            {showCopiedMessage.value && (
+                                <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-80 text-white px-3 py-1.5 rounded-md text-sm whitespace-nowrap animate-fade-in">
+                                    {_`Link copied!`}
+                                    <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black bg-opacity-80 rotate-45"></div>
+                                </div>
+                            )}
                             <LuLink class="w-5 h-5 text-gray-500 group-hover:text-purple-500 transition-colors duration-300" />
                         </button>
                     </div>
