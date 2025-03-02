@@ -16,7 +16,6 @@ import { CommunityType } from "~/constants/communityType"
 import { Avatar } from "../ui"
 import { useNavigate } from "@builder.io/qwik-city"
 import type { QRL } from "@builder.io/qwik"
-import { Button } from "~/components/ui"
 
 interface PollCardProps {
     id: number
@@ -257,14 +256,9 @@ export default component$<PollCardProps>(
         }
 
         return (
-            <div class="poll-card bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 overflow-hidden">
-                {/* Ribbon for closed polls */}
-                {isClosed.value && (
-                    <div class="absolute top-0 right-0 bg-red-500 text-white px-4 py-1 transform rotate-45 translate-x-8 translate-y-4 shadow-md">
-                        {_`Closed`}
-                    </div>
-                )}
-
+            <div class="poll-card bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 overflow-hidden relative">
+                {/* Reemplazar el ribbon por un badge dentro de la tarjeta */}
+                
                 {/* Header */}
                 <div class="mb-5">
                     <div class="flex justify-between items-start mb-3">
@@ -274,14 +268,21 @@ export default component$<PollCardProps>(
                             </span>
                             <h3 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white line-clamp-2">{title}</h3>
                         </div>
-                        {scope === CommunityType.GLOBAL && (
-                            <div
-                                class="flex items-center justify-center w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400"
-                                title={_`Global`}
-                            >
-                                <LuGlobe class="w-5 h-5" />
-                            </div>
-                        )}
+                        <div class="flex items-center gap-2">
+                            {isClosed.value && (
+                                <div class="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-bold uppercase px-3 py-1.5 rounded-full border border-red-200 dark:border-red-700">
+                                    {_`Closed`}
+                                </div>
+                            )}
+                            {scope === CommunityType.GLOBAL && (
+                                <div
+                                    class="flex items-center justify-center w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400"
+                                    title={_`Global`}
+                                >
+                                    <LuGlobe class="w-5 h-5" />
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     {description && <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">{description}</p>}

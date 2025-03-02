@@ -1,19 +1,23 @@
 import { $, component$, useSignal, useComputed$ } from "@builder.io/qwik";
-import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
+import { useLocation, useNavigate, type DocumentHead } from "@builder.io/qwik-city";
 import { _ } from "compiled-i18n";
-import { Tabs } from "~/components/ui";
-import Breadcrumbs from "~/components/Breadcrumbs";
+import { Breadcrumb, Tabs } from "~/components/ui";
 import Modal from "~/components/Modal";
 import FormPoll from "~/components/forms/FormPoll";
 import DebateList from "~/components/list/DebateList";
 import { PollList } from "~/components/list/PollList";
+import { ProjectList } from "~/components/list/ProjectList";
+import { IssueList } from "~/components/list/IssueList";
+import FormProject from "~/components/forms/FormProject";
+import FormIssue from "~/components/forms/FormIssue";
 import { CommunityType } from "~/constants/communityType";
-import { useGetRegions, useGetRegionalPolls, useGetTags, useGetRegionalDebates } from "~/shared/loaders";
+import { useGetRegions, useGetRegionalPolls, useGetTags, useGetRegionalDebates, useGetRegionalProjects, useGetRegionalIssues } from "~/shared/loaders";
 import { useSession } from "~/routes/plugin@auth";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
 import FormDebate from "~/components/forms/FormDebate";
+import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-export { useGetRegionalPolls, useGetRegionalDebates, useFormPollLoader, useFormDebateLoader, useGetRegions, useGetTags } from "~/shared/loaders";
+export { useGetRegionalPolls, useGetRegionalDebates, useGetRegionalProjects, useGetRegionalIssues, useFormPollLoader, useFormDebateLoader, useFormIssueLoader, useGetRegions, useGetTags } from "~/shared/loaders";
 export { useFormPollAction, useFormDebateAction, useVotePoll, useReactPoll } from "~/shared/actions";
 
 export default component$(() => {
@@ -21,13 +25,19 @@ export default component$(() => {
     const location = useLocation();
     const showModalPoll = useSignal(false);
     const showModalDebate = useSignal(false);
+    const showModalProject = useSignal(false);
+    const showModalIssue = useSignal(false);
+    const nationName = location.params.nation;
     const regionName = location.params.region;
-    
+    const currentPage = useSignal(1);
+    const nav = useNavigate();
     // useGetRegions is used to populate the select options in the regional poll form
     const regions = useGetRegions();
     const tags = useGetTags();
     const polls = useGetRegionalPolls();
     const debates = useGetRegionalDebates();
+    const projects = useGetRegionalProjects();
+    const issues = useGetRegionalIssues();
 
     const defaultRegion = useComputed$(() => {
         const normalizedRegionName = regionName
@@ -38,8 +48,13 @@ export default component$(() => {
         return regions.value.find((r: { name: string; }) => r.name === normalizedRegionName);
     });
 
+    const isAuthenticated = useComputed$(() => !!session.value?.user);
+
     const onSubmitCompleted = $(() => {
         showModalPoll.value = false;
+        showModalDebate.value = false;
+        showModalProject.value = false;
+        showModalIssue.value = false;
     });
 
     const onCreatePoll = $(() => {
@@ -50,10 +65,32 @@ export default component$(() => {
         showModalDebate.value = true;
     });
 
+    const onCreateProject = $(() => {
+        showModalProject.value = true;
+    });
+
+    const onCreateIssue = $(() => {
+        showModalIssue.value = true;
+    });
+
     return (
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
-            <div class="bg-gray-50 border-b">
-                <Breadcrumbs />
+            <div class="bg-gray-50 border-b py-1 px-2">
+                <Breadcrumb.Root>
+                    <Breadcrumb.List class="text-lg">
+                        <Breadcrumb.Item>
+                            <Breadcrumb.Link href="/global">{_`Global`}</Breadcrumb.Link>
+                        </Breadcrumb.Item>
+                        <Breadcrumb.Separator />
+                        <Breadcrumb.Item>
+                            <Breadcrumb.Link href={`/${nationName}`}>{capitalizeFirst(nationName)}</Breadcrumb.Link>
+                        </Breadcrumb.Item>
+                        <Breadcrumb.Separator />
+                        <Breadcrumb.Item>
+                            <Breadcrumb.Link href={`/${regionName}`}>{capitalizeFirst(regionName)}</Breadcrumb.Link>
+                        </Breadcrumb.Item>
+                    </Breadcrumb.List>
+                </Breadcrumb.Root>
             </div>
 
             <div class="flex flex-col min-h-0">
@@ -95,8 +132,19 @@ export default component$(() => {
                             </Modal>
                             <PollList
                                 onCreatePoll={onCreatePoll}
-                                polls={Array.isArray(polls.value) ? polls.value : []}
+                                polls={{
+                                    items: Array.isArray(polls.value?.items) ? polls.value.items : [],
+                                    total: polls.value?.total || 0,
+                                    page: polls.value?.page || 1,
+                                    size: polls.value?.size || 10,
+                                    pages: polls.value?.pages || 1
+                                }}
                                 communityName={defaultRegion.value?.name}
+                                onPageChange$={async (page: number) => {
+                                    currentPage.value = page;
+                                    await nav(`/${nationName}/${regionName}?page=${page}`);
+                                }}
+                                isAuthenticated={isAuthenticated.value}
                             />
                         </Tabs.Panel>
 
@@ -117,18 +165,86 @@ export default component$(() => {
                                 }
                             </Modal>
                             <DebateList
-                                debates={Array.isArray(debates.value) ? debates.value : []}
+                                debates={{
+                                    items: Array.isArray(debates.value?.items) ? debates.value.items : [],
+                                    total: debates.value?.total || 0,
+                                    page: debates.value?.page || 1,
+                                    size: debates.value?.size || 10,
+                                    pages: debates.value?.pages || 1
+                                }}
                                 onCreateDebate={onCreateDebate}
                                 communityName={defaultRegion.value?.name}
+                                onPageChange$={async (page: number) => {
+                                    currentPage.value = page;
+                                    await nav(`/${nationName}/${regionName}?page=${page}`);
+                                }}
+                                isAuthenticated={isAuthenticated.value}
+                            />
+                        </Tabs.Panel>
+
+                        <Tabs.Panel value="projects" class="p-4">
+                            <Modal title={_`Create project for ${defaultRegion.value?.name}`} show={showModalProject}>
+                                {session.value?.user ? (
+                                    <FormProject 
+                                        onSubmitCompleted={onSubmitCompleted} 
+                                        defaultScope={CommunityType.REGIONAL}
+                                        defaultRegionId={defaultRegion.value?.id}
+                                        regions={Array.isArray(regions.value) ? regions.value : []}
+                                    />
+                                ) : (
+                                    <SocialLoginButtons />
+                                )}
+                            </Modal>
+
+                            <ProjectList
+                                onCreateProject={onCreateProject}
+                                projects={{
+                                    items: Array.isArray(projects.value?.items) ? projects.value.items : [],
+                                    total: projects.value?.total || 0,
+                                    page: projects.value?.page || 1,
+                                    size: projects.value?.size || 10,
+                                    pages: projects.value?.pages || 1,
+                                }}
+                                communityName={defaultRegion.value?.name}
+                                onPageChange$={async (page: number) => {
+                                    currentPage.value = page
+                                    await nav(`/${nationName}/${regionName}?page=${page}`)
+                                }}
+                                isAuthenticated={isAuthenticated.value}
                             />
                         </Tabs.Panel>
 
                         <Tabs.Panel value="issues" class="p-4">
-                            {_`Issues`}
-                        </Tabs.Panel>
+                            <Modal title={_`Report an Issue`} show={showModalIssue}>
+                                {session.value?.user ? (
+                                    <FormIssue 
+                                        onSubmitCompleted={onSubmitCompleted} 
+                                        defaultScope={CommunityType.REGIONAL}
+                                        defaultRegionId={defaultRegion.value?.id}
+                                        regions={Array.isArray(regions.value) ? regions.value : []}
+                                        tags={tags.value} 
+                                    />
+                                ) : (
+                                    <SocialLoginButtons />
+                                )}
+                            </Modal>
 
-                        <Tabs.Panel value="projects" class="p-4">
-                            {_`Proyects`}
+                            <IssueList
+                                onCreateIssue={onCreateIssue}
+                                issues={{
+                                    items: Array.isArray(issues.value?.items) ? issues.value.items : [],
+                                    total: issues.value?.total || 0,
+                                    page: issues.value?.page || 1,
+                                    size: issues.value?.size || 10,
+                                    pages: issues.value?.pages || 1,
+                                }}
+                                communityName={defaultRegion.value?.name}
+                                onPageChange$={async (page: number) => {
+                                    currentPage.value = page
+                                    await nav(`/${nationName}/${regionName}?page=${page}`)
+                                }}
+                                isAuthenticated={isAuthenticated.value}
+                            />
                         </Tabs.Panel>
 
                         <Tabs.Panel value="members" class="p-4">
