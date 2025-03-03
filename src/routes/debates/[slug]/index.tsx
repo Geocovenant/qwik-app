@@ -27,7 +27,7 @@ import { useStylesScoped$ } from "@builder.io/qwik"
 import { FormOpinionGlobalDebate } from "~/components/forms/FormOpinionGlobalDebate"
 import { useGetDebateBySlug } from "~/shared/loaders"
 import type { PropFunction } from "@builder.io/qwik"
-
+import styles from "./debate-page.css?inline"
 export { useGetDebateBySlug, useFormOpinionLoader } from "~/shared/loaders"
 export { useFormOpinionAction } from "~/shared/actions"
 
@@ -151,6 +151,7 @@ const CountryViewCard = component$(
 )
 
 export default component$(() => {
+    useStylesScoped$(styles)
     const session = useSession()
     const debate = useGetDebateBySlug()
     console.log('debate', debate.value)
@@ -160,17 +161,15 @@ export default component$(() => {
     const hasCommented = useComputed$(() => {
         if (!session.value?.user) return false
         return debate.value?.points_of_view?.some((view) =>
-            view.opinions.some((opinion: any) => opinion.user === session.value.user?.name),
+            view.opinions.some((opinion: any) => opinion.user.username === session.value.user?.username),
         )
     })
 
     const canComment = useComputed$(() => {
-        if (!session.value?.user?.country) return false
-        const userCountryView = debate.value?.points_of_view.find(
-            (view) => view.community.cca2 === session.value.user?.country,
-        )
-        return !hasCommented.value && userCountryView
+        if (!session.value?.user) return false
+        return !hasCommented.value
     })
+    console.log('canComment', canComment.value)
 
     const defaultCountryCca2 = useComputed$(() => {
         if (!session.value?.user?.country) return null
@@ -222,81 +221,6 @@ export default component$(() => {
         showRightArrow.value = hasScrollRight
     })
 
-    useStylesScoped$(`
-        .hero-gradient {
-            background: linear-gradient(180deg, 
-                rgba(0, 0, 0, 0.7) 0%, 
-                rgba(0, 0, 0, 0.5) 50%,
-                rgba(0, 0, 0, 0.3) 100%
-            );
-        }
-        
-        .debate-description {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            transition: all 0.3s ease;
-        }
-        
-        .debate-description.expanded {
-            -webkit-line-clamp: unset;
-        }
-        
-        .header-content {
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .scrollbar-thin::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        
-        .scrollbar-thin::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        
-        .scrollbar-thin::-webkit-scrollbar-thumb {
-            background: rgba(156, 163, 175, 0.5);
-            border-radius: 3px;
-        }
-        
-        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-            background: rgba(156, 163, 175, 0.8);
-        }
-        
-        .dark .scrollbar-thin::-webkit-scrollbar-thumb {
-            background: rgba(75, 85, 99, 0.5);
-        }
-        
-        .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-            background: rgba(75, 85, 99, 0.8);
-        }
-        
-        .card-hover-effect {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .card-hover-effect:hover {
-            transform: translateY(-4px);
-        }
-        
-        .perspective-input {
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
-        }
-        
-        .perspective-input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-        }
-    `)
 
     return (
         <div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
@@ -486,21 +410,21 @@ export default component$(() => {
                         </Badge>
                     </div>
 
-                    {session.value?.user && !hasCommented.value ? (
-                        canComment.value ? (
+                    {session.value?.user ? (
+                        hasCommented.value ? (
+                            <Alert.Root class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/50 text-yellow-800 dark:text-yellow-200 rounded-xl p-5 shadow-md">
+                                <LuInfo class="h-5 w-5" />
+                                <Alert.Description class="font-medium">
+                                    {_`You can only comment once in this debate.`}
+                                </Alert.Description>
+                            </Alert.Root>
+                        ) : (
                             <div class="bg-white dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/80 dark:border-gray-700/50 p-8">
                                 <FormOpinionGlobalDebate
                                     onSubmitCompleted$={() => { }}
                                     defaultCountryCca2={defaultCountryCca2.value || ""}
                                 />
                             </div>
-                        ) : (
-                            <Alert.Root class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/50 text-yellow-800 dark:text-yellow-200 rounded-xl p-5 shadow-md">
-                                <LuInfo class="h-5 w-5" />
-                                <Alert.Description class="font-medium">
-                                    {_`You can only comment once and in your country's perspective.`}
-                                </Alert.Description>
-                            </Alert.Root>
                         )
                     ) : (
                         <Alert.Root class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/50 text-blue-800 dark:text-blue-200 rounded-xl p-5 shadow-md">
@@ -566,6 +490,38 @@ export default component$(() => {
                                         <CountryViewCard view={view} userCountry={session.value?.user?.country || ""} />
                                     </div>
                                 ))}
+
+                            {/* Mensaje cuando no hay resultados en la búsqueda */}
+                            {searchTerm.value && sortedViews.value.filter((view) => 
+                                view.community.name.toLowerCase().includes(searchTerm.value.toLowerCase())
+                            ).length === 0 && (
+                                <div class="min-w-[600px] flex flex-col items-center justify-center p-12 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/80 dark:border-gray-700/50 shadow-md">
+                                    <div class="bg-gray-50 dark:bg-gray-800/30 rounded-full w-20 h-20 flex items-center justify-center mb-4">
+                                        <LuSearch class="w-10 h-10 text-gray-300 dark:text-gray-600" />
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                        {_`No countries found`}
+                                    </h3>
+                                    <p class="text-gray-500 dark:text-gray-400 text-center">
+                                        {_`No countries match your search "${searchTerm.value}"`}
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* Mensaje cuando no hay países participando */}
+                            {sortedViews.value.length === 0 && (
+                                <div class="min-w-[600px] flex flex-col items-center justify-center p-12 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/80 dark:border-gray-700/50 shadow-md">
+                                    <div class="bg-gray-50 dark:bg-gray-800/30 rounded-full w-20 h-20 flex items-center justify-center mb-4">
+                                        <LuGlobe class="w-10 h-10 text-gray-300 dark:text-gray-600" />
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                        {_`No countries participating yet`}
+                                    </h3>
+                                    <p class="text-gray-500 dark:text-gray-400 text-center">
+                                        {_`Be the first to share a perspective from your country`}
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

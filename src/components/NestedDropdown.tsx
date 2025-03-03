@@ -8,6 +8,7 @@ import { Avatar } from '~/components/ui';
 
 interface NestedDropdownProps {
     userId?: string;
+    username?: string;
     name?: string;
     email?: string;
     image?: string;
@@ -85,7 +86,7 @@ export const NestedDropdown = component$<NestedDropdownProps>((props) => {
             <div class={`dropdown-content ${isOpen.value ? 'show' : ''}`}>
                 <div class="dropdown-item" onClick$={() => isOpen.value = false}>
                     <Link 
-                        href={props.userId ? `/user/${props.userId}` : '/login'} 
+                        href={props.username ? `/user/${props.username}` : '/login'} 
                         class="flex items-center"
                     >
                         <LuUser class="w-5 h-5" />

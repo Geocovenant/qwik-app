@@ -2,6 +2,7 @@ import { _ } from 'compiled-i18n';
 import * as v from 'valibot';
 
 export const OpinionSchema = v.object({
+    debate_id: v.number(),
     opinion: v.pipe(
         v.string(),
         v.minLength(1, _`El comentario no puede estar vacío`),

@@ -39,6 +39,7 @@ export default component$(() => {
                     {session.value?.user ? (
                         <NestedDropdown
                             userId={session.value.user.id}
+                            username={session.value.user.username || undefined}
                             name={session.value.user.name || undefined}
                             email={session.value.user.email || undefined}
                             image={session.value.user.image || undefined}

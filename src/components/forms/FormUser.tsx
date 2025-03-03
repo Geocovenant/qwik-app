@@ -1,4 +1,4 @@
-import { $, component$ } from "@builder.io/qwik";
+import { $, component$, type QRL } from "@builder.io/qwik";
 import { useForm, valiForm$ } from '@modular-forms/qwik';
 import { TextInput } from '~/components/input/TextInput';
 import { TextArea } from '~/components/input/TextArea';
@@ -11,10 +11,10 @@ import { useFormUserAction, type UserResponseData } from "~/shared/actions";
 import { Image } from "@unpic/qwik";
 
 export interface FormUserProps {
-  onSubmitCompleted?: () => void;
+  onSubmitCompleted$: QRL<() => void>;
 }
 
-export default component$<FormUserProps>(({ onSubmitCompleted }) => {
+export default component$<FormUserProps>(({ onSubmitCompleted$ }) => {
   const [userForm, { Form, Field }] = useForm<UserForm, UserResponseData>({
     loader: useFormUserLoader(),
     action: useFormUserAction(),
@@ -24,9 +24,7 @@ export default component$<FormUserProps>(({ onSubmitCompleted }) => {
   const handleSubmit = $((values: UserForm, event: any) => {
     console.log('Submitting User form:', values);
     console.log('event', event);
-    if (onSubmitCompleted) {
-      onSubmitCompleted();
-    }
+    onSubmitCompleted$();
   });
 
   return (

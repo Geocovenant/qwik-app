@@ -335,18 +335,18 @@ export const useFormOpinionAction = formAction$<OpinionForm, OpinionResponseData
     async (values, event) => {
         console.log('############ useFormOpinionAction ############');
         const token = event.cookie.get('authjs.session-token')?.value;
-        
+
         console.log('values', values)
 
         const payload = {
-            text: values.opinion,
+            content: values.opinion,
             country_cca2: values.country,
         }
 
         console.log('payload', payload)
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/comments`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/${values.debate_id}/opinions`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -285,7 +285,7 @@ export default component$(() => {
                 bind:show={editProfileModalVisible}
             >
                 <FormUser
-                    onSubmitCompleted={onSubmitCompleted}
+                    onSubmitCompleted$={onSubmitCompleted}
                 />
             </Modal>
         </main>

@@ -43,29 +43,22 @@ export const FormOpinionGlobalDebate = component$<FormOpinionGlobalDebateProps>(
 
     return (
         <Form class="space-y-2" onSubmit$={handleSubmit}>
+            <Field name="debate_id" type="number">
+                {(field, props) => {
+                    return <input {...props} value={field.value} type="hidden" />
+                }}
+            </Field>
             <Field name="country" type="string">
                 {(field, props) => {
                     return (
                         <div class="space-y-2 max-w-xs">
-                            <Select.Root
-                                {...props} 
-                                value={defaultCountryCca2 || field.value}
-                            >
-                                    <Select.Label>{_`Select a country`}</Select.Label>
-                                    <Select.Trigger>
-                                        <Select.DisplayValue placeholder={_`Search country...`} />
-                                    </Select.Trigger>
-                                    <Select.Popover>
-                                        {countries.map((country) => (
-                                            <Select.Item key={country.cca2} value={country.cca2}>
-                                                <Select.ItemLabel>
-                                                    {`${country.flag} ${country.name}`}
-                                                </Select.ItemLabel>
-                                                <Select.ItemIndicator />
-                                            </Select.Item>
-                                        ))}
-                                    </Select.Popover>
-                            </Select.Root>
+                            <select {...props}>
+                                {countries.map((country) => (
+                                    <option key={country.cca2} value={country.cca2} selected={field.value === country.cca2}>
+                                        {`${country.flag} ${country.name}`}
+                                    </option>
+                                ))}
+                            </select>
                             {field.error && (
                                 <div class="text-sm text-destructive">{field.error}</div>
                             )}

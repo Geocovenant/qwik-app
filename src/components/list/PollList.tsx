@@ -141,7 +141,6 @@ export const PollList = component$<PollListProps>(({ polls, onCreatePoll, region
         showLoginModal.value = true;
     });
 
-    console.log('filteredPolls', filteredPolls.value)
     return (
         <div class="space-y-6 overflow-y-auto">
             {/* Login modal */}
