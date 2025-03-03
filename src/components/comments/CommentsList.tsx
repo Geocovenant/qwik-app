@@ -1,6 +1,6 @@
-import { $, component$, useSignal, type QRL } from "@builder.io/qwik";
+import { $, component$, useSignal } from "@builder.io/qwik";
 import { _ } from "compiled-i18n";
-import { LuArrowBigUp, LuArrowBigDown, LuReply } from "@qwikest/icons/lucide";
+import { LuReply } from "@qwikest/icons/lucide";
 import { timeAgo } from "~/utils/dateUtils";
 import { Avatar } from "../ui";
 
@@ -14,15 +14,14 @@ interface Comment {
   updated_at: string;
   username: string;
   can_edit: boolean | null;
+  replies?: Comment[];
 }
 
 interface CommentsListProps {
   comments: Comment[];
-  isAuthenticated: boolean;
-  onShowLoginModal$: QRL<() => void>;
 }
 
-export default component$<CommentsListProps>(({ comments, isAuthenticated, onShowLoginModal$ }) => {
+export default component$<CommentsListProps>(({ comments }) => {
   const expandedReplies = useSignal<number[]>([]);
   
   const toggleReplies = $(async (commentId: number) => {
@@ -31,16 +30,6 @@ export default component$<CommentsListProps>(({ comments, isAuthenticated, onSho
     } else {
       expandedReplies.value = [...expandedReplies.value, commentId];
     }
-  });
-
-  const handleReaction = $(async (commentId: number, reaction: "LIKE" | "DISLIKE") => {
-    if (!isAuthenticated) {
-      onShowLoginModal$();
-      return;
-    }
-    
-    // Aquí iría la lógica para reaccionar al comentario
-    console.log("Reacción", commentId, reaction);
   });
 
   return (
@@ -76,26 +65,6 @@ export default component$<CommentsListProps>(({ comments, isAuthenticated, onSho
                 </p>
                 
                 <div class="flex items-center gap-4 mt-3">
-                  <button 
-                    onClick$={() => handleReaction(comment.id, "LIKE")}
-                    class={`flex items-center gap-1 text-sm ${comment.userReaction === "LIKE" 
-                      ? "text-green-600 dark:text-green-400 font-medium" 
-                      : "text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400"}`}
-                  >
-                    <LuArrowBigUp class="w-4 h-4" />
-                    <span>{comment.likesCount}</span>
-                  </button>
-                  
-                  <button 
-                    onClick$={() => handleReaction(comment.id, "DISLIKE")}
-                    class={`flex items-center gap-1 text-sm ${comment.userReaction === "DISLIKE" 
-                      ? "text-red-600 dark:text-red-400 font-medium" 
-                      : "text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400"}`}
-                  >
-                    <LuArrowBigDown class="w-4 h-4" />
-                    <span>{comment.dislikesCount}</span>
-                  </button>
-                  
                   {comment.replies && comment.replies.length > 0 && (
                     <button 
                       onClick$={() => toggleReplies(comment.id)}
@@ -114,8 +83,8 @@ export default component$<CommentsListProps>(({ comments, isAuthenticated, onSho
                         <div class="flex items-start gap-2">
                           <Avatar.Root>
                             <Avatar.Image 
-                              src={reply.user.image} 
-                              alt={reply.user.username} 
+                              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${reply.username}`}
+                              alt={reply.username}
                               class="w-8 h-8 rounded-full"
                             />
                           </Avatar.Root>
@@ -123,7 +92,7 @@ export default component$<CommentsListProps>(({ comments, isAuthenticated, onSho
                           <div class="flex-1 min-w-0">
                             <div class="flex flex-wrap items-center gap-2 mb-1">
                               <span class="font-medium text-gray-900 dark:text-white">
-                                {reply.user.username}
+                                {reply.username}
                               </span>
                               <span class="text-xs text-gray-500 dark:text-gray-400">
                                 {timeAgo(new Date(reply.created_at))}
@@ -131,30 +100,8 @@ export default component$<CommentsListProps>(({ comments, isAuthenticated, onSho
                             </div>
                             
                             <p class="text-gray-700 dark:text-gray-300 text-sm whitespace-pre-line">
-                              {reply.text}
+                              {reply.content}
                             </p>
-                            
-                            <div class="flex items-center gap-4 mt-2">
-                              <button 
-                                onClick$={() => handleReaction(reply.id, "LIKE")}
-                                class={`flex items-center gap-1 text-xs ${reply.userReaction === "LIKE" 
-                                  ? "text-green-600 dark:text-green-400 font-medium" 
-                                  : "text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400"}`}
-                              >
-                                <LuArrowBigUp class="w-3 h-3" />
-                                <span>{reply.likesCount}</span>
-                              </button>
-                              
-                              <button 
-                                onClick$={() => handleReaction(reply.id, "DISLIKE")}
-                                class={`flex items-center gap-1 text-xs ${reply.userReaction === "DISLIKE" 
-                                  ? "text-red-600 dark:text-red-400 font-medium" 
-                                  : "text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400"}`}
-                              >
-                                <LuArrowBigDown class="w-3 h-3" />
-                                <span>{reply.dislikesCount}</span>
-                              </button>
-                            </div>
                           </div>
                         </div>
                       </div>
