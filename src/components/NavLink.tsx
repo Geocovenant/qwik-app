@@ -9,9 +9,9 @@ export const NavLink = component$(
     const toPathname = props.href ?? '';
     const locationPathname = location.url.pathname;
 
-    // Regla especial para '/global'
-    if (toPathname === '/global') {
-      const isActive = locationPathname === '/global' || locationPathname === '/global/';
+    // Special case for global and international routes
+    if (toPathname === '/global' || toPathname === '/international') {
+      const isActive = locationPathname === toPathname || locationPathname === `${toPathname}/`;
       return (
         <Link
           {...props}
@@ -22,15 +22,47 @@ export const NavLink = component$(
       );
     }
 
-    // Para otras rutas, verificar si la ruta actual coincide exactamente o es una subruta
-    const isActive = 
-      locationPathname === toPathname || 
-      locationPathname === `${toPathname}/` ||
-      locationPathname.startsWith(`${toPathname}/`);
+    // Handle nested routes by constructing the correct path based on the URL structure
+    let finalHref = toPathname;
+    
+    // Check if href is a simple section like 'polls', 'debates', etc.
+    // and not already a full path like '/argentina/polls'
+    if (!toPathname.includes('/') && location.params) {
+      const { nation, region, subregion, locality } = location.params;
+      
+      // Build path based on available route parameters
+      let basePath = '';
+      
+      if (nation) {
+        basePath = `/${nation}`;
+        
+        if (region) {
+          basePath += `/${region}`;
+          
+          if (subregion) {
+            basePath += `/${subregion}`;
+            
+            if (locality) {
+              basePath += `/${locality}`;
+            }
+          }
+        }
+      }
+      
+      // If we're on a path like /argentina/buenos-aires and the link is for 'polls',
+      // construct /argentina/buenos-aires/polls
+      if (basePath && toPathname) {
+        finalHref = `${basePath}/${toPathname}`;
+      }
+    }
+
+    // Check if the current location matches our link destination
+    const isActive = locationPathname === finalHref || locationPathname === `${finalHref}/`;
 
     return (
       <Link
         {...props}
+        href={finalHref}
         class={`${props.class || ''} ${isActive && activeClass ? activeClass : ''}`}
       >
         <Slot />

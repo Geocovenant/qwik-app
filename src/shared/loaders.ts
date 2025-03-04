@@ -151,6 +151,34 @@ export const useGetInternationalPolls = routeLoader$(async ({ cookie }) => {
 })
 
 // eslint-disable-next-line qwik/loader-location
+export const useGetInternationalProjects = routeLoader$(async ({ cookie }) => {
+    console.log('============ useGetInternationalProjects ============')
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return [];
+    }
+
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects?scope=INTERNATIONAL`, {
+            headers: {
+                Accept: 'application/json',
+                Authorization: token.value
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Error fetching international projects');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching international projects:', error);
+        return [];
+    }
+});
+
+// eslint-disable-next-line qwik/loader-location
 export const useGetNationalPolls = routeLoader$(async ({ cookie, params }) => {
     console.log('============ useGetNationalPolls ============')
     const token = cookie.get('authjs.session-token');
