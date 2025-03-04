@@ -28,7 +28,10 @@ import { FormOpinionGlobalDebate } from "~/components/forms/FormOpinionGlobalDeb
 import { useGetDebateBySlug } from "~/shared/loaders"
 import type { PropFunction } from "@builder.io/qwik"
 import styles from "./debate-page.css?inline"
-export { useGetDebateBySlug, useFormOpinionLoader } from "~/shared/loaders"
+import { FormOpinionInternationalDebate } from "~/components/forms/FormOpinionInternationalDebate"
+import { FormOpinionNationalDebate } from "~/components/forms/FormOpinionNationalDebate"
+
+export { useGetDebateBySlug, useFormOpinionLoader, useGetCountryDivisions } from "~/shared/loaders"
 export { useFormOpinionAction } from "~/shared/actions"
 
 // Navigation arrow component
@@ -74,8 +77,13 @@ const CountryViewCard = component$(
         userCountry: string
     }) => {
         const countryFlag = useComputed$(() => {
+            // Si es una región (sin cca2), mostramos un emoji de bandera genérico
+            if (!view.community.cca2) {
+                return "🏁"; // Bandera genérica para regiones
+            }
+            
             const countryData = countriesList.find(
-                (country) => country.cca2.toLowerCase() === view.community.cca2.toLowerCase(),
+                (country) => country.cca2.toLowerCase() === view.community.cca2?.toLowerCase(),
             )
             return countryData?.flag || "🏳️"
         })
@@ -154,14 +162,13 @@ export default component$(() => {
     useStylesScoped$(styles)
     const session = useSession()
     const debate = useGetDebateBySlug()
-    console.log('debate', debate.value)
     const searchTerm = useSignal("")
     const isDescriptionExpanded = useSignal(false)
 
     const hasCommented = useComputed$(() => {
         if (!session.value?.user) return false
         return debate.value?.points_of_view?.some((view) =>
-            view.opinions.some((opinion: any) => opinion.user.username === session.value.user?.username),
+            view.opinions.some((opinion: any) => opinion.user.username === session.value?.user?.username),
         )
     })
 
@@ -172,9 +179,9 @@ export default component$(() => {
     console.log('canComment', canComment.value)
 
     const defaultCountryCca2 = useComputed$(() => {
-        if (!session.value?.user?.country) return null
+        if (!session.value?.user?.name) return null
         const foundCountry = countriesList.find(
-            (country) => country.cca2.toLowerCase() === session.value?.user?.country.toLowerCase(),
+            (country) => country.cca2.toLowerCase() === session.value?.user?.name.toLowerCase(),
         )
         return foundCountry ? foundCountry.cca2 : null
     })
@@ -221,6 +228,9 @@ export default component$(() => {
         showRightArrow.value = hasScrollRight
     })
 
+    const onSubmitCompleted$ = $(() => {
+        console.log('onSubmitCompleted$')
+    })
 
     return (
         <div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
@@ -258,15 +268,15 @@ export default component$(() => {
                             </Badge>
                             
                             {/* Badge for national debates */}
-                            {debate.value?.type === "NATIONAL" && (
+                            {debate.value?.type === "NATIONAL" && debate.value?.communities && debate.value.communities.length > 0 && (
                                 <Badge
                                     look="secondary"
                                     class="bg-purple-600/90 backdrop-blur-sm text-white border border-purple-500/30 px-3 py-1.5 rounded-full shadow-md"
                                 >
                                     {countriesList.find(
-                                        country => country.cca2 === debate.value?.communities?.[0]?.cca2
+                                        country => country.cca2 === debate.value?.communities?.[0].cca2
                                     )?.flag || "🏳️"}{" "}
-                                    {debate.value?.communities?.[0]?.name}
+                                    {debate.value?.communities?.[0].name}
                                 </Badge>
                             )}
                             
@@ -332,7 +342,10 @@ export default component$(() => {
                                 </span>
                                 <span class="flex items-center gap-2 bg-black/20 backdrop-blur-sm rounded-full px-3 py-1.5">
                                     <LuUsers class="w-4 h-4" />
-                                    <span class="text-sm font-medium">{debate.value?.points_of_view.length} {_`countries`}</span>
+                                    <span class="text-sm font-medium">
+                                        {debate.value?.points_of_view.length}{" "}
+                                        {debate.value?.type === "NATIONAL" ? _`regions` : _`countries`}
+                                    </span>
                                 </span>
                             </div>
                         </div>
@@ -406,7 +419,10 @@ export default component$(() => {
                             class="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-3 py-1.5 rounded-full shadow-sm"
                         >
                             <LuUsers class="w-4 h-4 mr-1.5" />
-                            {_`${debate.value?.points_of_view.length} countries participating`}
+                            {debate.value?.type === "NATIONAL" 
+                                ? _`${debate.value?.points_of_view.length} regions participating`
+                                : _`${debate.value?.points_of_view.length} countries participating`
+                            }
                         </Badge>
                     </div>
 
@@ -420,10 +436,22 @@ export default component$(() => {
                             </Alert.Root>
                         ) : (
                             <div class="bg-white dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/80 dark:border-gray-700/50 p-8">
-                                <FormOpinionGlobalDebate
-                                    onSubmitCompleted$={() => { }}
-                                    defaultCountryCca2={defaultCountryCca2.value || ""}
-                                />
+                                {debate.value?.type === "GLOBAL" ? (
+                                    <FormOpinionGlobalDebate
+                                        onSubmitCompleted$={onSubmitCompleted$}
+                                        defaultCountryCca2={defaultCountryCca2.value || ""}
+                                    />
+                                ) : debate.value?.type === "INTERNATIONAL" ? (
+                                    <FormOpinionInternationalDebate
+                                        onSubmitCompleted$={onSubmitCompleted$}
+                                        defaultCountryCca2={defaultCountryCca2.value || ""}
+                                        pointsOfView={debate.value?.points_of_view || []}
+                                    />
+                                ) : (
+                                    <FormOpinionNationalDebate
+                                        onSubmitCompleted$={onSubmitCompleted$}
+                                    />
+                                )}
                             </div>
                         )
                     ) : (
@@ -434,14 +462,21 @@ export default component$(() => {
                     )}
                 </div>
 
-                {/* Country Views Section with Horizontal Scroll */}
+                {/* Country/Region Views Section with Horizontal Scroll */}
                 <div class="mt-16 mb-16">
                     <div class="flex items-center justify-between mb-8">
                         <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             <span class="bg-indigo-100 dark:bg-indigo-900/30 p-2 rounded-lg">
-                                <LuGlobe class="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                                {debate.value?.type === "NATIONAL" ? (
+                                    <LuFlag class="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                                ) : (
+                                    <LuGlobe class="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                                )}
                             </span>
-                            {_`Points of View by Country`}
+                            {debate.value?.type === "NATIONAL" 
+                                ? _`Points of View by Region`
+                                : _`Points of View by Country`
+                            }
                         </h2>
                     </div>
 
@@ -486,8 +521,8 @@ export default component$(() => {
                             {sortedViews.value
                                 .filter((view) => view.community.name.toLowerCase().includes(searchTerm.value.toLowerCase()))
                                 .map((view) => (
-                                    <div key={view.community.cca2} class="snap-start snap-always card-hover-effect">
-                                        <CountryViewCard view={view} userCountry={session.value?.user?.country || ""} />
+                                    <div key={view.community.id || view.community.cca2 || view.id} class="snap-start snap-always card-hover-effect">
+                                        <CountryViewCard view={view} userCountry={session.value?.user?.name || ""} />
                                     </div>
                                 ))}
 
@@ -500,25 +535,38 @@ export default component$(() => {
                                         <LuSearch class="w-10 h-10 text-gray-300 dark:text-gray-600" />
                                     </div>
                                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                                        {_`No countries found`}
+                                        {debate.value?.type === "NATIONAL" ? _`No regions found` : _`No countries found`}
                                     </h3>
                                     <p class="text-gray-500 dark:text-gray-400 text-center">
-                                        {_`No countries match your search "${searchTerm.value}"`}
+                                        {debate.value?.type === "NATIONAL" 
+                                            ? _`No regions match your search "${searchTerm.value}"`
+                                            : _`No countries match your search "${searchTerm.value}"`
+                                        }
                                     </p>
                                 </div>
                             )}
 
-                            {/* Mensaje cuando no hay países participando */}
+                            {/* Mensaje cuando no hay países/regiones participando */}
                             {sortedViews.value.length === 0 && (
                                 <div class="min-w-[600px] flex flex-col items-center justify-center p-12 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/80 dark:border-gray-700/50 shadow-md">
                                     <div class="bg-gray-50 dark:bg-gray-800/30 rounded-full w-20 h-20 flex items-center justify-center mb-4">
-                                        <LuGlobe class="w-10 h-10 text-gray-300 dark:text-gray-600" />
+                                        {debate.value?.type === "NATIONAL" ? (
+                                            <LuFlag class="w-10 h-10 text-gray-300 dark:text-gray-600" />
+                                        ) : (
+                                            <LuGlobe class="w-10 h-10 text-gray-300 dark:text-gray-600" />
+                                        )}
                                     </div>
                                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                                        {_`No countries participating yet`}
+                                        {debate.value?.type === "NATIONAL" 
+                                            ? _`No regions participating yet`
+                                            : _`No countries participating yet`
+                                        }
                                     </h3>
                                     <p class="text-gray-500 dark:text-gray-400 text-center">
-                                        {_`Be the first to share a perspective from your country`}
+                                        {debate.value?.type === "NATIONAL"
+                                            ? _`Be the first to share a perspective from your region`
+                                            : _`Be the first to share a perspective from your country`
+                                        }
                                     </p>
                                 </div>
                             )}

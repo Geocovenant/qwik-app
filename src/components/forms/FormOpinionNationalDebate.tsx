@@ -2,34 +2,34 @@ import { $, component$, useTask$, type QRL } from "@builder.io/qwik";
 import { LuSend } from "@qwikest/icons/lucide";
 import { _ } from "compiled-i18n";
 import { setValue, useForm, valiForm$ } from "@modular-forms/qwik";
-import { dataArray as countries } from "~/data/countries";
 import { Button, Textarea } from "~/components/ui";
 import type { OpinionForm } from "~/schemas/opinionSchema";
 import { OpinionSchema } from "~/schemas/opinionSchema";
-import { useFormOpinionLoader } from "~/shared/loaders";
+import { useFormOpinionLoader, useGetCountryDivisions } from "~/shared/loaders";
 import { useFormOpinionAction, type OpinionResponseData } from "~/shared/actions";
 
-interface FormOpinionGlobalDebateProps {
+interface FormOpinionNationalDebateProps {
     onSubmitCompleted$: QRL<() => void>;
-    defaultCountryCca2: string;
+    defaultDivisionId?: string;
 }
 
-export const FormOpinionGlobalDebate = component$<FormOpinionGlobalDebateProps>(({
+export const FormOpinionNationalDebate = component$<FormOpinionNationalDebateProps>(({
     onSubmitCompleted$,
-    defaultCountryCca2
+    defaultDivisionId
 }) => {
-    console.log('defaultCountryCca2', defaultCountryCca2)
+    const divisions = useGetCountryDivisions();
+
     const [opinionForm, { Form, Field }] = useForm<OpinionForm, OpinionResponseData>({
         loader: useFormOpinionLoader(),
         action: useFormOpinionAction(),
         validate: valiForm$(OpinionSchema),
     });
     
-    // Establecer el país por defecto cuando se monta el componente
+    // Establecer la división por defecto cuando se monta el componente
     useTask$(({ track }) => {
-        const country = track(() => defaultCountryCca2);
-        if (country) {
-            setValue(opinionForm, 'country', defaultCountryCca2);
+        const division = track(() => defaultDivisionId);
+        if (division) {
+            setValue(opinionForm, 'region_id', division);
         }
     });
 
@@ -38,7 +38,6 @@ export const FormOpinionGlobalDebate = component$<FormOpinionGlobalDebateProps>(
         console.log('event', event);
         // eslint-disable-next-line qwik/valid-lexical-scope
         onSubmitCompleted$()
-        // Here you can perform the submit action (client-side or progressively enhanced with action)
     });
 
     return (
@@ -48,18 +47,18 @@ export const FormOpinionGlobalDebate = component$<FormOpinionGlobalDebateProps>(
                     return <input {...props} value={field.value} type="hidden" />
                 }}
             </Field>
-            <Field name="country" type="string">
+            <Field name="region_id" type="string">
                 {(field, props) => {
                     return (
                         <div class="space-y-2 max-w-xs">
-                            <select {...props}>
-                                {countries.map((country) => (
-                                    <option
-                                        key={country.cca2}
-                                        value={country.cca2}
-                                        selected={field.value === country.cca2}
+                            <select {...props} class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2">
+                                {divisions.value.map((division) => (
+                                    <option 
+                                        key={division.id} 
+                                        value={division.id} 
+                                        selected={field.value === division.id.toString()}
                                     >
-                                        {`${country.flag} ${country.name}`}
+                                        {division.name}
                                     </option>
                                 ))}
                             </select>
@@ -76,7 +75,7 @@ export const FormOpinionGlobalDebate = component$<FormOpinionGlobalDebateProps>(
                         <div class="flex-1 relative">
                             <Textarea
                                 {...props}
-                                placeholder={_`Write your perspective from ${defaultCountryCca2}`}
+                                placeholder={_`Write your perspective from your province`}
                                 value={field.value}
                                 error={field.error}
                             />
@@ -90,4 +89,4 @@ export const FormOpinionGlobalDebate = component$<FormOpinionGlobalDebateProps>(
             </div>
         </Form>
     );
-});
+}); 

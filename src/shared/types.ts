@@ -1,3 +1,29 @@
+import type { Session } from "@auth/qwik";
+
+export interface CustomUser {
+    id?: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    // Propiedades adicionales
+    emailVerified?: string | null;
+    username?: string | null;
+    is_active?: boolean | null;
+    role?: string | null;
+    bio?: string | null;
+    country?: string | null;
+    website?: string | null;
+    cover?: string | null;
+    gender?: string | null;
+    last_login?: string | null;
+    created_at?: string | null;
+    updated_at?: string | null;
+}
+
+export interface CustomSession extends Session {
+    user?: CustomUser;
+}
+
 export enum PollScope {
     GLOBAL = 'GLOBAL',
     INTERNATIONAL = 'INTERNATIONAL',
@@ -59,7 +85,7 @@ export type Debate = {
     tags?: string[];
     comments_count: number;
     points_of_view: PointOfView[];
-    detail: string;
+    detail?: string;
 }
 
 export type PointOfView = {
@@ -92,15 +118,11 @@ export interface CountryView {
     id: number;
     name: string;
     created_at: string;
-    created_by: {
-        id: number;
-        username: string;
-        image: string;
-    };
+    created_by: User;
     community: {
         id: number;
         name: string;
-        cca2: string;
+        cca2: string | null;
     };
     opinions: DebateComment[];
 }
@@ -128,9 +150,6 @@ export interface PollComment {
     created_at: string;
     poll_id: number;
 }
-
-// Renombrar el tipo Comment actual a PollComment
-export type { Comment as PollComment } from './types';
 
 // Add these types to your shared/types.ts file
 
@@ -238,4 +257,13 @@ export interface IssueRead {
     creator: UserMinimal;
     communities: CommunityMinimal[];
 }
+
+export interface User {
+    id: number;
+    username?: string;
+    name?: string;
+    image: string;
+    country?: string;
+}
+
 

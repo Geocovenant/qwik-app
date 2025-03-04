@@ -643,8 +643,7 @@ export const dataArray = [
         "name": "Israel",
         "flag": "🇮🇱",
         "continent": "Asia",
-        "cca2": "IL",
-        "adminDivisionName": "מחוזות",  // Mehozot (Distritos)
+        "cca2": "מחוזות",  // Mehozot (Distritos)
         "path": "israel"
     },
     {
@@ -667,16 +666,14 @@ export const dataArray = [
         "name": "Japón",
         "flag": "🇯🇵",
         "continent": "Asia",
-        "cca2": "JP",
-        "adminDivisionName": "都道府県",  // Todōfuken (Prefecturas)
+        "cca2": "都道府県",  // Todōfuken (Prefecturas)
         "path": "japon"
     },
     {
         "name": "Jordania",
         "flag": "🇯🇴",
         "continent": "Asia",
-        "cca2": "JO",
-        "adminDivisionName": "محافظات",  // Muhafazat (Gobernaciones)
+        "cca2": "محافظات",  // Muhafazat (Gobernaciones)
         "path": "jordania"
     },
     {
@@ -731,8 +728,7 @@ export const dataArray = [
         "name": "Kuwait",
         "flag": "🇰🇼",
         "continent": "Asia",
-        "cca2": "KW",
-        "adminDivisionName": "محافظات",  // Muhafazat (Gobernaciones)
+        "cca2": "محافظات",  // Muhafazat (Gobernaciones)
         "path": "kuwait"
     },
     {
@@ -923,8 +919,7 @@ export const dataArray = [
         "name": "Mongolia",
         "flag": "🇲🇳",
         "continent": "Asia",
-        "cca2": "MN",
-        "adminDivisionName": "Аймаг",  // Aimag (Provincias)
+        "cca2": "Аймаг",  // Aimag (Provincias)
         "path": "mongolia"
     },
     {
@@ -1517,5 +1512,10 @@ const data: CountriesMap = dataArray.reduce((acc, country) => {
     acc[country.name] = country.flag;
     return acc;
 }, {} as CountriesMap);
+
+export function getFlagByCca2(cca2: string): string {
+    const country = dataArray.find(c => c.cca2 === cca2);
+    return country?.flag || "🏳️";
+}
 
 export default data;

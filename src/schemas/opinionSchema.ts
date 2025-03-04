@@ -1,14 +1,14 @@
-import { _ } from 'compiled-i18n';
 import * as v from 'valibot';
+import { _ } from 'compiled-i18n';
 
 export const OpinionSchema = v.object({
     debate_id: v.number(),
     opinion: v.pipe(
         v.string(),
-        v.minLength(1, _`El comentario no puede estar vacío`),
-        v.maxLength(1000, _`El comentario no puede exceder los 1000 caracteres`)
+        v.minLength(1, _`Opinion is required`)
     ),
-    country: v.string()
+    country: v.optional(v.string()),
+    region_id: v.optional(v.string()),
 });
 
 export type OpinionForm = v.InferInput<typeof OpinionSchema>;

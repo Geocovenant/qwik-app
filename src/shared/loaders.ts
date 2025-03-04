@@ -601,6 +601,7 @@ export const useFormOpinionLoader = routeLoader$<InitialValues<OpinionForm>>(asy
         debate_id: debate?.id,
         opinion: '',
         country: '',
+        region_id: 0,
     };
 });
 
@@ -949,6 +950,44 @@ export const useGetSubregionalIssues = routeLoader$(async ({ cookie, params, res
         return data;
     } catch (error) {
         console.error('Error fetching subregional issues:', error);
+        return [];
+    }
+});
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue }) => {
+    console.log('============ useGetCountryDivisions ============')
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return [];
+    }
+
+    // Si el debate es nacional, obtenemos el country_code del primer elemento de communities
+    const debate = await resolveValue(useGetDebateBySlug);
+    const countryCode = debate?.communities?.[0]?.cca2;
+    console.log('countryCode', countryCode)
+
+    if (!countryCode) {
+        console.error('Country code not found');
+        return [];
+    }
+
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/countries/${countryCode}/divisions`, {
+            headers: {
+                Accept: 'application/json',
+                Authorization: token.value
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Error fetching country divisions');
+        }
+
+        const divisions = await response.json();
+        return divisions;
+    } catch (error) {
+        console.error('Error fetching country divisions:', error);
         return [];
     }
 });

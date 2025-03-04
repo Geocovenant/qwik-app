@@ -1,16 +1,14 @@
 import { component$, Slot } from "@builder.io/qwik";
 import type { RequestHandler } from "@builder.io/qwik-city";
 import { guessLocale } from 'compiled-i18n'
-import Header from "~/components/Header";
-import Sidebar from "~/components/Sidebar";
-import { useLocation } from "@builder.io/qwik-city";
 import { type CustomSession } from "~/shared/types";
 
 export const onRequest: RequestHandler = async ({ query, headers, locale, sharedMap, redirect, url }) => {
   const session: CustomSession | null = sharedMap.get('session');
+  console.log('session2', session)
   console.log('url.pathname', url.pathname)
-  if(session?.user?.id && !session.user.username) {
-    throw redirect(302, '/onboarding/username')
+  if(session?.user?.id && session.user.username) {
+    throw redirect(302, '/global')
   }
   // Allow overriding locale with query param `locale`
   const maybeLocale = query.get('locale') || headers.get('accept-language')
@@ -29,18 +27,9 @@ export const onGet: RequestHandler = async ({ cacheControl }) => {
 };
 
 export default component$(() => {
-  const location = useLocation();
-  const isHome = location.url.pathname === '/';
-
   return (
     <div class="flex flex-col h-screen bg-gray-50 dark:bg-gray-800">
-      {!isHome && <Header />}
-      <div class="flex flex-1 overflow-hidden">
-        <Sidebar />
-        <main class="flex-1 overflow-y-auto">
-          <Slot />
-        </main>
-      </div>
+      <Slot />
     </div>
   );
 });

@@ -2,7 +2,7 @@ import { formAction$, valiForm$ } from '@modular-forms/qwik';
 import type { PollForm } from '~/schemas/pollSchema';
 import { PollSchema } from '~/schemas/pollSchema';
 import { _ } from 'compiled-i18n';
-import { routeAction$ } from '@builder.io/qwik-city';
+import { routeAction$, z, zod$ } from '@builder.io/qwik-city';
 import { CommunityType } from '~/constants/communityType';
 import type { DebateForm } from '~/schemas/debateSchema';
 import { DebateSchema } from '~/schemas/debateSchema';
@@ -235,12 +235,12 @@ export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
 );
 
 // eslint-disable-next-line qwik/loader-location
-export const usePatchUsername = routeAction$(
+export const useSetUsername = routeAction$(
     async (data, { cookie }) => {
-        console.log('### usePatchUsername ###')
+        console.log('### useSetUsername ###')
         console.log('data', data)
         const token = cookie.get('authjs.session-token')?.value;
-        const payload = { base_name: data.name }
+        const payload = { base_name: data.username }
         console.log('payload', payload)
         
         try {
@@ -258,7 +258,12 @@ export const usePatchUsername = routeAction$(
             console.error('err', err)
             return err
         }
-    }
+    },
+    zod$({
+        username: z.string().min(3).max(15).regex(/^[a-zA-Z0-9_]+$/, {
+            message: _`Username must contain only letters, numbers, and underscores`,
+        }),
+    })
 )
 
 export interface UserResponseData {
@@ -341,6 +346,7 @@ export const useFormOpinionAction = formAction$<OpinionForm, OpinionResponseData
         const payload = {
             content: values.opinion,
             country_cca2: values.country,
+            region_id: values.region_id ? parseInt(values.region_id) : null,
         }
 
         console.log('payload', payload)
@@ -604,3 +610,47 @@ export const useFormCommentAction = formAction$<CommentForm, CommentResponseData
     },
     valiForm$(CommentSchema)
 );
+
+// eslint-disable-next-line qwik/loader-location
+export const useCheckUserOpinionInDebate = routeAction$(
+    async (data, { cookie }) => {
+        console.log('### useCheckUserOpinionInDebate ###')
+        console.log('data', data)
+        const token = cookie.get('authjs.session-token')?.value;
+        
+        try {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/${data.debateId}/user-has-opinion`, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                return {
+                    success: false,
+                    hasOpinion: false,
+                    message: errorData.message || 'Error al verificar opinión'
+                };
+            }
+            
+            const data = await response.json();
+            
+            return {
+                success: true,
+                hasOpinion: data.hasOpinion || false,
+                message: data.hasOpinion ? 'Ya has opinado en este debate' : ''
+            };
+        } catch (err) {
+            console.error('err', err)
+            return {
+                success: false,
+                hasOpinion: false,
+                message: 'Error al verificar opinión'
+            }
+        }
+    }
+)

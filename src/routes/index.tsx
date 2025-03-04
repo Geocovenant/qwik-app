@@ -7,6 +7,7 @@ import ImgLogo from '~/icons/logo.svg?jsx';
 
 export const onRequest: RequestHandler = async (event) => {
   const session: Session | null = event.sharedMap.get('session');
+  console.log('index')
   console.log('+++++ session +++++', session)
   if (session && new Date(session.expires) >= new Date()) {
     throw event.redirect(302, '/global')

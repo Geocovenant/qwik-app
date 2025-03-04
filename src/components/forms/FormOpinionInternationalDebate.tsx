@@ -2,23 +2,25 @@ import { $, component$, useTask$, type QRL } from "@builder.io/qwik";
 import { LuSend } from "@qwikest/icons/lucide";
 import { _ } from "compiled-i18n";
 import { setValue, useForm, valiForm$ } from "@modular-forms/qwik";
-import { dataArray as countries } from "~/data/countries";
 import { Button, Textarea } from "~/components/ui";
 import type { OpinionForm } from "~/schemas/opinionSchema";
 import { OpinionSchema } from "~/schemas/opinionSchema";
 import { useFormOpinionLoader } from "~/shared/loaders";
 import { useFormOpinionAction, type OpinionResponseData } from "~/shared/actions";
+import type { CountryView } from "~/shared/types";
+import { getFlagByCca2 } from "~/data/countries";
 
-interface FormOpinionGlobalDebateProps {
+interface FormOpinionInternationalDebateProps {
     onSubmitCompleted$: QRL<() => void>;
     defaultCountryCca2: string;
+    pointsOfView: CountryView[];
 }
 
-export const FormOpinionGlobalDebate = component$<FormOpinionGlobalDebateProps>(({
+export const FormOpinionInternationalDebate = component$<FormOpinionInternationalDebateProps>(({
     onSubmitCompleted$,
-    defaultCountryCca2
+    defaultCountryCca2,
+    pointsOfView
 }) => {
-    console.log('defaultCountryCca2', defaultCountryCca2)
     const [opinionForm, { Form, Field }] = useForm<OpinionForm, OpinionResponseData>({
         loader: useFormOpinionLoader(),
         action: useFormOpinionAction(),
@@ -38,7 +40,6 @@ export const FormOpinionGlobalDebate = component$<FormOpinionGlobalDebateProps>(
         console.log('event', event);
         // eslint-disable-next-line qwik/valid-lexical-scope
         onSubmitCompleted$()
-        // Here you can perform the submit action (client-side or progressively enhanced with action)
     });
 
     return (
@@ -52,14 +53,10 @@ export const FormOpinionGlobalDebate = component$<FormOpinionGlobalDebateProps>(
                 {(field, props) => {
                     return (
                         <div class="space-y-2 max-w-xs">
-                            <select {...props}>
-                                {countries.map((country) => (
-                                    <option
-                                        key={country.cca2}
-                                        value={country.cca2}
-                                        selected={field.value === country.cca2}
-                                    >
-                                        {`${country.flag} ${country.name}`}
+                            <select {...props} class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2">
+                                {pointsOfView.map((view) => (
+                                    <option key={view.community.cca2} value={view.community.cca2} selected={field.value === view.community.cca2}>
+                                        {`${getFlagByCca2(view.community.cca2)} ${view.community.name}`}
                                     </option>
                                 ))}
                             </select>
