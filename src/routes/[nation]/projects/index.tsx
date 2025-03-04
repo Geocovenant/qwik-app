@@ -10,10 +10,10 @@ import { useSession } from "~/routes/plugin@auth";
 import { dataArray as countries } from "~/data/countries";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Importamos los loaders necesarios
+// Import necessary loaders
 import { useGetNationalProjects, useGetTags } from "~/shared/loaders";
 
-// Exportamos los loaders para que Qwik City pueda encontrarlos
+// Export loaders so Qwik City can find them
 export { useGetNationalProjects, useGetTags } from "~/shared/loaders";
 export { useFormProjectAction } from "~/shared/actions";
 
@@ -46,7 +46,7 @@ export default component$(() => {
             <div class="flex flex-col min-h-0">
                 <div class="h-full overflow-y-auto">
                     <Modal 
-                        title={_`Crear proyecto para ${nation.value?.name || capitalizeFirst(nationName)}`} 
+                        title={_`Create project for ${nation.value?.name || capitalizeFirst(nationName)}`} 
                         show={showModalProject}
                     >
                         {session.value?.user
@@ -83,11 +83,11 @@ export default component$(() => {
 export const head: DocumentHead = ({ params }) => {
     const nationName = capitalizeFirst(params.nation || "");
     return {
-        title: `${nationName} - Proyectos`,
+        title: `${nationName} - Projects`,
         meta: [
             {
                 name: "description",
-                content: `Proyectos de la comunidad de ${nationName}`,
+                content: `Community projects of ${nationName}`,
             },
         ],
     };

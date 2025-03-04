@@ -10,10 +10,10 @@ import { useSession } from "~/routes/plugin@auth";
 import { dataArray as countries } from "~/data/countries";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Importamos los loaders necesarios
+// Import necessary loaders
 import { useGetNationalIssues, useGetTags } from "~/shared/loaders";
 
-// Exportamos los loaders para que Qwik City pueda encontrarlos
+// Export loaders so Qwik City can find them
 export { useGetNationalIssues, useFormIssueLoader, useGetTags } from "~/shared/loaders";
 export { useFormIssueAction } from "~/shared/actions";
 
@@ -46,7 +46,7 @@ export default component$(() => {
             <div class="flex flex-col min-h-0">
                 <div class="h-full overflow-y-auto">
                     <Modal 
-                        title={_`Reportar problema en ${nation.value?.name || capitalizeFirst(nationName)}`} 
+                        title={_`Report issue in ${nation.value?.name || capitalizeFirst(nationName)}`} 
                         show={showModalIssue}
                     >
                         {session.value?.user
@@ -83,11 +83,11 @@ export default component$(() => {
 export const head: DocumentHead = ({ params }) => {
     const nationName = capitalizeFirst(params.nation || "");
     return {
-        title: `${nationName} - Problemas`,
+        title: `${nationName} - Issues`,
         meta: [
             {
                 name: "description",
-                content: `Problemas reportados en la comunidad de ${nationName}`,
+                content: `Reported issues in the community of ${nationName}`,
             },
         ],
     };

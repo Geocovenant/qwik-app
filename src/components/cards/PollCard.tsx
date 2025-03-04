@@ -14,7 +14,7 @@ import { useVotePoll, useReactPoll } from "~/shared/actions"
 import { dataArray } from "~/data/countries"
 import { CommunityType } from "~/constants/communityType"
 import { Avatar } from "../ui"
-import { useNavigate } from "@builder.io/qwik-city"
+import { Link, useNavigate } from "@builder.io/qwik-city"
 import type { QRL } from "@builder.io/qwik"
 
 interface PollCardProps {
@@ -367,7 +367,7 @@ export default component$<PollCardProps>(
                                 </span>
                             </div>
                         ) : (
-                            <div class="flex items-center" onClick$={() => onClickUsername(creatorUsername)}>
+                            <Link class="flex items-center" href={`/user/${creatorUsername}`}>
                                 <Avatar.Root>
                                     <Avatar.Image
                                         src={creatorAvatar}
@@ -378,7 +378,7 @@ export default component$<PollCardProps>(
                                 <span class="hover:text-cyan-600 dark:hover:text-cyan-400 cursor-pointer ml-1">
                                     {creatorUsername}
                                 </span>
-                            </div>
+                            </Link>
                         )}
 
                         <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-full">
