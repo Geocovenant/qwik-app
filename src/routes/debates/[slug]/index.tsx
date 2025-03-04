@@ -176,7 +176,6 @@ export default component$(() => {
         if (!session.value?.user) return false
         return !hasCommented.value
     })
-    console.log('canComment', canComment.value)
 
     const defaultCountryCca2 = useComputed$(() => {
         if (!session.value?.user?.name) return null

@@ -33,7 +33,7 @@ export interface ProjectListProps {
     isAuthenticated?: boolean
 }
 
-export const ProjectList = component$<ProjectListProps>(
+export default component$<ProjectListProps>(
     ({ projects, onCreateProject, communityName, onPageChange$, isAuthenticated = true }) => {
         const searchTerm = useSignal("")
         const showLoginModal = useSignal(false)

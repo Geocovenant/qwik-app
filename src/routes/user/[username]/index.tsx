@@ -21,7 +21,6 @@ export default component$(() => {
     const location = useLocation();
     const { username } = location.params;
     const user = useGetUserByUsername();
-    console.log('user', user)
 
     const editProfileModalVisible = useSignal<boolean>(false);
 

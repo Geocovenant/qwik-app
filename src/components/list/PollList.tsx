@@ -25,7 +25,7 @@ export interface PollListProps {
     isAuthenticated?: boolean
 }
 
-export const PollList = component$<PollListProps>(({ polls, onCreatePoll, region, communityName, onPageChange$, isAuthenticated = true }) => {
+export default component$<PollListProps>(({ polls, onCreatePoll, region, communityName, onPageChange$, isAuthenticated = true }) => {
     const searchTerm = useSignal('');
     const showLoginModal = useSignal(false);
     

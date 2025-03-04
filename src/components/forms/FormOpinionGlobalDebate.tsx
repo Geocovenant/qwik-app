@@ -18,7 +18,6 @@ export const FormOpinionGlobalDebate = component$<FormOpinionGlobalDebateProps>(
     onSubmitCompleted$,
     defaultCountryCca2
 }) => {
-    console.log('defaultCountryCca2', defaultCountryCca2)
     const [opinionForm, { Form, Field }] = useForm<OpinionForm, OpinionResponseData>({
         loader: useFormOpinionLoader(),
         action: useFormOpinionAction(),

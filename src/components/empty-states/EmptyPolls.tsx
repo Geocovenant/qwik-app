@@ -1,7 +1,7 @@
 import { component$, type QRL } from "@builder.io/qwik";
 import { LuClipboardList } from "@qwikest/icons/lucide";
-import { _ } from "compiled-i18n";
 import { Button } from '~/components/ui';
+import { _ } from "compiled-i18n";
 
 interface EmptyPollsProps {
     onCreatePoll: QRL<() => void>;
@@ -22,8 +22,8 @@ export default component$<EmptyPollsProps>(({ onCreatePoll, communityName }) => 
                         </h3>
                         <p class="text-sm text-gray-500 dark:text-gray-400 max-w-sm">
                             {communityName 
-                                ? _`Be the first to create a poll in ${communityName} and start gathering opinions!`
-                                : _`Be the first to create a poll in this community and start gathering opinions!`
+                                ? _`Be the first to create a poll in ${communityName} and start gathering votes!`
+                                : _`Be the first to create a poll in this community and start gathering votes!`
                             }
                         </p>
                     </div>

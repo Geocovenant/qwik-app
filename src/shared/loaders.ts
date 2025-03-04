@@ -65,6 +65,64 @@ export const useGetGlobalPolls = routeLoader$(async ({ query, cookie }) => {
 })
 
 // eslint-disable-next-line qwik/loader-location
+export const useGetGlobalDebates = routeLoader$(async ({ query }) => {
+    console.log('============ useGetGlobalDebates ============')
+    const page = query.get('page');
+
+    try {
+        let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates?type=GLOBAL`;
+        if (page) {
+            url += `&page=${page}`;
+        }
+        
+        const response = await fetch(url, {
+            headers: {
+                Accept: 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Error fetching global debates');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching global debates:', error);
+        return [];
+    }
+})
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetGlobalProjects = routeLoader$(async ({ query }) => {
+    console.log('============ useGetGlobalProjects ============')
+    const page = query.get('page');
+
+    try {
+        let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/projects?scope=GLOBAL`;
+        if (page) {
+            url += `&page=${page}`;
+        }
+
+        const response = await fetch(url, {
+            headers: {
+                Accept: 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Error fetching global projects');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching global projects:', error);
+        return [];
+    }
+});
+
+// eslint-disable-next-line qwik/loader-location
 export const useGetInternationalPolls = routeLoader$(async ({ cookie }) => {
     console.log('============ useGetInternationalPolls ============')
     const token = cookie.get('authjs.session-token');
@@ -232,35 +290,6 @@ export const useGetSubregionalPolls = routeLoader$(async ({ cookie, params, reso
         return data;
     } catch (error) {
         console.error('Error fetching subregional polls:', error);
-        return [];
-    }
-})
-
-// eslint-disable-next-line qwik/loader-location
-export const useGetGlobalDebates = routeLoader$(async ({ query }) => {
-    console.log('============ useGetGlobalDebates ============')
-    const page = query.get('page');
-
-    try {
-        let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates?type=GLOBAL`;
-        if (page) {
-            url += `&page=${page}`;
-        }
-        
-        const response = await fetch(url, {
-            headers: {
-                Accept: 'application/json',
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Error fetching global debates');
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching global debates:', error);
         return [];
     }
 })
@@ -601,7 +630,7 @@ export const useFormOpinionLoader = routeLoader$<InitialValues<OpinionForm>>(asy
         debate_id: debate?.id,
         opinion: '',
         country: '',
-        region_id: 0,
+        region_id: '',
     };
 });
 
@@ -962,9 +991,25 @@ export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue
         return [];
     }
 
-    // Si el debate es nacional, obtenemos el country_code del primer elemento de communities
+    // En lugar de acceder a communities que no existe
     const debate = await resolveValue(useGetDebateBySlug);
-    const countryCode = debate?.communities?.[0]?.cca2;
+    
+    // Necesitamos extraer el código de país de forma segura
+    // Verificamos si el debate existe antes de intentar acceder a sus propiedades
+    let countryCode = null;
+    
+    if (debate) {
+        // Intentamos varias propiedades posibles para obtener el código de país
+        // Usando operador optional chaining para evitar errores
+        if (debate.communities && debate.communities[0]) {
+            countryCode = debate.communities[0].country_code;
+        } else if (debate.metadata && debate.metadata.country) {
+            countryCode = debate.metadata.country;
+        } else if (debate.location && debate.location.country) {
+            countryCode = debate.location.country;
+        }
+    }
+                         
     console.log('countryCode', countryCode)
 
     if (!countryCode) {
@@ -989,5 +1034,118 @@ export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue
     } catch (error) {
         console.error('Error fetching country divisions:', error);
         return [];
+    }
+});
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetGlobalMembers = routeLoader$(async ({ cookie, query }) => {
+    const page = Number(query.get("page") || "1");
+    const size = Number(query.get("size") || "20");
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return { items: [], total: 0, page: 1, size: 20, pages: 1 };
+    }
+
+    // Comunidad global tiene ID 1
+    const communityId = 1;
+
+    try {
+        const response = await fetch(
+            `${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${communityId}/members?page=${page}&size=${size}`,
+            {
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: token.value
+                }
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Error fetching global members');
+        }
+
+        const data = await response.json();
+        
+        // Asegúrate de que cada miembro tenga la propiedad is_public
+        // Esta propiedad debería venir del backend, pero si no está,
+        // la inicializamos como false
+        data.items = data.items.map((member: any) => ({
+            ...member,
+            is_public: member.is_public || false
+        }));
+
+        return data;
+    } catch (error) {
+        console.error("Error fetching global members:", error);
+        return { items: [], total: 0, page: 1, size: 20, pages: 1 };
+    }
+});
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetUserPrivacySettings = routeLoader$(async ({ cookie }) => {
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return { is_public_in_communities: false };
+    }
+
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/me`, {
+            headers: {
+                Accept: 'application/json',
+                Authorization: token.value
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Error fetching user privacy settings');
+        }
+
+        const userData = await response.json();
+        return {
+            is_public_in_communities: userData.is_public_in_communities || false
+        };
+    } catch (error) {
+        console.error("Error fetching user privacy settings:", error);
+        return { is_public_in_communities: false };
+    }
+});
+
+// eslint-disable-next-line qwik/loader-location
+export const useCheckCommunityMembership = routeLoader$(async ({ cookie, params }) => {
+    console.log('============ useCheckCommunityMembership ============')
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return { isMember: false };
+    }
+    
+    // Obtener el ID de la comunidad
+    const communityId = params.communityId || params.id;
+    if (!communityId) {
+        console.error('Community ID not provided');
+        return { isMember: false };
+    }
+
+    try {
+        // Usamos el endpoint de miembros y verificamos si el usuario actual está
+        // incluido en los resultados, lo que indicaría que es miembro
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${communityId}/members?size=1`, {
+            headers: {
+                Accept: 'application/json',
+                Authorization: token.value
+            }
+        });
+
+        if (!response.ok) {
+            return { isMember: false };
+        }
+
+        const data = await response.json();
+        // Si hay al menos un miembro y ese miembro es el usuario actual
+        const isMember = data.items.some((member: any) => member.is_current_user);
+        
+        return { isMember };
+    } catch (error) {
+        console.error('Error checking community membership:', error);
+        return { isMember: false };
     }
 });

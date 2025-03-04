@@ -1,5 +1,6 @@
 import { component$, useSignal, useTask$ } from "@builder.io/qwik";
 import { Form } from "@builder.io/qwik-city";
+import { LuLoader2 } from "@qwikest/icons/lucide";
 import { Image } from "@unpic/qwik";
 import { _ } from "compiled-i18n";
 import { useSession } from "~/routes/plugin@auth";
@@ -12,7 +13,7 @@ export default component$(() => {
     const usernameSignal = useSignal("");
     const usernameAction = useSetUsername();
     const errorMessage = useSignal("");
-
+    const isLoading = useSignal(false);
     // Generar sugerencia de nombre de usuario basada en session.user.name
     useTask$(({ track }) => {
         track(() => session.value?.user?.name);
@@ -88,10 +89,17 @@ export default component$(() => {
                         <div class="mb-4">
                             <button
                                 type="submit"
-                                class="w-full py-3 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition duration-200 disabled:bg-gray-400"
+                                class="flex justify-center items-center w-full py-3 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition duration-200 disabled:bg-gray-400"
                                 disabled={!!errorMessage.value || !usernameSignal.value || usernameSignal.value.length < 3}
+                                onClick$={() => {
+                                    isLoading.value = true;
+                                }}
                             >
-                                {_`Continue`}
+                                {isLoading.value ? (
+                                    <LuLoader2 class="mr-2 h-5 w-5 animate-spin" />
+                                ) : (
+                                    _`Continue`
+                                )}
                             </button>
                         </div>
                     </Form>

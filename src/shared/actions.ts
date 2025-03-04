@@ -654,3 +654,98 @@ export const useCheckUserOpinionInDebate = routeAction$(
         }
     }
 )
+
+// Acción para actualizar la visibilidad del usuario en una comunidad específica
+// eslint-disable-next-line qwik/loader-location
+export const useUpdateCommunityVisibility = routeAction$(async (data: { communityId: number, isPublic: boolean }, { cookie }) => {
+    console.log('### useUpdateCommunityVisibility ###');
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return { success: false, error: "No authentication token found" };
+    }
+
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/me/community/${data.communityId}/visibility`, {
+            method: "PATCH",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": token.value,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ is_public: data.isPublic }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error updating visibility');
+        }
+
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating visibility:", error);
+        return { success: false, error: error instanceof Error ? error.message : "An unexpected error occurred" };
+    }
+});
+
+// Acción para unirse a una comunidad
+// eslint-disable-next-line qwik/loader-location
+export const useJoinCommunity = routeAction$(async (data: { communityId: number }, { cookie }) => {
+    console.log('### useJoinCommunity ###');
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return { success: false, error: "No authentication token found" };
+    }
+
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${data.communityId}/join`, {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": token.value,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error al unirse a la comunidad');
+        }
+
+        const result = await response.json();
+        return { success: true, message: result.message };
+    } catch (error) {
+        console.error("Error joining community:", error);
+        return { success: false, error: error instanceof Error ? error.message : "An unexpected error occurred" };
+    }
+});
+
+// Acción para abandonar una comunidad
+// eslint-disable-next-line qwik/loader-location
+export const useLeaveCommunity = routeAction$(async (data: { communityId: number }, { cookie }) => {
+    console.log('### useLeaveCommunity ###');
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return { success: false, error: "No authentication token found" };
+    }
+
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${data.communityId}/join`, {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": token.value,
+            },
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error al abandonar la comunidad');
+        }
+
+        const result = await response.json();
+        return { success: true, message: result.message };
+    } catch (error) {
+        console.error("Error leaving community:", error);
+        return { success: false, error: error instanceof Error ? error.message : "An unexpected error occurred" };
+    }
+});
