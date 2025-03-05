@@ -2,7 +2,7 @@ import { component$, Slot } from "@builder.io/qwik";
 import type { RequestHandler } from "@builder.io/qwik-city";
 import { guessLocale } from 'compiled-i18n'
 import Header from "~/components/Header";
-import Sidebar from "~/components/Sidebar";
+import Sidebar from "~/components/Sidebar/Sidebar";
 import { useLocation } from "@builder.io/qwik-city";
 import { type CustomSession } from "~/shared/types";
 
