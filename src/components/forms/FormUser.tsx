@@ -42,34 +42,7 @@ export default component$<FormUserProps>(({ onSubmitCompleted$ }) => {
             />
           )}
         </Field>
-        
-        <Field name="username">
-          {(field, props) => (
-            <TextInput
-              {...props}
-              label={_`Username`}
-              placeholder={_`Enter your username`}
-              required
-              value={field.value}
-              error={field.error}
-            />
-          )}
-        </Field>
       </div>
-
-      <Field name="email">
-        {(field, props) => (
-          <TextInput
-            {...props}
-            type="email"
-            label={_`Email Address`}
-            placeholder={_`Enter your email address`}
-            required
-            value={field.value}
-            error={field.error}
-          />
-        )}
-      </Field>
 
       <Field name="bio">
         {(field, props) => (
@@ -86,18 +59,6 @@ export default component$<FormUserProps>(({ onSubmitCompleted$ }) => {
       </Field>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Field name="location">
-          {(field, props) => (
-            <TextInput
-              {...props}
-              label={_`Location`}
-              placeholder={_`Enter your location`}
-              value={field.value || ''}
-              error={field.error}
-            />
-          )}
-        </Field>
-        
         <Field name="website">
           {(field, props) => (
             <TextInput
@@ -136,14 +97,14 @@ export default component$<FormUserProps>(({ onSubmitCompleted$ }) => {
       </Field>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Field name="profileImage">
+        <Field name="image">
           {(field, props) => (
             <div class="space-y-2">
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {_`Profile Image URL`}
               </label>
               <div class="mt-1 flex items-center space-x-5">
-                <div class="flex-shrink-0 h-16 w-16 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden border border-gray-300 dark:border-gray-600">
+                <div class="flex-shrink-0 h-24 w-24 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden border border-gray-300 dark:border-gray-600">
                   {field.value && <Image src={field.value} alt="Preview" class="h-full w-full object-cover" />}
                 </div>
                 <input

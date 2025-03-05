@@ -9,10 +9,10 @@ import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
 // Note: We need to create a specific loader for national members
 // Using the global loader with adaptations in the meantime
-import { useGetGlobalMembers, useGetUserPrivacySettings } from "~/shared/loaders";
+import { useGetGlobalMembers } from "~/shared/loaders";
 import { useUpdateCommunityVisibility } from "~/shared/actions";
 
-export { useGetGlobalMembers, useGetUserPrivacySettings } from "~/shared/loaders";
+export { useGetGlobalMembers } from "~/shared/loaders";
 export { useUpdateCommunityVisibility } from "~/shared/actions";
 
 export default component$(() => {

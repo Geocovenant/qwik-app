@@ -10,7 +10,7 @@ import { useSession } from "~/routes/plugin@auth";
 import { useGetGlobalPolls } from "~/shared/loaders";
 
 export { useGetGlobalPolls, useFormPollLoader, useFormReportLoader } from "~/shared/loaders";
-export { useFormPollAction, useVotePoll, useReactPoll, useFormReportAction } from "~/shared/actions";
+export { useFormPollAction, useVotePoll, useReactPoll, useFormReportAction, useDeletePoll } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
@@ -28,18 +28,6 @@ export default component$(() => {
 
     const onCreatePoll = $(() => {
         showModalPoll.value = true;
-    });
-
-    const handleDeletePoll = $(async (pollId: number) => {
-        if (confirm(_`¿Estás seguro que deseas eliminar esta encuesta?`)) {
-            try {
-                console.log("Eliminar encuesta:", pollId);
-                
-                await nav(`/global/polls?page=${currentPage.value}`);
-            } catch (error) {
-                console.error("Error al eliminar encuesta:", error);
-            }
-        }
     });
 
     return (
@@ -75,11 +63,10 @@ export default component$(() => {
                         communityName="The Global community"
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
-                            await nav(`/global?page=${page}`);
+                            await nav(`/global/polls?page=${page}`);
                         }}
                         isAuthenticated={isAuthenticated.value}
                         currentUsername={currentUsername.value}
-                        onDeletePoll$={handleDeletePoll}
                     />
                 </div>
             </div>

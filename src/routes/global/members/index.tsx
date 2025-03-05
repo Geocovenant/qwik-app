@@ -1,25 +1,20 @@
 import { $, component$, useSignal, useComputed$ } from "@builder.io/qwik";
-import { type DocumentHead, useNavigate, routeAction$ } from "@builder.io/qwik-city";
+import { type DocumentHead, useNavigate } from "@builder.io/qwik-city";
 import { _ } from "compiled-i18n";
 import { LuEye, LuEyeOff, LuSettings, LuUserCheck, LuUsers } from "@qwikest/icons/lucide";
 import { useSession } from "~/routes/plugin@auth";
 import { Image } from "@unpic/qwik";
 
 // Importamos los loaders necesarios
-import { 
-    useGetGlobalMembers,
-    useGetUserPrivacySettings
-} from "~/shared/loaders";
+import { useGetGlobalMembers } from "~/shared/loaders";
 import { useUpdateCommunityVisibility } from "~/shared/actions";
 
 // Exportamos los loaders para que Qwik City pueda encontrarlos
-export { useGetGlobalMembers, useGetUserPrivacySettings } from "~/shared/loaders";
+export { useGetGlobalMembers } from "~/shared/loaders";
 
 export default component$(() => {
     const session = useSession();
     const members = useGetGlobalMembers();
-    console.log('members', members.value)
-    const privacySettings = useGetUserPrivacySettings();
     const updateCommunityVisibilityAction = useUpdateCommunityVisibility();
     const isPublic = useSignal(members.value.items.find((m: any) => m.is_current_user)?.is_public || false);
     const currentPage = useSignal(1);

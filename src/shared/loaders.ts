@@ -581,12 +581,20 @@ export const useGetTags = routeLoader$(async ({ cookie }) => {
 });
 
 // eslint-disable-next-line qwik/loader-location
-export const useGetUserByUsername = routeLoader$(async ({ params }) => {
+export const useGetUserByUsername = routeLoader$(async ({ cookie, params }) => {
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return undefined;
+    }
     const username = params.username;
-    console.log('username', username)
     if (!username) return null;
 
-    const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/${username}`);
+    const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/${username}`, {
+        headers: {
+            Accept: 'application/json',
+            Authorization: token.value
+        },
+    });
     if (!response.ok) {
         throw new Error('Error fetching user by username');
     }
@@ -595,61 +603,16 @@ export const useGetUserByUsername = routeLoader$(async ({ params }) => {
 });
 
 // eslint-disable-next-line qwik/loader-location
-export const useFormUserLoader = routeLoader$<InitialValues<UserForm>>(async ({ cookie }) => {
-    const token = cookie.get('authjs.session-token');
-    if (!token) {
-        return {
-            name: '',
-            username: '',
-            email: '',
-            bio: '',
-            location: '',
-            website: '',
-            gender: 'prefer-not-to-say',
-            profileImage: '',
-            coverImage: ''
-        };
-    }
-
-    try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/me`, {
-            headers: {
-                Accept: 'application/json',
-                Authorization: token.value
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch user data');
-        }
-
-        const userData = await response.json();
-
-        return {
-            name: userData.name || '',
-            username: userData.username || '',
-            email: userData.email || '',
-            bio: userData.bio || '',
-            location: userData.location || '',
-            website: userData.website || '',
-            gender: userData.gender || 'prefer-not-to-say',
-            profileImage: userData.image || '',
-            coverImage: userData.banner || ''
-        };
-    } catch (error) {
-        console.error('Error fetching user data:', error);
-        return {
-            name: '',
-            username: '',
-            email: '',
-            bio: '',
-            location: '',
-            website: '',
-            gender: 'prefer-not-to-say',
-            profileImage: '',
-            coverImage: ''
-        };
-    }
+export const useFormUserLoader = routeLoader$<InitialValues<UserForm>>(async ({ resolveValue }) => {
+    const user = await resolveValue(useGetUserByUsername);
+    return {
+        bio: user.bio || '',
+        coverImage: user.cover || '',
+        gender: user.gender || '',
+        image: user.image || '',
+        name: user.name || '',
+        website: user.website || '',
+    };
 });
 
 // eslint-disable-next-line qwik/loader-location
@@ -1107,35 +1070,6 @@ export const useGetGlobalMembers = routeLoader$(async ({ cookie, query }) => {
     } catch (error) {
         console.error("Error fetching global members:", error);
         return { items: [], total: 0, page: 1, size: 20, pages: 1 };
-    }
-});
-
-// eslint-disable-next-line qwik/loader-location
-export const useGetUserPrivacySettings = routeLoader$(async ({ cookie }) => {
-    const token = cookie.get('authjs.session-token');
-    if (!token) {
-        return { is_public_in_communities: false };
-    }
-
-    try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/me`, {
-            headers: {
-                Accept: 'application/json',
-                Authorization: token.value
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error('Error fetching user privacy settings');
-        }
-
-        const userData = await response.json();
-        return {
-            is_public_in_communities: userData.is_public_in_communities || false
-        };
-    } catch (error) {
-        console.error("Error fetching user privacy settings:", error);
-        return { is_public_in_communities: false };
     }
 });
 

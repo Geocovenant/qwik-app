@@ -14,8 +14,8 @@ import { capitalizeFirst } from "~/utils/capitalizeFirst";
 import { useGetNationalPolls } from "~/shared/loaders";
 
 // Export loaders so Qwik City can find them
-export { useGetNationalPolls, useFormPollLoader } from "~/shared/loaders";
-export { useFormPollAction, useVotePoll, useReactPoll } from "~/shared/actions";
+export { useGetNationalPolls, useFormPollLoader, useFormReportLoader } from "~/shared/loaders";
+export { useFormPollAction, useVotePoll, useReactPoll, useFormReportAction, useDeletePoll } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();

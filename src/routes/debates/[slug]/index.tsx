@@ -1,5 +1,4 @@
-import { component$, useSignal, useComputed$, $ } from "@builder.io/qwik"
-import type { CountryView } from "~/shared/types"
+import { component$, useSignal, useComputed$, $, type PropFunction } from "@builder.io/qwik"
 import { Link, type DocumentHead } from "@builder.io/qwik-city"
 import {
     LuEye,
@@ -8,8 +7,6 @@ import {
     LuGlobe,
     LuInfo,
     LuFlag,
-    LuArrowBigUp,
-    LuArrowBigDown,
     LuCalendar,
     LuUsers,
     LuChevronLeft,
@@ -18,21 +15,23 @@ import {
     LuBookmark,
 } from "@qwikest/icons/lucide"
 import { Image } from "@unpic/qwik"
-import { _ } from "compiled-i18n"
-import { Alert, Avatar, Badge, Input } from "~/components/ui"
+import { Alert, Avatar, Badge, Button, Input } from "~/components/ui"
 import { useSession } from "~/routes/plugin@auth"
 import { formatDateISO } from "~/utils/formatDateISO"
 import { dataArray as countriesList } from "~/data/countries"
 import { useStylesScoped$ } from "@builder.io/qwik"
 import { FormOpinionGlobalDebate } from "~/components/forms/FormOpinionGlobalDebate"
 import { useGetDebateBySlug } from "~/shared/loaders"
-import type { PropFunction } from "@builder.io/qwik"
 import styles from "./debate-page.css?inline"
 import { FormOpinionInternationalDebate } from "~/components/forms/FormOpinionInternationalDebate"
 import { FormOpinionNationalDebate } from "~/components/forms/FormOpinionNationalDebate"
+import Modal from "~/components/Modal"
+import SocialLoginButtons from "~/components/SocialLoginButtons"
+import ViewPointCard from "~/components/debates/ViewPointCard"
+import { _ } from "compiled-i18n"
 
-export { useGetDebateBySlug, useFormOpinionLoader, useGetCountryDivisions } from "~/shared/loaders"
-export { useFormOpinionAction } from "~/shared/actions"
+export { useGetDebateBySlug, useFormOpinionLoader, useGetCountryDivisions, useFormReportLoader } from "~/shared/loaders"
+export { useFormOpinionAction, useReactOpinion, useFormReportAction, useDeleteOpinion } from "~/shared/actions"
 
 // Navigation arrow component
 const ScrollArrow = component$(
@@ -68,102 +67,18 @@ const ScrollArrow = component$(
     ),
 )
 
-// Country view card component
-const CountryViewCard = component$(
-    ({
-        view,
-    }: {
-        view: CountryView
-        userCountry: string
-    }) => {
-        const countryFlag = useComputed$(() => {
-            // Si es una región (sin cca2), mostramos un emoji de bandera genérico
-            if (!view.community.cca2) {
-                return "🏁"; // Bandera genérica para regiones
-            }
-            
-            const countryData = countriesList.find(
-                (country) => country.cca2.toLowerCase() === view.community.cca2?.toLowerCase(),
-            )
-            return countryData?.flag || "🏳️"
-        })
-
-        return (
-            <div class="min-w-[600px] max-w-[600px] bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/80 dark:border-gray-700/50 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden">
-                <div class="flex items-center gap-3 p-5 border-b border-gray-200 dark:border-gray-700/50 bg-gradient-to-r from-gray-50/80 dark:from-gray-800/30 to-transparent backdrop-blur-sm">
-                    <div class="flex-shrink-0 w-14 h-14 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-full border border-blue-100 dark:border-blue-800/50 shadow-inner">
-                        <span class="text-3xl">{countryFlag.value}</span>
-                    </div>
-                    <div class="flex-grow">
-                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">{_`${view.community.name}`}</h3>
-                        <div class="flex items-center gap-2 mt-1">
-                            <Badge
-                                look="secondary"
-                                class="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 text-xs px-2.5 py-0.5 rounded-full"
-                            >
-                                <LuMessageSquare class="w-3.5 h-3.5 mr-1" />
-                                {_`${view.opinions.length}`}
-                            </Badge>
-                        </div>
-                    </div>
-                </div>
-                <div class="divide-y divide-gray-100 dark:divide-gray-700/50 max-h-[600px] overflow-y-auto">
-                    {view.opinions.map((opinion) => (
-                        <div key={opinion.id} class="p-5 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-200">
-                            <div class="flex items-center gap-3 mb-4">
-                                <Avatar.Root class="h-10 w-10 ring-2 ring-blue-100 dark:ring-blue-900/30">
-                                    <Avatar.Image src={opinion.user.image} alt={opinion.user.username} />
-                                    <Avatar.Fallback class="bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
-                                        {opinion.user.username.charAt(0).toUpperCase()}
-                                    </Avatar.Fallback>
-                                </Avatar.Root>
-                                <div>
-                                    <span class="font-medium text-gray-900 dark:text-white text-sm">{opinion.user.username}</span>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                                        <LuCalendar class="w-3 h-3" />
-                                        {formatDateISO(opinion.created_at)}
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-5 text-sm text-gray-600 dark:text-gray-300 leading-relaxed border border-gray-100 dark:border-gray-700/50">
-                                {opinion.content}
-                            </div>
-                            <div class="flex items-center gap-6 mt-4">
-                                <button class="flex items-center gap-2 text-gray-500 hover:text-green-600 dark:text-gray-400 dark:hover:text-green-400 transition-colors duration-200">
-                                    <LuArrowBigUp class="w-5 h-5" />
-                                    <span class="text-sm font-medium">{opinion.upvotes}</span>
-                                </button>
-                                <button class="flex items-center gap-2 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors duration-200">
-                                    <LuArrowBigDown class="w-5 h-5" />
-                                    <span class="text-sm font-medium">{opinion.downvotes}</span>
-                                </button>
-                                <button class="ml-auto text-gray-400 hover:text-yellow-500 dark:hover:text-yellow-400 transition-colors duration-200">
-                                    <LuFlag class="w-4 h-4" />
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                    {view.opinions.length === 0 && (
-                        <div class="p-10 text-center">
-                            <div class="bg-gray-50 dark:bg-gray-800/30 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                                <LuMessageSquare class="w-10 h-10 text-gray-300 dark:text-gray-600" />
-                            </div>
-                            <p class="text-base text-gray-500 dark:text-gray-400">{_`No comments yet`}</p>
-                            <p class="text-sm text-gray-400 dark:text-gray-500 mt-2">{_`Be the first to share a perspective`}</p>
-                        </div>
-                    )}
-                </div>
-            </div>
-        )
-    },
-)
-
 export default component$(() => {
     useStylesScoped$(styles)
     const session = useSession()
     const debate = useGetDebateBySlug()
     const searchTerm = useSignal("")
     const isDescriptionExpanded = useSignal(false)
+    const showLoginModal = useSignal(false)
+
+    // Referencias para scroll horizontal
+    const scrollContainer = useSignal<Element>()
+    const showLeftArrow = useSignal(false)
+    const showRightArrow = useSignal(true)
 
     const hasCommented = useComputed$(() => {
         if (!session.value?.user) return false
@@ -172,15 +87,13 @@ export default component$(() => {
         )
     })
 
-    const canComment = useComputed$(() => {
-        if (!session.value?.user) return false
-        return !hasCommented.value
-    })
-
     const defaultCountryCca2 = useComputed$(() => {
-        if (!session.value?.user?.name) return null
+        if (!session.value?.user) return null
+        const countryName = session.value?.user?.name
+        if (!countryName) return null
+        
         const foundCountry = countriesList.find(
-            (country) => country.cca2.toLowerCase() === session.value?.user?.name.toLowerCase(),
+            (country) => country.cca2.toLowerCase() === countryName.toLowerCase(),
         )
         return foundCountry ? foundCountry.cca2 : null
     })
@@ -199,154 +112,231 @@ export default component$(() => {
         isDescriptionExpanded.value = !isDescriptionExpanded.value
     })
 
-    // Add scroll container ref and scroll state
-    const scrollContainer = useSignal<Element>()
-    const showLeftArrow = useSignal(false)
-    const showRightArrow = useSignal(true)
-
-    // Handle scroll
+    // Para desplazamiento horizontal
     const handleScroll = $((direction: "left" | "right") => {
         if (!scrollContainer.value) return
 
         const container = scrollContainer.value
-        const scrollAmount = container.clientWidth
-        const targetScroll = container.scrollLeft + (direction === "left" ? -scrollAmount : scrollAmount)
+        const scrollAmount = container.clientWidth * 0.75
 
-        container.scrollTo({
-            left: targetScroll,
-            behavior: "smooth",
-        })
+        if (direction === "left") {
+            container.scrollBy({ left: -scrollAmount, behavior: "smooth" })
+        } else {
+            container.scrollBy({ left: scrollAmount, behavior: "smooth" })
+        }
     })
 
-    // Update arrow visibility
-    const updateArrows = $((element: Element) => {
-        const hasScrollLeft = Math.round(element.scrollLeft) > 0
-        const hasScrollRight = Math.round(element.scrollLeft) < Math.round(element.scrollWidth - element.clientWidth)
+    const updateArrows = $((container: Element) => {
+        if (!container) return
 
-        showLeftArrow.value = hasScrollLeft
-        showRightArrow.value = hasScrollRight
+        // Show left arrow if not at the beginning
+        showLeftArrow.value = container.scrollLeft > 0
+
+        // Show right arrow if not at the end
+        const isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 10
+        showRightArrow.value = !isAtEnd
     })
-
+    
     const onSubmitCompleted$ = $(() => {
-        console.log('onSubmitCompleted$')
+        // Reload the debate data after submitting an opinion
+        window.location.reload()
     })
+    
+    const onShowLoginModal$ = $(() => {
+        showLoginModal.value = true
+    })
+    
+    // Obtener el texto explicativo según el tipo de debate
+    const getDebateTypeExplanation = () => {
+        switch (debate.value?.type) {
+            case "GLOBAL":
+                return _`En este debate global, cada país puede compartir su punto de vista. Al opinar, deberás seleccionar tu país de origen.`
+            case "INTERNATIONAL":
+                return _`En este debate internacional, solo pueden participar los países seleccionados. Selecciona tu país de la lista para compartir tu opinión.`
+            case "NATIONAL":
+                return _`En este debate nacional, cada región del país puede compartir su punto de vista. Selecciona tu región para opinar.`
+            case "REGIONAL":
+                return _`En este debate regional, cada subregión puede compartir su punto de vista. Selecciona tu subregión para opinar.`
+            case "SUBREGIONAL":
+                return _`En este debate subregional, cada localidad puede compartir su punto de vista. Selecciona tu localidad para opinar.`
+            default:
+                return _`Participa en este debate compartiendo tu opinión.`
+        }
+    }
+    
+    // Obtener el título de la sección de puntos de vista
+    const getViewPointsTitle = () => {
+        switch(debate.value?.type) {
+            case "NATIONAL":
+                return _`Puntos de Vista por Región`
+            case "REGIONAL":
+                return _`Puntos de Vista por Subregión`
+            case "SUBREGIONAL":
+                return _`Puntos de Vista por Localidad`
+            default:
+                return _`Puntos de Vista por País`
+        }
+    }
+    
+    // Obtener el placeholder para la búsqueda
+    const getSearchPlaceholder = () => {
+        switch(debate.value?.type) {
+            case "NATIONAL":
+                return _`Buscar regiones...`
+            case "REGIONAL":
+                return _`Buscar subregiones...`
+            case "SUBREGIONAL":
+                return _`Buscar localidades...`
+            default:
+                return _`Buscar países...`
+        }
+    }
+    
+    // Obtener el texto de "no hay resultados" para la búsqueda
+    const getNoResultsText = () => {
+        switch(debate.value?.type) {
+            case "NATIONAL":
+                return _`No se encontraron regiones que coincidan con "${searchTerm.value}"`
+            case "REGIONAL":
+                return _`No se encontraron subregiones que coincidan con "${searchTerm.value}"`
+            case "SUBREGIONAL":
+                return _`No se encontraron localidades que coincidan con "${searchTerm.value}"`
+            default:
+                return _`No se encontraron países que coincidan con "${searchTerm.value}"`
+        }
+    }
+    
+    // Obtener el texto de "no hay participantes"
+    const getNoParticipantsText = () => {
+        switch(debate.value?.type) {
+            case "NATIONAL":
+                return _`No hay regiones participando todavía`
+            case "REGIONAL":
+                return _`No hay subregiones participando todavía`
+            case "SUBREGIONAL":
+                return _`No hay localidades participando todavía`
+            default:
+                return _`No hay países participando todavía`
+        }
+    }
+    
+    // Obtener el texto de "sé el primero..."
+    const getBeFirstText = () => {
+        switch(debate.value?.type) {
+            case "NATIONAL":
+                return _`Sé el primero en compartir una perspectiva desde tu región`
+            case "REGIONAL":
+                return _`Sé el primero en compartir una perspectiva desde tu subregión`
+            case "SUBREGIONAL":
+                return _`Sé el primero en compartir una perspectiva desde tu localidad`
+            default:
+                return _`Sé el primero en compartir una perspectiva desde tu país`
+        }
+    }
 
     return (
-        <div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
+        <div class="min-h-screen bg-gray-50 dark:bg-gray-900 pt-16">
+            {/* Modal de login */}
+            <Modal
+                title={_`Iniciar sesión`}
+                show={showLoginModal}
+            >
+                <div class="p-6 flex flex-col items-center">
+                    <p class="text-center text-gray-600 dark:text-gray-300 mb-6">
+                        {_`Inicia sesión para participar en los debates y compartir tu opinión.`}
+                    </p>
+                    <SocialLoginButtons />
+                </div>
+            </Modal>
+
             {/* Hero Header */}
             <div class="relative h-[450px] overflow-hidden rounded-b-[2.5rem] shadow-xl">
-                {debate.value?.images?.length > 0 && (
+                {debate.value?.images && debate.value.images.length > 0 ? (
                     <Image
                         alt={_`Debate Cover Image`}
                         class="w-full h-full object-cover"
                         src={debate.value.images[0] || "/placeholder.svg"}
                         layout="fill"
                     />
+                ) : (
+                    <div class="w-full h-full bg-gradient-to-br from-blue-600 to-indigo-800"></div>
                 )}
-                <div class="absolute inset-0 hero-gradient backdrop-blur-sm">
-                    <div class="container mx-auto px-6 h-full flex flex-col justify-between pt-6 pb-12">
-                        <div class="flex items-center gap-3 flex-wrap">
-                            <Badge
-                                look="secondary"
-                                class="bg-blue-600/90 backdrop-blur-sm text-white border border-blue-500/30 px-3 py-1.5 rounded-full shadow-md"
-                            >
-                                <LuGlobe class="w-4 h-4 mr-1.5" />
-                                {_`${debate.value?.type}`}
-                            </Badge>
-                            <Badge
-                                look="secondary"
-                                class={`
-                                    px-3 py-1.5 backdrop-blur-sm border rounded-full shadow-md
-                                    ${debate.value?.status === "OPEN"
-                                        ? "bg-green-600/90 text-white border-green-500/30"
-                                        : "bg-yellow-600/90 text-white border-yellow-500/30"
-                                    }
-                                `}
-                            >
-                                {_`${debate.value?.status}`}
-                            </Badge>
-                            
-                            {/* Badge for national debates */}
-                            {debate.value?.type === "NATIONAL" && debate.value?.communities && debate.value.communities.length > 0 && (
+                <div class="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
+
+                {/* Título y estadísticas */}
+                <div class="absolute inset-0 flex items-center">
+                    <div class="container mx-auto px-6">
+                        <div class="max-w-4xl">
+                            <div class="flex flex-wrap gap-3 mb-4">
                                 <Badge
                                     look="secondary"
-                                    class="bg-purple-600/90 backdrop-blur-sm text-white border border-purple-500/30 px-3 py-1.5 rounded-full shadow-md"
+                                    class="bg-blue-600/90 backdrop-blur-sm text-white border border-blue-500/30 px-3 py-1.5 rounded-full shadow-md"
                                 >
-                                    {countriesList.find(
-                                        country => country.cca2 === debate.value?.communities?.[0].cca2
-                                    )?.flag || "🏳️"}{" "}
-                                    {debate.value?.communities?.[0].name}
+                                    {debate.value?.type === "GLOBAL" ? (
+                                        <LuGlobe class="w-4 h-4 mr-1.5" />
+                                    ) : debate.value?.type === "INTERNATIONAL" ? (
+                                        <LuGlobe class="w-4 h-4 mr-1.5" />
+                                    ) : (
+                                        <LuFlag class="w-4 h-4 mr-1.5" />
+                                    )}
+                                    {debate.value?.type === "GLOBAL"
+                                        ? _`Debate Global`
+                                        : debate.value?.type === "INTERNATIONAL"
+                                        ? _`Debate Internacional`
+                                        : debate.value?.type === "NATIONAL"
+                                        ? _`Debate Nacional`
+                                        : debate.value?.type === "REGIONAL"
+                                        ? _`Debate Regional`
+                                        : debate.value?.type === "SUBREGIONAL"
+                                        ? _`Debate Subregional`
+                                        : _`Debate Local`}
                                 </Badge>
-                            )}
-                            
-                            {/* Badge for international debates */}
-                            {debate.value?.type === "INTERNATIONAL" && debate.value?.points_of_view && (
-                                <div class="relative group">
+                                
+                                {/* Badge for national debates */}
+                                {debate.value?.type === "NATIONAL" && debate.value.communities && debate.value.communities.length > 0 && (
                                     <Badge
                                         look="secondary"
-                                        class="bg-indigo-600/90 backdrop-blur-sm text-white border border-indigo-500/30 px-3 py-1.5 rounded-full shadow-md cursor-pointer"
+                                        class="bg-purple-600/90 backdrop-blur-sm text-white border border-purple-500/30 px-3 py-1.5 rounded-full shadow-md"
                                     >
-                                        <LuGlobe class="w-4 h-4 mr-1.5 inline" />
-                                        {debate.value.points_of_view.length} {_`countries`}
+                                        {countriesList.find(
+                                            country => country.cca2 === debate.value?.communities?.[0].cca2
+                                        )?.flag || "🏳️"}{" "}
+                                        {debate.value?.communities?.[0].name}
                                     </Badge>
-                                    
-                                    {/* Tooltip with country list */}
-                                    <div class="absolute left-0 top-full mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                                        <div class="p-2 max-h-48 overflow-y-auto scrollbar-thin">
-                                            {debate.value.points_of_view.map((pov) => {
-                                                const country = countriesList.find(
-                                                    country => country.cca2 === pov.community.cca2
-                                                )
-                                                return (
-                                                    <div 
-                                                        key={pov.community.cca2}
-                                                        class="flex items-center gap-2 p-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg"
-                                                    >
-                                                        <span class="text-xl">{country?.flag || "🏳️"}</span>
-                                                        <span class="text-sm text-gray-700 dark:text-gray-300">
-                                                            {pov.community.name}
-                                                        </span>
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                            
-                            <div class="ml-auto flex gap-2">
-                                <button class="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-full p-2 transition-colors duration-200">
-                                    <LuShare2 class="w-5 h-5" />
-                                    <span class="sr-only">{_`Share`}</span>
-                                </button>
-                                <button class="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-full p-2 transition-colors duration-200">
-                                    <LuBookmark class="w-5 h-5" />
-                                    <span class="sr-only">{_`Bookmark`}</span>
-                                </button>
-                            </div>
-                        </div>
+                                )}
 
-                        <div class="header-content space-y-5 max-w-4xl">
-                            <h1 class="text-4xl md:text-5xl font-bold text-white max-w-4xl leading-tight drop-shadow-md">
-                                {debate.value?.title}
-                            </h1>
-                            <div class="flex items-center gap-6 text-white/90 flex-wrap">
-                                <span class="flex items-center gap-2 bg-black/20 backdrop-blur-sm rounded-full px-3 py-1.5">
-                                    <LuEye class="w-4 h-4" />
-                                    <span class="text-sm font-medium">{debate.value?.views_count}</span>
-                                </span>
-                                <span class="flex items-center gap-2 bg-black/20 backdrop-blur-sm rounded-full px-3 py-1.5">
-                                    <LuMessageSquare class="w-4 h-4" />
-                                    <span class="text-sm font-medium">{totalComments.value}</span>
-                                </span>
-                                <span class="flex items-center gap-2 bg-black/20 backdrop-blur-sm rounded-full px-3 py-1.5">
-                                    <LuUsers class="w-4 h-4" />
-                                    <span class="text-sm font-medium">
-                                        {debate.value?.points_of_view.length}{" "}
-                                        {debate.value?.type === "NATIONAL" ? _`regions` : _`countries`}
-                                    </span>
-                                </span>
+                                <Badge
+                                    look="secondary"
+                                    class="bg-emerald-600/90 backdrop-blur-sm text-white border border-emerald-500/30 px-3 py-1.5 rounded-full shadow-md"
+                                >
+                                    <LuMessageSquare class="w-4 h-4 mr-1.5" />
+                                    {_`${totalComments.value} opiniones`}
+                                </Badge>
+
+                                <Badge
+                                    look="secondary"
+                                    class="bg-amber-600/90 backdrop-blur-sm text-white border border-amber-500/30 px-3 py-1.5 rounded-full shadow-md"
+                                >
+                                    <LuEye class="w-4 h-4 mr-1.5" />
+                                    {_`${debate.value?.views_count || 0} vistas`}
+                                </Badge>
                             </div>
+
+                            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-md tracking-tight">
+                                {debate.value?.title || ""}
+                            </h1>
+
+                            {/* <div class="flex flex-wrap gap-3 mt-6">
+                                <Button class="bg-white/90 hover:bg-white text-blue-700 hover:text-blue-800 backdrop-blur-sm font-medium shadow-lg">
+                                    <LuShare2 class="w-5 h-5 mr-2" />
+                                    {_`Compartir`}
+                                </Button>
+
+                                <Button class="bg-white/90 hover:bg-white text-blue-700 hover:text-blue-800 backdrop-blur-sm font-medium shadow-lg">
+                                    <LuBookmark class="w-5 h-5 mr-2" />
+                                    {_`Guardar`}
+                                </Button>
+                            </div> */}
                         </div>
                     </div>
                 </div>
@@ -358,18 +348,20 @@ export default component$(() => {
                     <div class="p-8">
                         <div class="flex items-center gap-5 mb-6">
                             <Avatar.Root class="h-14 w-14 ring-4 ring-blue-100 dark:ring-blue-900/30 shadow-md">
-                                <Avatar.Image src={debate.value?.creator.image} alt={`@${debate.value?.creator.username}`} />
+                                {debate.value?.creator?.image && (
+                                    <Avatar.Image src={debate.value.creator.image} alt={`@${debate.value.creator.username || ""}`} />
+                                )}
                                 <Avatar.Fallback class="bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-lg">
-                                    {debate.value?.creator.username.charAt(0).toUpperCase()}
+                                    {debate.value?.creator?.username?.charAt(0).toUpperCase() || "?"}
                                 </Avatar.Fallback>
                             </Avatar.Root>
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">{_`Created by`}</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">{_`Creado por`}</p>
                                 <Link
-                                    href={`/user/${debate.value?.creator.username}`}
+                                    href={`/user/${debate.value?.creator?.username || ""}`}
                                     class="text-lg font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                                 >
-                                    @{debate.value?.creator.username}
+                                    @{debate.value?.creator?.username || ""}
                                 </Link>
                                 <p class="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1.5 mt-0.5">
                                     <LuCalendar class="w-4 h-4" />
@@ -381,17 +373,17 @@ export default component$(() => {
                         <div
                             class={`debate-description ${isDescriptionExpanded.value ? "expanded" : ""} bg-gray-50 dark:bg-gray-800/50 p-5 rounded-xl border border-gray-100 dark:border-gray-700/50`}
                         >
-                            <p class="text-gray-600 dark:text-gray-300 leading-relaxed">{debate.value?.description}</p>
+                            <p class="text-gray-600 dark:text-gray-300 leading-relaxed">{debate.value?.description || ""}</p>
                         </div>
                         <button
                             onClick$={toggleDescription}
                             class="mt-3 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium transition-colors flex items-center gap-1"
                         >
-                            {isDescriptionExpanded.value ? _`Show less` : _`Read more`}
+                            {isDescriptionExpanded.value ? _`Mostrar menos` : _`Leer más`}
                         </button>
 
                         <div class="flex flex-wrap gap-2 mt-6">
-                            {debate.value?.tags.map((tag) => (
+                            {debate.value?.tags && debate.value.tags.map((tag) => (
                                 <Badge
                                     key={tag}
                                     look="secondary"
@@ -411,7 +403,7 @@ export default component$(() => {
                             <span class="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-lg">
                                 <LuMessageSquare class="w-6 h-6 text-blue-600 dark:text-blue-400" />
                             </span>
-                            {_`Share your perspective`}
+                            {_`Comparte tu perspectiva`}
                         </h2>
                         <Badge
                             look="secondary"
@@ -419,18 +411,26 @@ export default component$(() => {
                         >
                             <LuUsers class="w-4 h-4 mr-1.5" />
                             {debate.value?.type === "NATIONAL" 
-                                ? _`${debate.value?.points_of_view.length} regions participating`
-                                : _`${debate.value?.points_of_view.length} countries participating`
+                                ? _`${debate.value?.points_of_view?.length || 0} regiones participando`
+                                : _`${debate.value?.points_of_view?.length || 0} países participando`
                             }
                         </Badge>
                     </div>
+
+                    {/* Explicación del tipo de debate */}
+                    <Alert.Root class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/50 text-blue-800 dark:text-blue-200 rounded-xl p-5 shadow-md mb-4">
+                        <LuInfo class="h-5 w-5" />
+                        <Alert.Description class="font-medium">
+                            {getDebateTypeExplanation()}
+                        </Alert.Description>
+                    </Alert.Root>
 
                     {session.value?.user ? (
                         hasCommented.value ? (
                             <Alert.Root class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/50 text-yellow-800 dark:text-yellow-200 rounded-xl p-5 shadow-md">
                                 <LuInfo class="h-5 w-5" />
                                 <Alert.Description class="font-medium">
-                                    {_`You can only comment once in this debate.`}
+                                    {_`Solo puedes comentar una vez en este debate.`}
                                 </Alert.Description>
                             </Alert.Root>
                         ) : (
@@ -456,7 +456,16 @@ export default component$(() => {
                     ) : (
                         <Alert.Root class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/50 text-blue-800 dark:text-blue-200 rounded-xl p-5 shadow-md">
                             <LuInfo class="h-5 w-5" />
-                            <Alert.Description class="font-medium">{_`Please log in to share your perspective.`}</Alert.Description>
+                            <Alert.Description class="font-medium">
+                                {_`Por favor `}
+                                <Button 
+                                    onClick$={onShowLoginModal$}
+                                    class="inline font-semibold underline hover:text-blue-700 dark:hover:text-blue-300 px-0 py-0 bg-transparent"
+                                >
+                                    {_`inicia sesión`}
+                                </Button>
+                                {_` para compartir tu perspectiva.`}
+                            </Alert.Description>
                         </Alert.Root>
                     )}
                 </div>
@@ -472,10 +481,7 @@ export default component$(() => {
                                     <LuGlobe class="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                                 )}
                             </span>
-                            {debate.value?.type === "NATIONAL" 
-                                ? _`Points of View by Region`
-                                : _`Points of View by Country`
-                            }
+                            {getViewPointsTitle()}
                         </h2>
                     </div>
 
@@ -484,7 +490,7 @@ export default component$(() => {
                             <LuSearch class="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                             <Input
                                 type="text"
-                                placeholder={_`Search countries...`}
+                                placeholder={getSearchPlaceholder()}
                                 value={searchTerm.value}
                                 onInput$={(e) => (searchTerm.value = (e.target as HTMLInputElement).value)}
                                 class="pl-14 h-14 w-full border-0 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 bg-transparent"
@@ -521,7 +527,12 @@ export default component$(() => {
                                 .filter((view) => view.community.name.toLowerCase().includes(searchTerm.value.toLowerCase()))
                                 .map((view) => (
                                     <div key={view.community.id || view.community.cca2 || view.id} class="snap-start snap-always card-hover-effect">
-                                        <CountryViewCard view={view} userCountry={session.value?.user?.name || ""} />
+                                        <ViewPointCard 
+                                            view={view} 
+                                            isAuthenticated={!!session.value?.user}
+                                            onShowLoginModal$={onShowLoginModal$}
+                                            currentUsername={session.value?.user?.username || ""}
+                                        />
                                     </div>
                                 ))}
 
@@ -534,19 +545,16 @@ export default component$(() => {
                                         <LuSearch class="w-10 h-10 text-gray-300 dark:text-gray-600" />
                                     </div>
                                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                                        {debate.value?.type === "NATIONAL" ? _`No regions found` : _`No countries found`}
+                                        {debate.value?.type === "NATIONAL" ? _`No se encontraron regiones` : _`No se encontraron países`}
                                     </h3>
                                     <p class="text-gray-500 dark:text-gray-400 text-center">
-                                        {debate.value?.type === "NATIONAL" 
-                                            ? _`No regions match your search "${searchTerm.value}"`
-                                            : _`No countries match your search "${searchTerm.value}"`
-                                        }
+                                        {getNoResultsText()}
                                     </p>
                                 </div>
                             )}
 
                             {/* Mensaje cuando no hay países/regiones participando */}
-                            {sortedViews.value.length === 0 && (
+                            {sortedViews.value.length === 0 && !searchTerm.value && (
                                 <div class="min-w-[600px] flex flex-col items-center justify-center p-12 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200/80 dark:border-gray-700/50 shadow-md">
                                     <div class="bg-gray-50 dark:bg-gray-800/30 rounded-full w-20 h-20 flex items-center justify-center mb-4">
                                         {debate.value?.type === "NATIONAL" ? (
@@ -556,16 +564,10 @@ export default component$(() => {
                                         )}
                                     </div>
                                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                                        {debate.value?.type === "NATIONAL" 
-                                            ? _`No regions participating yet`
-                                            : _`No countries participating yet`
-                                        }
+                                        {getNoParticipantsText()}
                                     </h3>
                                     <p class="text-gray-500 dark:text-gray-400 text-center">
-                                        {debate.value?.type === "NATIONAL"
-                                            ? _`Be the first to share a perspective from your region`
-                                            : _`Be the first to share a perspective from your country`
-                                        }
+                                        {getBeFirstText()}
                                     </p>
                                 </div>
                             )}
@@ -580,7 +582,7 @@ export default component$(() => {
 export const head: DocumentHead = ({ resolveValue, params }) => {
     const debate = resolveValue(useGetDebateBySlug)
     return {
-        title: debate?.title ?? "Debate Not Found",
+        title: debate?.title ?? "Debate no encontrado",
         meta: [
             {
                 name: "description",

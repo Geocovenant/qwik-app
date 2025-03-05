@@ -24,10 +24,9 @@ export interface PollListProps {
     onPageChange$: QRL<(page: number) => void>
     isAuthenticated?: boolean
     currentUsername?: string
-    onDeletePoll$?: QRL<(pollId: number) => void>
 }
 
-export default component$<PollListProps>(({ polls, onCreatePoll, region, communityName, onPageChange$, isAuthenticated = true, currentUsername = "", onDeletePoll$ }) => {
+export default component$<PollListProps>(({ polls, onCreatePoll, region, communityName, onPageChange$, isAuthenticated = true, currentUsername = "" }) => {
     const searchTerm = useSignal('');
     const showLoginModal = useSignal(false);
     
@@ -200,7 +199,6 @@ export default component$<PollListProps>(({ polls, onCreatePoll, region, communi
                             isAuthenticated={isAuthenticated}
                             currentUsername={currentUsername}
                             onShowLoginModal$={onShowLoginModal}
-                            onDelete$={onDeletePoll$}
                         />
                     </li>
                 ))}

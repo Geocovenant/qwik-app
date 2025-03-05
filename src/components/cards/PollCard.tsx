@@ -12,13 +12,14 @@ import {
     LuFlag,
 } from "@qwikest/icons/lucide"
 import { timeAgo } from "~/utils/dateUtils"
-import { useVotePoll, useReactPoll } from "~/shared/actions"
 import { dataArray } from "~/data/countries"
 import { CommunityType } from "~/constants/communityType"
 import { Avatar } from "~/components/ui"
 import FormReport from "~/components/forms/FormReport";
 import Modal from "~/components/Modal";
+import ConfirmationModal from "~/components/ConfirmationModal"
 import { _ } from "compiled-i18n"
+import { useVotePoll, useReactPoll, useDeletePoll } from "~/shared/actions"
 interface PollCardProps {
     id: number
     title: string
@@ -42,7 +43,6 @@ interface PollCardProps {
     isAuthenticated?: boolean
     currentUsername?: string
     onShowLoginModal$: QRL<() => void>
-    onDelete$?: QRL<(pollId: number) => void>
 }
 
 export default component$<PollCardProps>(
@@ -68,11 +68,10 @@ export default component$<PollCardProps>(
         isAuthenticated = true,
         currentUsername = "",
         onShowLoginModal$,
-        onDelete$,
     }) => {
         const actionVote = useVotePoll()
         const actionReact = useReactPoll()
-
+        const deletePoll = useDeletePoll()
         // Internal state for votes and reactions
         const pollState = useStore({
             options,
@@ -86,7 +85,7 @@ export default component$<PollCardProps>(
         })
 
         const showReportModal = useSignal(false)
-
+        const showConfirmDeleteModal = useSignal(false)
         const totalVotes = useComputed$(() => pollState.options.reduce((sum, option) => sum + option.votes, 0))
 
         const isClosed = useComputed$(() => (endsAt && new Date(endsAt) < new Date()) || false)
@@ -256,6 +255,10 @@ export default component$<PollCardProps>(
         }
 
         const isCreator = currentUsername === creatorUsername;
+
+        const handleDelete = $(async () => {
+            await deletePoll.submit({ pollId: id });
+        })
 
         return (
             <div class="poll-card bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 overflow-hidden relative">
@@ -477,9 +480,9 @@ export default component$<PollCardProps>(
                             <LuLink class="w-5 h-5 text-gray-500 group-hover:text-purple-500 transition-colors duration-300" />
                         </button>
 
-                        {isAuthenticated && isCreator && onDelete$ && (
+                        {isAuthenticated && isCreator && (
                             <button
-                                onClick$={() => onDelete$(id)}
+                                onClick$={() => showConfirmDeleteModal.value = true}
                                 class="group btn-interaction btn-delete p-2 flex items-center justify-center bg-white dark:bg-gray-800 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md border border-gray-200 dark:border-gray-700 transition-colors duration-300 shadow-sm"
                                 title={_`Delete poll`}
                             >
@@ -498,6 +501,12 @@ export default component$<PollCardProps>(
                         )}
                     </div>
                 </div>
+                <ConfirmationModal
+                    title={_`Report poll`}
+                    description={_`Are you sure you want to report this poll?`}
+                    show={showConfirmDeleteModal}
+                    onConfirm$={handleDelete}
+                />
                 <Modal
                     title={_`Report poll`}
                     show={showReportModal}

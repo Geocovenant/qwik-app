@@ -1,26 +1,32 @@
 import { $, component$, useSignal, useStore } from "@builder.io/qwik";
 import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
-import { LuImageOff, LuCalendar, LuGlobe, LuStar, LuUser } from "@qwikest/icons/lucide";
-import { _ } from "compiled-i18n";
-import { Avatar, Button } from "~/components/ui";
+import { LuImageOff, LuCalendar, LuGlobe, LuUser, LuLineChart, LuUsers } from "@qwikest/icons/lucide";
+import { Image } from "@unpic/qwik";
+import { Button } from "~/components/ui";
 import Modal from "~/components/Modal";
 import FormUser from "~/components/forms/FormUser";
 import ImgVenus from '~/icons/venus.svg?jsx';
 import ImgMars from '~/icons/male.svg?jsx';
 import { useSession } from "~/routes/plugin@auth";
 import { useGetUserByUsername } from "~/shared/loaders";
-import { Image } from "@unpic/qwik";
+import { _ } from "compiled-i18n";
+import { useFollowUser, useUnfollowUser } from "~/shared/actions";
 
 export { useGetUserByUsername, useFormUserLoader } from "~/shared/loaders";
-export { useFormUserAction } from "~/shared/actions";
+export { useFormUserAction, useFollowUser, useUnfollowUser } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
-    const currentUsername = session.value?.user?.username || '';
+    const actionFollow = useFollowUser();
+    const actionUnfollow = useUnfollowUser();
+
+    // @ts-ignore
+    const currentUsername = session.value?.user?.username;
     
     const location = useLocation();
     const { username } = location.params;
     const user = useGetUserByUsername();
+    console.log('user', user.value);
 
     const editProfileModalVisible = useSignal<boolean>(false);
 
@@ -54,23 +60,21 @@ export default component$(() => {
                         <Image
                             src={user.value.banner}
                             alt={_`Profile Banner`}
-                            class="w-full h-60 object-cover"
+                            class="w-full h-64 object-cover"
                             width={50}
                             height={20}
                         />
                     )
-                    : <div class="w-full h-60 object-cover flex justify-center items-center text-5xl bg-gradient-to-r from-blue-500 to-cyan-500"><LuImageOff /></div>
+                    : <div class="w-full h-64 object-cover flex justify-center items-center text-5xl bg-gradient-to-r from-blue-500 to-cyan-500"><LuImageOff /></div>
                 }
                 <div class="absolute bottom-0" style="left: 2rem; transform: translateY(50%);">
                     {user.value.image
                         ? (
-                            <Avatar.Root>
-                                <Avatar.Image
-                                    src={user.value.image}
-                                    alt={`Avatar of ${username}`}
-                                    class="w-10 h-10 border-4 border-white dark:border-gray-800 rounded-full shadow-lg"
-                                />
-                            </Avatar.Root>
+                            <Image
+                                src={user.value.image}
+                                alt={`Avatar of ${username}`}
+                                class="w-36 h-36 border-4 border-white dark:border-gray-800 rounded-full shadow-lg"
+                            />
                         )
                         : (
                             <div class="w-[150px] h-[150px] flex items-center justify-center text-4xl bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-4 border-white dark:border-gray-800 rounded-full shadow-lg">
@@ -82,11 +86,21 @@ export default component$(() => {
             </div>
 
             {/* Main profile information */}
-            <div class="max-w-5xl px-6 mx-auto mt-20 md:mt-16">
+            <div class="max-w-5xl px-6 mx-auto mt-24 md:mt-20">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
                         <h1 class="text-3xl font-bold text-gray-800 dark:text-white">{user.value.name}</h1>
                         <p class="text-gray-500 dark:text-gray-400 text-lg">@{username}</p>
+                        
+                        {/* Contadores de seguidores y seguidos */}
+                        <div class="flex items-center mt-2 text-sm text-gray-600 dark:text-gray-400">
+                            <div class="mr-4">
+                                <span class="font-semibold text-gray-800 dark:text-white">{user.value.followers_count || 0}</span> {_`Followers`}
+                            </div>
+                            <div>
+                                <span class="font-semibold text-gray-800 dark:text-white">{user.value.following_count || 0}</span> {_`Following`}
+                            </div>
+                        </div>
                     </div>
                     <div class="flex items-center space-x-3">
                         {isOwnProfile
@@ -96,41 +110,52 @@ export default component$(() => {
                                         onClick$={() => {
                                             editProfileModalVisible.value = true;
                                         }}
-                                        class="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
                                     >
                                         <span>{_`Edit Profile`}</span>
                                     </Button>
                                 </>
                             )
-                            : (
-                                <Button class="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
-                                    <LuStar />
-                                    <span>{_`Follow`}</span>
-                                </Button>
-                            )
+                            : user.value.is_following 
+                                ? (
+                                    <Button
+                                        onClick$={() => actionUnfollow.submit({ username })}
+                                        class={`flex items-center gap-2 ${user.value.is_following 
+                                            ? 'bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white' 
+                                            : 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700'}`}
+                                    >
+                                        {_`Unfollow`}       
+                                    </Button>
+                                )
+                                : (
+                                    <Button
+                                        onClick$={() => actionFollow.submit({ username })}
+                                        class={`flex items-center gap-2 ${user.value.is_following 
+                                            ? 'bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white' 
+                                            : 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700'}`}
+                                    >
+                                        {_`Follow`}       
+                                    </Button>
+                                )
                         }
                     </div>
                 </div>
 
                 {/* Bio and details */}
-                <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+                <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
                     {user.value.bio && (
                         <p class="mt-4 text-gray-700 dark:text-gray-300">{user.value.bio}</p>
                     )}
 
                     <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600 dark:text-gray-400">
-                        {user.value.location && (
-                            <div class="flex items-center gap-2">
-                                <LuGlobe class="text-blue-500" />
-                                <span>{user.value.location}</span>
-                            </div>
-                        )}
-
                         {user.value.website && (
                             <div class="flex items-center gap-2">
                                 <LuGlobe class="text-blue-500" />
-                                <a href={user.value.website} target="_blank" rel="noopener noreferrer"
-                                    class="text-blue-500 hover:underline">
+                                <a
+                                    href={user.value.website}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-blue-500 hover:underline"
+                                >
                                     {user.value.website}
                                 </a>
                             </div>
@@ -138,10 +163,14 @@ export default component$(() => {
 
                         {user.value.gender && (
                             <div class="flex items-center gap-2">
-                                {user.value.gender === 'M' 
-                                    ? <ImgMars class="text-blue-500" /> 
-                                    : <ImgVenus class="text-pink-500" />}
-                                <span>{user.value.gender === 'M' ? _`Male` : _`Female`}</span>
+                                {user.value.gender === 'M' && <ImgMars class="text-blue-500" />}
+                                {user.value.gender === 'F' && <ImgVenus class="text-pink-500" />}
+                                {user.value.gender === 'X' && <LuUser class="text-purple-500" />}
+                                <span>
+                                    {user.value.gender === 'M' && _`Male`}
+                                    {user.value.gender === 'F' && _`Female`}
+                                    {user.value.gender === 'X' && _`Non-binary`}
+                                </span>
                             </div>
                         )}
 
@@ -155,10 +184,13 @@ export default component$(() => {
                 </div>
 
                 <section class="mt-8">
-                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">{_`Activity Statistics`}</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
+                        <span class="text-blue-500"><LuLineChart /></span>
+                        {_`Activity Statistics`}
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {/* Polls Card */}
-                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-transform hover:scale-105">
                             <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-3">{_`Polls`}</h3>
                             <div class="space-y-2">
                                 <div class="flex justify-between items-center">
@@ -177,7 +209,7 @@ export default component$(() => {
                         </div>
 
                         {/* Debates Card */}
-                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-transform hover:scale-105">
                             <h3 class="text-lg font-semibold text-green-600 dark:text-green-400 mb-3">{_`Debates`}</h3>
                             <div class="space-y-2">
                                 <div class="flex justify-between items-center">
@@ -196,7 +228,7 @@ export default component$(() => {
                         </div>
 
                         {/* Projects Card */}
-                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-transform hover:scale-105">
                             <h3 class="text-lg font-semibold text-purple-600 dark:text-purple-400 mb-3">{_`Projects`}</h3>
                             <div class="space-y-2">
                                 <div class="flex justify-between items-center">
@@ -215,7 +247,7 @@ export default component$(() => {
                         </div>
 
                         {/* Issues Card */}
-                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-transform hover:scale-105">
                             <h3 class="text-lg font-semibold text-red-600 dark:text-red-400 mb-3">{_`Issues`}</h3>
                             <div class="space-y-2">
                                 <div class="flex justify-between items-center">
@@ -236,14 +268,17 @@ export default component$(() => {
                 </section>
 
                 {/* Communities */}
-                <section class="mt-8">
-                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">{_`Communities`}</h2>
+                <section class="mt-12">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
+                        <span class="text-green-500"><LuUsers /></span>
+                        {_`Communities`}
+                    </h2>
 
                     {communities.list.length > 0 ? (
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {communities.list.map((community) =>
                                 (!isOwnProfile && !community.showMembership) ? null : (
-                                    <div key={community.id} class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                                    <div key={community.id} class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md">
                                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{community.name}</h3>
                                         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
                                             {community.members} {_`members`}
@@ -273,7 +308,9 @@ export default component$(() => {
                             )}
                         </div>
                     ) : (
-                        <p class="text-gray-500 dark:text-gray-400">{_`This user does not belong to any community.`}</p>
+                        <p class="text-gray-500 dark:text-gray-400">
+                            {_`This user does not belong to any community.`}
+                        </p>
                     )}
                 </section>
             </div>
@@ -281,7 +318,7 @@ export default component$(() => {
             {/* Edit profile modal */}
             <Modal
                 title={_`Edit Profile`}
-                bind:show={editProfileModalVisible}
+                show={editProfileModalVisible}
             >
                 <FormUser
                     onSubmitCompleted$={onSubmitCompleted}
