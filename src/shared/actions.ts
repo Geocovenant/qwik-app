@@ -16,6 +16,8 @@ import type { IssueForm } from '~/schemas/issueSchema';
 import { IssueSchema } from '~/schemas/issueSchema';
 import type { CommentForm } from '~/schemas/commentSchema';
 import { CommentSchema } from '~/schemas/commentSchema';
+import type { ReportForm } from "~/schemas/reportSchema";
+import { ReportSchema } from "~/schemas/reportSchema";
 
 export interface PollResponseData {
     success: boolean; // Indica si la operación fue exitosa
@@ -749,3 +751,140 @@ export const useLeaveCommunity = routeAction$(async (data: { communityId: number
         return { success: false, error: error instanceof Error ? error.message : "An unexpected error occurred" };
     }
 });
+
+// eslint-disable-next-line qwik/loader-location
+export const useReportItem = routeAction$(
+    async (data, { cookie }) => {
+        console.log('### useReportItem ###');
+        const token = cookie.get('authjs.session-token');
+        if (!token) {
+            return { success: false, error: "No authentication token found" };
+        }
+
+        try {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/reports`, {
+                method: "POST",
+                headers: {
+                    "Accept": "application/json",
+                    "Authorization": token.value,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    item_type: data.itemType,
+                    item_id: data.itemId,
+                    reason: data.reason,
+                    details: data.details
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Error al enviar el reporte');
+            }
+
+            const result = await response.json();
+            return { success: true, data: result };
+        } catch (error) {
+            console.error("Error reporting item:", error);
+            return { 
+                success: false, 
+                message: error instanceof Error ? error.message : "Ha ocurrido un error inesperado al enviar el reporte" 
+            };
+        }
+    }
+);
+
+// Acción para eliminar una encuesta (solo el creador puede hacerlo)
+// eslint-disable-next-line qwik/loader-location
+export const useDeletePoll = routeAction$(
+    async (data, { cookie }) => {
+        console.log('### useDeletePoll ###');
+        const token = cookie.get('authjs.session-token');
+        if (!token) {
+            return { success: false, error: "No authentication token found" };
+        }
+
+        try {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${data.pollId}`, {
+                method: "DELETE",
+                headers: {
+                    "Accept": "application/json",
+                    "Authorization": token.value,
+                },
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Error al eliminar la encuesta');
+            }
+
+            return { success: true };
+        } catch (error) {
+            console.error("Error deleting poll:", error);
+            return { 
+                success: false, 
+                message: error instanceof Error ? error.message : "Ha ocurrido un error inesperado al eliminar la encuesta" 
+            };
+        }
+    }
+);
+
+export interface ReportResponseData {
+    success: boolean;
+    message?: string;
+    error?: string;
+}
+
+export const useFormReportAction = formAction$<ReportForm, ReportResponseData>(
+    async (values, event) => {
+        console.log('############ useFormReportAction ############');
+        const token = event.cookie.get('authjs.session-token')?.value;
+        
+        if (!token) {
+            return {
+                success: false,
+                error: _`Debes iniciar sesión para reportar contenido.`
+            };
+        }
+
+        console.log('values', values)
+        const payload = {
+            item_type: values.itemType,
+            item_id: values.itemId,
+            reason: values.reason,
+            details: values.details || ""
+        }
+        console.log('payload', payload)
+
+        try {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/reports`, {
+                method: "POST",
+                headers: {
+                    "Accept": "application/json",
+                    "Authorization": token,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
+            console.log('response', response)
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Error al enviar el reporte');
+            }
+
+            await response.json();
+            return { 
+                success: true, 
+                message: _`Reporte enviado correctamente. Gracias por tu colaboración.` 
+            };
+        } catch (error) {
+            console.error("Error reporting item:", error);
+            return { 
+                success: false, 
+                error: error instanceof Error ? error.message : _`Ha ocurrido un error inesperado al enviar el reporte` 
+            };
+        }
+    },
+    valiForm$(ReportSchema)
+);

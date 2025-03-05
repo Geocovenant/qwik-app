@@ -9,8 +9,8 @@ import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 import { useGetGlobalPolls } from "~/shared/loaders";
 
-export { useGetGlobalPolls, useFormPollLoader } from "~/shared/loaders";
-export { useFormPollAction, useVotePoll, useReactPoll } from "~/shared/actions";
+export { useGetGlobalPolls, useFormPollLoader, useFormReportLoader } from "~/shared/loaders";
+export { useFormPollAction, useVotePoll, useReactPoll, useFormReportAction } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
@@ -20,6 +20,7 @@ export default component$(() => {
     const nav = useNavigate();
 
     const isAuthenticated = useComputed$(() => !!session.value?.user);
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
 
     const onSubmitCompleted = $(() => {
         showModalPoll.value = false;
@@ -27,6 +28,18 @@ export default component$(() => {
 
     const onCreatePoll = $(() => {
         showModalPoll.value = true;
+    });
+
+    const handleDeletePoll = $(async (pollId: number) => {
+        if (confirm(_`¿Estás seguro que deseas eliminar esta encuesta?`)) {
+            try {
+                console.log("Eliminar encuesta:", pollId);
+                
+                await nav(`/global/polls?page=${currentPage.value}`);
+            } catch (error) {
+                console.error("Error al eliminar encuesta:", error);
+            }
+        }
     });
 
     return (
@@ -65,6 +78,8 @@ export default component$(() => {
                             await nav(`/global?page=${page}`);
                         }}
                         isAuthenticated={isAuthenticated.value}
+                        currentUsername={currentUsername.value}
+                        onDeletePoll$={handleDeletePoll}
                     />
                 </div>
             </div>

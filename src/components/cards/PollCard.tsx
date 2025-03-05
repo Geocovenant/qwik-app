@@ -1,4 +1,5 @@
-import { component$, $, useStore, useComputed$, useSignal } from "@builder.io/qwik"
+import { component$, $, useStore, useComputed$, useSignal, type QRL } from "@builder.io/qwik"
+import { Link } from "@builder.io/qwik-city"
 import {
     LuArrowBigUp,
     LuArrowBigDown,
@@ -7,16 +8,17 @@ import {
     LuLink,
     LuGlobe,
     LuUser2,
+    LuTrash2,
+    LuFlag,
 } from "@qwikest/icons/lucide"
-import { _ } from "compiled-i18n"
 import { timeAgo } from "~/utils/dateUtils"
 import { useVotePoll, useReactPoll } from "~/shared/actions"
 import { dataArray } from "~/data/countries"
 import { CommunityType } from "~/constants/communityType"
-import { Avatar } from "../ui"
-import { Link, useNavigate } from "@builder.io/qwik-city"
-import type { QRL } from "@builder.io/qwik"
-
+import { Avatar } from "~/components/ui"
+import FormReport from "~/components/forms/FormReport";
+import Modal from "~/components/Modal";
+import { _ } from "compiled-i18n"
 interface PollCardProps {
     id: number
     title: string
@@ -38,7 +40,9 @@ interface PollCardProps {
     userVotedOptions?: number[]
     userReaction?: "LIKE" | "DISLIKE" | null
     isAuthenticated?: boolean
+    currentUsername?: string
     onShowLoginModal$: QRL<() => void>
+    onDelete$?: QRL<(pollId: number) => void>
 }
 
 export default component$<PollCardProps>(
@@ -62,11 +66,10 @@ export default component$<PollCardProps>(
         userVotedOptions = [],
         userReaction: initialUserReaction = null,
         isAuthenticated = true,
+        currentUsername = "",
         onShowLoginModal$,
+        onDelete$,
     }) => {
-        const nav = useNavigate();
-        const onClickUsername = $((username: string) => nav(`/user/${username}`));
-        
         const actionVote = useVotePoll()
         const actionReact = useReactPoll()
 
@@ -82,14 +85,11 @@ export default component$<PollCardProps>(
             dislikesCount: initialDislikesCount,
         })
 
+        const showReportModal = useSignal(false)
+
         const totalVotes = useComputed$(() => pollState.options.reduce((sum, option) => sum + option.votes, 0))
 
         const isClosed = useComputed$(() => (endsAt && new Date(endsAt) < new Date()) || false)
-
-        // Reemplazar con una función simple de navegación
-        const handleCommentsClick = $(() => {
-            nav(`/polls/${slug}`);
-        });
 
         const handleVote = $(async (optionId: number) => {
             if (!isAuthenticated) {
@@ -196,16 +196,16 @@ export default component$<PollCardProps>(
             return dataArray.find((country) => country.cca2 === code)
         }
 
-        // Agregar signal para controlar la visibilidad del mensaje de copiado
+        // Add signal to control the visibility of the copied message
         const showCopiedMessage = useSignal(false);
         
         const copyPollLink = $(() => {
             try {
                 const pollUrl = `${window.location.origin}/polls/${slug}`
                 navigator.clipboard.writeText(pollUrl)
-                // Mostrar mensaje de copiado
+                // Show copied message
                 showCopiedMessage.value = true;
-                // Ocultar mensaje después de 3 segundos
+                // Hide message after 3 seconds
                 setTimeout(() => {
                     showCopiedMessage.value = false;
                 }, 3000);
@@ -255,9 +255,11 @@ export default component$<PollCardProps>(
             }
         }
 
+        const isCreator = currentUsername === creatorUsername;
+
         return (
             <div class="poll-card bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 overflow-hidden relative">
-                {/* Reemplazar el ribbon por un badge dentro de la tarjeta */}
+                {/* Replace the ribbon with a badge inside the card */}
                 
                 {/* Header */}
                 <div class="mb-5">
@@ -450,16 +452,16 @@ export default component$<PollCardProps>(
                             </button>
                         </div>
 
-                        <button
-                            onClick$={handleCommentsClick}
+                        <Link
+                            href={`/polls/${slug}`}
                             class="group btn-interaction btn-comment py-2 px-3 flex items-center bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-700 transition-colors duration-300 shadow-sm"
-                            title={_`Comentarios`}
+                            title={_`Comments`}
                         >
                             <LuMessageSquare class="w-5 h-5 mr-1.5 text-gray-500 group-hover:text-blue-500 transition-colors duration-300" />
                             <span class="font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-500 transition-colors duration-300">
                                 {commentsCount}
                             </span>
-                        </button>
+                        </Link>
 
                         <button
                             onClick$={copyPollLink}
@@ -474,8 +476,37 @@ export default component$<PollCardProps>(
                             )}
                             <LuLink class="w-5 h-5 text-gray-500 group-hover:text-purple-500 transition-colors duration-300" />
                         </button>
+
+                        {isAuthenticated && isCreator && onDelete$ && (
+                            <button
+                                onClick$={() => onDelete$(id)}
+                                class="group btn-interaction btn-delete p-2 flex items-center justify-center bg-white dark:bg-gray-800 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md border border-gray-200 dark:border-gray-700 transition-colors duration-300 shadow-sm"
+                                title={_`Delete poll`}
+                            >
+                                <LuTrash2 class="w-5 h-5 text-gray-500 group-hover:text-red-500 transition-colors duration-300" />
+                            </button>
+                        )}
+
+                        {isAuthenticated && !isCreator && (
+                            <button
+                                onClick$={() => showReportModal.value = true}
+                                class="group btn-interaction btn-report p-2 flex items-center justify-center bg-white dark:bg-gray-800 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-md border border-gray-200 dark:border-gray-700 transition-colors duration-300 shadow-sm"
+                                title={_`Report poll`}
+                            >
+                                <LuFlag class="w-5 h-5 text-gray-500 group-hover:text-amber-500 transition-colors duration-300" />
+                            </button>
+                        )}
                     </div>
                 </div>
+                <Modal
+                    title={_`Report poll`}
+                    show={showReportModal}
+                >
+                    <FormReport 
+                        type="POLL" 
+                        itemId={id} 
+                    />
+                </Modal>
             </div>
         )
 

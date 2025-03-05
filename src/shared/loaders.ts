@@ -8,6 +8,7 @@ import type { UserForm } from "~/schemas/userSchema";
 import type { OpinionForm } from "~/schemas/opinionSchema";
 import { CommunityType } from "~/constants/communityType";
 import { type IssueForm } from "~/schemas/issueSchema";
+import type { ReportForm } from "~/schemas/reportSchema";
 
 // eslint-disable-next-line qwik/loader-location
 export const useGetUser = routeLoader$(async ({ cookie }) => {
@@ -31,23 +32,23 @@ export const useGetGlobalPolls = routeLoader$(async ({ query, cookie }) => {
     console.log('============ useGetGlobalPolls ============')
     const page = query.get('page');
     const token = cookie.get('authjs.session-token');
-    
+
     try {
         let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=GLOBAL`;
         if (page) {
             url += `&page=${page}`;
         }
-        
+
         // Configurar headers con o sin token
         const headers: Record<string, string> = {
             Accept: 'application/json',
         };
-        
+
         // Añadir el token a los headers si existe
         if (token) {
             headers.Authorization = token.value;
         }
-        
+
         const response = await fetch(url, {
             headers
         });
@@ -74,7 +75,7 @@ export const useGetGlobalDebates = routeLoader$(async ({ query }) => {
         if (page) {
             url += `&page=${page}`;
         }
-        
+
         const response = await fetch(url, {
             headers: {
                 Accept: 'application/json',
@@ -217,7 +218,7 @@ export const useGetRegionalPolls = routeLoader$(async ({ cookie, params, resolve
     if (!token) {
         return [];
     }
-    
+
     const regions = await resolveValue(useGetRegions);
 
     const normalizedRegionName = params.region
@@ -344,7 +345,7 @@ export const useGetDebateBySlug = routeLoader$(async ({ cookie, params }) => {
         description: string;
         images: string[];
         public: boolean;
-        status: string; 
+        status: string;
         views_count: number;
         likes_count: number;
         dislikes_count: number;
@@ -430,7 +431,7 @@ export const useGetRegionalDebates = routeLoader$(async ({ cookie, params, resol
     if (!token) {
         return [];
     }
-    
+
     const regions = await resolveValue(useGetRegions);
 
     const normalizedRegionName = params.region
@@ -469,7 +470,7 @@ export const useGetRegionalDebates = routeLoader$(async ({ cookie, params, resol
 // Helper function to get country code using countries.ts file
 function getCountryCode(countryPath: string): string | null {
     if (!countryPath) return null
-    
+
     // Find the country in the array of countries
     const country = dataArray.find(country => country.path === countryPath)
     return country ? country.cca2 : null
@@ -494,7 +495,7 @@ export const useFormPollLoader = routeLoader$<InitialValues<PollForm>>(() => {
 export const useGetRegions = routeLoader$(async ({ params }) => {
     const nationPath = params.nation;
     if (!nationPath) return [];
-    
+
     const cca2 = getCountryCode(nationPath);
     if (!cca2) {
         console.error('Country not found:', nationPath);
@@ -521,7 +522,7 @@ export const useGetSubregions = routeLoader$(async ({ params, resolveValue }) =>
     const subregionPath = params.subregion;
 
     if (!nationPath || !regionPath || !subregionPath) return [];
-    
+
     const regions = await resolveValue(useGetRegions);
 
     const normalizedRegionName = regionPath
@@ -559,7 +560,7 @@ export const useFormDebateLoader = routeLoader$<InitialValues<DebateForm>>(() =>
         tags: [],
         title: '',
     };
-}); 
+});
 
 // eslint-disable-next-line qwik/loader-location
 export const useGetTags = routeLoader$(async ({ cookie }) => {
@@ -584,7 +585,7 @@ export const useGetUserByUsername = routeLoader$(async ({ params }) => {
     const username = params.username;
     console.log('username', username)
     if (!username) return null;
-    
+
     const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/${username}`);
     if (!response.ok) {
         throw new Error('Error fetching user by username');
@@ -623,7 +624,7 @@ export const useFormUserLoader = routeLoader$<InitialValues<UserForm>>(async ({ 
         }
 
         const userData = await response.json();
-        
+
         return {
             name: userData.name || '',
             username: userData.username || '',
@@ -669,7 +670,7 @@ export const useGetPollBySlug = routeLoader$(async ({ cookie, params }) => {
     if (!token) {
         return undefined;
     }
-    
+
     try {
         const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${params.slug}`, {
             headers: {
@@ -677,12 +678,12 @@ export const useGetPollBySlug = routeLoader$(async ({ cookie, params }) => {
                 Authorization: token.value
             },
         });
-        
+
         if (!response.ok) {
             console.error('Error fetching poll details:', response.statusText);
             return undefined;
         }
-        
+
         const data = await response.json();
         return data;
     } catch (error) {
@@ -814,7 +815,7 @@ export const useGetSubregionalDebates = routeLoader$(async ({ cookie, params, re
     if (!token) {
         return [];
     }
-    
+
     // Obtener primero el region ID
     const regions = await resolveValue(useGetRegions);
     const normalizedRegionName = params.region
@@ -823,7 +824,7 @@ export const useGetSubregionalDebates = routeLoader$(async ({ cookie, params, re
         .join(' ');
     const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
     const regionId = regionData?.id;
-    
+
     if (!regionId) {
         console.error('Region not found:', params.region);
         return [];
@@ -849,7 +850,7 @@ export const useGetSubregionalDebates = routeLoader$(async ({ cookie, params, re
 
         const subregionData = await subregionResponse.json();
         const subregionId = subregionData?.[0]?.id;
-        
+
         if (!subregionId) {
             console.error('Subregion not found:', normalizedSubregionName);
             return [];
@@ -882,7 +883,7 @@ export const useGetSubregionalProjects = routeLoader$(async ({ cookie, params, r
     if (!token) {
         return [];
     }
-    
+
     // Obtener primero el region ID
     const regions = await resolveValue(useGetRegions);
     const normalizedRegionName = params.region
@@ -891,7 +892,7 @@ export const useGetSubregionalProjects = routeLoader$(async ({ cookie, params, r
         .join(' ');
     const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
     const regionId = regionData?.id;
-    
+
     if (!regionId) {
         console.error('Region not found:', params.region);
         return [];
@@ -917,7 +918,7 @@ export const useGetSubregionalProjects = routeLoader$(async ({ cookie, params, r
 
         const subregionData = await subregionResponse.json();
         const subregionId = subregionData?.[0]?.id;
-        
+
         if (!subregionId) {
             console.error('Subregion not found:', normalizedSubregionName);
             return [];
@@ -950,7 +951,7 @@ export const useGetSubregionalIssues = routeLoader$(async ({ cookie, params, res
     if (!token) {
         return [];
     }
-    
+
     // Obtener primero el region ID
     const regions = await resolveValue(useGetRegions);
     const normalizedRegionName = params.region
@@ -959,7 +960,7 @@ export const useGetSubregionalIssues = routeLoader$(async ({ cookie, params, res
         .join(' ');
     const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
     const regionId = regionData?.id;
-    
+
     if (!regionId) {
         console.error('Region not found:', params.region);
         return [];
@@ -985,7 +986,7 @@ export const useGetSubregionalIssues = routeLoader$(async ({ cookie, params, res
 
         const subregionData = await subregionResponse.json();
         const subregionId = subregionData?.[0]?.id;
-        
+
         if (!subregionId) {
             console.error('Subregion not found:', normalizedSubregionName);
             return [];
@@ -1021,11 +1022,11 @@ export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue
 
     // En lugar de acceder a communities que no existe
     const debate = await resolveValue(useGetDebateBySlug);
-    
+
     // Necesitamos extraer el código de país de forma segura
     // Verificamos si el debate existe antes de intentar acceder a sus propiedades
     let countryCode = null;
-    
+
     if (debate) {
         // Intentamos varias propiedades posibles para obtener el código de país
         // Usando operador optional chaining para evitar errores
@@ -1037,7 +1038,7 @@ export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue
             countryCode = debate.location.country;
         }
     }
-                         
+
     console.log('countryCode', countryCode)
 
     if (!countryCode) {
@@ -1093,7 +1094,7 @@ export const useGetGlobalMembers = routeLoader$(async ({ cookie, query }) => {
         }
 
         const data = await response.json();
-        
+
         // Asegúrate de que cada miembro tenga la propiedad is_public
         // Esta propiedad debería venir del backend, pero si no está,
         // la inicializamos como false
@@ -1145,7 +1146,7 @@ export const useCheckCommunityMembership = routeLoader$(async ({ cookie, params 
     if (!token) {
         return { isMember: false };
     }
-    
+
     // Obtener el ID de la comunidad
     const communityId = params.communityId || params.id;
     if (!communityId) {
@@ -1170,10 +1171,24 @@ export const useCheckCommunityMembership = routeLoader$(async ({ cookie, params 
         const data = await response.json();
         // Si hay al menos un miembro y ese miembro es el usuario actual
         const isMember = data.items.some((member: any) => member.is_current_user);
-        
+
         return { isMember };
     } catch (error) {
         console.error('Error checking community membership:', error);
         return { isMember: false };
     }
+});
+
+// eslint-disable-next-line qwik/loader-location
+export const useFormReportLoader = routeLoader$<InitialValues<ReportForm>>((requestEvent) => {
+    // Puedes obtener valores de la URL si es necesario
+    const itemId = parseInt(requestEvent.query.get('itemId') || '0');
+    const itemType = requestEvent.query.get('itemType') || 'POLL';
+
+    return {
+        itemId: itemId,
+        itemType: itemType as any,
+        reason: '',
+        details: '',
+    };
 });
