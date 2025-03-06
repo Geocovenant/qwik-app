@@ -9,9 +9,19 @@ export default component$(() => {
     const location = useLocation();
     const nationParam = location.params.nation;
     const regionParam = location.params.region;
+    const subregionParam = location.params.subregion;
 
     const baseClass = "py-2 px-4 font-medium transition-colors text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300";
     const activeClass = "!text-blue-600 font-semibold border-b-2 border-blue-600 dark:!text-blue-400 dark:border-blue-400";
+
+    // Si estamos en una vista de subregión o localidad, sólo renderizamos el Slot sin la navegación específica de región
+    if (subregionParam) {
+        return (
+            <div class="container mx-auto px-4 pt-1 pb-4">
+                <Slot />
+            </div>
+        );
+    }
 
     return (
         <div class="container mx-auto px-4 pt-1 pb-4">

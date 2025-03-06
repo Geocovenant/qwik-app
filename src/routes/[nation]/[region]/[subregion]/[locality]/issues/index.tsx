@@ -10,10 +10,10 @@ import { useSession } from "~/routes/plugin@auth";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
 // Import necessary loaders
-import { useGetRegionalIssues, useGetRegions, useGetTags } from "~/shared/loaders";
+import { useGetLocalityIssues, useGetTags } from "~/shared/loaders";
 
 // Export loaders so Qwik City can find them
-export { useGetRegionalIssues, useFormIssueLoader, useGetRegions, useGetTags } from "~/shared/loaders";
+export { useGetLocalityIssues, useFormIssueLoader, useGetTags } from "~/shared/loaders";
 export { useFormIssueAction } from "~/shared/actions";
 
 export default component$(() => {
@@ -22,24 +22,16 @@ export default component$(() => {
     const location = useLocation();
     const nationName = location.params.nation;
     const regionName = location.params.region;
+    const subregionName = location.params.subregion;
+    const localityName = location.params.locality;
     
-    const regions = useGetRegions();
     const tags = useGetTags();
-    const issues = useGetRegionalIssues();
+    const issues = useGetLocalityIssues();
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
-    const defaultRegion = useComputed$(() => {
-        const normalizedRegionName = regionName
-            .split('-')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-        
-        return regions.value.find((r: { name: string; }) => r.name === normalizedRegionName);
-    });
-
     const isAuthenticated = useComputed$(() => !!session.value?.user);
-    const regionDisplayName = capitalizeFirst(regionName.replace(/-/g, ' '));
+    const localityDisplayName = capitalizeFirst(localityName.replace(/-/g, ' '));
 
     const onSubmitCompleted = $(() => {
         showModalIssue.value = false;
@@ -54,14 +46,13 @@ export default component$(() => {
             <div class="flex flex-col min-h-0">
                 <div class="h-full overflow-y-auto">
                     <Modal 
-                        title={_`Report issue in ${regionDisplayName}`} 
+                        title={_`Report issue in ${localityDisplayName}`} 
                         show={showModalIssue}
                     >
                         {session.value?.user
                             ? <FormIssue
                                 onSubmitCompleted={onSubmitCompleted}
-                                defaultScope={CommunityType.REGIONAL}
-                                regions={Array.isArray(regions.value) ? regions.value : []}
+                                defaultScope={CommunityType.LOCALITY}
                                 tags={tags.value}
                             />
                             : <SocialLoginButtons />
@@ -76,10 +67,10 @@ export default component$(() => {
                             size: issues.value?.size || 10,
                             pages: issues.value?.pages || 1
                         }}
-                        communityName={regionDisplayName}
+                        communityName={localityDisplayName}
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
-                            await nav(`/${nationName}/${regionName}/issues?page=${page}`);
+                            await nav(`/${nationName}/${regionName}/${subregionName}/${localityName}/issues?page=${page}`);
                         }}
                         isAuthenticated={isAuthenticated.value}
                     />
@@ -90,14 +81,14 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = ({ params }) => {
-    const regionName = capitalizeFirst(params.region.replace(/-/g, ' '));
+    const localityName = capitalizeFirst(params.locality.replace(/-/g, ' '));
     return {
-        title: `${regionName} - Issues`,
+        title: `${localityName} - Issues`,
         meta: [
             {
                 name: "description",
-                content: `Reported issues in the community of ${regionName}`,
+                content: `Reported issues in the community of ${localityName}`,
             },
         ],
     };
-};
+}; 

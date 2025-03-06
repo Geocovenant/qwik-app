@@ -1,22 +1,10 @@
 import { $, component$, useSignal, useComputed$ } from "@builder.io/qwik";
 import { useLocation, useNavigate, type DocumentHead } from "@builder.io/qwik-city";
 import { _ } from "compiled-i18n";
-import { Breadcrumb, Tabs } from "~/components/ui";
-import Modal from "~/components/Modal";
-import FormPoll from "~/components/forms/FormPoll";
-import DebateList from "~/components/list/DebateList";
-import { PollList } from "~/components/list/PollList";
-import { ProjectList } from "~/components/list/ProjectList";
-import { IssueList } from "~/components/list/IssueList";
-import FormProject from "~/components/forms/FormProject";
-import FormIssue from "~/components/forms/FormIssue";
-import { CommunityType } from "~/constants/communityType";
+import { LuBarChart2, LuFlag, LuUsers, LuMessageSquare, LuBriefcase } from "@qwikest/icons/lucide";
 import { useGetRegions, useGetRegionalPolls, useGetTags, useGetRegionalDebates, useGetRegionalProjects, useGetRegionalIssues } from "~/shared/loaders";
 import { useSession } from "~/routes/plugin@auth";
-import SocialLoginButtons from "~/components/SocialLoginButtons";
-import FormDebate from "~/components/forms/FormDebate";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
-import { LuBarChart2, LuFlag, LuUsers, LuMessageSquare, LuBriefcase } from "@qwikest/icons/lucide";
 
 export { useGetRegionalPolls, useGetRegionalDebates, useGetRegionalProjects, useGetRegionalIssues, useFormPollLoader, useFormDebateLoader, useFormIssueLoader, useGetRegions, useGetTags } from "~/shared/loaders";
 export { useFormPollAction, useFormDebateAction, useVotePoll, useReactPoll } from "~/shared/actions";
@@ -153,7 +141,7 @@ export default component$(() => {
                         {_`Featured Topics in ${regionDisplayName}`}
                     </h2>
                     <div class="space-y-4">
-                        {Array.isArray(debates.value?.items) && debates.value.items.slice(0, 3).map((debate: any, index) => (
+                        {Array.isArray(debates.value?.items) && debates.value.items.slice(0, 3).map((debate: any, index: number) => (
                             <div key={debate.id || index} class="border-b border-gray-200 dark:border-gray-700 pb-3">
                                 <h3 class="font-medium text-gray-900 dark:text-white">{debate.title}</h3>
                                 <p class="text-sm text-gray-600 dark:text-gray-300">
@@ -184,7 +172,7 @@ export default component$(() => {
                         {_`Active Projects`}
                     </h2>
                     <div class="space-y-4">
-                        {projects.value?.items?.slice(0, 3).map((project: any, index) => (
+                        {projects.value?.items?.slice(0, 3).map((project: any, index: number) => (
                             <div key={project.id || index} class="border-b border-gray-200 dark:border-gray-700 pb-3">
                                 <h3 class="font-medium text-gray-900 dark:text-white">{project.title}</h3>
                                 <div class="flex justify-between text-sm mt-1 text-gray-700 dark:text-gray-300">
@@ -214,7 +202,7 @@ export default component$(() => {
                         {_`Reported Issues`}
                     </h2>
                     <div class="space-y-3">
-                        {issues.value?.items?.slice(0, 5).map((issue: any, index) => (
+                        {issues.value?.items?.slice(0, 5).map((issue: any, index: number) => (
                             <div key={issue.id || index} class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
                                 <div>
                                     <h3 class="font-medium text-gray-900 dark:text-white">{issue.title}</h3>
@@ -245,7 +233,7 @@ export default component$(() => {
                         {_`Active Polls`}
                     </h2>
                     <div class="space-y-3">
-                        {polls.value?.items?.slice(0, 5).map((poll: any, index) => (
+                        {polls.value?.items?.slice(0, 5).map((poll: any, index: number) => (
                             <div key={poll.id || index} class="border-b border-gray-200 dark:border-gray-700 pb-2">
                                 <h3 class="font-medium text-gray-900 dark:text-white">{poll.title}</h3>
                                 <div class="flex justify-between items-center mt-1">

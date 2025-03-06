@@ -77,6 +77,7 @@ export default component$(() => {
                         }}
                         isAuthenticated={isAuthenticated.value}
                         currentUsername={currentUsername.value}
+                        onShowLoginModal$={onShowLoginModal}
                     />
                 </div>
             </div>
