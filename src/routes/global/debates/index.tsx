@@ -9,8 +9,8 @@ import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 import { useGetGlobalDebates, useGetTags } from "~/shared/loaders";
 
-export { useGetGlobalDebates, useFormDebateLoader, useGetTags } from "~/shared/loaders";
-export { useFormDebateAction } from "~/shared/actions";
+export { useFormDebateLoader, useGetTags } from "~/shared/loaders";
+export { useFormDebateAction, useDeleteDebate } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
@@ -20,6 +20,8 @@ export default component$(() => {
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
+    // @ts-ignore
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
     const isAuthenticated = useComputed$(() => !!session.value?.user);
 
     const onSubmitCompleted = $(() => {
@@ -59,7 +61,7 @@ export default component$(() => {
                     <DebateList
                         communityName="The Global community"
                         debates={{
-                            items: Array.isArray(debates.value) ? debates.value : [],
+                            items: Array.isArray(debates.value.items) ? debates.value.items : [],
                             total: debates.value?.length || 0,
                             page: currentPage.value,
                             size: 10,
@@ -72,6 +74,7 @@ export default component$(() => {
                         }}
                         isAuthenticated={isAuthenticated.value}
                         onShowLoginModal$={onShowLoginModal}
+                        currentUsername={currentUsername.value}
                     />
                 </div>
             </div>

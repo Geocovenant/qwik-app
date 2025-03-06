@@ -9,18 +9,19 @@ import { useGetGlobalProjects } from "~/shared/loaders";
 import FormProject from "~/components/forms/FormProject";
 import { _ } from "compiled-i18n";
 
-export { useGetGlobalProjects, useFormDebateLoader } from "~/shared/loaders";
-export { useFormDebateAction } from "~/shared/actions";
+export { useFormProjectLoader } from "~/shared/loaders";
+export { useFormProjectAction, useDeleteProject } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
     const showModalProject = useSignal(false);
     const projects = useGetGlobalProjects();
-    console.log('projects', projects.value)
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
     const isAuthenticated = useComputed$(() => !!session.value?.user);
+    // @ts-ignore
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
 
     const onSubmitCompleted = $(() => {
         showModalProject.value = false;
@@ -30,13 +31,17 @@ export default component$(() => {
         showModalProject.value = true;
     });
 
+    const onShowLoginModal = $(() => {
+        showModalProject.value = true;
+    });
+
     return (
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
             <div class="flex flex-col min-h-0">
                 <div class="h-full overflow-y-auto">
                     {session.value?.user
                         ? <Modal
-                            title={_`Create project`}
+                            title={_`Crear proyecto`}
                             show={showModalProject}
                         >
                             <FormProject
@@ -45,20 +50,25 @@ export default component$(() => {
                             />
                         </Modal>
                         : <Modal
-                            title={_`Sign in to create a project`}
+                            title={_`Inicia sesión para crear un proyecto`}
                             show={showModalProject}
                         >
-                            <SocialLoginButtons />
+                            <div class="p-4 text-center">
+                                <p class="mb-6 text-gray-600 dark:text-gray-300">
+                                    {_`Necesitas iniciar sesión para crear proyectos y participar en la comunidad.`}
+                                </p>
+                                <SocialLoginButtons />
+                            </div>
                         </Modal>
                     }
                     <ProjectList
-                        communityName="The Global community"
+                        communityName={_`Comunidad Global`}
                         projects={{
-                            items: Array.isArray(projects.value) ? projects.value : [],
-                            total: projects.value?.length || 0,
-                            page: currentPage.value,
-                            size: 10,
-                            pages: Math.ceil((projects.value?.length || 0) / 10)
+                            items: Array.isArray(projects.value.items) ? projects.value.items : [],
+                            total: projects.value.total || 0,
+                            page: projects.value.page || 1,
+                            size: projects.value.size || 10,
+                            pages: projects.value.pages || 1
                         }}
                         onCreateProject={onCreateProject}
                         onPageChange$={async (page: number) => {
@@ -66,6 +76,7 @@ export default component$(() => {
                             await nav(`/global/projects?page=${page}`);
                         }}
                         isAuthenticated={isAuthenticated.value}
+                        currentUsername={currentUsername.value}
                     />
                 </div>
             </div>
@@ -74,11 +85,11 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = {
-    title: "Global Projects",
+    title: "Proyectos Globales",
     meta: [
         {
             name: "description",
-            content: "Global Projects",
+            content: "Explora y contribuye a proyectos de la comunidad global",
         },
     ],
 };

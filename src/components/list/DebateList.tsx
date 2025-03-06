@@ -23,6 +23,7 @@ export interface DebateListProps {
     onPageChange$: QRL<(page: number) => void>;
     isAuthenticated?: boolean;
     onShowLoginModal$?: QRL<() => void>;
+    currentUsername?: string;
 }
 
 export default component$<DebateListProps>(({ 
@@ -31,7 +32,8 @@ export default component$<DebateListProps>(({
     onCreateDebate, 
     onPageChange$, 
     isAuthenticated = true,
-    onShowLoginModal$ 
+    onShowLoginModal$,
+    currentUsername
 }) => {
     const searchTerm = useSignal('');
     const showLoginModal = useSignal(false);
@@ -195,14 +197,15 @@ export default component$<DebateListProps>(({
                             creator_username={debate.creator.username}
                             creator_avatar={debate.creator.image}
                             created_at={debate.created_at}
-                            last_comment_at={debate.updated_at || debate.created_at}
+                            last_comment_at={debate.created_at}
                             slug={debate.slug}
                             tags={debate.tags}
-                            comments_count={debate.points_of_view?.reduce((total, pov) => total + pov.opinions?.length, 0) || 0}
-                            scope={debate.type}
+                            comments_count={debate.points_of_view?.reduce((total, pov) => total + (pov.comments?.length || 0), 0) || 0}
+                            scope={debate.scope || "NATIONAL"}
                             isAuthenticated={isAuthenticated}
                             onShowLoginModal$={onShowLoginModal$}
                             points_of_view={debate.points_of_view}
+                            currentUsername={currentUsername}
                         />
                     </li>
                 ))}

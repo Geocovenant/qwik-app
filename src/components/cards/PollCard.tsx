@@ -279,6 +279,11 @@ export default component$<PollCardProps>(
                                     {_`Closed`}
                                 </div>
                             )}
+                            {isCreator && (
+                                <div class="bg-slate-200 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase px-3 py-1.5 rounded-full border border-slate-300 dark:border-slate-600">
+                                    {_`Owner`}
+                                </div>
+                            )}
                             {scope === CommunityType.GLOBAL && (
                                 <div
                                     class="flex items-center justify-center w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400"

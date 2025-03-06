@@ -1,8 +1,12 @@
+import * as v from 'valibot';
 import { _ } from 'compiled-i18n';
-import { array, boolean, enum_, minLength, maxLength, object, optional, pipe, string } from 'valibot';
 import { CommunityType } from '~/constants/communityType';
 
-// Definir objetos Enum adecuados
+// Constants for length limits
+export const MAX_TITLE_LENGTH = 100;
+export const MAX_DESCRIPTION_LENGTH = 5000;
+
+// Define appropriate Enum objects
 const RESOURCE_TYPE_ENUM = {
     LABOR: 'LABOR',
     MATERIAL: 'MATERIAL',
@@ -31,77 +35,58 @@ const COMMUNITY_TYPE_ENUM = {
     SUBREGIONAL: CommunityType.SUBREGIONAL
 } as const;
 
-// Definición del esquema de recursos
-export const ResourceSchema = object({
-    type: enum_(RESOURCE_TYPE_ENUM),
-    description: pipe(
-        string(),
-        minLength(1, _`Description is required`)
+// Definition of the resource schema
+export const ResourceSchema = v.object({
+    type: v.enum(RESOURCE_TYPE_ENUM),
+    description: v.pipe(
+        v.string(),
+        v.minLength(1, _`Description is required`)
     ),
-    quantity: optional(string()),
-    unit: optional(string())
+    quantity: v.optional(v.string()),
+    unit: v.optional(v.string())
 });
 
-// Definición del esquema de pasos
-export const StepSchema = object({
-    title: pipe(
-        string(),
-        minLength(1, _`Title is required`)
+// Definition of the step schema
+export const StepSchema = v.object({
+    title: v.pipe(
+        v.string(),
+        v.minLength(1, _`Title is required`)
     ),
-    description: optional(string()),
-    order: optional(string()),
-    status: enum_(STEP_STATUS_ENUM),
-    resources: array(ResourceSchema)
+    description: v.optional(v.string()),
+    order: v.optional(v.number()),
+    status: v.enum(STEP_STATUS_ENUM),
+    resources: v.array(ResourceSchema)
 });
 
-// Definición del esquema principal del proyecto
-export const ProjectSchema = object({
-    title: pipe(
-        string(),
-        minLength(1, _`Title is required`),
-        maxLength(100, _`Title must be less than 100 characters`)
+// Definition of the main project schema
+export const ProjectSchema = v.object({
+    // TODO: replace scope string with enum
+    scope: v.string(),
+    // scope: v.enum(COMMUNITY_TYPE_ENUM),
+    community_ids: v.pipe(
+        v.array(v.string()),
+        v.minLength(1, _`At least one community must be selected`)
     ),
-    description: optional(
-        pipe(
-            string(),
-            maxLength(5000, _`Description must be less than 5000 characters`)
+    title: v.pipe(
+        v.string(),
+        v.minLength(5, _`Title must have at least 5 characters`),
+        v.maxLength(MAX_TITLE_LENGTH, _`Title must have ${MAX_TITLE_LENGTH} characters or less`)
+    ),
+    description: v.optional(
+        v.pipe(
+            v.string(),
+            v.maxLength(MAX_DESCRIPTION_LENGTH, _`Description must have ${MAX_DESCRIPTION_LENGTH} characters or less`)
         )
     ),
-    goal_amount: optional(string()),
-    status: enum_(PROJECT_STATUS_ENUM),
-    scope: enum_(COMMUNITY_TYPE_ENUM),
-    community_ids: pipe(
-        array(string()),
-        minLength(1, _`At least one community must be selected`)
-    ),
-    is_anonymous: boolean(),
-    tags: optional(array(string())),
-    steps: pipe(
-        array(StepSchema),
-        minLength(1, _`At least one step is required`)
+    status: v.enum(PROJECT_STATUS_ENUM),
+    goal_amount: v.optional(v.number()),
+    tags: v.optional(v.array(v.string())),
+    is_anonymous: v.boolean(),
+    steps: v.pipe(
+        v.array(StepSchema),
+        v.minLength(1, _`At least one step is required`)
     )
 });
 
-// Definición del tipo basado en el esquema
-export type ProjectForm = {
-    title: string;
-    description?: string;
-    goal_amount?: string;
-    status: 'DRAFT' | 'OPEN' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
-    scope: CommunityType;
-    community_ids: string[];
-    is_anonymous: boolean;
-    tags?: string[];
-    steps: {
-        title: string;
-        description?: string;
-        order?: string;
-        status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
-        resources: {
-            type: 'LABOR' | 'MATERIAL' | 'ECONOMIC';
-            description: string;
-            quantity?: string;
-            unit?: string;
-        }[];
-    }[];
-}; 
+// Inferred type from the schema
+export type ProjectForm = v.InferInput<typeof ProjectSchema>; 

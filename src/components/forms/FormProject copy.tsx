@@ -42,7 +42,7 @@ export default component$<FormProjectProps>(({
     const [projectForm, { Form, Field, FieldArray }] = useForm<ProjectForm, ProjectResponseData>({
         loader: useFormProjectLoader(),
         action: useFormProjectAction(),
-        fieldArrays: ['steps', 'steps.$.resources'],
+        fieldArrays: ['steps', 'steps.$.resources']
         validate: valiForm$(ProjectSchema),
     });
 
@@ -336,7 +336,7 @@ export default component$<FormProjectProps>(({
                     )}
                 </Field>
 
-                <Field name="goal_amount" type="number">
+                <Field name="goal_amount">
                     {(field, props) => (
                         <div class="space-y-2">
                             <label class="text-sm font-medium">{_`Goal Amount`}</label>

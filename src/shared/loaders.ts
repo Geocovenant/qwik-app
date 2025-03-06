@@ -9,6 +9,7 @@ import type { OpinionForm } from "~/schemas/opinionSchema";
 import { CommunityType } from "~/constants/communityType";
 import { type IssueForm } from "~/schemas/issueSchema";
 import type { ReportForm } from "~/schemas/reportSchema";
+import { ProjectForm } from "~/schemas/projectSchema";
 
 // eslint-disable-next-line qwik/loader-location
 export const useGetUser = routeLoader$(async ({ cookie }) => {
@@ -677,29 +678,27 @@ export const useGetNationalProjects = routeLoader$(async ({ params }) => {
 });
 
 // eslint-disable-next-line qwik/loader-location
-export const useFormProjectLoader = () => {
+export const useFormProjectLoader = routeLoader$<InitialValues<ProjectForm>>(() => {
     return {
-        value: {
-            title: '',
-            description: '',
-            goal_amount: '',
-            status: 'OPEN',
-            scope: CommunityType.NATIONAL,
-            community_ids: [],
-            is_anonymous: false,
-            tags: [],
-            steps: [
-                {
-                    title: '',
-                    description: '',
-                    order: '0',
-                    status: 'PENDING',
-                    resources: []
-                }
-            ]
-        }
+        scope: '',
+        community_ids: [],
+        title: '',
+        description: '',
+        status: 'DRAFT',
+        goal_amount: '',
+        tags: [],
+        is_anonymous: false,
+        steps: [
+            {
+                title: '',
+                description: '',
+                order: '0',
+                status: 'PENDING',
+                resources: []
+            }
+        ]
     };
-};
+});
 
 // eslint-disable-next-line qwik/loader-location
 export const useGetNationalIssues = routeLoader$(async ({ params }) => {
@@ -1002,10 +1001,8 @@ export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue
         }
     }
 
-    console.log('countryCode', countryCode)
-
     if (!countryCode) {
-        console.error('Country code not found');
+        console.error('Country code not found', countryCode);
         return [];
     }
 

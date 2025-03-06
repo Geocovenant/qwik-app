@@ -9,8 +9,8 @@ import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 import { useGetGlobalPolls } from "~/shared/loaders";
 
-export { useGetGlobalPolls, useFormPollLoader, useFormReportLoader } from "~/shared/loaders";
-export { useFormPollAction, useVotePoll, useReactPoll, useFormReportAction, useDeletePoll } from "~/shared/actions";
+export { useFormPollLoader } from "~/shared/loaders";
+export { useFormPollAction, useVotePoll, useReactPoll, useDeletePoll } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
@@ -20,6 +20,8 @@ export default component$(() => {
     const nav = useNavigate();
 
     const isAuthenticated = useComputed$(() => !!session.value?.user);
+    
+    // @ts-ignore
     const currentUsername = useComputed$(() => session.value?.user?.username || "");
 
     const onSubmitCompleted = $(() => {

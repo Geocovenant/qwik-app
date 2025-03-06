@@ -2,11 +2,22 @@ import { component$ } from "@builder.io/qwik"
 import type { DocumentHead } from "@builder.io/qwik-city"
 import { LuGlobe, LuUsers, LuBarChart2, LuMessageSquare, LuBriefcase, LuFlag } from "@qwikest/icons/lucide"
 import { _ } from "compiled-i18n"
+import { useGetGlobalDebates, useGetGlobalPolls, useGetGlobalProjects } from "~/shared/loaders"
 
-export { useGetGlobalDebates, useFormDebateLoader, useGetTags } from "~/shared/loaders"
+export { useFormDebateLoader, useGetTags } from "~/shared/loaders"
 export { useFormDebateAction } from "~/shared/actions"
 
 export default component$(() => {
+
+    const polls = useGetGlobalPolls();
+    const debates = useGetGlobalDebates();
+    const projects = useGetGlobalProjects();
+
+    const pollsCount = polls.value.total || 0;
+    const debatesCount = debates.value.total || 0;
+    const projectsCount = projects.value.total || 0;
+    const issuesCount = 0;
+
     return (
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-auto p-4 bg-gray-50">
             <header class="mb-6">
@@ -36,13 +47,13 @@ export default component$(() => {
                         <div class="flex items-start gap-3">
                             <LuFlag class="w-5 h-5 text-gray-600 mt-1" />
                             <div>
-                                <span class="font-medium">{_`Countries`}:</span> 195 recognized sovereign states
+                                <span class="font-medium">{_`Countries`}:</span> 249 registered in the platform
                             </div>
                         </div>
                         <div class="flex items-start gap-3">
                             <LuBarChart2 class="w-5 h-5 text-gray-600 mt-1" />
                             <div>
-                                <span class="font-medium">{_`Languages`}:</span> Over 7,100 languages spoken worldwide
+                                <span class="font-medium">{_`Regions`}:</span> 1,381 registered in the platform
                             </div>
                         </div>
                         <div class="flex items-start gap-3">
@@ -68,19 +79,19 @@ export default component$(() => {
                     </h2>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="bg-blue-50 p-4 rounded-lg">
-                            <div class="text-3xl font-bold text-blue-600">1,245</div>
+                            <div class="text-3xl font-bold text-blue-600">{pollsCount}</div>
                             <div class="text-sm text-gray-600">{_`Global Polls`}</div>
                         </div>
                         <div class="bg-green-50 p-4 rounded-lg">
-                            <div class="text-3xl font-bold text-green-600">3,782</div>
+                            <div class="text-3xl font-bold text-green-600">{debatesCount}</div>
                             <div class="text-sm text-gray-600">{_`Discussions`}</div>
                         </div>
                         <div class="bg-amber-50 p-4 rounded-lg">
-                            <div class="text-3xl font-bold text-amber-600">892</div>
+                            <div class="text-3xl font-bold text-amber-600">{issuesCount}</div>
                             <div class="text-sm text-gray-600">{_`Issues`}</div>
                         </div>
                         <div class="bg-purple-50 p-4 rounded-lg">
-                            <div class="text-3xl font-bold text-purple-600">421</div>
+                            <div class="text-3xl font-bold text-purple-600">{projectsCount}</div>
                             <div class="text-sm text-gray-600">{_`Projects`}</div>
                         </div>
                     </div>

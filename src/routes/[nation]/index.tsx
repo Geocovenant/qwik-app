@@ -20,11 +20,10 @@ export default component$(() => {
     const projects = useGetNationalProjects();
     const issues = useGetNationalIssues();
 
-    // Contar los elementos de cada tipo
-    const pollsCount = polls.value?.total || 0;
-    const debatesCount = Array.isArray(debates.value) ? debates.value.length : 0;
-    const projectsCount = projects.value?.total || 0;
-    const issuesCount = issues.value?.total || 0;
+    const pollsCount = polls.value.total || 0;
+    const debatesCount = debates.value.total || 0;
+    const projectsCount = projects.value.total || 0;
+    const issuesCount = issues.value.total || 0;
 
     return (
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-auto p-4 bg-gray-50">

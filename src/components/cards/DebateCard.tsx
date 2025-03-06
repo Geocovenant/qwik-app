@@ -1,13 +1,16 @@
 import { $, component$, useStylesScoped$, useSignal } from "@builder.io/qwik";
-import { LuCalendar, LuMessageSquare, LuTag, LuClock, LuLink, LuGlobe } from '@qwikest/icons/lucide';
+import { LuCalendar, LuMessageSquare, LuTag, LuClock, LuLink, LuGlobe, LuTrash2, LuFlag } from '@qwikest/icons/lucide';
 import { Link, useNavigate } from "@builder.io/qwik-city";
 import { PollScope } from "~/shared/types";
 import { timeAgo } from "~/utils/dateUtils";
 import styles from "./debate-card.css?inline";
-import { Avatar, Button } from "~/components/ui";
+import { Avatar } from "~/components/ui";
 import { Image } from "@unpic/qwik";
 import { _ } from "compiled-i18n";
 import type { QRL } from "@builder.io/qwik";
+import ConfirmationModal from "~/components/ConfirmationModal";
+import Modal from "~/components/Modal";
+import FormReport from "~/components/forms/FormReport";
 
 export interface DebateCardProps {
     id: number;
@@ -25,9 +28,11 @@ export interface DebateCardProps {
     isAuthenticated?: boolean;
     onShowLoginModal$?: QRL<() => void>;
     points_of_view?: any[]; // Array of points of view (countries)
+    currentUsername?: string;
 }
 
 export default component$<DebateCardProps>(({
+    id,
     title,
     description,
     images,
@@ -41,15 +46,21 @@ export default component$<DebateCardProps>(({
     scope,
     isAuthenticated = true,
     onShowLoginModal$,
-    points_of_view = []
+    points_of_view = [],
+    currentUsername = "",
 }) => {
     useStylesScoped$(styles);
     const nav = useNavigate();
     const onClickUsername = $((username: string) => nav(`/user/${username}`));
     const showCopiedMessage = useSignal(false);
+    const showReportModal = useSignal(false);
+    const showConfirmDeleteModal = useSignal(false);
 
     const mainImage = images && images.length > 0 ? images[0] : undefined;
     const countriesCount = points_of_view?.length || 0;
+    
+    // Determine if the current user is the creator
+    const isCreator = currentUsername === creator_username;
 
     const copyDebateLink = $(() => {
         try {
@@ -62,6 +73,25 @@ export default component$<DebateCardProps>(({
         } catch (error) {
             console.error("Error copying link:", error);
         }
+    });
+    
+    const handleReportClick = $(() => {
+        if (!isAuthenticated && onShowLoginModal$) {
+            onShowLoginModal$();
+            return;
+        }
+        showReportModal.value = true;
+    });
+    
+    const handleDeleteClick = $(() => {
+        showConfirmDeleteModal.value = true;
+    });
+    
+    const handleDelete = $(() => {
+        // Logic to delete the debate would go here
+        console.log("Delete debate:", id);
+        // Pending implementation: connect with a backend action
+        showConfirmDeleteModal.value = false;
     });
 
     return (
@@ -107,7 +137,7 @@ export default component$<DebateCardProps>(({
                     </div>
                 )}
 
-                {/* Countries information */}
+                {/* Country information */}
                 {scope === PollScope.GLOBAL && countriesCount > 0 && (
                     <div class="flex items-center gap-2 text-sm mb-3">
                         <span class="text-gray-500 dark:text-gray-400">{_`Participating countries:`}</span>
@@ -117,7 +147,7 @@ export default component$<DebateCardProps>(({
                     </div>
                 )}
 
-                {/* Creator information and dates */}
+                {/* Creator and date information */}
                 <div class="flex flex-wrap justify-between items-center mt-4 text-gray-500 dark:text-gray-400 text-xs">
                     <div class="flex items-center space-x-4">
                         <div class="flex items-center" onClick$={() => onClickUsername(creator_username)}>
@@ -173,6 +203,26 @@ export default component$<DebateCardProps>(({
                         <LuLink class="w-5 h-5 text-gray-500 group-hover:text-purple-500 transition-colors duration-300" />
                     </button>
                     
+                    {isAuthenticated && isCreator && (
+                        <button
+                            onClick$={handleDeleteClick}
+                            class="group p-2 flex items-center justify-center bg-white dark:bg-gray-800 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md border border-gray-200 dark:border-gray-700 transition-colors duration-300 shadow-sm"
+                            title={_`Delete debate`}
+                        >
+                            <LuTrash2 class="w-5 h-5 text-gray-500 group-hover:text-red-500 transition-colors duration-300" />
+                        </button>
+                    )}
+
+                    {isAuthenticated && !isCreator && (
+                        <button
+                            onClick$={handleReportClick}
+                            class="group p-2 flex items-center justify-center bg-white dark:bg-gray-800 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-md border border-gray-200 dark:border-gray-700 transition-colors duration-300 shadow-sm"
+                            title={_`Report debate`}
+                        >
+                            <LuFlag class="w-5 h-5 text-gray-500 group-hover:text-amber-500 transition-colors duration-300" />
+                        </button>
+                    )}
+                    
                     <Link 
                         href={`/debates/${slug}`}
                         class="bg-cyan-600 hover:bg-cyan-700 text-white text-sm px-4 py-2 rounded-md transition-colors duration-300 inline-flex items-center justify-center"
@@ -181,6 +231,24 @@ export default component$<DebateCardProps>(({
                     </Link>
                 </div>
             </div>
+            
+            {/* Modals */}
+            <ConfirmationModal
+                title={_`Delete debate`}
+                description={_`Are you sure you want to delete this debate? This action cannot be undone.`}
+                show={showConfirmDeleteModal}
+                onConfirm$={handleDelete}
+            />
+            
+            <Modal
+                title={_`Report debate`}
+                show={showReportModal}
+            >
+                <FormReport 
+                    type="DEBATE" 
+                    itemId={id} 
+                />
+            </Modal>
         </div>
     );
 }); 

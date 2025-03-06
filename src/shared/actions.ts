@@ -18,7 +18,6 @@ import type { CommentForm } from '~/schemas/commentSchema';
 import { CommentSchema } from '~/schemas/commentSchema';
 import type { ReportForm } from "~/schemas/reportSchema";
 import { ReportSchema } from "~/schemas/reportSchema";
-import { globalAction$ } from '@builder.io/qwik';
 
 export interface PollResponseData {
     success: boolean; // Indica si la operación fue exitosa
@@ -928,7 +927,8 @@ export const useDeleteOpinion = routeAction$(
     async (data, { fail, cookie }) => {
         console.log('### useDeleteOpinion ###')
         console.log('data', data)
-        const token = cookie.get("session_token")?.value;
+        const token = cookie.get('authjs.session-token')?.value;
+        console.log('token', token)
         
         if (!token) {
             return fail(401, {
@@ -1043,6 +1043,74 @@ export const useUnfollowUser = routeAction$(
             return {
                 success: false,
                 message: "Error al dejar de seguir al usuario",
+            };
+        }
+    }
+);
+
+// eslint-disable-next-line qwik/loader-location
+export const useDeleteDebate = routeAction$(
+    async (data, { cookie }) => {
+        console.log('### useDeleteDebate ###');
+        const token = cookie.get('authjs.session-token');
+        if (!token) {
+            return { success: false, error: "No authentication token found" };
+        }
+
+        try {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/${data.debateId}`, {
+                method: "DELETE",
+                headers: {
+                    "Accept": "application/json",
+                    "Authorization": token.value,
+                },
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Error al eliminar el debate');
+            }
+
+            return { success: true };
+        } catch (error) {
+            console.error("Error al eliminar el debate:", error);
+            return { 
+                success: false, 
+                message: error instanceof Error ? error.message : "Ha ocurrido un error inesperado al eliminar el debate" 
+            };
+        }
+    }
+);
+
+// eslint-disable-next-line qwik/loader-location
+export const useDeleteProject = routeAction$(
+    async (data, { cookie }) => {
+        console.log('### useDeleteProject ###');
+        const token = cookie.get('authjs.session-token');
+        if (!token) {
+            return { success: false, error: "No authentication token found" };
+        }
+
+        try {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects/${data.projectId}`, {
+                method: "DELETE",
+                headers: {
+                    "Accept": "application/json",
+                    "Authorization": token.value,
+                },
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Error deleting the project');
+            }
+
+            return { success: true };
+        } catch (error) {
+            console.error("Error deleting the project:", error);
+            return { 
+                success: false, 
+                message: error instanceof Error ? error.message : "An unexpected error occurred while deleting the project" 
             };
         }
     }
