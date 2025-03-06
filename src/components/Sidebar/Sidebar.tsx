@@ -106,13 +106,13 @@ export default component$(() => {
     return (
         <div class="flex h-full">
             <div 
-                class="flex flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 relative"
+                class="flex flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 relative transition-all duration-300 ease-in-out"
                 style={{ width: `${sidebarWidth.value}px` }}
             >
                 <div class="sticky top-0 z-20 bg-white dark:bg-gray-900">
                     <div class={`p-2 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between ${isCollapsed.value ? 'justify-center' : ''}`}>
                         {!isCollapsed.value && (
-                            <span class="font-semibold text-sm text-gray-500 dark:text-gray-400">{_`Menu`}</span>
+                            <span class="font-semibold text-sm text-gray-500 dark:text-gray-400 transition-opacity duration-200">{_`Menu`}</span>
                         )}
                         <button
                             onClick$={toggleCollapse}
@@ -132,13 +132,13 @@ export default component$(() => {
                         </div>
                         
                         {!isCollapsed.value && (
-                            <div class="px-3 py-2 text-sm font-semibold text-gray-500 dark:text-gray-400 mt-4 mb-2">
+                            <div class="px-3 py-2 text-sm font-semibold text-gray-500 dark:text-gray-400 mt-4 mb-2 transition-opacity duration-200">
                                 <span>{_`Countries`}</span>
                             </div>
                         )}
                         
                         {!isCollapsed.value && (
-                            <div class="px-3 mb-2">
+                            <div class="px-3 mb-2 transition-opacity duration-200">
                                 <input
                                     type="text"
                                     placeholder={_`Search countries...`}
@@ -157,7 +157,7 @@ export default component$(() => {
                             ))}
                             
                             {!isCollapsed.value && filteredCountries.length === 0 && (
-                                <div class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
+                                <div class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400 transition-opacity duration-200">
                                     {_`No countries found`}
                                 </div>
                             )}
@@ -172,7 +172,7 @@ export default component$(() => {
                             class="flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-[#713fc2] dark:hover:text-[#713fc2]"
                         >
                             <LuPlusCircle class="w-5 h-5 mr-2" />
-                            {!isCollapsed.value && _`New Community`}
+                            {!isCollapsed.value && <span class="transition-opacity duration-200">{_`New Community`}</span>}
                         </button>
                         <ThemeSwitch />
                     </div>
