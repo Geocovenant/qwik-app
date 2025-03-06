@@ -12,6 +12,8 @@ import { LuSearch } from "@qwikest/icons/lucide";
 export default component$(() => {
     const session = useSession();
     const loginModalVisible = useSignal<boolean>(false);
+    const searchValue = useSignal<string>('');
+    const showSearchMessage = useSignal<boolean>(false);
 
     return (
         <header class="bg-[#713fc2] border-b border-[#8255c9] h-16 flex items-center px-6 shadow-sm">
@@ -31,8 +33,26 @@ export default component$(() => {
                             type="text"
                             placeholder={_`Example: Climate Change`}
                             class="w-full bg-white/10 border border-white/20 rounded-full py-2 pl-10 pr-4 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all"
+                            value={searchValue.value}
+                            onInput$={(event) => {
+                                const input = event.target as HTMLInputElement;
+                                searchValue.value = input.value;
+                                showSearchMessage.value = input.value.length > 0;
+                            }}
                         />
                         <LuSearch class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/70" />
+                        {showSearchMessage.value && (
+                            <div class="absolute top-full left-0 right-0 mt-2 bg-white text-[#713fc2] p-3 rounded-lg shadow-lg text-sm z-10 border border-[#8255c9]/30 animate-fadeIn">
+                                <div class="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                    </svg>
+                                    <span>{_`The search feature is coming soon! We're working hard to implement it.`}</span>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div>

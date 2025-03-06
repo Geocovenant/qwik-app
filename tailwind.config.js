@@ -78,6 +78,7 @@ export default {
       animation: {
         "accordion-up": "collapsible-up 0.2s ease-out 0s 1 normal forwards",
         "accordion-down": "collapsible-down 0.2s ease-out 0s 1 normal forwards",
+        'fadeIn': 'fadeIn 0.3s ease-in-out',
       },
       keyframes: {
         "collapsible-down": {
@@ -88,6 +89,10 @@ export default {
           from: { height: "var(--qwikui-collapsible-content-height)" },
           to: { height: "0" },
         },
+        fadeIn: {
+          '0%': { opacity: 0, transform: 'translateY(-5px)' },
+          '100%': { opacity: 1, transform: 'translateY(0)' },
+        }
       },
     },
   },
