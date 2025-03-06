@@ -1123,3 +1123,179 @@ export const useFormReportLoader = routeLoader$<InitialValues<ReportForm>>((requ
         details: '',
     };
 });
+
+// Loader para obtener encuestas a nivel de localidad
+// eslint-disable-next-line qwik/loader-location
+export const useGetLocalityPolls = routeLoader$(async ({ params, query, cookie }) => {
+    console.log('============ useGetLocalityPolls ============');
+    const page = query.get('page') || '1';
+    const size = query.get('size') || '10';
+    const nationParam = params.nation;
+    const regionParam = params.region;
+    const subregionParam = params.subregion;
+    const localityParam = params.locality;
+    
+    if (!nationParam || !regionParam || !subregionParam || !localityParam) {
+        console.error('Missing required parameters for locality polls');
+        return { items: [], total: 0, page: 1, size: 10, pages: 1 };
+    }
+    
+    const token = cookie.get('authjs.session-token');
+    
+    try {
+        let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=LOCALITY`;
+        url += `&locality=${localityParam}&page=${page}&size=${size}`;
+        
+        const headers: Record<string, string> = {
+            Accept: 'application/json',
+        };
+        
+        if (token) {
+            headers.Authorization = token.value;
+        }
+        
+        const response = await fetch(url, { headers });
+        
+        if (!response.ok) {
+            throw new Error('Error fetching locality polls');
+        }
+        
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching locality polls:', error);
+        return { items: [], total: 0, page: 1, size: 10, pages: 1 };
+    }
+});
+
+// Loader para obtener debates a nivel de localidad
+// eslint-disable-next-line qwik/loader-location
+export const useGetLocalityDebates = routeLoader$(async ({ params, query, cookie }) => {
+    console.log('============ useGetLocalityDebates ============');
+    const page = query.get('page') || '1';
+    const size = query.get('size') || '10';
+    const nationParam = params.nation;
+    const regionParam = params.region;
+    const subregionParam = params.subregion;
+    const localityParam = params.locality;
+    
+    if (!nationParam || !regionParam || !subregionParam || !localityParam) {
+        console.error('Missing required parameters for locality debates');
+        return { items: [], total: 0, page: 1, size: 10, pages: 1 };
+    }
+    
+    const token = cookie.get('authjs.session-token');
+    
+    try {
+        let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates?scope=LOCALITY`;
+        url += `&locality=${localityParam}&page=${page}&size=${size}`;
+        
+        const headers: Record<string, string> = {
+            Accept: 'application/json',
+        };
+        
+        if (token) {
+            headers.Authorization = token.value;
+        }
+        
+        const response = await fetch(url, { headers });
+        
+        if (!response.ok) {
+            throw new Error('Error fetching locality debates');
+        }
+        
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching locality debates:', error);
+        return { items: [], total: 0, page: 1, size: 10, pages: 1 };
+    }
+});
+
+// Loader para obtener proyectos a nivel de localidad
+// eslint-disable-next-line qwik/loader-location
+export const useGetLocalityProjects = routeLoader$(async ({ params, query, cookie }) => {
+    console.log('============ useGetLocalityProjects ============');
+    const page = query.get('page') || '1';
+    const size = query.get('size') || '10';
+    const nationParam = params.nation;
+    const regionParam = params.region;
+    const subregionParam = params.subregion;
+    const localityParam = params.locality;
+    
+    if (!nationParam || !regionParam || !subregionParam || !localityParam) {
+        console.error('Missing required parameters for locality projects');
+        return { items: [], total: 0, page: 1, size: 10, pages: 1 };
+    }
+    
+    const token = cookie.get('authjs.session-token');
+    
+    try {
+        let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/projects?scope=LOCALITY`;
+        url += `&locality=${localityParam}&page=${page}&size=${size}`;
+        
+        const headers: Record<string, string> = {
+            Accept: 'application/json',
+        };
+        
+        if (token) {
+            headers.Authorization = token.value;
+        }
+        
+        const response = await fetch(url, { headers });
+        
+        if (!response.ok) {
+            throw new Error('Error fetching locality projects');
+        }
+        
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching locality projects:', error);
+        return { items: [], total: 0, page: 1, size: 10, pages: 1 };
+    }
+});
+
+// Loader para obtener problemas reportados a nivel de localidad
+// eslint-disable-next-line qwik/loader-location
+export const useGetLocalityIssues = routeLoader$(async ({ params, query, cookie }) => {
+    console.log('============ useGetLocalityIssues ============');
+    const page = query.get('page') || '1';
+    const size = query.get('size') || '10';
+    const nationParam = params.nation;
+    const regionParam = params.region;
+    const subregionParam = params.subregion;
+    const localityParam = params.locality;
+    
+    if (!nationParam || !regionParam || !subregionParam || !localityParam) {
+        console.error('Missing required parameters for locality issues');
+        return { items: [], total: 0, page: 1, size: 10, pages: 1 };
+    }
+    
+    const token = cookie.get('authjs.session-token');
+    
+    try {
+        let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/issues?scope=LOCALITY`;
+        url += `&locality=${localityParam}&page=${page}&size=${size}`;
+        
+        const headers: Record<string, string> = {
+            Accept: 'application/json',
+        };
+        
+        if (token) {
+            headers.Authorization = token.value;
+        }
+        
+        const response = await fetch(url, { headers });
+        
+        if (!response.ok) {
+            throw new Error('Error fetching locality issues');
+        }
+        
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching locality issues:', error);
+        return { items: [], total: 0, page: 1, size: 10, pages: 1 };
+    }
+});

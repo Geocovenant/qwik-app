@@ -9,7 +9,7 @@ export default component$(() => {
 
     return (
         <div class="container mx-auto px-4 pt-1 pb-4">
-            <div class="bg-white dark:bg-gray-900 shadow-sm mb-3">
+            <div class="bg-white dark:bg-gray-900 shadow-sm mb-3 rounded-lg">
                 <div class="py-1 px-4">
                     <Breadcrumb.Root>
                         <Breadcrumb.List>
@@ -54,7 +54,7 @@ export default component$(() => {
                     </nav>
                 </div>
             </div>
-            <div class="bg-white dark:bg-gray-900 shadow-sm">
+            <div class="bg-white dark:bg-gray-900 shadow-sm rounded-lg">
                 <Slot />
             </div>
         </div>

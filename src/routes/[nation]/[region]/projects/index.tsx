@@ -13,7 +13,7 @@ import { capitalizeFirst } from "~/utils/capitalizeFirst";
 import { useGetRegionalProjects, useGetRegions, useGetTags } from "~/shared/loaders";
 
 // Export loaders so Qwik City can find them
-export { useGetRegionalProjects, useGetRegions, useGetTags } from "~/shared/loaders";
+export { useGetRegionalProjects, useGetRegions, useGetTags, useFormProjectLoader } from "~/shared/loaders";
 export { useFormProjectAction } from "~/shared/actions";
 
 export default component$(() => {

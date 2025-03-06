@@ -25,16 +25,16 @@ export default component$(() => {
     // Si estamos directamente en la vista de nación (sin región), mostramos la navegación completa
     return (
         <div class="container mx-auto px-4 pt-1 pb-4">
-            <div class="bg-white dark:bg-gray-900 shadow-sm mb-3">
-                <div class="bg-gray-50 border-b py-1 px-2">
+            <div class="bg-white dark:bg-gray-900 shadow-sm mb-3 rounded-lg">
+                <div class="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 py-1 px-2">
                     <Breadcrumb.Root>
                         <Breadcrumb.List class="text-lg">
                             <Breadcrumb.Item>
-                                <Breadcrumb.Link href="/global">{_`Global`}</Breadcrumb.Link>
+                                <Breadcrumb.Link href="/global" class="dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">{_`Global`}</Breadcrumb.Link>
                             </Breadcrumb.Item>
-                            <Breadcrumb.Separator />
+                            <Breadcrumb.Separator class="dark:text-gray-500" />
                             <Breadcrumb.Item>
-                                <Breadcrumb.Link href={`/${nationParam}`}>{capitalizeFirst(nationParam)}</Breadcrumb.Link>
+                                <Breadcrumb.Link href={`/${nationParam}`} class="dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">{capitalizeFirst(nationParam)}</Breadcrumb.Link>
                             </Breadcrumb.Item>
                         </Breadcrumb.List>
                     </Breadcrumb.Root>
@@ -86,7 +86,7 @@ export default component$(() => {
                     </nav>
                 </div>
             </div>
-            <div class="bg-white dark:bg-gray-900 shadow-sm">
+            <div class="bg-white dark:bg-gray-900 shadow-sm rounded-lg">
                 <Slot />
             </div>
         </div>
