@@ -59,14 +59,13 @@ export default component$(() => {
                         <div class="flex items-start gap-3">
                             <LuGlobe class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                             <div class="dark:text-gray-300">
-                                <span class="font-medium">{_`Land Area`}:</span> 148.9 {_`million km²`}
+                                <span class="font-medium">{_`Sub Regions`}:</span> 131 {_`registered in the platform`}
                             </div>
                         </div>
                         <div class="flex items-start gap-3">
                             <LuGlobe class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                             <div class="dark:text-gray-300">
-                                <span class="font-medium">{_`Continents`}:</span> 7 ({_`Africa, Antarctica, Asia, Europe, North America,
-                                Oceania, South America`})
+                                <span class="font-medium">{_`Localities`}:</span> 0 {_`registered in the platform`}
                             </div>
                         </div>
                     </div>

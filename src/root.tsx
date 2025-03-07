@@ -27,6 +27,30 @@ export default component$(() => {
             href={`${import.meta.env.BASE_URL}manifest.json`}
           />
         )}
+        <script
+          dangerouslySetInnerHTML={`
+            (function() {
+              function setTheme(theme) {
+                document.documentElement.className = theme;
+                localStorage.setItem('theme', theme);
+              }
+              const theme = localStorage.getItem('theme');
+    
+              if (theme) {
+                setTheme(theme);
+              } else {
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                  setTheme('dark');}
+                  else {
+                    setTheme('light');}}
+            })();
+            window.addEventListener('load', function() {
+              const themeSwitch = document.getElementById('hide-checkbox');
+              themeSwitch.checked = localStorage.getItem('theme') === 'light'? true: false;
+            }
+            );
+          `}
+        ></script>
         <RouterHead />
       </head>
       <body lang="en">

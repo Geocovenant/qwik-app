@@ -1029,7 +1029,7 @@ export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue
 // eslint-disable-next-line qwik/loader-location
 export const useGetGlobalMembers = routeLoader$(async ({ cookie, query }) => {
     const page = Number(query.get("page") || "1");
-    const size = Number(query.get("size") || "20");
+    const size = Number(query.get("size") || "100");
     const token = cookie.get('authjs.session-token');
     if (!token) {
         return { items: [], total: 0, page: 1, size: 20, pages: 1 };
@@ -1044,20 +1044,17 @@ export const useGetGlobalMembers = routeLoader$(async ({ cookie, query }) => {
             {
                 headers: {
                     Accept: 'application/json',
-                    Authorization: token.value
+                    Authorization: `Bearer ${token.value}`
                 }
             }
         );
-
+        
         if (!response.ok) {
             throw new Error('Error fetching global members');
         }
 
         const data = await response.json();
 
-        // Asegúrate de que cada miembro tenga la propiedad is_public
-        // Esta propiedad debería venir del backend, pero si no está,
-        // la inicializamos como false
         data.items = data.items.map((member: any) => ({
             ...member,
             is_public: member.is_public || false
@@ -1065,6 +1062,7 @@ export const useGetGlobalMembers = routeLoader$(async ({ cookie, query }) => {
 
         return data;
     } catch (error) {
+        console.log('error', error)
         console.error("Error fetching global members:", error);
         return { items: [], total: 0, page: 1, size: 20, pages: 1 };
     }

@@ -4,6 +4,7 @@ import { ThemeSwitch } from "~/components/theme-switch/ThemeSwitch";
 import { dataArray } from "~/data/countries";
 import { _ } from "compiled-i18n";
 import CommunityItem, { type Community } from "./CommunityItem";
+import { Classic } from "../Classic";
 
 // Component for the LuGlobe icon
 const LuGlobeIcon = component$(() => <LuGlobe class="h-5 w-5" />);
@@ -174,7 +175,7 @@ export default component$(() => {
                             <LuPlusCircle class="w-5 h-5 mr-2" />
                             {!isCollapsed.value && <span class="transition-opacity duration-200">{_`New Community`}</span>}
                         </button>
-                        <ThemeSwitch />
+                        <Classic />
                     </div>
                 </div>
 

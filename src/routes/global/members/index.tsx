@@ -17,7 +17,7 @@ export default component$(() => {
     const session = useSession();
     const members = useGetGlobalMembers();
     const updateCommunityVisibilityAction = useUpdateCommunityVisibility();
-    const isPublic = useSignal(members.value.items.find((m: any) => m.is_current_user)?.is_public || false);
+    const isPublic = useSignal(members.value?.current_user?.is_public || false);
     const currentPage = useSignal(1);
     const nav = useNavigate();
     const isAuthenticated = useComputed$(() => !!session.value?.user);
@@ -52,7 +52,7 @@ export default component$(() => {
                         </div>
                         <div class="mt-4 sm:mt-0 flex items-center gap-2 pl-3">
                             <span class="text-lg font-semibold text-blue-700 dark:text-blue-400">
-                                {members.value.total} {_`members`}
+                                {members.value.total_public + members.value.total_anonymous} {_`members`}
                             </span>
                         </div>
                     </div>
@@ -149,6 +149,15 @@ export default component$(() => {
                         )}
 
                         {/* Pagination */}
+                        {members.value.total_anonymous > 0 && (
+                            <div class="flex justify-center items-center p-4 border-t border-gray-200 dark:border-gray-700">
+                                <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                                    <LuEyeOff class="w-4 h-4" />
+                                    <span>{members.value.total_anonymous} anonymous members</span>
+                                </div>
+                            </div>
+                        )}
+
                         {members.value.pages > 1 && (
                             <div class="flex justify-center items-center gap-2 p-4 border-t border-gray-200 dark:border-gray-700">
                                 <button
