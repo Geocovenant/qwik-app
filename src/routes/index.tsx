@@ -92,14 +92,13 @@ export default component$(() => {
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 🔒 {_`Your data is 100% secure and private`}
               </p>
-              
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 {_`By continuing, you agree to our `}
-                <a href="/terms" class="font-medium underline underline-offset-4 decoration-[#713fc2]/30 hover:decoration-[#713fc2]/60 dark:decoration-[#9333EA]/50 dark:hover:decoration-[#9333EA]">
+                <a href="/terms-of-service" class="font-medium underline underline-offset-4 decoration-[#713fc2]/30 hover:decoration-[#713fc2]/60 dark:decoration-[#9333EA]/50 dark:hover:decoration-[#9333EA]">
                   {_`Terms of Service`}
                 </a>
                 {_` and `}
-                <a href="/privacy" class="font-medium underline underline-offset-4 decoration-[#713fc2]/30 hover:decoration-[#713fc2]/60 dark:decoration-[#9333EA]/50 dark:hover:decoration-[#9333EA]">
+                <a href="/privacy-policy" class="font-medium underline underline-offset-4 decoration-[#713fc2]/30 hover:decoration-[#713fc2]/60 dark:decoration-[#9333EA]/50 dark:hover:decoration-[#9333EA]">
                   {_`Privacy Policy`}
                 </a>
               </p>

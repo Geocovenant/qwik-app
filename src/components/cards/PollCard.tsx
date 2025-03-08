@@ -10,6 +10,7 @@ import {
     LuUser2,
     LuTrash2,
     LuFlag,
+    LuTag,
 } from "@qwikest/icons/lucide"
 import { timeAgo } from "~/utils/dateUtils"
 import { dataArray } from "~/data/countries"
@@ -43,6 +44,7 @@ interface PollCardProps {
     isAuthenticated?: boolean
     currentUsername?: string
     onShowLoginModal$: QRL<() => void>
+    tags?: string[]
 }
 
 export default component$<PollCardProps>(
@@ -68,6 +70,7 @@ export default component$<PollCardProps>(
         isAuthenticated = true,
         currentUsername = "",
         onShowLoginModal$,
+        tags = [],
     }) => {
         const actionVote = useVotePoll()
         const actionReact = useReactPoll()
@@ -296,6 +299,18 @@ export default component$<PollCardProps>(
                     </div>
 
                     {description && <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">{description}</p>}
+
+                    {/* Tags */}
+                    {tags.length > 0 && (
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            {tags.map((tag) => (
+                                <span key={tag} class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs font-medium px-2.5 py-1 rounded-full flex items-center">
+                                    <LuTag class="w-3 h-3 mr-1" />
+                                    {tag}
+                                </span>
+                            ))}
+                        </div>
+                    )}
 
                     {countries.length > 0 && (
                         <div class="flex items-center gap-1 mb-3 flex-wrap">

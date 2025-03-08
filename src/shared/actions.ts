@@ -47,6 +47,7 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
             is_anonymous: values.is_anonymous,
             scope: values.scope,
             ends_at: values.ends_at !== '' ? values.ends_at : null,
+            tags: values.tags || [],
         };
 
         // Añadir los campos específicos según el scope

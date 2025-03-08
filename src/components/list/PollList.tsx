@@ -182,6 +182,7 @@ export default component$<PollListProps>(({ polls, onCreatePoll, region, communi
                             isAuthenticated={isAuthenticated}
                             currentUsername={currentUsername}
                             onShowLoginModal$={onShowLoginModal$}
+                            tags={poll.tags}
                         />
                     </li>
                 ))}

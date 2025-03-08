@@ -17,6 +17,7 @@ import { CustomToggle } from '~/components/input/CustomToggle';
 import { useLocation } from '@builder.io/qwik-city';
 import { useComputed$ } from '@builder.io/qwik';
 import { CountrySelectInput } from '../input/CountrySelectInput';
+import { TagInput } from '~/components/input/TagInput';
 
 export interface FormPollProps {
     onSubmitCompleted: () => void;
@@ -25,6 +26,7 @@ export interface FormPollProps {
     defaultSubregionId?: number;
     regions?: any[];
     subregions?: any[];
+    tags?: { id: string, name: string }[];
 }
 
 export default component$<FormPollProps>(({ 
@@ -33,7 +35,8 @@ export default component$<FormPollProps>(({
     defaultRegionId = null,
     defaultSubregionId = null,
     regions = [],
-    subregions = []
+    subregions = [],
+    tags = []
 }) => {
     const [pollForm, { Form, Field, FieldArray }] = useForm<PollForm, PollResponseData>({
         loader: useFormPollLoader(),
@@ -380,6 +383,22 @@ export default component$<FormPollProps>(({
                         </div>
                     )}
                 </FieldArray>
+            </div>
+
+            {/* TAGS */}
+            <div class="space-y-4">
+                <h2 class="font-medium text-foreground">{_`Categorization`}</h2>
+                <Field name="tags" type="string[]">
+                    {(field, props) => (
+                        <TagInput
+                            {...props}
+                            error={field.error}
+                            form={pollForm}
+                            label={_`Tags`}
+                            predefinedTags={tags}
+                        />
+                    )}
+                </Field>
             </div>
 
             {/* Additional Settings Section */}
