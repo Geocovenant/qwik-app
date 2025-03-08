@@ -1,8 +1,9 @@
 import { component$ } from "@builder.io/qwik"
 import type { DocumentHead } from "@builder.io/qwik-city"
-import { LuGlobe, LuUsers, LuBarChart2, LuMessageSquare, LuBriefcase, LuFlag } from "@qwikest/icons/lucide"
+import { LuGlobe, LuUsers, LuBarChart2, LuMessageSquare, LuBriefcase, LuFlag, LuInfo } from "@qwikest/icons/lucide"
 import { useGetGlobalDebates, useGetGlobalPolls, useGetGlobalProjects } from "~/shared/loaders"
 import { _ } from "compiled-i18n"
+import { Alert } from "~/components/ui/alert/alert"
 
 export { useFormDebateLoader, useGetTags } from "~/shared/loaders"
 export { useFormDebateAction } from "~/shared/actions"
@@ -25,11 +26,19 @@ export default component$(() => {
                     <LuGlobe class="w-10 h-10 text-blue-600 dark:text-blue-400" />
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{_`Global Community`}</h1>
                 </div>
-                <p class="text-gray-600 dark:text-gray-300 mt-2">
-                    {_`Welcome to the global community where all users connect, share ideas, and work together on worldwide
-                    initiatives.`}
-                </p>
             </header>
+
+            <Alert.Root look="primary" class="mb-4 border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/30">
+                <div class="flex gap-2">
+                    <LuInfo class="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                    <div>
+                        <Alert.Title class="text-blue-800 dark:text-blue-300">{_`About the Global Community`}</Alert.Title>
+                        <Alert.Description class="text-blue-700 dark:text-blue-400">
+                            {_`The global community includes all countries and users around the world. Here you can participate in worldwide initiatives that affect the entire planet and connect with people from any country.`}
+                        </Alert.Description>
+                    </div>
+                </div>
+            </Alert.Root>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow dark:shadow-gray-700">

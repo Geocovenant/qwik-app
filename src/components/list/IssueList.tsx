@@ -5,6 +5,8 @@ import { LuPlus } from "@qwikest/icons/lucide"
 import { timeAgo } from "~/utils/dateUtils"
 import EmptyIssue from "~/components/empty-states/EmptyIssue"
 import { Image } from "@unpic/qwik"
+import { Card } from "~/components/ui"
+import { Pagination } from "@qwik-ui/headless"
 
 export interface Issue {
     id: number
@@ -113,7 +115,7 @@ export const IssueList = component$<IssueListProps>(
                                     {issue.communities.length > 0 && (
                                         <div class="flex items-center gap-1 ml-4">
                                             {issue.communities.map((community) => (
-                                                <Badge key={community.id} variant="outline" class="text-xs">
+                                                <Badge key={community.id} class="text-xs">
                                                     {community.name} {community.cca2 && `(${community.cca2})`}
                                                 </Badge>
                                             ))}
@@ -125,7 +127,19 @@ export const IssueList = component$<IssueListProps>(
                     ))}
 
                     {issues.pages > 1 && (
-                        <Pagination currentPage={issues.page} totalPages={issues.pages} onPageChange$={handlePageChange} />
+                        <div class="mt-4 flex justify-center">
+                            <Pagination
+                                selectedPage={issues.page}
+                                totalPages={issues.pages}
+                                onPageChange$={onPageChange$}
+                                class="pagination-wrapper"
+                                selectedClass="pagination-selected-btn"
+                                defaultClass="pagination-btn"
+                                dividerClass="pagination-divider"
+                                prevButtonClass="prevNextButtons"
+                                nextButtonClass="prevNextButtons"
+                            />
+                        </div>
                     )}
                 </div>
             </div>

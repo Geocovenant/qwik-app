@@ -50,10 +50,15 @@ export default component$(() => {
                             />
                         </Modal>
                         : <Modal
-                            title={_`Inicia sesión para crear un debate`}
+                            title={_`Log in to create a debate`}
                             show={showModalDebate}
                         >
-                            <SocialLoginButtons />
+                            <div class="p-4 text-center">
+                                <p class="mb-6 text-gray-600 dark:text-gray-300">
+                                    {_`You need to log in to create debates and participate in the community.`}
+                                </p>
+                                <SocialLoginButtons />
+                            </div>
                         </Modal>
                     }
                     <DebateList

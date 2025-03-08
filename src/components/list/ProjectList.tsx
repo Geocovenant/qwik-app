@@ -6,10 +6,7 @@ import {
     LuSearch,
     LuFilter,
 } from "@qwikest/icons/lucide"
-import Modal from "~/components/Modal"
-import SocialLoginButtons from "~/components/SocialLoginButtons"
-import type { ProjectRead, ProjectStatus } from "~/shared/types"
-import { useNavigate } from "@builder.io/qwik-city"
+import type { ProjectRead } from "~/shared/types"
 import { Pagination } from "@qwik-ui/headless"
 import EmptyProjects from "~/components/empty-states/EmptyProjects"
 import ProjectCard from "~/components/cards/ProjectCard"
@@ -32,9 +29,7 @@ export interface ProjectListProps {
 export default component$<ProjectListProps>(
     ({ projects, onCreateProject, communityName, onPageChange$, isAuthenticated = true, currentUsername = "" }) => {
         const searchTerm = useSignal("")
-        const showLoginModal = useSignal(false)
-        const statusFilter = useSignal<ProjectStatus | "ALL">("ALL")
-        const nav = useNavigate()
+        const statusFilter = useSignal<"ALL" | "DRAFT" | "OPEN" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED">("ALL")
 
         // Filter projects by search term and status
         const filteredProjects = useComputed$(() => {
@@ -57,10 +52,6 @@ export default component$<ProjectListProps>(
 
             return filtered
         })
-
-        const onShowLoginModal = $(() => {
-            showLoginModal.value = true;
-        });
 
         // Actualizado SearchAndFilterBar para ser consistente con los demás componentes
         const SearchAndFilterBar = (
@@ -259,14 +250,6 @@ export default component$<ProjectListProps>(
 
         return (
             <div class="space-y-6 overflow-y-auto">
-                {/* Login modal */}
-                <Modal title={_`Log in to participate`} show={showLoginModal}>
-                    <div class="p-4 text-center">
-                        <p class="mb-6 text-gray-600 dark:text-gray-300">{_`You need to log in to contribute to projects and participate in the community.`}</p>
-                        <SocialLoginButtons />
-                    </div>
-                </Modal>
-
                 {/* Header with actions */}
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-2">
                     <div class="flex-1">
@@ -296,7 +279,7 @@ export default component$<ProjectListProps>(
                                 status={project.status}
                                 created_at={project.created_at}
                                 creator_username={project.creator.username}
-                                creator_avatar={project.creator.image}
+                                creator_avatar={project.creator.image || ""}
                                 current_amount={project.current_amount}
                                 goal_amount={project.goal_amount}
                                 steps={project.steps}
@@ -304,7 +287,6 @@ export default component$<ProjectListProps>(
                                 commitments={project.commitments}
                                 isAuthenticated={isAuthenticated}
                                 currentUsername={currentUsername}
-                                onShowLoginModal$={onShowLoginModal}
                             />
                         </li>
                     ))}

@@ -9,7 +9,7 @@ import type { OpinionForm } from "~/schemas/opinionSchema";
 import { CommunityType } from "~/constants/communityType";
 import { type IssueForm } from "~/schemas/issueSchema";
 import type { ReportForm } from "~/schemas/reportSchema";
-import { ProjectForm } from "~/schemas/projectSchema";
+import { type ProjectForm } from "~/schemas/projectSchema";
 
 // eslint-disable-next-line qwik/loader-location
 export const useGetUser = routeLoader$(async ({ cookie }) => {
@@ -27,6 +27,25 @@ export const useGetUser = routeLoader$(async ({ cookie }) => {
     const data = await response.json()
     return data
 })
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetCommunityIdByName = routeLoader$(async ({ query }) => {
+    const _nation = query.get('nation');
+    const _region = query.get('region');
+    const _subregion = query.get('subregion');
+    const _locality = query.get('locality');
+    const name = query.get('name');
+    if (!name) {
+        return null;
+    }
+    const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities?name=${name}`, {
+        headers: {
+            Accept: 'application/json',
+        }
+    });
+    const data = await response.json();
+    return data[0].id;
+});
 
 // eslint-disable-next-line qwik/loader-location
 export const useGetGlobalPolls = routeLoader$(async ({ query, cookie }) => {
@@ -189,7 +208,7 @@ export const useGetNationalPolls = routeLoader$(async ({ cookie, params }) => {
     }
     const cca2 = getCountryCode(params.nation);
     if (!cca2) {
-        console.error('Country not found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!:', params.nation);
+        console.error('Country not found!', params.nation);
         return [];
     }
     try {
@@ -685,7 +704,7 @@ export const useFormProjectLoader = routeLoader$<InitialValues<ProjectForm>>(() 
         title: '',
         description: '',
         status: 'DRAFT',
-        goal_amount: '',
+        goal_amount: 0,
         tags: [],
         is_anonymous: false,
         steps: [
@@ -982,22 +1001,23 @@ export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue
         return [];
     }
 
-    // En lugar de acceder a communities que no existe
+    // Obtener el debate
     const debate = await resolveValue(useGetDebateBySlug);
 
     // Necesitamos extraer el código de país de forma segura
-    // Verificamos si el debate existe antes de intentar acceder a sus propiedades
     let countryCode = null;
 
     if (debate) {
-        // Intentamos varias propiedades posibles para obtener el código de país
-        // Usando operador optional chaining para evitar errores
-        if (debate.communities && debate.communities[0]) {
-            countryCode = debate.communities[0].country_code;
-        } else if (debate.metadata && debate.metadata.country) {
-            countryCode = debate.metadata.country;
-        } else if (debate.location && debate.location.country) {
-            countryCode = debate.location.country;
+        // Check if properties exist before accessing them
+        // Remove the direct property access that doesn't exist
+        // and replace with more reliable properties
+        if (debate.tags && debate.tags.some(tag => tag.country_code)) {
+            countryCode = debate.tags.find(tag => tag.country_code)?.country_code;
+        } else if (debate.creator && debate.creator.country_code) {
+            countryCode = debate.creator.country_code;
+        } else {
+            // Fallback to a default country code if needed
+            countryCode = "US";
         }
     }
 
@@ -1031,9 +1051,6 @@ export const useGetGlobalMembers = routeLoader$(async ({ cookie, query }) => {
     const page = Number(query.get("page") || "1");
     const size = Number(query.get("size") || "100");
     const token = cookie.get('authjs.session-token');
-    if (!token) {
-        return { items: [], total: 0, page: 1, size: 20, pages: 1 };
-    }
 
     // Comunidad global tiene ID 1
     const communityId = 1;
@@ -1044,7 +1061,7 @@ export const useGetGlobalMembers = routeLoader$(async ({ cookie, query }) => {
             {
                 headers: {
                     Accept: 'application/json',
-                    Authorization: `Bearer ${token.value}`
+                    ...(token ? { Authorization: `Bearer ${token.value}` } : {})
                 }
             }
         );
@@ -1067,6 +1084,41 @@ export const useGetGlobalMembers = routeLoader$(async ({ cookie, query }) => {
         return { items: [], total: 0, page: 1, size: 20, pages: 1 };
     }
 });
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetNationalMembers = routeLoader$(async ({ cookie, params, query }) => {
+    const page = Number(query.get("page") || "1");
+    const size = Number(query.get("size") || "100");
+    const token = cookie.get('authjs.session-token');
+    if (!token) {
+        return { items: [], total: 0, page: 1, size: 20, pages: 1 };
+    }
+    const cca2 = getCountryCode(params.nation);
+    if (!cca2) {
+        console.error('Country not found!', params.nation);
+        return [];
+    }
+
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/countries/${cca2}/members?page=${page}&size=${size}`, {
+            headers: {
+                Accept: 'application/json',
+                Authorization: token.value
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Error fetching national members');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching national members:', error);
+        return { items: [], total: 0, page: 1, size: 20, pages: 1 };
+    }
+});
+
 
 // eslint-disable-next-line qwik/loader-location
 export const useCheckCommunityMembership = routeLoader$(async ({ cookie, params }) => {
@@ -1117,7 +1169,7 @@ export const useFormReportLoader = routeLoader$<InitialValues<ReportForm>>((requ
     return {
         itemId: itemId,
         itemType: itemType as any,
-        reason: '',
+        reason: 'INAPPROPRIATE',
         details: '',
     };
 });
@@ -1295,5 +1347,22 @@ export const useGetLocalityIssues = routeLoader$(async ({ params, query, cookie 
     } catch (error) {
         console.error('Error fetching locality issues:', error);
         return { items: [], total: 0, page: 1, size: 10, pages: 1 };
+    }
+});
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetCountry = routeLoader$(async ({ params }) => {
+    const cca2 = getCountryCode(params.nation);
+    if (!cca2) {
+        console.error('Country not found!', params.nation);
+        return [];
+    }
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/countries/${cca2}`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching country:', error);
+        return { country: null };
     }
 });

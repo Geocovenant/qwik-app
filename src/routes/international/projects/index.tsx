@@ -48,10 +48,15 @@ export default component$(() => {
                             />
                         </Modal>
                         : <Modal
-                            title={_`Inicia sesión para crear un proyecto`}
+                            title={_`Log in to create a project`}
                             show={showModalProject}
                         >
-                            <SocialLoginButtons />
+                            <div class="p-4 text-center">
+                                <p class="mb-6 text-gray-600 dark:text-gray-300">
+                                    {_`You need to log in to create projects and participate in the community.`}
+                                </p>
+                                <SocialLoginButtons />
+                            </div>
                         </Modal>
                     }
                     <ProjectList

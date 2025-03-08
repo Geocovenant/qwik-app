@@ -32,6 +32,10 @@ export default component$(() => {
         showModalPoll.value = true;
     });
 
+    const onShowLoginModal = $(() => {
+        showModalPoll.value = true;
+    });
+
     return (
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
             <div class="flex flex-col min-h-0">
@@ -50,7 +54,12 @@ export default component$(() => {
                             title={_`Sign in to create a poll`}
                             show={showModalPoll}
                         >
-                            <SocialLoginButtons />
+                            <div class="p-4 text-center">
+                                <p class="mb-6 text-gray-600 dark:text-gray-300">
+                                    {_`You need to sign in to create polls and participate in the community.`}
+                                </p>
+                                <SocialLoginButtons />
+                            </div>
                         </Modal>
                     }
                     <PollList
@@ -69,6 +78,7 @@ export default component$(() => {
                         }}
                         isAuthenticated={isAuthenticated.value}
                         currentUsername={currentUsername.value}
+                        onShowLoginModal$={onShowLoginModal}
                     />
                 </div>
             </div>

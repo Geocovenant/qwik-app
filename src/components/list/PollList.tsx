@@ -7,8 +7,6 @@ import { Button } from "~/components/ui"
 import { useComputed$, useSignal } from "@builder.io/qwik"
 import { Pagination } from "@qwik-ui/headless"
 import { LuPlus, LuFilter, LuSearch } from "@qwikest/icons/lucide"
-import Modal from "~/components/Modal"
-import SocialLoginButtons from "~/components/SocialLoginButtons"
 
 export interface PollListProps {
     onCreatePoll: QRL<() => void>
@@ -24,11 +22,11 @@ export interface PollListProps {
     onPageChange$: QRL<(page: number) => void>
     isAuthenticated?: boolean
     currentUsername?: string
+    onShowLoginModal$?: QRL<() => void>
 }
 
-export default component$<PollListProps>(({ polls, onCreatePoll, region, communityName, onPageChange$, isAuthenticated = true, currentUsername = "" }) => {
+export default component$<PollListProps>(({ polls, onCreatePoll, region, communityName, onPageChange$, isAuthenticated = true, currentUsername = "", onShowLoginModal$ }) => {
     const searchTerm = useSignal('');
-    const showLoginModal = useSignal(false);
     
     // Filter polls by region and search term
     const filteredPolls = useComputed$(() => {
@@ -138,23 +136,8 @@ export default component$<PollListProps>(({ polls, onCreatePoll, region, communi
         return <EmptyPolls onCreatePoll={onCreatePoll} communityName={communityName} />;
     }
 
-    const onShowLoginModal = $(() => {
-        showLoginModal.value = true;
-    });
-
     return (
         <div class="space-y-6 overflow-y-auto">
-            {/* Login modal */}
-            <Modal
-                title={_`Sign in to participate`}
-                show={showLoginModal}
-            >
-                <div class="p-4 text-center">
-                    <p class="mb-6 text-gray-600 dark:text-gray-300">{_`You need to sign in to vote on polls and participate in the community.`}</p>
-                    <SocialLoginButtons />
-                </div>
-            </Modal>
-            
             {/* Header with actions */}
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-2">
                 <div class="flex-1">
@@ -198,7 +181,7 @@ export default component$<PollListProps>(({ polls, onCreatePoll, region, communi
                             userReaction={poll.user_reaction}
                             isAuthenticated={isAuthenticated}
                             currentUsername={currentUsername}
-                            onShowLoginModal$={onShowLoginModal}
+                            onShowLoginModal$={onShowLoginModal$}
                         />
                     </li>
                 ))}

@@ -44,10 +44,15 @@ export default component$(() => {
                             />
                         </Modal>
                         : <Modal
-                            title={_`Inicia sesión para crear una encuesta`}
+                            title={_`Sign in to create a poll`}
                             show={showModalPoll}
                         >
-                            <SocialLoginButtons />
+                            <div class="p-4 text-center">
+                                <p class="mb-6 text-gray-600 dark:text-gray-300">
+                                    {_`You need to sign in to create polls and participate in the community.`}
+                                </p>
+                                <SocialLoginButtons />
+                            </div>
                         </Modal>
                     }
                     <PollList

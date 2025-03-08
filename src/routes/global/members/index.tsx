@@ -16,6 +16,7 @@ export { useUpdateCommunityVisibility } from "~/shared/actions";
 export default component$(() => {
     const session = useSession();
     const members = useGetGlobalMembers();
+    console.log('members', members.value)
     const updateCommunityVisibilityAction = useUpdateCommunityVisibility();
     const isPublic = useSignal(members.value?.current_user?.is_public || false);
     const currentPage = useSignal(1);

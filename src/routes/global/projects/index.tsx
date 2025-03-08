@@ -31,17 +31,13 @@ export default component$(() => {
         showModalProject.value = true;
     });
 
-    const onShowLoginModal = $(() => {
-        showModalProject.value = true;
-    });
-
     return (
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
             <div class="flex flex-col min-h-0">
                 <div class="h-full overflow-y-auto">
                     {session.value?.user
                         ? <Modal
-                            title={_`Crear proyecto`}
+                            title={_`Create Project`}
                             show={showModalProject}
                         >
                             <FormProject
@@ -50,19 +46,19 @@ export default component$(() => {
                             />
                         </Modal>
                         : <Modal
-                            title={_`Inicia sesión para crear un proyecto`}
+                            title={_`Log in to create a project`}
                             show={showModalProject}
                         >
                             <div class="p-4 text-center">
                                 <p class="mb-6 text-gray-600 dark:text-gray-300">
-                                    {_`Necesitas iniciar sesión para crear proyectos y participar en la comunidad.`}
+                                    {_`You need to log in to create projects and participate in the community.`}
                                 </p>
                                 <SocialLoginButtons />
                             </div>
                         </Modal>
                     }
                     <ProjectList
-                        communityName={_`Comunidad Global`}
+                        communityName={_`Global Community`}
                         projects={{
                             items: Array.isArray(projects.value.items) ? projects.value.items : [],
                             total: projects.value.total || 0,
@@ -77,7 +73,6 @@ export default component$(() => {
                         }}
                         isAuthenticated={isAuthenticated.value}
                         currentUsername={currentUsername.value}
-                        onShowLoginModal$={onShowLoginModal}
                     />
                 </div>
             </div>
@@ -86,11 +81,11 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = {
-    title: "Proyectos Globales",
+    title: "Global Projects",
     meta: [
         {
             name: "description",
-            content: "Explora y contribuye a proyectos de la comunidad global",
+            content: "Explore and contribute to global community projects",
         },
     ],
 };

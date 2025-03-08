@@ -40,12 +40,12 @@ export const dataArray = [
         "path": "angola"
     },
     {
-        "name": "Antigua y Barbuda",
+        "name": "Antigua and Barbuda",
         "flag": "🇦🇬",
         "continent": "América",
         "cca2": "AG",
         "adminDivisionName": "Parishes",  // Parroquias
-        "path": "antigua-y-barbuda"
+        "path": "antigua-and-barbuda"
     },
     {
         "name": "Argentina",
@@ -168,12 +168,12 @@ export const dataArray = [
         "path": "bolivia"
     },
     {
-        "name": "Bosnia y Herzegovina",
+        "name": "Bosnia and Herzegovina",
         "flag": "🇧🇦",
         "continent": "Europa",
         "cca2": "BA",
         "adminDivisionName": "Entidades",  // Entidades
-        "path": "bosnia-y-herzegovina"
+        "path": "bosnia-and-herzegovina"
     },
     {
         "name": "Botsuana",
@@ -1139,12 +1139,12 @@ export const dataArray = [
         "path": "ruanda"
     },
     {
-        "name": "San Cristóbal y Nieves",
+        "name": "San Cristóbal and Nieves",
         "flag": "🇰🇳",
         "continent": "América",
         "cca2": "KN",
         "adminDivisionName": "Parishes",  // Parroquias
-        "path": "san-cristobal-y-nieves"
+        "path": "san-cristobal-and-nieves"
     },
     {
         "name": "Santa Lucía",
@@ -1155,12 +1155,12 @@ export const dataArray = [
         "path": "santa-lucia"
     },
     {
-        "name": "San Vicente y las Granadinas",
+        "name": "San Vicente and las Granadinas",
         "flag": "🇻🇨",
         "continent": "América",
         "cca2": "VC",
         "adminDivisionName": "Parishes",  // Parroquias
-        "path": "san-vicente-y-las-granadinas"
+        "path": "san-vicente-and-las-granadinas"
     },
     {
         "name": "Samoa",
