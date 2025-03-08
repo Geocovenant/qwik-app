@@ -10,6 +10,7 @@ import { CommunityType } from "~/constants/communityType";
 import { type IssueForm } from "~/schemas/issueSchema";
 import type { ReportForm } from "~/schemas/reportSchema";
 import { type ProjectForm } from "~/schemas/projectSchema";
+import type { CommunityRequestForm } from "~/schemas/communityRequestSchema";
 
 // eslint-disable-next-line qwik/loader-location
 export const useGetUser = routeLoader$(async ({ cookie }) => {
@@ -1365,4 +1366,14 @@ export const useGetCountry = routeLoader$(async ({ params }) => {
         console.error('Error fetching country:', error);
         return { country: null };
     }
+});
+
+// eslint-disable-next-line qwik/loader-location
+export const useFormCommunityRequestLoader = routeLoader$<InitialValues<CommunityRequestForm>>(() => {
+    return {
+        country: "",
+        region: "",
+        city: "",
+        email: ""
+    };
 });

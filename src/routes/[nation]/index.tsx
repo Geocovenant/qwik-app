@@ -63,7 +63,6 @@ export default component$(() => {
     const projects = useGetNationalProjects();
     const issues = useGetNationalIssues();
     const country = useGetCountry();
-    console.log('country', country.value)
 
     const pollsCount = polls.value.total || 0;
     const debatesCount = debates.value.total || 0;
@@ -81,7 +80,7 @@ export default component$(() => {
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{nation.value?.name || capitalizeFirst(nationName)}</h1>
                 </div>
                 <p class="text-gray-600 dark:text-gray-300 mt-2">
-                    {_`Bienvenido a la comunidad nacional donde los ciudadanos conectan, comparten ideas y trabajan juntos.`}
+                    {_`Welcome to the national community where citizens connect, share ideas, and work together.`}
                 </p>
             </header>
 
@@ -96,7 +95,7 @@ export default component$(() => {
                         <div class="flex justify-center mb-4">
                             <Image 
                                 src={country.value.coat_of_arms_svg} 
-                                alt={`Escudo de armas de ${country.value.name || capitalizeFirst(nationName)}`} 
+                                alt={`Coat of arms of ${country.value.name || capitalizeFirst(nationName)}`} 
                                 class="h-32 w-auto max-w-[150px] object-contain"
                             />
                         </div>
@@ -106,7 +105,7 @@ export default component$(() => {
                         <div class="flex items-start gap-3">
                             <LuFlag class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                             <div class="dark:text-gray-300">
-                                <span class="font-medium">{_`Nombre nativo`}:</span> {country.value.native_name || _`No disponible`}
+                                <span class="font-medium">{_`Native Name`}:</span> {country.value.native_name || _`Not available`}
                             </div>
                         </div>
 
@@ -123,7 +122,7 @@ export default component$(() => {
                             <div class="flex items-start gap-3">
                                 <LuUsers class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                 <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`Población`}:</span> {country.value.population.toLocaleString()}
+                                    <span class="font-medium">{_`Population`}:</span> {country.value.population.toLocaleString()}
                                 </div>
                             </div>
                         )}
@@ -132,7 +131,7 @@ export default component$(() => {
                             <div class="flex items-start gap-3">
                                 <LuFlag class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                 <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`Área`}:</span> {country.value.area.toLocaleString()} km²
+                                    <span class="font-medium">{_`Area`}:</span> {country.value.area.toLocaleString()} km²
                                 </div>
                             </div>
                         )}
@@ -141,7 +140,7 @@ export default component$(() => {
                             <div class="flex items-start gap-3">
                                 <LuFlag class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                 <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`Código ISO`}:</span> {country.value.cca2} {country.value.cca3 ? `/ ${country.value.cca3}` : ''}
+                                    <span class="font-medium">{_`ISO Code`}:</span> {country.value.cca2} {country.value.cca3 ? `/ ${country.value.cca3}` : ''}
                                 </div>
                             </div>
                         )}
@@ -150,7 +149,7 @@ export default component$(() => {
                             <div class="flex items-start gap-3">
                                 <LuBarChart2 class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                 <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`Moneda`}:</span> {country.value.currency_name} ({country.value.currency_code})
+                                    <span class="font-medium">{_`Currency`}:</span> {country.value.currency_name} ({country.value.currency_code})
                                 </div>
                             </div>
                         )}
@@ -159,7 +158,7 @@ export default component$(() => {
                             <div class="flex items-start gap-3">
                                 <LuMessageSquare class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                 <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`Idiomas`}:</span> {country.value.languages}
+                                    <span class="font-medium">{_`Languages`}:</span> {country.value.languages}
                                 </div>
                             </div>
                         )}
@@ -168,7 +167,7 @@ export default component$(() => {
                             <div class="flex items-start gap-3">
                                 <LuBarChart2 class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                 <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`Zona horaria`}:</span> {country.value.timezone}
+                                    <span class="font-medium">{_`Timezone`}:</span> {country.value.timezone}
                                 </div>
                             </div>
                         )}
@@ -177,7 +176,7 @@ export default component$(() => {
                             <div class="flex items-start gap-3">
                                 <LuBarChart2 class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                 <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`Región`}:</span> {country.value.region}
+                                    <span class="font-medium">{_`Region`}:</span> {country.value.region}
                                 </div>
                             </div>
                         )}
@@ -186,7 +185,7 @@ export default component$(() => {
                             <div class="flex items-start gap-3">
                                 <LuBarChart2 class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                 <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`Subregión`}:</span> {country.value.subregion}
+                                    <span class="font-medium">{_`Subregion`}:</span> {country.value.subregion}
                                 </div>
                             </div>
                         )}
@@ -195,7 +194,7 @@ export default component$(() => {
                             <div class="flex items-start gap-3">
                                 <LuFlag class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                 <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`Países limítrofes`}:</span> {country.value.borders}
+                                    <span class="font-medium">{_`Bordering Countries`}:</span> {country.value.borders}
                                 </div>
                             </div>
                         )}
@@ -208,7 +207,7 @@ export default component$(() => {
                                     rel="noopener noreferrer"
                                     class="text-sm bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 text-blue-800 dark:text-blue-200 px-3 py-1.5 rounded flex items-center gap-1"
                                 >
-                                    <span>{_`Ver en Google Maps`}</span>
+                                    <span>{_`View on Google Maps`}</span>
                                 </a>
                             )}
                             {country.value.openstreetmap_link && (
@@ -218,7 +217,7 @@ export default component$(() => {
                                     rel="noopener noreferrer"
                                     class="text-sm bg-green-100 hover:bg-green-200 dark:bg-green-900 dark:hover:bg-green-800 text-green-800 dark:text-green-200 px-3 py-1.5 rounded flex items-center gap-1"
                                 >
-                                    <span>{_`Ver en OpenStreetMap`}</span>
+                                    <span>{_`View on OpenStreetMap`}</span>
                                 </a>
                             )}
                         </div>
@@ -228,12 +227,12 @@ export default component$(() => {
                 <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow dark:shadow-gray-700">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuBarChart2 class="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        {_`Estadísticas de la Plataforma`}
+                        {_`Platform Statistics`}
                     </h2>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
                             <div class="text-3xl font-bold text-blue-600 dark:text-blue-400">{pollsCount}</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-300">{_`Encuestas`}</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-300">{_`Polls`}</div>
                         </div>
                         <div class="bg-green-50 dark:bg-green-900/30 p-4 rounded-lg">
                             <div class="text-3xl font-bold text-green-600 dark:text-green-400">{debatesCount}</div>
@@ -241,11 +240,11 @@ export default component$(() => {
                         </div>
                         <div class="bg-amber-50 dark:bg-amber-900/30 p-4 rounded-lg">
                             <div class="text-3xl font-bold text-amber-600 dark:text-amber-400">{issuesCount}</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-300">{_`Problemas`}</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-300">{_`Issues`}</div>
                         </div>
                         <div class="bg-purple-50 dark:bg-purple-900/30 p-4 rounded-lg">
                             <div class="text-3xl font-bold text-purple-600 dark:text-purple-400">{projectsCount}</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-300">{_`Proyectos`}</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-300">{_`Projects`}</div>
                         </div>
                     </div>
                 </div>

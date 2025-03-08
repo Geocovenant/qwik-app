@@ -5,8 +5,6 @@ import { type CustomSession } from "~/shared/types";
 
 export const onRequest: RequestHandler = async ({ query, headers, locale, sharedMap, redirect, url }) => {
   const session: CustomSession | null = sharedMap.get('session');
-  console.log('session2', session)
-  console.log('url.pathname', url.pathname)
   if(session?.user?.id && session.user.username) {
     throw redirect(302, '/global')
   }

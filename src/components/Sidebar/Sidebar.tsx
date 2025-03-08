@@ -1,10 +1,13 @@
 import { $, component$, useSignal, useResource$ } from "@builder.io/qwik";
 import { LuGlobe, LuPanelLeftClose, LuPanelLeftOpen, LuPlusCircle } from "@qwikest/icons/lucide";
-import { ThemeSwitch } from "~/components/theme-switch/ThemeSwitch";
 import { dataArray } from "~/data/countries";
 import { _ } from "compiled-i18n";
 import CommunityItem, { type Community } from "./CommunityItem";
-import { Classic } from "../Classic";
+import ClassicTheme from "~/components/ClassicTheme";
+import Modal from "~/components/Modal";
+import RequestCommunityForm from "~/components/forms/RequestCommunityForm";
+import SocialLoginButtons from "~/components/SocialLoginButtons";
+import { useSession } from "~/routes/plugin@auth";
 
 // Component for the LuGlobe icon
 const LuGlobeIcon = component$(() => <LuGlobe class="h-5 w-5" />);
@@ -38,6 +41,7 @@ const countryCommunities: Community[] = dataArray.map(country => ({
 }));
 
 export default component$(() => {
+    const session = useSession();
     const isCollapsed = useSignal<boolean>(false);
     const sidebarWidth = useSignal<number>(256);
     const isDragging = useSignal<boolean>(false);
@@ -175,7 +179,7 @@ export default component$(() => {
                             <LuPlusCircle class="w-5 h-5 mr-2" />
                             {!isCollapsed.value && <span class="transition-opacity duration-200">{_`New Community`}</span>}
                         </button>
-                        <Classic />
+                        <ClassicTheme />
                     </div>
                 </div>
 
@@ -184,6 +188,20 @@ export default component$(() => {
                     onMouseDown$={() => isDragging.value = true}
                 />
             </div>
+            <Modal
+                title={_`Request new community`}
+                show={showNewCommunityModal}
+            >
+                {session.value?.user
+                    ? <RequestCommunityForm 
+                        onClose$={() => showNewCommunityModal.value = false}
+                    />
+                    : <div>
+                        <p>{_`Please sign in to request a new community`}</p>
+                        <SocialLoginButtons />
+                    </div>
+                }
+            </Modal>
         </div>
     );
 });

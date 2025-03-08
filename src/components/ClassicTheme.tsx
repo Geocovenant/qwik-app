@@ -4,7 +4,7 @@ export const ThemeContext = createContextId<Signal<string>>(
     'docs.theme-context'
 );
 
-export const Classic = component$(() => {
+export default component$(() => {
     const theme = useSignal('light');
     useContextProvider(ThemeContext, theme);
 

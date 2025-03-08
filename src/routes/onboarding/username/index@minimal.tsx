@@ -1,5 +1,5 @@
-import { component$, useSignal, useTask$ } from "@builder.io/qwik";
-import { Form } from "@builder.io/qwik-city";
+import { $, component$, useSignal, useTask$ } from "@builder.io/qwik";
+import { Form, useNavigate } from "@builder.io/qwik-city";
 import { LuLoader2 } from "@qwikest/icons/lucide";
 import { Image } from "@unpic/qwik";
 import { _ } from "compiled-i18n";
@@ -10,6 +10,8 @@ export { useSetUsername } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
+    const nav = useNavigate();
+    
     const usernameSignal = useSignal("");
     const usernameAction = useSetUsername();
     const errorMessage = useSignal("");
@@ -43,11 +45,17 @@ export default component$(() => {
         }
     });
 
+    const handleSubmit = $(() => {
+        setTimeout(() => {
+            nav(`/global`)
+        }, 2500)
+    });
+
     return (
-        <div class="flex justify-center items-center min-h-screen bg-gray-100">
-            <div class="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+        <div class="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900">
+            <div class="w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <button class="text-gray-500">
+                    <button class="text-gray-500 dark:text-gray-400">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
                             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -60,12 +68,12 @@ export default component$(() => {
                 </div>
 
                 <div class="mb-6">
-                    <h2 class="text-2xl font-bold mb-2">{_`Choose your username`}</h2>
-                    <p class="text-gray-600 mb-4">
+                    <h2 class="text-2xl font-bold mb-2 text-gray-900 dark:text-white">{_`Choose your username`}</h2>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">
                         {_`Your username is how others will find you on the platform. Choose something memorable and unique.`}
                     </p>
 
-                    <Form action={usernameAction}>
+                    <Form action={usernameAction} onSubmit$={handleSubmit}>
                         <div class="mb-4">
                             <input
                                 type="text"
@@ -73,14 +81,14 @@ export default component$(() => {
                                 value={usernameSignal.value}
                                 onInput$={(e, el) => usernameSignal.value = el.value}
                                 placeholder="username"
-                                class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
                                 required
                             />
                             {errorMessage.value && (
-                                <p class="text-red-500 text-sm mt-1">{errorMessage.value}</p>
+                                <p class="text-red-500 dark:text-red-400 text-sm mt-1">{errorMessage.value}</p>
                             )}
                             {usernameAction.value?.failed && (
-                                <p class="text-red-500 text-sm mt-1">
+                                <p class="text-red-500 dark:text-red-400 text-sm mt-1">
                                     {usernameAction.value.fieldErrors?.username || "Something went wrong. Please try again."}
                                 </p>
                             )}
@@ -105,7 +113,7 @@ export default component$(() => {
                     </Form>
 
                     <div class="text-center">
-                        <a href="/help" class="text-purple-500 hover:underline text-sm">
+                        <a href="/help" class="text-purple-500 dark:text-purple-400 hover:underline text-sm">
                             {_`Why am I being asked for this information?`}
                         </a>
                     </div>

@@ -18,6 +18,8 @@ import type { CommentForm } from '~/schemas/commentSchema';
 import { CommentSchema } from '~/schemas/commentSchema';
 import type { ReportForm } from "~/schemas/reportSchema";
 import { ReportSchema } from "~/schemas/reportSchema";
+import type { CommunityRequestForm } from "~/schemas/communityRequestSchema";
+import { CommunityRequestSchema } from "~/schemas/communityRequestSchema";
 
 export interface PollResponseData {
     success: boolean; // Indica si la operación fue exitosa
@@ -1114,4 +1116,76 @@ export const useDeleteProject = routeAction$(
             };
         }
     }
+);
+
+export interface CommunityRequestResponseData {
+    success: boolean;
+    message: string;
+    data?: {
+        request_id: string;
+    };
+}
+
+export const useFormCommunityRequestAction = formAction$<CommunityRequestForm, CommunityRequestResponseData>(
+    async (values, event) => {
+        console.log('############ useFormCommunityRequestAction ############');
+        const token = event.cookie.get('authjs.session-token')?.value;
+        
+        if (!token) {
+            return {
+                status: "error",
+                message: _`Debes iniciar sesión para enviar solicitudes.`
+            };
+        }
+
+        console.log('values', values);
+        
+        const payload = {
+            country: values.country,
+            region: values.region,
+            city: values.city,
+            email: values.email
+        };
+        
+        console.log('payload', payload);
+
+        try {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/requests/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error al enviar la solicitud de comunidad');
+            }
+
+            const data = await response.json();
+
+            return {
+                status: "success",
+                message: _`Solicitud enviada correctamente`,
+                data: {
+                    success: true,
+                    message: _`Tu solicitud ha sido recibida. Te contactaremos pronto.`,
+                    request_id: data.request_id || ""
+                }
+            };
+        } catch (error: any) {
+            console.error('Error in useFormCommunityRequestAction:', error);
+            return {
+                status: "error",
+                message: error.message || _`Ha ocurrido un error inesperado`,
+                data: {
+                    success: false,
+                    message: error.message || _`Ha ocurrido un error inesperado`
+                }
+            };
+        }
+    },
+    valiForm$(CommunityRequestSchema)
 );
