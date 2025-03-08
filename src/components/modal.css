@@ -1,13 +1,16 @@
 /* Modal General */
 .modal-panel {
     background-color: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.12);
-    width: 90%;
-    max-width: 800px;
-    margin: 2rem auto;
-    position: relative;
-    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto; /* Habilita el scroll vertical */
+    overscroll-behavior: contain;
+    padding: 20px; /* Espaciado interno */
+    scrollbar-width: thin; /* Firefox: hace más delgado el scroll */
+    scrollbar-color: #6f42c1 #f0f0f0; /* Púrpura para barra y gris para el track */
 }
 
 /* Scroll personalizado para navegadores WebKit */
@@ -39,18 +42,17 @@
 
 /* Título */
 .modal-title {
-    font-size: 1.5rem; /* 24px */
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: #1a1a1a;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
 }
 
 /* Descripción */
 .modal-description {
-    font-size: 1rem; /* 16px */
-    color: #4b5563;
-    margin-bottom: 1.5rem;
-    line-height: 1.5;
+    font-size: 16px; /* Tamaño de texto */
+    color: #666; /* Color neutral */
+    margin-bottom: 20px; /* Separación del contenido */
+    line-height: 1.5; /* Espaciado entre líneas */
 }
 
 /* Inputs del Modal */
@@ -72,62 +74,10 @@
 
 /* Expansión del Modal */
 .modal-expanded {
-    width: 95vw;
-    height: 95vh;
-    max-width: 1200px;
-    margin: 2.5vh auto;
-    border-radius: 8px;
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
     max-height: none;
-    padding: 40px;
-}
-
-/* Ajustes para los botones de login social */
-.modal-panel :global(.space-y-2) {
-    margin-top: 1.5rem;
-}
-
-.modal-panel :global(button) {
-    padding: 0.75rem 1rem;
-    font-size: 1rem;
-    transition: all 0.2s ease;
-}
-
-.modal-panel :global(button:hover) {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* Animación suave al abrir/cerrar */
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-/* Modo oscuro */
-@media (prefers-color-scheme: dark) {
-    .modal-panel {
-        background-color: #1f2937;
-    }
-    
-    .modal-title {
-        color: #f3f4f6;
-    }
-    
-    .modal-description {
-        color: #9ca3af;
-    }
-}
-
-/* Ajustamos el contenedor del contenido */
-.modal-content {
-    margin-top: 1rem;
-    /* Solo agregamos scroll si es necesario */
-    max-height: calc(80vh - 200px); /* altura máxima considerando el header y footer */
-    overflow-y: auto;
+    border-radius: 0; /* Sin bordes redondeados en modo expandido */
+    padding: 40px; /* Más espacio interno */
 }
