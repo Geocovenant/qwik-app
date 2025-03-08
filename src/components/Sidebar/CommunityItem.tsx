@@ -18,7 +18,17 @@ export interface Community {
 // Reusable icon component
 export const LuBuildingIcon = component$(() => <LuBuilding class="h-5 w-5" />);
 
-export const CommunityItem = component$(({ community, level = 0, isCollapsed}: {community: Community, level?: number, isCollapsed: boolean}) => {
+export const CommunityItem = component$(({ 
+    community, 
+    level = 0, 
+    isCollapsed,
+    onClick$
+}: {
+    community: Community, 
+    level?: number, 
+    isCollapsed: boolean,
+    onClick$?: () => void
+}) => {
     const isOpen = useSignal<boolean>(false);
     const location = useLocation();
     const pathname = location.url.pathname;
@@ -136,6 +146,7 @@ export const CommunityItem = component$(({ community, level = 0, isCollapsed}: {
                             <Link
                                 href={`/${community.path}${isNation ? '?scope=national' : ''}`}
                                 class={`flex flex-1 items-center gap-2 ${itemClass}`}
+                                onClick$={onClick$}
                             >
                                 <div class="h-5 w-5 flex-shrink-0 transition-transform group-hover:scale-110">
                                     {community.icon}
@@ -197,7 +208,8 @@ export const CommunityItem = component$(({ community, level = 0, isCollapsed}: {
                                                         divisionType: division.type
                                                     }} 
                                                     level={level + 1} 
-                                                    isCollapsed={isCollapsed} 
+                                                    isCollapsed={isCollapsed}
+                                                    onClick$={onClick$}
                                                 />
                                             );
                                         })}
@@ -212,7 +224,7 @@ export const CommunityItem = component$(({ community, level = 0, isCollapsed}: {
     }
 
     return (
-        <Link href={community.path}>
+        <Link href={community.path} onClick$={onClick$}>
             <div class={`relative ${itemClass}`}>
                 {levelIndicator}
                 <div class="h-5 w-5 flex-shrink-0">

@@ -1,5 +1,5 @@
-import { $, component$, useSignal, useResource$ } from "@builder.io/qwik";
-import { LuGlobe, LuPanelLeftClose, LuPanelLeftOpen, LuPlusCircle } from "@qwikest/icons/lucide";
+import { $, component$, useSignal, useResource$, useVisibleTask$ } from "@builder.io/qwik";
+import { LuGlobe, LuPanelLeftClose, LuPanelLeftOpen, LuPlusCircle, LuMenu } from "@qwikest/icons/lucide";
 import { dataArray } from "~/data/countries";
 import { _ } from "compiled-i18n";
 import CommunityItem, { type Community } from "./CommunityItem";
@@ -43,6 +43,8 @@ const countryCommunities: Community[] = dataArray.map(country => ({
 export default component$(() => {
     const session = useSession();
     const isCollapsed = useSignal<boolean>(false);
+    const isMobileView = useSignal<boolean>(false);
+    const isSidebarOpen = useSignal<boolean>(false);
     const sidebarWidth = useSignal<number>(256);
     const isDragging = useSignal<boolean>(false);
     const showNewCommunityModal = useSignal<boolean>(false);
@@ -50,6 +52,31 @@ export default component$(() => {
 
     const MIN_WIDTH = 64;
     const MAX_WIDTH = 384;
+
+    // Detect mobile view and collapse sidebar automatically
+    useVisibleTask$(() => {
+        const checkMobileView = () => {
+            const isMobile = window.innerWidth < 768; // md breakpoint
+            isMobileView.value = isMobile;
+            
+            // Collapse sidebar by default on mobile
+            if (isMobile && !isDragging.value) {
+                isCollapsed.value = true;
+                sidebarWidth.value = MIN_WIDTH;
+                isSidebarOpen.value = false;
+            } else if (!isMobile && !isDragging.value) {
+                isCollapsed.value = false;
+                sidebarWidth.value = 256;
+            }
+        };
+
+        checkMobileView();
+        window.addEventListener('resize', checkMobileView);
+        
+        return () => {
+            window.removeEventListener('resize', checkMobileView);
+        };
+    });
 
     // Handle the resize of the sidebar
     useResource$(({ track, cleanup }) => {
@@ -101,6 +128,11 @@ export default component$(() => {
         sidebarWidth.value = newCollapsed ? MIN_WIDTH : 256;
     });
 
+    // Toggle mobile sidebar
+    const toggleMobileSidebar = $(() => {
+        isSidebarOpen.value = !isSidebarOpen.value;
+    });
+
     // Filter the countries based on the search
     const filteredCountries = !searchQuery.value 
         ? countryCommunities // Show all countries always
@@ -108,23 +140,61 @@ export default component$(() => {
             country.name.toLowerCase().includes(searchQuery.value.toLowerCase())
         );
 
+    // Escuchar el evento del Header para abrir/cerrar el sidebar en móvil
+    useVisibleTask$(() => {
+        const handleToggleSidebar = (event: CustomEvent) => {
+            if (isMobileView.value) {
+                isSidebarOpen.value = event.detail.isOpen;
+            }
+        };
+        
+        window.addEventListener('toggle-mobile-sidebar', handleToggleSidebar as EventListener);
+        
+        return () => {
+            window.removeEventListener('toggle-mobile-sidebar', handleToggleSidebar as EventListener);
+        };
+    });
+
     return (
         <div class="flex h-full">
+            {/* Mobile sidebar backdrop */}
+            {isMobileView.value && isSidebarOpen.value && (
+                <div 
+                    class="fixed inset-0 bg-black/50 z-40 md:hidden"
+                    onClick$={toggleMobileSidebar}
+                />
+            )}
+            
+            {/* Sidebar */}
             <div 
-                class="flex flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 relative transition-all duration-300 ease-in-out"
-                style={{ width: `${sidebarWidth.value}px` }}
+                class={`
+                    flex flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 
+                    transition-all duration-300 ease-in-out
+                    ${isMobileView.value ? 'fixed z-50 h-full' : 'relative'}
+                    ${isMobileView.value && !isSidebarOpen.value ? '-translate-x-full' : 'translate-x-0'}
+                `}
+                style={{ width: `${isMobileView.value ? '85%' : sidebarWidth.value}px`, maxWidth: '300px' }}
             >
                 <div class="sticky top-0 z-20 bg-white dark:bg-gray-900">
-                    <div class={`p-2 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between ${isCollapsed.value ? 'justify-center' : ''}`}>
-                        {!isCollapsed.value && (
+                    <div class={`p-2 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between ${isCollapsed.value && !isMobileView.value ? 'justify-center' : ''}`}>
+                        {(!isCollapsed.value || isMobileView.value) && (
                             <span class="font-semibold text-sm text-gray-500 dark:text-gray-400 transition-opacity duration-200">{_`Menu`}</span>
                         )}
-                        <button
-                            onClick$={toggleCollapse}
-                            class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors duration-200"
-                        >
-                            {isCollapsed.value ? <LuPanelLeftOpen class="h-5 w-5" /> : <LuPanelLeftClose class="h-5 w-5" />}
-                        </button>
+                        {isMobileView.value ? (
+                            <button
+                                onClick$={toggleMobileSidebar}
+                                class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors duration-200"
+                            >
+                                <LuPanelLeftClose class="h-5 w-5" />
+                            </button>
+                        ) : (
+                            <button
+                                onClick$={toggleCollapse}
+                                class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors duration-200"
+                            >
+                                {isCollapsed.value ? <LuPanelLeftOpen class="h-5 w-5" /> : <LuPanelLeftClose class="h-5 w-5" />}
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -132,17 +202,17 @@ export default component$(() => {
                     <div class="px-2 py-4">
                         <div class="space-y-2">
                             {baseCommunities.map(community => (
-                                <CommunityItem key={community.id} community={community} isCollapsed={isCollapsed.value} />
+                                <CommunityItem key={community.id} community={community} isCollapsed={isCollapsed.value && !isMobileView.value} />
                             ))}
                         </div>
                         
-                        {!isCollapsed.value && (
+                        {(!isCollapsed.value || isMobileView.value) && (
                             <div class="px-3 py-2 text-sm font-semibold text-gray-500 dark:text-gray-400 mt-4 mb-2 transition-opacity duration-200">
                                 <span>{_`Countries`}</span>
                             </div>
                         )}
                         
-                        {!isCollapsed.value && (
+                        {(!isCollapsed.value || isMobileView.value) && (
                             <div class="px-3 mb-2 transition-opacity duration-200">
                                 <input
                                     type="text"
@@ -158,10 +228,15 @@ export default component$(() => {
                         
                         <div class="space-y-1">
                             {filteredCountries.map(community => (
-                                <CommunityItem key={community.id} community={community} isCollapsed={isCollapsed.value} />
+                                <CommunityItem 
+                                    key={community.id} 
+                                    community={community} 
+                                    isCollapsed={isCollapsed.value && !isMobileView.value} 
+                                    onClick$={isMobileView.value ? toggleMobileSidebar : undefined}
+                                />
                             ))}
                             
-                            {!isCollapsed.value && filteredCountries.length === 0 && (
+                            {(!isCollapsed.value || isMobileView.value) && filteredCountries.length === 0 && (
                                 <div class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400 transition-opacity duration-200">
                                     {_`No countries found`}
                                 </div>
@@ -177,16 +252,18 @@ export default component$(() => {
                             class="flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-[#713fc2] dark:hover:text-[#713fc2]"
                         >
                             <LuPlusCircle class="w-5 h-5 mr-2" />
-                            {!isCollapsed.value && <span class="transition-opacity duration-200">{_`New Community`}</span>}
+                            {(!isCollapsed.value || isMobileView.value) && <span class="transition-opacity duration-200">{_`New Community`}</span>}
                         </button>
                         <ClassicTheme />
                     </div>
                 </div>
 
-                <div
-                    class="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-primary/20 active:bg-primary/40"
-                    onMouseDown$={() => isDragging.value = true}
-                />
+                {!isMobileView.value && (
+                    <div
+                        class="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-primary/20 active:bg-primary/40"
+                        onMouseDown$={() => isDragging.value = true}
+                    />
+                )}
             </div>
             <Modal
                 title={_`Request new community`}
