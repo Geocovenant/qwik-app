@@ -54,6 +54,7 @@ export default component$(() => {
     const MAX_WIDTH = 384;
 
     // Detect mobile view and collapse sidebar automatically
+    // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(() => {
         const checkMobileView = () => {
             const isMobile = window.innerWidth < 768; // md breakpoint
@@ -141,6 +142,7 @@ export default component$(() => {
         );
 
     // Escuchar el evento del Header para abrir/cerrar el sidebar en móvil
+    // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(() => {
         const handleToggleSidebar = (event: CustomEvent) => {
             if (isMobileView.value) {

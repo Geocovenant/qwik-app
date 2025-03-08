@@ -1,4 +1,4 @@
-import { component$, Resource, useResource$, useSignal, useTask$ } from "@builder.io/qwik";
+import { component$, QRL, Resource, useResource$, useSignal, useTask$ } from "@builder.io/qwik";
 import { Link, useLocation } from "@builder.io/qwik-city";
 import { Collapsible } from '@qwik-ui/headless';
 import { LuBuilding, LuChevronRight } from "@qwikest/icons/lucide";
@@ -27,7 +27,7 @@ export const CommunityItem = component$(({
     community: Community, 
     level?: number, 
     isCollapsed: boolean,
-    onClick$?: () => void
+    onClick$?: QRL<() => void>
 }) => {
     const isOpen = useSignal<boolean>(false);
     const location = useLocation();

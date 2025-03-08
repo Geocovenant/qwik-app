@@ -413,7 +413,7 @@ export default component$<FormPollProps>(({
                         </p>
                     </div>
 
-                    <div class="pt-4 border-t">
+                    <div>
                         <CustomToggle
                             label={_`Anonymous poll`}
                             checked={isAnonymous.value}
@@ -436,10 +436,8 @@ export default component$<FormPollProps>(({
                 </div>
             </div>
 
-            {/* Form footer */}
-            <div class="sticky bottom-0 bg-background py-4 border-t mt-4">
-                <FormFooter of={pollForm} />
-            </div>
+            {/* Form footer - Ahora fuera del contenedor scrollable para que sea siempre el último elemento */}
+            <FormFooter of={pollForm} />
         </Form>
     );
 });
