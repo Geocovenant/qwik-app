@@ -1,5 +1,5 @@
 import { $, component$, useSignal, useResource$, useVisibleTask$ } from "@builder.io/qwik";
-import { LuGlobe, LuPanelLeftClose, LuPanelLeftOpen, LuPlusCircle, LuMenu } from "@qwikest/icons/lucide";
+import { LuGlobe, LuPanelLeftClose, LuPanelLeftOpen, LuPlusCircle } from "@qwikest/icons/lucide";
 import { dataArray } from "~/data/countries";
 import { _ } from "compiled-i18n";
 import CommunityItem, { type Community } from "./CommunityItem";
@@ -257,6 +257,30 @@ export default component$(() => {
                             {(!isCollapsed.value || isMobileView.value) && <span class="transition-opacity duration-200">{_`New Community`}</span>}
                         </button>
                         <ClassicTheme />
+                    </div>
+                    
+                    {/* Footer Links */}
+                    <div class={`px-3 py-2 border-t border-gray-200 dark:border-gray-700 ${isCollapsed.value && !isMobileView.value ? 'text-center' : ''}`}>
+                        <div class={`flex ${isCollapsed.value && !isMobileView.value ? 'flex-col items-center' : 'flex-wrap gap-2'} text-xs text-gray-500 dark:text-gray-400`}>
+                            <a href="/privacy-policy" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
+                                {_`Privacy`}
+                            </a>
+                            {(!isCollapsed.value || isMobileView.value) && <span>·</span>}
+                            <a href="/terms-of-service" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
+                                {_`Terms`}
+                            </a>
+                            {(!isCollapsed.value || isMobileView.value) && <span>·</span>}
+                            <a href="/about-us" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
+                                {_`About us`}
+                            </a>
+                            {(!isCollapsed.value || isMobileView.value) && <span>·</span>}
+                            <a href="/donation" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
+                                {_`Donation`}
+                            </a>
+                        </div>
+                        <div class="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
+                            {_`Geounity © 2025`}
+                        </div>
                     </div>
                 </div>
 
