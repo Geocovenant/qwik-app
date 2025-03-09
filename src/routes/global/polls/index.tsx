@@ -7,15 +7,16 @@ import PollList from "~/components/list/PollList";
 import { CommunityType } from "~/constants/communityType";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
-import { useGetGlobalPolls } from "~/shared/loaders";
+
+import { useGetGlobalPolls } from "~/shared/global/loaders";
 
 export { useFormPollLoader } from "~/shared/loaders";
 export { useFormPollAction, useVotePoll, useReactPoll, useDeletePoll } from "~/shared/actions";
 
 export default component$(() => {
+    const polls = useGetGlobalPolls();
     const session = useSession();
     const showModalPoll = useSignal(false);
-    const polls = useGetGlobalPolls();
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
@@ -63,22 +64,22 @@ export default component$(() => {
                         </Modal>
                     }
                     <PollList
-                        onCreatePoll={onCreatePoll}
-                        polls={{
-                            items: Array.isArray(polls.value?.items) ? polls.value.items : [],
-                            total: polls.value?.total || 0,
-                            page: polls.value?.page || 1,
-                            size: polls.value?.size || 10,
-                            pages: polls.value?.pages || 1
-                        }}
                         communityName="The Global community"
+                        currentUsername={currentUsername.value}
+                        isAuthenticated={isAuthenticated.value}
+                        onCreatePoll={onCreatePoll}
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
                             await nav(`/global/polls?page=${page}`);
                         }}
-                        isAuthenticated={isAuthenticated.value}
-                        currentUsername={currentUsername.value}
                         onShowLoginModal$={onShowLoginModal}
+                        polls={{
+                            items: polls.value.items,
+                            total: polls.value.total || 0,
+                            page: polls.value.page || 1,
+                            size: polls.value.size || 10,
+                            pages: polls.value.pages || 1
+                        }}
                     />
                 </div>
             </div>

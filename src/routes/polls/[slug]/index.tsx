@@ -21,7 +21,7 @@ import CommentForm from "~/components/comments/CommentForm"
 import Modal from "~/components/Modal"
 import SocialLoginButtons from "~/components/SocialLoginButtons"
 
-// Exportamos los loaders y actions necesarios
+// Export necessary loaders and actions
 export { useGetPollBySlug, useFormPollLoader } from "~/shared/loaders"
 export { useVotePoll, useReactPoll } from "~/shared/actions"
 
@@ -31,11 +31,11 @@ export default component$(() => {
     const pollData = useGetPollBySlug()
     const showLoginModal = useSignal(false)
     
-    // Action para votación y reacciones
+    // Action for voting and reactions
     const actionVote = useVotePoll()
     const actionReact = useReactPoll()
     
-    // Estados para manejo de votos y reacciones
+    // States for handling votes and reactions
     const userVotedOptions = useSignal<number[]>(pollData.value?.user_voted_options || [])
     const reactionState = useSignal({
         userReaction: pollData.value?.user_reaction,
@@ -43,7 +43,7 @@ export default component$(() => {
         dislikesCount: pollData.value?.reactions.DISLIKE || 0
     })
     
-    // Calcular votos totales
+    // Calculate total votes
     const totalVotes = useComputed$(() => {
         if (!pollData.value?.options) return 0
         return pollData.value.options.reduce((sum, option) => sum + option.votes, 0)
@@ -59,10 +59,10 @@ export default component$(() => {
     })
 
     const onCommentAdded = $(() => {
-        console.log("Comentario añadido")
+        console.log("Comment added")
     })
     
-    // Función para manejar votación
+    // Function to handle voting
     const handleVote = $(async (optionId: number) => {
         if (!isAuthenticated) {
             onShowLoginModal()
@@ -78,7 +78,7 @@ export default component$(() => {
         if (poll.type === "BINARY" || poll.type === "SINGLE_CHOICE") {
             newVotedOptions = isVoted ? [] : [optionId]
             
-            // Actualizar votos en UI
+            // Update votes in UI
             poll.options = poll.options.map(opt => ({
                 ...opt,
                 votes: opt.id === optionId 
@@ -93,7 +93,7 @@ export default component$(() => {
                 ? userVotedOptions.value.filter(id => id !== optionId)
                 : [...userVotedOptions.value, optionId]
                 
-            // Actualizar votos en UI
+            // Update votes in UI
             poll.options = poll.options.map(opt => ({
                 ...opt,
                 votes: opt.id === optionId ? opt.votes + (isVoted ? -1 : 1) : opt.votes,
@@ -101,23 +101,23 @@ export default component$(() => {
             }))
         }
         
-        // Actualizar estado de votos del usuario
+        // Update user's voted options state
         userVotedOptions.value = newVotedOptions
         
-        // Llamada a la API
+        // API call
         const result = await actionVote.submit({
             pollId: poll.id,
             optionIds: newVotedOptions
         })
         
-        // Si hay error, revertir cambios
+        // If there's an error, revert changes
         if (result.status !== 200) {
             poll.options = pollData.value.options
             userVotedOptions.value = pollData.value.user_voted_options
         }
     })
     
-    // Función para manejar reacciones
+    // Function to handle reactions
     const handleReaction = $(async (newReaction: "LIKE" | "DISLIKE") => {
         if (!isAuthenticated) {
             onShowLoginModal()
@@ -127,9 +127,9 @@ export default component$(() => {
         
         const previousReaction = reactionState.value.userReaction
         
-        // Actualización optimista
+        // Optimistic update
         if (newReaction === previousReaction) {
-            // Si hace clic en la misma reacción, eliminarla
+            // If clicking the same reaction, remove it
             reactionState.value = {
                 ...reactionState.value,
                 userReaction: null
@@ -141,7 +141,7 @@ export default component$(() => {
                 reactionState.value.dislikesCount--
             }
         } else {
-            // Si cambia la reacción o añade una nueva
+            // If changing the reaction or adding a new one
             reactionState.value.userReaction = newReaction
             
             if (previousReaction === "LIKE") {
@@ -157,13 +157,13 @@ export default component$(() => {
             }
         }
         
-        // Llamada a la API
+        // API call
         const result = await actionReact.submit({
             pollId: pollData.value.id,
             reaction: newReaction
         })
         
-        // Si hay error, revertir cambios
+        // If there's an error, revert changes
         if (result.status !== 200) {
             reactionState.value = {
                 userReaction: pollData.value.user_reaction,
@@ -188,12 +188,12 @@ export default component$(() => {
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* Login modal */}
             <Modal
-                title={_`Iniciar sesión para participar`}
+                title={_`Log in to participate`}
                 show={showLoginModal}
             >
                 <div class="p-4 text-center">
                     <p class="mb-6 text-gray-600 dark:text-gray-300">
-                        {_`Necesitas iniciar sesión para votar, comentar y participar en la comunidad.`}
+                        {_`You need to log in to vote, comment, and participate in the community.`}
                     </p>
                     <SocialLoginButtons />
                 </div>
@@ -217,9 +217,9 @@ export default component$(() => {
             </Breadcrumb.Root>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-                {/* Columna principal */}
+                {/* Main column */}
                 <div class="lg:col-span-2 space-y-8">
-                    {/* Encabezado de la encuesta */}
+                    {/* Poll header */}
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center space-x-2">
@@ -230,7 +230,7 @@ export default component$(() => {
                             
                             <div class="flex items-center text-gray-500 dark:text-gray-400 text-sm">
                                 <LuEye class="w-4 h-4 mr-1" />
-                                <span>{poll.views_count} {_`vistas`}</span>
+                                <span>{poll.views_count} {_`views`}</span>
                             </div>
                         </div>
                         
@@ -252,7 +252,7 @@ export default component$(() => {
                                             <LuUser2 class="w-4 h-4 text-gray-500 dark:text-gray-400" />
                                         </div>
                                         <span class="text-gray-600 dark:text-gray-400 italic ml-1">
-                                            {_`Anónimo`}
+                                            {_`Anonymous`}
                                         </span>
                                     </div>
                                 ) : (
@@ -279,7 +279,7 @@ export default component$(() => {
                             </div>
                             
                             <div class="flex items-center space-x-4">
-                                {/* Botones de reacción */}
+                                {/* Reaction buttons */}
                                 <div class="vote-buttons-container flex rounded-md overflow-hidden shadow-sm">
                                     <button
                                         onClick$={() => handleReaction("LIKE")}
@@ -287,7 +287,7 @@ export default component$(() => {
                                                 ? "bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700"
                                                 : "bg-white dark:bg-gray-800"
                                             }`}
-                                        title={_`Me gusta`}
+                                        title={_`Like`}
                                     >
                                         <LuArrowBigUp
                                             class={`w-4 h-4 mr-1.5 ${reactionState.value.userReaction === "LIKE"
@@ -310,7 +310,7 @@ export default component$(() => {
                                                 ? "bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700"
                                                 : "bg-white dark:bg-gray-800"
                                             }`}
-                                        title={_`No me gusta`}
+                                        title={_`Dislike`}
                                     >
                                         <LuArrowBigDown
                                             class={`w-4 h-4 mr-1.5 ${reactionState.value.userReaction === "DISLIKE" ? "text-red-500" : "text-gray-500 group-hover:text-red-500"
@@ -330,20 +330,20 @@ export default component$(() => {
                                 <div class="flex items-center text-sm">
                                     <LuMessageSquare class="w-4 h-4 mr-1.5 text-gray-500" />
                                     <span class="text-gray-700 dark:text-gray-300">
-                                        {commentsCount} {_`comentarios`}
+                                        {commentsCount} {_`comments`}
                                     </span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    {/* Opciones de votación */}
+                    {/* Voting options */}
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
                         <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-4">
-                            {_`Opciones de votación`}
+                            {_`Voting Options`}
                             {poll.type === "MULTIPLE_CHOICE" && (
                                 <span class="text-sm font-normal text-gray-500 dark:text-gray-400 ml-2">
-                                    ({_`Puedes seleccionar varias opciones`})
+                                    ({_`You can select multiple options`})
                                 </span>
                             )}
                         </h2>
@@ -352,7 +352,7 @@ export default component$(() => {
                             {poll.options.map(option => {
                                 const isSelected = option.voted || userVotedOptions.value.includes(option.id)
                                 
-                                // Funciones auxiliares para clases
+                                // Helper functions for classes
                                 const getBorderColorClass = () => {
                                     switch(poll.type) {
                                         case "BINARY": return "border-cyan-400 dark:border-cyan-600"
@@ -402,7 +402,7 @@ export default component$(() => {
                                                 class={`text-sm font-medium ${isSelected ? "px-2 py-1 rounded-full" : "text-gray-500 dark:text-gray-400"
                                                     } ${isSelected ? getBadgeColorClass() : ""}`}
                                             >
-                                                {option.votes} {_`votos`} ({percentage.toFixed(1)}%)
+                                                {option.votes} {_`votes`} ({percentage.toFixed(1)}%)
                                             </span>
                                         </div>
                                         <div class="poll-progress h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -418,7 +418,7 @@ export default component$(() => {
                         
                         <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
                             <div class="text-sm text-gray-500 dark:text-gray-400">
-                                {_`Total de votos`}: <span class="font-medium text-gray-700 dark:text-gray-300">{totalVotes.value}</span>
+                                {_`Total votes`}: <span class="font-medium text-gray-700 dark:text-gray-300">{totalVotes.value}</span>
                             </div>
                             
                             {!isAuthenticated && (
@@ -426,19 +426,19 @@ export default component$(() => {
                                     class="bg-cyan-600 hover:bg-cyan-700 text-white"
                                     onClick$={onShowLoginModal}
                                 >
-                                    {_`Iniciar sesión para votar`}
+                                    {_`Log in to vote`}
                                 </Button>
                             )}
                             
                             {isClosed.value && (
                                 <div class="text-sm text-red-500 font-medium">
-                                    {_`Esta encuesta ha finalizado`}
+                                    {_`This poll has ended`}
                                 </div>
                             )}
                         </div>
                     </div>
 
-                    {/* Sección de comentarios */}
+                    {/* Comments section */}
                     <div class="mt-8">
                         <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-4">
                             {_`Comments`} ({commentsCount})
@@ -473,25 +473,25 @@ export default component$(() => {
                     </div>
                 </div>
                 
-                {/* Barra lateral */}
+                {/* Sidebar */}
                 <div class="lg:col-span-1 space-y-6">
-                    {/* Información de la encuesta */}
+                    {/* Poll information */}
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
                         <h3 class="font-bold text-gray-800 dark:text-white mb-4 flex items-center">
                             <LuShield class="w-5 h-5 mr-2 text-gray-500" />
-                            {_`Información de la encuesta`}
+                            {_`Poll Information`}
                         </h3>
                         
                         <div class="space-y-4">
                             <div class="flex items-center justify-between">
                                 <span class="text-sm text-gray-500 dark:text-gray-400">
-                                    {_`Creada por`}
+                                    {_`Created by`}
                                 </span>
                                 <div class="flex items-center">
                                     {poll.is_anonymous ? (
                                         <span class="font-medium text-gray-800 dark:text-gray-200 flex items-center">
                                             <LuUser2 class="w-4 h-4 mr-1 text-gray-500" /> 
-                                            {_`Anónimo`}
+                                            {_`Anonymous`}
                                         </span>
                                     ) : (
                                         <div class="flex items-center">
@@ -512,7 +512,7 @@ export default component$(() => {
                             
                             <div class="flex items-center justify-between">
                                 <span class="text-sm text-gray-500 dark:text-gray-400">
-                                    {_`Creada el`}
+                                    {_`Created on`}
                                 </span>
                                 <span class="font-medium text-gray-800 dark:text-gray-200">
                                     {new Date(poll.created_at).toLocaleDateString()}
@@ -522,7 +522,7 @@ export default component$(() => {
                             {poll.scope && (
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm text-gray-500 dark:text-gray-400">
-                                        {_`Alcance`}
+                                        {_`Scope`}
                                     </span>
                                     <span class="font-medium text-gray-800 dark:text-gray-200 flex items-center">
                                         <LuGlobe class="w-4 h-4 mr-1 text-gray-500" />
@@ -533,7 +533,7 @@ export default component$(() => {
                             
                             <div class="flex items-center justify-between">
                                 <span class="text-sm text-gray-500 dark:text-gray-400">
-                                    {_`Tipo`}
+                                    {_`Type`}
                                 </span>
                                 <span class="font-medium text-gray-800 dark:text-gray-200">
                                     {getTypeLabel(poll.type)}
@@ -543,7 +543,7 @@ export default component$(() => {
                             {poll.ends_at && (
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm text-gray-500 dark:text-gray-400">
-                                        {new Date(poll.ends_at) < new Date() ? _`Finalizada el` : _`Finaliza el`}
+                                        {new Date(poll.ends_at) < new Date() ? _`Ended on` : _`Ends on`}
                                     </span>
                                     <span class="font-medium text-gray-800 dark:text-gray-200">
                                         {new Date(poll.ends_at).toLocaleDateString()}
@@ -553,7 +553,7 @@ export default component$(() => {
                             
                             <div class="flex items-center justify-between">
                                 <span class="text-sm text-gray-500 dark:text-gray-400">
-                                    {_`Vistas`}
+                                    {_`Views`}
                                 </span>
                                 <span class="font-medium text-gray-800 dark:text-gray-200">
                                     {poll.views_count}
@@ -562,32 +562,32 @@ export default component$(() => {
                         </div>
                     </div>
                     
-                    {/* Encuestas relacionadas - podría implementarse en el futuro */}
+                    {/* Related polls - could be implemented in the future */}
                 </div>
             </div>
         </div>
     )
 })
 
-// Funciones auxiliares para badges e información
+// Helper functions for badges and information
 function getPollTypeBadge(type: string) {
     switch(type) {
         case "BINARY":
             return (
                 <Badge class="bg-cyan-100 dark:bg-cyan-900/20 text-cyan-700 dark:text-cyan-300">
-                    {_`Binaria`}
+                    {_`Binary`}
                 </Badge>
             )
         case "SINGLE_CHOICE":
             return (
                 <Badge class="bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300">
-                    {_`Opción única`}
+                    {_`Single Choice`}
                 </Badge>
             )
         case "MULTIPLE_CHOICE":
             return (
                 <Badge class="bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300">
-                    {_`Opción múltiple`}
+                    {_`Multiple Choice`}
                 </Badge>
             )
         default:
@@ -610,7 +610,7 @@ function getPollScopeBadge(scope: string) {
         case "NATIONAL":
             return (
                 <Badge class="bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-300">
-                    {_`Nacional`}
+                    {_`National`}
                 </Badge>
             )
         case "REGIONAL":
@@ -632,11 +632,11 @@ function getPollStatusBadge(endsAt: string) {
     const isExpired = new Date(endsAt) < new Date()
     return isExpired ? (
         <Badge class="bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-300">
-            {_`Finalizada`}
+            {_`Ended`}
         </Badge>
     ) : (
         <Badge class="bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300">
-            {_`Activa`}
+            {_`Active`}
         </Badge>
     )
 }
@@ -644,8 +644,8 @@ function getPollStatusBadge(endsAt: string) {
 function getScopeLabel(scope: string) {
     switch(scope) {
         case "GLOBAL": return _`Global`
-        case "INTERNATIONAL": return _`Internacional`
-        case "NATIONAL": return _`Nacional`
+        case "INTERNATIONAL": return _`International`
+        case "NATIONAL": return _`National`
         case "REGIONAL": return _`Regional`
         case "SUBREGIONAL": return _`Subregional`
         default: return scope
@@ -654,9 +654,9 @@ function getScopeLabel(scope: string) {
 
 function getTypeLabel(type: string) {
     switch(type) {
-        case "BINARY": return _`Binaria`
-        case "SINGLE_CHOICE": return _`Opción única`
-        case "MULTIPLE_CHOICE": return _`Opción múltiple`
+        case "BINARY": return _`Binary`
+        case "SINGLE_CHOICE": return _`Single Choice`
+        case "MULTIPLE_CHOICE": return _`Multiple Choice`
         default: return type
     }
 }
@@ -664,11 +664,11 @@ function getTypeLabel(type: string) {
 export const head: DocumentHead = ({ resolveValue }) => {
     const poll = resolveValue(useGetPollBySlug)
     return {
-        title: poll?.title || _`Detalles de la encuesta`,
+        title: poll?.title || _`Poll Details`,
         meta: [
             {
                 name: "description",
-                content: poll?.description || _`Ver detalles de la encuesta y unirse a la conversación`,
+                content: poll?.description || _`View poll details and join the conversation`,
             },
         ],
     }

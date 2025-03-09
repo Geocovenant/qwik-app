@@ -48,73 +48,6 @@ export const useGetCommunityIdByName = routeLoader$(async ({ query }) => {
 });
 
 // eslint-disable-next-line qwik/loader-location
-export const useGetGlobalPolls = routeLoader$(async ({ query, cookie }) => {
-    console.log('============ useGetGlobalPolls ============')
-    const page = query.get('page');
-    const token = cookie.get('authjs.session-token');
-
-    try {
-        let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=GLOBAL`;
-        if (page) {
-            url += `&page=${page}`;
-        }
-
-        // Configurar headers con o sin token
-        const headers: Record<string, string> = {
-            Accept: 'application/json',
-        };
-
-        // Añadir el token a los headers si existe
-        if (token) {
-            headers.Authorization = token.value;
-        }
-
-        const response = await fetch(url, {
-            headers
-        });
-
-        if (!response.ok) {
-            throw new Error('Error fetching global polls');
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching global polls:', error);
-        return [];
-    }
-})
-
-// eslint-disable-next-line qwik/loader-location
-export const useGetGlobalDebates = routeLoader$(async ({ query }) => {
-    console.log('============ useGetGlobalDebates ============')
-    const page = query.get('page');
-
-    try {
-        let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates?type=GLOBAL`;
-        if (page) {
-            url += `&page=${page}`;
-        }
-
-        const response = await fetch(url, {
-            headers: {
-                Accept: 'application/json',
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Error fetching global debates');
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching global debates:', error);
-        return [];
-    }
-})
-
-// eslint-disable-next-line qwik/loader-location
 export const useGetGlobalProjects = routeLoader$(async ({ query }) => {
     console.log('============ useGetGlobalProjects ============')
     const page = query.get('page');
@@ -1090,7 +1023,6 @@ export const useGetGlobalMembers = routeLoader$(async ({ cookie, query }) => {
 export const useGetNationalMembers = routeLoader$(async ({ cookie, query, resolveValue }) => {
     console.log('============ useGetNationalMembers ============')
     const country = await resolveValue(useGetCountry);
-    console.log('country1', country)
     const page = Number(query.get("page") || "1");
     const size = Number(query.get("size") || "100");
     const token = cookie.get('authjs.session-token');

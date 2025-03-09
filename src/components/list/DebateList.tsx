@@ -3,7 +3,7 @@ import { _ } from "compiled-i18n";
 import { Button } from "~/components/ui";
 import DebateCard from "~/components/cards/DebateCard";
 import EmptyDebates from "~/components/empty-states/EmptyDebates";
-import { type Debate } from "~/shared/types";
+import type { Debate } from "~/types/debate";
 import { LuPlus, LuFilter, LuSearch } from "@qwikest/icons/lucide";
 import { Pagination } from "@qwik-ui/headless";
 import Modal from "~/components/Modal";
@@ -12,6 +12,7 @@ import type { QRL } from "@builder.io/qwik";
 
 export interface DebateListProps {
     communityName?: string;
+    currentUsername?: string;
     debates: {
         items: Debate[];
         total: number;
@@ -19,11 +20,10 @@ export interface DebateListProps {
         size: number;
         pages: number;
     };
+    isAuthenticated?: boolean;
     onCreateDebate: QRL<() => void>;
     onPageChange$: QRL<(page: number) => void>;
-    isAuthenticated?: boolean;
     onShowLoginModal$?: QRL<() => void>;
-    currentUsername?: string;
 }
 
 export default component$<DebateListProps>(({ 
@@ -174,7 +174,7 @@ export default component$<DebateListProps>(({
                     <h2 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
                         <span>{_`Debates`}</span>
                         <span class="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 text-sm px-2.5 py-0.5 rounded-full">
-                            {filteredDebates.value.length}
+                            {searchTerm.value.trim() ? filteredDebates.value.length : debates.total }
                         </span>
                     </h2>
                     <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -194,17 +194,18 @@ export default component$<DebateListProps>(({
                             title={debate.title}
                             description={debate.description}
                             images={debate.images}
-                            creator_username={debate.creator.username}
-                            creator_avatar={debate.creator.image}
-                            created_at={debate.created_at}
-                            last_comment_at={debate.created_at}
+                            creatorUsername={debate.creator?.username || ''}
+                            creatorAvatar={debate.creator?.image || '' }
+                            createdAt={debate.created_at}
+                            isAnonymous={debate.is_anonymous}
+                            lastCommentAt={debate.created_at}
                             slug={debate.slug}
                             tags={debate.tags}
-                            comments_count={debate.points_of_view?.reduce((total, pov) => total + (pov.comments?.length || 0), 0) || 0}
-                            scope={debate.scope || "NATIONAL"}
+                            commentsCount={debate.points_of_view.reduce((total, pov) => total + (pov.comments.length || 0), 0) || 0}
+                            scope={debate.scope}
                             isAuthenticated={isAuthenticated}
                             onShowLoginModal$={onShowLoginModal$}
-                            points_of_view={debate.points_of_view}
+                            pointsOfView={debate.points_of_view}
                             currentUsername={currentUsername}
                         />
                     </li>

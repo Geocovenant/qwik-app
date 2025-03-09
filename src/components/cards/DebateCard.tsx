@@ -1,5 +1,5 @@
 import { $, component$, useStylesScoped$, useSignal } from "@builder.io/qwik";
-import { LuCalendar, LuMessageSquare, LuTag, LuClock, LuLink, LuGlobe, LuTrash2, LuFlag } from '@qwikest/icons/lucide';
+import { LuCalendar, LuMessageSquare, LuTag, LuClock, LuLink, LuGlobe, LuTrash2, LuFlag, LuUser2 } from '@qwikest/icons/lucide';
 import { Link, useNavigate } from "@builder.io/qwik-city";
 import { PollScope } from "~/shared/types";
 import { timeAgo } from "~/utils/dateUtils";
@@ -13,41 +13,43 @@ import Modal from "~/components/Modal";
 import FormReport from "~/components/forms/FormReport";
 
 export interface DebateCardProps {
-    id: number;
-    title: string;
-    description: string;
-    images?: string[];
-    creator_username: string;
-    creator_avatar: string;
-    created_at: string;
-    last_comment_at?: string;
-    tags?: string[];
-    slug?: string;
-    comments_count: number;
-    scope: string;
-    isAuthenticated?: boolean;
-    onShowLoginModal$?: QRL<() => void>;
-    points_of_view?: any[]; // Array of points of view (countries)
+    commentsCount: number;
+    createdAt: string;
+    creatorAvatar: string;
+    creatorUsername: string;
     currentUsername?: string;
+    description: string;
+    id: number;
+    images?: string[];
+    isAnonymous: boolean;
+    isAuthenticated?: boolean;
+    lastCommentAt?: string;
+    onShowLoginModal$?: QRL<() => void>;
+    pointsOfView?: any[];
+    scope: string;
+    slug?: string;
+    tags?: string[];
+    title: string;
 }
 
 export default component$<DebateCardProps>(({
-    id,
-    title,
+    commentsCount,
+    createdAt,
+    creatorAvatar,
+    creatorUsername,
+    currentUsername = "",
     description,
+    id,
     images,
-    creator_username,
-    creator_avatar,
-    created_at,
-    last_comment_at,
+    isAnonymous,
+    isAuthenticated = true,
+    lastCommentAt,
+    onShowLoginModal$,
+    pointsOfView = [],
+    scope,
     slug,
     tags = [],
-    comments_count,
-    scope,
-    isAuthenticated = true,
-    onShowLoginModal$,
-    points_of_view = [],
-    currentUsername = "",
+    title,
 }) => {
     useStylesScoped$(styles);
     const nav = useNavigate();
@@ -57,10 +59,10 @@ export default component$<DebateCardProps>(({
     const showConfirmDeleteModal = useSignal(false);
 
     const mainImage = images && images.length > 0 ? images[0] : undefined;
-    const countriesCount = points_of_view?.length || 0;
+    const countriesCount = pointsOfView?.length || 0;
     
     // Determine if the current user is the creator
-    const isCreator = currentUsername === creator_username;
+    const isCreator = currentUsername === creatorUsername;
 
     const copyDebateLink = $(() => {
         try {
@@ -150,22 +152,33 @@ export default component$<DebateCardProps>(({
                 {/* Creator and date information */}
                 <div class="flex flex-wrap justify-between items-center mt-4 text-gray-500 dark:text-gray-400 text-xs">
                     <div class="flex items-center space-x-4">
-                        <div class="flex items-center" onClick$={() => onClickUsername(creator_username)}>
-                            <Avatar.Root>
-                                <Avatar.Image
-                                    src={creator_avatar}
-                                    alt={creator_username}
-                                    class="w-6 h-6 rounded-full"
-                                />
-                            </Avatar.Root>
-                            <span class="hover:text-cyan-600 dark:hover:text-cyan-400 cursor-pointer ml-1">
-                                {creator_username}
-                            </span>
-                        </div>
+                        {isAnonymous ? (
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                    <LuUser2 class="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                                </div>
+                                <span class="text-gray-600 dark:text-gray-400 italic ml-1">
+                                    {_`Anonymous`}
+                                </span>
+                            </div>
+                        ) : (
+                            <div class="flex items-center" onClick$={() => onClickUsername(creatorUsername)}>
+                                <Avatar.Root>
+                                    <Avatar.Image
+                                        src={creatorAvatar}
+                                        alt={creatorUsername}
+                                        class="w-6 h-6 rounded-full"
+                                    />
+                                </Avatar.Root>
+                                <span class="hover:text-cyan-600 dark:hover:text-cyan-400 cursor-pointer ml-1">
+                                    {creatorUsername}
+                                </span>
+                            </div>
+                        )}
                         <div class="flex items-center">
                             <LuCalendar class="w-4 h-4 mr-1" />
-                            <span title={new Date(created_at).toLocaleString()}>
-                                {timeAgo(new Date(created_at))}
+                            <span title={new Date(createdAt).toLocaleString()}>
+                                {timeAgo(new Date(createdAt))}
                             </span>
                         </div>
                     </div>
@@ -173,14 +186,14 @@ export default component$<DebateCardProps>(({
                     <div class="flex items-center mt-2 sm:mt-0">
                         <div class="flex items-center">
                             <LuMessageSquare class="w-4 h-4 mr-1" />
-                            <span>{comments_count} {_`comments`}</span>
+                            <span>{commentsCount} {_`comments`}</span>
                         </div>
                         
-                        {last_comment_at && (
+                        {lastCommentAt && (
                             <div class="flex items-center ml-3">
                                 <LuClock class="w-4 h-4 mr-1" />
                                 <span title="Last comment">
-                                    {timeAgo(new Date(last_comment_at))}
+                                    {timeAgo(new Date(lastCommentAt))}
                                 </span>
                             </div>
                         )}

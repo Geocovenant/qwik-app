@@ -228,6 +228,7 @@ export interface DebateResponseData {
 export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
     async (values, event) => {
         console.log('############ useFormDebateAction ############');
+        console.log('values', values)
 
         const token = event.cookie.get('authjs.session-token')?.value;
 
@@ -245,6 +246,7 @@ export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
             is_anonymous: values.is_anonymous === 'on',
             type: values.scope,
         };
+        console.log('payload', payload)
 
         if (values.image?.size > 0) {
             const cloudinaryResponse = await uploadImage(values.image);

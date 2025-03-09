@@ -7,9 +7,11 @@ import DebateList from "~/components/list/DebateList";
 import { CommunityType } from "~/constants/communityType";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
-import { useGetGlobalDebates, useGetTags } from "~/shared/loaders";
+import { useGetTags } from "~/shared/loaders";
 
-export { useFormDebateLoader, useGetTags } from "~/shared/loaders";
+import { useGetGlobalDebates } from "~/shared/global/loaders";
+
+export { useFormDebateLoader } from "~/shared/loaders";
 export { useFormDebateAction, useDeleteDebate } from "~/shared/actions";
 
 export default component$(() => {
@@ -65,21 +67,21 @@ export default component$(() => {
                     }
                     <DebateList
                         communityName="The Global community"
+                        currentUsername={currentUsername.value}
                         debates={{
-                            items: Array.isArray(debates.value.items) ? debates.value.items : [],
-                            total: debates.value?.length || 0,
-                            page: currentPage.value,
-                            size: 10,
-                            pages: Math.ceil((debates.value?.length || 0) / 10)
+                            items: debates.value.items,
+                            total: debates.value.total,
+                            page: debates.value.page,
+                            size: debates.value.size,
+                            pages: debates.value.pages
                         }}
+                        isAuthenticated={isAuthenticated.value}
                         onCreateDebate={onCreateDebate}
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
                             await nav(`/global/debates?page=${page}`);
                         }}
-                        isAuthenticated={isAuthenticated.value}
                         onShowLoginModal$={onShowLoginModal}
-                        currentUsername={currentUsername.value}
                     />
                 </div>
             </div>

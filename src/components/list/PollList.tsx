@@ -1,6 +1,6 @@
 import { component$, type QRL } from "@builder.io/qwik"
 import PollCard from "~/components/cards/PollCard"
-import { type Poll, PollScope } from "~/shared/types"
+import { type Poll, PollScope } from "~/types/poll"
 import EmptyPolls from "~/components/empty-states/EmptyPolls"
 import { Button } from "~/components/ui"
 import { useComputed$, useSignal } from "@builder.io/qwik"
@@ -9,8 +9,12 @@ import { LuPlus, LuFilter, LuSearch } from "@qwikest/icons/lucide"
 import { _ } from "compiled-i18n"
 
 export interface PollListProps {
+    communityName?: string
+    currentUsername?: string
+    isAuthenticated?: boolean
     onCreatePoll: QRL<() => void>
-    region?: string | null
+    onPageChange$: QRL<(page: number) => void>
+    onShowLoginModal$: QRL<() => void>
     polls: {
         items: Poll[]
         total: number
@@ -18,11 +22,7 @@ export interface PollListProps {
         size: number
         pages: number
     }
-    communityName?: string
-    onPageChange$: QRL<(page: number) => void>
-    isAuthenticated?: boolean
-    currentUsername?: string
-    onShowLoginModal$: QRL<() => void>
+    region?: string | null
 }
 
 export default component$<PollListProps>(({ polls, onCreatePoll, region, communityName, onPageChange$, isAuthenticated = true, currentUsername = "", onShowLoginModal$ }) => {

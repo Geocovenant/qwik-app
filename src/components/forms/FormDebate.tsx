@@ -41,7 +41,6 @@ export default component$<FormDebateProps>(({
     action: useFormDebateAction(),
     validate: valiForm$(DebateSchema)
   });
-  console.log('debateForm', debateForm)
 
   useTask$(({ track }) => {
     const scope = track(() => defaultScope);

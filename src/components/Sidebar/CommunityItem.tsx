@@ -144,7 +144,7 @@ export const CommunityItem = component$(({
                     >
                         <div class="flex items-center group">
                             <Link
-                                href={`/${community.path}${isNation ? '?scope=national' : ''}`}
+                                href={`/${community.path}`}
                                 class={`flex flex-1 items-center gap-2 ${itemClass}`}
                                 onClick$={onClick$}
                             >
