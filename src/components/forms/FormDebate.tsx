@@ -16,7 +16,6 @@ import { dataArray as countries } from "~/data/countries";
 import { Select } from '~/components/ui';
 import { useLocation } from '@builder.io/qwik-city';
 import { FileInput } from '~/components/input/FileInput';
-import { Checkbox } from '../input/Checkbox';
 
 export interface FormDebateProps {
   onSubmitCompleted: () => void;
@@ -79,7 +78,6 @@ export default component$<FormDebateProps>(({
     );
   });
 
-  // Establecer el país por defecto cuando se monta el componente
   useTask$(({ track }) => {
     const country = track(() => defaultCountry.value);
     if (country) {
@@ -99,8 +97,6 @@ export default component$<FormDebateProps>(({
     value: c.cca2,
     name: `${c.flag} ${c.name}`
   }))
-
-  console.log('debateForm.internal.fields.is_anonymous', debateForm.internal.fields.is_anonymous.value)
 
   return (
     <Form onSubmit$={handleSubmit} class="space-y-6" encType="multipart/form-data">

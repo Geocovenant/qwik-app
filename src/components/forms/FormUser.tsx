@@ -21,9 +21,7 @@ export default component$<FormUserProps>(({ onSubmitCompleted$ }) => {
     validate: valiForm$(UserSchema)
   });
 
-  const handleSubmit = $((values: UserForm, event: any) => {
-    console.log('Submitting User form:', values);
-    console.log('event', event);
+  const handleSubmit = $(() => {
     onSubmitCompleted$();
   });
 

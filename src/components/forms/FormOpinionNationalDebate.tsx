@@ -25,7 +25,6 @@ export const FormOpinionNationalDebate = component$<FormOpinionNationalDebatePro
         validate: valiForm$(OpinionSchema),
     });
     
-    // Establecer la división por defecto cuando se monta el componente
     useTask$(({ track }) => {
         const division = track(() => defaultDivisionId);
         if (division) {

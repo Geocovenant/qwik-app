@@ -41,10 +41,10 @@ export default component$<OpinionProps>(({
   const actionReactOpinion = useReactOpinion()
   const actionDeleteOpinion = useDeleteOpinion()
   
-  // Determinar si el usuario es el creador de la opinión
+  // Determine if the user is the creator of the opinion
   const isCreator = currentUsername === opinion.user.username
   
-  // Inicializar el estado de reacción basado en user_vote
+  // Initialize the reaction state based on user_vote
   const getUserReactionFromVote = (userVote: number | null | undefined) => {
     if (userVote === 1) return "LIKE"
     if (userVote === -1) return "DISLIKE"
@@ -67,7 +67,7 @@ export default component$<OpinionProps>(({
 
     // Optimistic update
     if (newReaction === previousReaction) {
-      // Si se hace clic en la misma reacción, se quita
+      // If the same reaction is clicked, it is removed
       reactionState.userReaction = null
       if (newReaction === "LIKE") {
         reactionState.upvotes--
@@ -75,37 +75,37 @@ export default component$<OpinionProps>(({
         reactionState.downvotes--
       }
     } else {
-      // Si se cambia la reacción o se añade una nueva
+      // If the reaction is changed or a new one is added
       reactionState.userReaction = newReaction
 
       if (previousReaction === "LIKE") {
-        reactionState.upvotes--
+        reactionState.upvotes--;
       } else if (previousReaction === "DISLIKE") {
-        reactionState.downvotes--
+        reactionState.downvotes--;
       }
 
       if (newReaction === "LIKE") {
-        reactionState.upvotes++
+        reactionState.upvotes++;
       } else {
-        reactionState.downvotes++
+        reactionState.downvotes++;
       }
     }
 
-    // Llamar a la API para guardar la reacción
+    // Call the API to save the reaction
     const result = await actionReactOpinion.submit({
       opinionId: opinion.id,
       reaction: newReaction,
     });
     
-    // Si hay un error, revertir los cambios
+    // If there is an error, revert the changes
     if (!result.value?.success) {
       reactionState.userReaction = previousReaction;
       
-      // Restaurar contadores originales
+      // Restore original counters
       reactionState.upvotes = opinion.upvotes;
       reactionState.downvotes = opinion.downvotes;
       
-      // Aplicar el state anterior
+      // Apply the previous state
       if (previousReaction === "LIKE") {
         reactionState.upvotes++;
       } else if (previousReaction === "DISLIKE") {
@@ -121,7 +121,7 @@ export default component$<OpinionProps>(({
     });
     
     if (result.value?.success) {
-      // La eliminación se manejará en el componente padre
+      // The deletion will be handled in the parent component
       showConfirmDeleteModal.value = false;
     }
   })
@@ -170,7 +170,7 @@ export default component$<OpinionProps>(({
           <span class="text-sm font-medium">{reactionState.downvotes}</span>
         </button>
         
-        {/* Botón condicional: Borrar para el creador, Reportar para otros usuarios */}
+        {/* Conditional button: Delete for the creator, Report for other users */}
         {isAuthenticated && (
           isCreator ? (
             <button 

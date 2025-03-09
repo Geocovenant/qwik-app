@@ -87,6 +87,7 @@ export default component$(() => {
                     {session.value?.user ? (
                         <NestedDropdown
                             userId={session.value.user.id}
+                            // @ts-ignore
                             username={session.value.user.username || undefined}
                             name={session.value.user.name || undefined}
                             email={session.value.user.email || undefined}

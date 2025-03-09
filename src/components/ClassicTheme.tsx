@@ -1,4 +1,5 @@
 import { component$, createContextId, type Signal, useContextProvider, useSignal, useVisibleTask$ } from "@builder.io/qwik";
+import { _ } from "compiled-i18n";
 
 export const ThemeContext = createContextId<Signal<string>>(
     'docs.theme-context'
@@ -26,7 +27,7 @@ export default component$(() => {
                     theme.value = newTheme;
                 }}
             />
-            <span class="theme-toggle-sr">Toggle theme</span>
+            <span class="theme-toggle-sr">{_`Toggle theme`}</span>
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 aria-hidden="true"

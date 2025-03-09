@@ -9,9 +9,6 @@ export type ActionButtonProps = DefaultButtonProps & {
     class?: string;
 };
 
-/**
- * Botón de acción con estilos predefinidos para variantes primarias y secundarias.
- */
 export const ActionButton = component$(
     ({ label, variant, class: className, ...props }: ActionButtonProps) => (
         <UnstyledButton

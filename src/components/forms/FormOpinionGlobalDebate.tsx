@@ -24,7 +24,6 @@ export const FormOpinionGlobalDebate = component$<FormOpinionGlobalDebateProps>(
         validate: valiForm$(OpinionSchema),
     });
     
-    // Establecer el país por defecto cuando se monta el componente
     useTask$(({ track }) => {
         const country = track(() => defaultCountryCca2);
         if (country) {

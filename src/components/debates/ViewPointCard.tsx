@@ -21,9 +21,9 @@ export default component$<ViewPointCardProps>(({
   onShowLoginModal$
 }) => {
   const viewFlag = useComputed$(() => {
-    // Si es una región (sin cca2), mostramos un emoji de bandera genérica
+    // If it is a region (without cca2), we show a generic flag emoji
     if (!view.community.cca2) {
-      return "🏁"; // Bandera genérica para regiones
+      return "🏁"; // Generic flag for regions
     }
     
     const countryData = countriesList.find(

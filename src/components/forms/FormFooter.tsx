@@ -5,23 +5,23 @@ import { ActionButton } from './ActionButton';
 import { _ } from 'compiled-i18n';
 
 export type FormFooterProps = {
-    /** FormStore de Modular Forms para interactuar con el formulario */
+    /** FormStore from Modular Forms to interact with the form */
     of: FormStore<any, any>;
-    /** Acción opcional para resetear el formulario */
+    /** Optional action to reset the form */
     resetAction?: ActionStore<object, Record<string, any>, true>;
-    /** Atributo form para asociar el botón a un formulario concreto (opcional) */
+    /** Form attribute to associate the button with a specific form (optional) */
     form?: string;
 };
 
 /**
- * Pie de formulario que incluye un botón de submit y, si se proporciona, uno de reset.
- * Utiliza el ActionButton para mantener consistencia en el estilo y la funcionalidad.
+ * Footer of the form that includes a submit button and, if provided, a reset button.
+ * Uses the ActionButton to maintain consistency in style and functionality.
  */
 export const FormFooter = component$(
     ({ of: formStore, resetAction, form }: FormFooterProps) => {
         return (
             <footer class="flex flex-col md:flex-row justify-center items-center gap-4 mt-6">
-                {/* Botón de Submit */}
+                {/* Submit Button */}
                 <ActionButton
                     class="w-full md:w-auto"
                     variant="primary"
@@ -30,7 +30,7 @@ export const FormFooter = component$(
                     form={form}
                 />
 
-                {/* Botón de Reset, se muestra solo si se proporciona la acción de reset */}
+                {/* Reset Button, shown only if the reset action is provided */}
                 {resetAction && (
                     <ActionButton
                         class="w-full md:w-auto"

@@ -15,7 +15,7 @@ export default component$(() => {
                 onClick$={() => signInSig.submit({ providerId: 'google', options: { redirectTo: "/" } })}
             >
                 <ImgGoogleLogo aria-label="Google" class="w-5 h-5 mr-3" />
-                <span>{_`Continuar con Google`}</span>
+                <span>{_`Continue with Google`}</span>
             </button>
             <button
                 class="w-full flex items-center justify-center px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm 
@@ -24,7 +24,7 @@ export default component$(() => {
                 onClick$={() => signInSig.submit({ providerId: 'github', options: { redirectTo: "/" } })}
             >
                 <ImgGithub aria-label="Github" class="w-5 h-5 mr-3" />
-                <span>{_`Continuar con Github`}</span>
+                <span>{_`Continue with Github`}</span>
             </button>
         </div>
     );

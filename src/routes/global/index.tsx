@@ -17,10 +17,9 @@ export default component$(() => {
     const pollsCount = polls.value.total || 0;
     const debatesCount = debates.value.total || 0;
     const projectsCount = projects.value.total || 0;
-    const issuesCount = 0;
 
     return (
-        <div class="flex flex-col h-[calc(100vh-4rem)] overflow-auto p-4 bg-gray-50 dark:bg-gray-800">
+        <div class="flex flex-col h-[calc(100vh-4rem)] p-4 bg-gray-50 dark:bg-gray-800">
             <header class="mb-6">
                 <div class="flex items-center gap-3">
                     <LuGlobe class="w-10 h-10 text-blue-600 dark:text-blue-400" />
@@ -93,10 +92,6 @@ export default component$(() => {
                         <div class="bg-green-50 dark:bg-green-900/30 p-4 rounded-lg">
                             <div class="text-3xl font-bold text-green-600 dark:text-green-400">{debatesCount}</div>
                             <div class="text-sm text-gray-600 dark:text-gray-300">{_`Discussions`}</div>
-                        </div>
-                        <div class="bg-amber-50 dark:bg-amber-900/30 p-4 rounded-lg">
-                            <div class="text-3xl font-bold text-amber-600 dark:text-amber-400">{issuesCount}</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-300">{_`Issues`}</div>
                         </div>
                         <div class="bg-purple-50 dark:bg-purple-900/30 p-4 rounded-lg">
                             <div class="text-3xl font-bold text-purple-600 dark:text-purple-400">{projectsCount}</div>

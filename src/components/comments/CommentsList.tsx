@@ -4,7 +4,6 @@ import { LuReply } from "@qwikest/icons/lucide";
 import { timeAgo } from "~/utils/dateUtils";
 import { Avatar } from "../ui";
 
-// Estructura basada en los datos reales de la API
 interface Comment {
   id: number;
   user_id: number;

@@ -73,7 +73,7 @@ export default component$<DebateListProps>(({
                 <input
                     type="search"
                     class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:ring-cyan-500 focus:border-cyan-500 dark:focus:ring-cyan-600 dark:focus:border-cyan-600"
-                    placeholder={_`Buscar debates...`}
+                    placeholder={_`Search debates...`}
                     value={searchTerm.value}
                     onInput$={(e) => {
                         searchTerm.value = (e.target as HTMLInputElement).value;
@@ -83,7 +83,7 @@ export default component$<DebateListProps>(({
                     <button 
                         class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
                         onClick$={() => { searchTerm.value = ''; }}
-                        aria-label="Limpiar búsqueda"
+                        aria-label="Clear search"
                     >
                         <span class="text-xl">&times;</span>
                     </button>
@@ -93,7 +93,7 @@ export default component$<DebateListProps>(({
             {/* Filter button */}
             <Button class="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
                 <LuFilter class="w-4 h-4 mr-1" />
-                {_`Filtrar`}
+                {_`Filter`}
             </Button>
 
             {/* Create debate button */}
@@ -102,7 +102,7 @@ export default component$<DebateListProps>(({
                 onClick$={handleCreateDebate}
             >
                 <LuPlus class="w-4 h-4 mr-1" />
-                {_`Crear`}
+                {_`Create`}
             </Button>
         </div>
     );
@@ -122,7 +122,7 @@ export default component$<DebateListProps>(({
                                 </span>
                             </h2>
                             <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                {communityName || _`Explora y participa en debates de la comunidad`}
+                                {communityName || _`Explore and participate in community debates`}
                             </p>
                         </div>
 
@@ -135,16 +135,16 @@ export default component$<DebateListProps>(({
                             <LuSearch class="w-8 h-8 text-gray-500 dark:text-gray-400" />
                         </div>
                         <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                            {_`No se encontraron debates`}
+                            {_`No debates found`}
                         </h3>
                         <p class="text-gray-500 dark:text-gray-400 mb-6">
-                            {_`Ningún debate coincide con tu búsqueda "${searchTerm.value}". Intenta con otras palabras clave o borra la búsqueda.`}
+                            {_`No debate matches your search "${searchTerm.value}". Try other keywords or clear the search.`}
                         </p>
                         <Button 
                             class="bg-cyan-600 hover:bg-cyan-700 text-white"
                             onClick$={() => { searchTerm.value = ''; }}
                         >
-                            {_`Borrar búsqueda`}
+                            {_`Clear search`}
                         </Button>
                     </div>
                 </div>
@@ -155,14 +155,14 @@ export default component$<DebateListProps>(({
 
     return (
         <div class="space-y-6 overflow-y-auto">
-            {/* Login modal si es necesario */}
+            {/* Login modal if necessary */}
             {!isAuthenticated && onShowLoginModal$ && (
                 <Modal
-                    title={_`Inicia sesión para participar`}
+                    title={_`Log in to participate`}
                     show={showLoginModal}
                 >
                     <div class="p-4 text-center">
-                        <p class="mb-6 text-gray-600 dark:text-gray-300">{_`Necesitas iniciar sesión para participar en debates y en la comunidad.`}</p>
+                        <p class="mb-6 text-gray-600 dark:text-gray-300">{_`You need to log in to participate in debates and in the community.`}</p>
                         <SocialLoginButtons />
                     </div>
                 </Modal>
@@ -178,7 +178,7 @@ export default component$<DebateListProps>(({
                         </span>
                     </h2>
                     <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        {communityName || _`Explora y participa en debates de la comunidad`}
+                        {communityName || _`Explore and participate in community debates`}
                     </p>
                 </div>
 
