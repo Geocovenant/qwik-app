@@ -112,9 +112,6 @@ export const NestedDropdown = component$<NestedDropdownProps>((props) => {
                         ))}
                     </div>
                 </div>
-                <div class="dropdown-item">
-                    <LuMapPin class="w-5 h-5" /> <span>{_`Location`}</span>
-                </div>
                 <div class="dropdown-divider"></div>
                 <div class="dropdown-item" onClick$={() => signOut.submit({ redirectTo: "/" })}>
                     <LuLogOut class="w-5 h-5" /> <span>{_`Log Out`}</span>

@@ -1,4 +1,4 @@
-import { $, component$, useSignal, useContext, useContextProvider } from "@builder.io/qwik";
+import { $, component$, useSignal } from "@builder.io/qwik";
 import { _ } from "compiled-i18n";
 import { NestedDropdown } from "~/components/NestedDropdown";
 import { useSession } from "~/routes/plugin@auth";
