@@ -47,23 +47,23 @@ export default component$<RequestCommunityFormProps>(({ onClose$ }) => {
         <div class="text-center py-4">
           <div class="text-green-500 mb-3 text-xl">✓</div>
           <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-            {_`¡Gracias por tu solicitud!`}
+            {_`Thank you for your request!`}
           </h3>
           <p class="text-gray-600 dark:text-gray-400">
-            {_`Hemos recibido tu interés en esta comunidad. Te notificaremos cuando esté disponible.`}
+            {_`We have received your interest in this community. We will notify you when it becomes available.`}
           </p>
           <button
             onClick$={handleClose}
             class="mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
           >
-            {_`Cerrar`}
+            {_`Close`}
           </button>
         </div>
       ) : (
-        <Form onSubmit$={handleSubmit}class="space-y-4">
+        <Form onSubmit$={handleSubmit} class="space-y-4">
           <div class="mb-4">
             <p class="text-gray-600 dark:text-gray-400 mb-4">
-              {_`Estamos incorporando comunidades gradualmente. Si deseas priorizar una comunidad específica, indícanos los detalles a continuación.`}
+              {_`We are gradually incorporating communities. If you want to prioritize a specific community, please provide the details below.`}
             </p>
           </div>
           <div class="space-y-3">
@@ -71,7 +71,7 @@ export default component$<RequestCommunityFormProps>(({ onClose$ }) => {
               {(field, props) => (
                 <div>
                   <label for="country" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    {_`País`}<span class="text-red-500">*</span>
+                    {_`Country`}<span class="text-red-500">*</span>
                   </label>
                   <select
                     id="country"
@@ -80,7 +80,7 @@ export default component$<RequestCommunityFormProps>(({ onClose$ }) => {
                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                     required
                   >
-                    <option value="" disabled selected>{_`Selecciona un país...`}</option>
+                    <option value="" disabled selected>{_`Select a country...`}</option>
                     {countries.map((countryOption) => (
                       <option key={countryOption.cca2} value={countryOption.cca2}>
                         {`${countryOption.flag} ${countryOption.name}`}
@@ -98,7 +98,7 @@ export default component$<RequestCommunityFormProps>(({ onClose$ }) => {
               {(field, props) => (
                 <div>
                   <label for="region" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    {_`Región / Provincia / Estado`}
+                    {_`Region / Province / State`}
                   </label>
                   <input
                     id="region"
@@ -118,7 +118,7 @@ export default component$<RequestCommunityFormProps>(({ onClose$ }) => {
               {(field, props) => (
                 <div>
                   <label for="city" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    {_`Ciudad / Localidad`}
+                    {_`City / Locality`}
                   </label>
                   <input
                     id="city"
@@ -138,7 +138,7 @@ export default component$<RequestCommunityFormProps>(({ onClose$ }) => {
               {(field, props) => (
                 <div>
                   <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    {_`Email de contacto`}<span class="text-red-500">*</span>
+                    {_`Contact Email`}<span class="text-red-500">*</span>
                   </label>
                   <input
                     id="email"
@@ -163,7 +163,7 @@ export default component$<RequestCommunityFormProps>(({ onClose$ }) => {
               disabled={requestCommunityForm.submitting}
               class="bg-cyan-600 hover:bg-cyan-700 text-white"
             >
-              {requestCommunityForm.submitting ? _`Submitting...` : _`Submit report`}
+              {requestCommunityForm.submitting ? _`Submitting...` : _`Submit request`}
               {!requestCommunityForm.submitting && <LuSend class="ml-2 w-4 h-4" />}
             </Button>
           </div>

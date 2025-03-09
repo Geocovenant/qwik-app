@@ -58,6 +58,7 @@ export interface Poll {
     user_voted_options?: number[];
     user_reaction?: 'LIKE' | 'DISLIKE' | null;
     regions?: string[];
+    tags: string[];
 }
 
 export interface Comment {

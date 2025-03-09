@@ -72,7 +72,6 @@ export default component$<PollCardProps>(
         onShowLoginModal$,
         tags = [],
     }) => {
-        console.log('createdAt', createdAt)
         const actionVote = useVotePoll()
         const actionReact = useReactPoll()
         const deletePoll = useDeletePoll()

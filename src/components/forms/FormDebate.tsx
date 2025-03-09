@@ -344,7 +344,7 @@ export default component$<FormDebateProps>(({
           })}
         />
         <p class="mt-2 text-sm text-muted-foreground">
-          {debateForm.internal.fields.is_anonymous?.value
+          {debateForm.internal.fields.is_anonymous?.value === 'on'
             ? _`Your identity will be hidden as debate creator.`
             : _`Your username will be visible as debate creator.`}
         </p>

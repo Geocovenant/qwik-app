@@ -1,5 +1,4 @@
-import { $, component$, type QRL } from "@builder.io/qwik"
-import { _ } from "compiled-i18n"
+import { component$, type QRL } from "@builder.io/qwik"
 import PollCard from "~/components/cards/PollCard"
 import { type Poll, PollScope } from "~/shared/types"
 import EmptyPolls from "~/components/empty-states/EmptyPolls"
@@ -7,6 +6,7 @@ import { Button } from "~/components/ui"
 import { useComputed$, useSignal } from "@builder.io/qwik"
 import { Pagination } from "@qwik-ui/headless"
 import { LuPlus, LuFilter, LuSearch } from "@qwikest/icons/lucide"
+import { _ } from "compiled-i18n"
 
 export interface PollListProps {
     onCreatePoll: QRL<() => void>
@@ -22,7 +22,7 @@ export interface PollListProps {
     onPageChange$: QRL<(page: number) => void>
     isAuthenticated?: boolean
     currentUsername?: string
-    onShowLoginModal$?: QRL<() => void>
+    onShowLoginModal$: QRL<() => void>
 }
 
 export default component$<PollListProps>(({ polls, onCreatePoll, region, communityName, onPageChange$, isAuthenticated = true, currentUsername = "", onShowLoginModal$ }) => {
@@ -144,7 +144,7 @@ export default component$<PollListProps>(({ polls, onCreatePoll, region, communi
                     <h2 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
                         <span>{_`Polls`}</span>
                         <span class="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 text-sm px-2.5 py-0.5 rounded-full">
-                            {filteredPolls.value.length}
+                            {searchTerm.value.trim() ? filteredPolls.value.length : polls.total }
                         </span>
                     </h2>
                     <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
