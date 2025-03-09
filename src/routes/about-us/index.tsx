@@ -10,12 +10,13 @@ import {
 } from '@qwikest/icons/lucide';
 import { useSession } from '../plugin@auth';
 import SocialLoginButtons from '~/components/SocialLoginButtons';
+import { Image } from '@unpic/qwik';
 
 export default component$(() => {
     const session = useSession();
     return (
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-            <div class="max-w-5xl mx-auto">
+            <div class="max-w-5xl mx-auto bg-gray-100 dark:bg-gray-900">
                 {/* Introduction */}
                 <div class="mb-16 text-center">
                     <h1 class="text-4xl font-bold mb-4 text-gray-800 dark:text-white">
@@ -259,6 +260,42 @@ export default component$(() => {
                                 </p>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                {/* Our Team */}
+                <div class="mb-16">
+                    <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white relative pb-3 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-16 after:h-1 after:bg-blue-600 dark:after:bg-blue-500">
+                        {_`Our Team`}
+                    </h2>
+                    <p class="mb-6 text-gray-700 dark:text-gray-300">
+                        {_`Behind Geounity is a dedicated team of professionals passionate about civic engagement and digital democracy. Our diverse backgrounds in technology, community organization, and public policy drive our mission forward.`}
+                    </p>
+                    
+                    <div class="flex justify-center">
+                        <a 
+                            href="https://sebastiancardoso.com" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            class="block transition-transform hover:scale-105 duration-300"
+                        >
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center max-w-xs">
+                                <div class="mb-4 mx-auto w-32 h-32 overflow-hidden rounded-full">
+                                    <Image
+                                        src="https://sebastiancardoso.com/profile.png" 
+                                        alt="Sebastian Cardoso"
+                                        width={150}
+                                        height={150}
+                                    />
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white">
+                                    Sebastián Cardoso
+                                </h3>
+                                <p class="text-blue-600 dark:text-blue-400 mt-1">
+                                    {_`Founder & Lead Developer`}
+                                </p>
+                            </div>
+                        </a>
                     </div>
                 </div>
 
