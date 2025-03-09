@@ -72,6 +72,7 @@ export default component$<PollCardProps>(
         onShowLoginModal$,
         tags = [],
     }) => {
+        console.log('createdAt', createdAt)
         const actionVote = useVotePoll()
         const actionReact = useReactPoll()
         const deletePoll = useDeletePoll()
@@ -170,13 +171,13 @@ export default component$<PollCardProps>(
                 if (previousReaction === "LIKE") {
                     reactionState.likesCount--
                 } else if (previousReaction === "DISLIKE") {
-                    reactionState.dislikesCount--
+                    reactionState.dislikesCount--;
                 }
 
                 if (newReaction === "LIKE") {
-                    reactionState.likesCount++
+                    reactionState.likesCount++;
                 } else {
-                    reactionState.dislikesCount++
+                    reactionState.dislikesCount++;
                 }
             }
 
@@ -216,17 +217,41 @@ export default component$<PollCardProps>(
             }
         })
 
-        // Determine poll type to show an icon
-        const getPollTypeIcon = () => {
+        // Replace the function getPollTypeIcon with a function that returns descriptive text
+        const getPollTypeInfo = () => {
             switch (type) {
                 case "BINARY":
-                    return "⚖️"
+                    return {
+                        text: _`Single vote`,
+                        description: _`You can only vote for one option`,
+                        bgColor: "bg-cyan-100 dark:bg-cyan-900/30",
+                        textColor: "text-cyan-700 dark:text-cyan-300",
+                        borderColor: "border-cyan-200 dark:border-cyan-800"
+                    }
                 case "SINGLE_CHOICE":
-                    return "🔘"
+                    return {
+                        text: _`Single vote`,
+                        description: _`You can only vote for one option`,
+                        bgColor: "bg-purple-100 dark:bg-purple-900/30",
+                        textColor: "text-purple-700 dark:text-purple-300",
+                        borderColor: "border-purple-200 dark:border-purple-800"
+                    }
                 case "MULTIPLE_CHOICE":
-                    return "✅"
+                    return {
+                        text: _`Multiple votes`,
+                        description: _`You can vote for multiple options`,
+                        bgColor: "bg-emerald-100 dark:bg-emerald-900/30",
+                        textColor: "text-emerald-700 dark:text-emerald-300",
+                        borderColor: "border-emerald-200 dark:border-emerald-800"
+                    }
                 default:
-                    return "📊"
+                    return {
+                        text: _`Poll`,
+                        description: _`Participate in this poll`,
+                        bgColor: "bg-blue-100 dark:bg-blue-900/30",
+                        textColor: "text-blue-700 dark:text-blue-300",
+                        borderColor: "border-blue-200 dark:border-blue-800"
+                    }
             }
         }
 
@@ -271,9 +296,6 @@ export default component$<PollCardProps>(
                 <div class="mb-5">
                     <div class="flex justify-between items-start mb-3">
                         <div class="flex items-center gap-2">
-                            <span class="text-2xl" title={type}>
-                                {getPollTypeIcon()}
-                            </span>
                             <h3 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white line-clamp-2">{title}</h3>
                         </div>
                         <div class="flex items-center gap-2">
@@ -299,7 +321,7 @@ export default component$<PollCardProps>(
                     </div>
 
                     {description && <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">{description}</p>}
-
+                    
                     {/* Tags */}
                     {tags.length > 0 && (
                         <div class="flex flex-wrap gap-2 mb-3">
@@ -334,11 +356,18 @@ export default component$<PollCardProps>(
                         </div>
                     )}
 
-                    <div class="flex items-center gap-2 text-sm">
-                        <span class="text-gray-500 dark:text-gray-400">{_`Total votes:`}</span>
-                        <span class="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full font-medium text-gray-700 dark:text-gray-300">
-                            {totalVotes.value}
-                        </span>
+                    <div class="flex items-center justify-between text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="text-gray-500 dark:text-gray-400">{_`Total votes:`}</span>
+                            <span class="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full font-medium text-gray-700 dark:text-gray-300">
+                                {totalVotes.value}
+                            </span>
+                        </div>
+                        
+                        {/* Informative badge of the poll type */}
+                        <div class={`inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full border ${getPollTypeInfo().bgColor} ${getPollTypeInfo().textColor} ${getPollTypeInfo().borderColor}`}>
+                            {getPollTypeInfo().text} • {getPollTypeInfo().description}
+                        </div>
                     </div>
                 </div>
 
