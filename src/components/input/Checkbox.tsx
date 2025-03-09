@@ -12,7 +12,7 @@ type CheckboxProps = {
     onBlur$: (event: Event, element: HTMLInputElement) => void;
     required?: boolean;
     class?: string;
-    label: string;
+    label?: string;
     error?: string;
     helperText?: string;
 };
@@ -24,6 +24,7 @@ type CheckboxProps = {
 export const Checkbox = component$(
     ({ label, error, class: className, ...props }: CheckboxProps) => {
         const { name, required } = props;
+        console.log('props', props)
         return (
             <div class={clsx('', className)}>
                 <label class="flex select-none space-x-4 font-medium md:text-lg lg:text-xl">
@@ -31,6 +32,7 @@ export const Checkbox = component$(
                         {...props}
                         class="mt-1 h-4 w-4 cursor-pointer lg:mt-1 lg:h-5 lg:w-5"
                         type="checkbox"
+                        id={name}
                         aria-invalid={!!error}
                         aria-errormessage={`${name}-error`}
                     />

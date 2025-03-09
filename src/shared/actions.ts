@@ -190,6 +190,32 @@ export const useReactOpinion = routeAction$(
     }
 )
 
+const uploadImage = async (file: Blob) => {
+    const response_signature = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/cloudinary/generate_signature`, {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+        },
+    });
+    const data_signature = await response_signature.json();
+    const formdata = new FormData();
+    formdata.append("signature", data_signature.signature);
+    formdata.append("timestamp", data_signature.timestamp);
+    formdata.append("api_key", data_signature.api_key);
+    formdata.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
+    formdata.append("file", file);
+    const endpoint = "https://api.cloudinary.com/v1_1/" + import.meta.env.VITE_CLOUDINARY_CLOUD_NAME + "/auto/upload";
+    const res = await fetch(endpoint, {
+        body: formdata,
+        method: "post",
+    });
+    const data = await res.json();
+    return {
+        secureUrl: data.secure_url,
+    };
+}
+
 export interface DebateResponseData {
     success: boolean;
     message: string;
@@ -202,18 +228,30 @@ export interface DebateResponseData {
 export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
     async (values, event) => {
         console.log('############ useFormDebateAction ############');
-        console.log('values', values);
 
         const token = event.cookie.get('authjs.session-token')?.value;
 
-        // Preparar payload según el scope
+        if (!token) {
+            return {
+                success: false,
+                message: 'No authentication token found',
+            };
+        }
+
         const payload = {
             title: values.title,
             description: values.description,
             tags: values.tags,
-            is_anonymous: values.is_anonymous,
+            is_anonymous: values.is_anonymous === 'on',
             type: values.scope,
         };
+
+        if (values.image?.size > 0) {
+            const cloudinaryResponse = await uploadImage(values.image);
+            payload.images = [cloudinaryResponse.secureUrl];
+        }
+
+        // Preparar payload según el scope
 
         // Añadir los campos específicos según el scope
         switch (values.scope) {
@@ -233,8 +271,6 @@ export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
                 Object.assign(payload, { subregion_id: values.community_ids[0] });
                 break;
         }
-
-        console.log('payload', payload);
 
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates`, {

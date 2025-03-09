@@ -576,7 +576,8 @@ export const useFormDebateLoader = routeLoader$<InitialValues<DebateForm>>(() =>
     return {
         community_ids: [],
         description: '',
-        is_anonymous: false,
+        image: undefined,
+        is_anonymous: 'off',
         scope: '',
         tags: [],
         title: '',
