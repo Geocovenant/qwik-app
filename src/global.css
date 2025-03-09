@@ -605,3 +605,96 @@ textarea {
 .animate-spin-fast {
   animation: spin-fast 7s linear infinite;
 }
+
+.toggle {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.toggle:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--qwik-light-purple);
+  box-shadow: 0 0 0 1px rgba(172, 127, 244, 0.1);
+}
+
+.toggle[aria-pressed="true"] {
+  background-color: var(--qwik-purple) !important;
+  color: white;
+  border-color: var(--qwik-dark-purple);
+  box-shadow: 0 2px 4px rgba(113, 63, 194, 0.3);
+}
+
+.toggle[aria-pressed="true"]:hover {
+  background-color: var(--qwik-dark-purple) !important;
+  box-shadow: 0 2px 6px rgba(78, 45, 153, 0.4);
+}
+
+/* Animación sutil para el efecto de selección */
+.toggle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to right, var(--qwik-light-purple), var(--qwik-purple));
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.2s ease;
+}
+
+.toggle:focus {
+  outline: 2px solid var(--qwik-light-purple);
+  outline-offset: 1px;
+}
+
+/* Grupo de toggles con bordes conectados */
+.toggle-group {
+  display: inline-flex;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.toggle-group .toggle {
+  border-radius: 0;
+  margin-left: -1px;
+}
+
+.toggle-group .toggle:first-child {
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+  margin-left: 0;
+}
+
+.toggle-group .toggle:last-child {
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+/* Para modo oscuro */
+.dark .toggle {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-color);
+}
+
+.dark .toggle:hover {
+  background-color: var(--bg-secondary);
+  border-color: var(--qwik-light-purple);
+}
+
+.dark .toggle[aria-pressed="true"] {
+  background: linear-gradient(to right, var(--qwik-purple), var(--qwik-dark-purple)) !important;
+}
+
+.dark .toggle[aria-pressed="true"]:hover {
+  background: linear-gradient(to right, var(--qwik-dark-purple), var(--qwik-darker-purple)) !important;
+}
+

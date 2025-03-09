@@ -2,7 +2,6 @@ import { $, component$, useSignal, useTask$, useVisibleTask$ } from '@builder.io
 import { useForm, valiForm$, insert, remove, setValue } from '@modular-forms/qwik';
 import { TextInput } from '~/components/input/TextInput';
 import { TextArea } from '~/components/input/TextArea';
-import { ChipGroup } from '~/components/input/ChipGroup';
 import type { PollForm } from '~/schemas/pollSchema';
 import { PollSchema } from '~/schemas/pollSchema';
 import { useFormPollLoader } from '~/shared/loaders';
@@ -12,12 +11,13 @@ import { PollType } from '~/constants/pollType';
 import { _ } from 'compiled-i18n';
 import { CommunityType } from '~/constants/communityType';
 import { dataArray as countries } from "~/data/countries";
-import { Select } from '~/components/ui';
+import { Select, ToggleGroup } from '~/components/ui';
 import { CustomToggle } from '~/components/input/CustomToggle';
 import { useLocation } from '@builder.io/qwik-city';
 import { useComputed$ } from '@builder.io/qwik';
 import { CountrySelectInput } from '../input/CountrySelectInput';
 import { TagInput } from '~/components/input/TagInput';
+import { LuMinus } from '@qwikest/icons/lucide';
 
 export interface FormPollProps {
     onSubmitCompleted: () => void;
@@ -43,6 +43,16 @@ export default component$<FormPollProps>(({
         action: useFormPollAction(),
         fieldArrays: ['options'],
         validate: valiForm$(PollSchema)
+    });
+    // Control to show/hide end date
+    const showEndDate = useSignal(false);
+
+    // If toggle is deactivated, clear date field
+    useTask$(({ track }) => {
+        track(() => showEndDate.value);
+        if (!showEndDate.value) {
+            setValue(pollForm, 'ends_at', '');
+        }
     });
     useTask$(({ track }) => {
         const scope = track(() => defaultScope);
@@ -70,16 +80,6 @@ export default component$<FormPollProps>(({
         }
     });
 
-    // Control to show/hide end date
-    const showEndDate = useSignal(false);
-
-    // If toggle is deactivated, clear date field
-    useTask$(({ track }) => {
-        track(() => showEndDate.value);
-        if (!showEndDate.value) {
-            setValue(pollForm, 'ends_at', '');
-        }
-    });
 
     const isAnonymous = useSignal(false);
 
@@ -293,6 +293,7 @@ export default component$<FormPollProps>(({
                     {(field, props) => (
                         <TextInput
                             {...props}
+                            autofocus
                             label={_`Title`}
                             placeholder={_`Enter a clear and concise title`}
                             required
@@ -318,58 +319,86 @@ export default component$<FormPollProps>(({
             </div>
 
             {/* Poll Options Section */}
-            <div class="space-y-4">
-                <h2 class="font-medium text-foreground">{_`Poll Options`}</h2>
+            <div class="space-y-2">
+                <h2 class="font-medium text-foreground">{_`Poll Type`}</h2>
+                <p class="text-sm text-muted-foreground">
+                    {_`Select the type of poll you want to create. The type of poll will determine the number of options you can add.`}
+                </p>
+                <ToggleGroup.Root
+                    value={pollForm.internal.fields.type?.value}
+                    onChange$={(v: string) => {
+                        console.log('v', v)
+                        setValue(pollForm, 'type', v as PollType);
+                    }}
+                >
+                    <ToggleGroup.Item value={PollType.BINARY} aria-label={_`Binary`} class="toggle">
+                        {_`Binary`}
+                    </ToggleGroup.Item>
+                    <ToggleGroup.Item value={PollType.SINGLE_CHOICE} aria-label={_`Single Choice`} class="toggle">
+                        {_`Single Choice`}
+                    </ToggleGroup.Item>
+                    <ToggleGroup.Item value={PollType.MULTIPLE_CHOICE} aria-label={_`Multiple Choice`} class="toggle">
+                        {_`Multiple Choice`}
+                    </ToggleGroup.Item>
+                </ToggleGroup.Root>
+
+                <div class="space-y-2">
+                    {pollForm.internal.fields.type?.value === PollType.BINARY && (
+                        <p class="text-sm text-muted-foreground">
+                            {_`Binary polls have only two options, such as Yes or No.`}
+                        </p>
+                    )}
+                    {pollForm.internal.fields.type?.value === PollType.SINGLE_CHOICE && (
+                        <p class="text-sm text-muted-foreground">
+                            {_`Single choice polls allow participants to select only one option.`}
+                        </p>
+                    )}
+                    {pollForm.internal.fields.type?.value === PollType.MULTIPLE_CHOICE && (
+                        <p class="text-sm text-muted-foreground">
+                            {_`Multiple choice polls allow participants to select multiple options.`}
+                        </p>
+                    )}
+                </div>
 
                 <Field name="type">
                     {(field, props) => (
-                        <ChipGroup
-                            {...props}
-                            onInput$={(ev: Event) => props.onInput$(ev, ev.target as HTMLTextAreaElement)}
-                            onChange$={(ev: Event) => props.onChange$(ev, ev.target as HTMLTextAreaElement)}
-                            label={_`Poll Type`}
-                            value={field.value || PollType.SINGLE_CHOICE}
-                            options={[
-                                { value: PollType.BINARY, label: _`Binary`, description: _`Yes/No` },
-                                { value: PollType.SINGLE_CHOICE, label: _`Single Choice`, description: _`One option` },
-                                { value: PollType.MULTIPLE_CHOICE, label: _`Multiple Choice`, description: _`Multiple options` },
-                            ]}
-                            required
-                            error={field.error}
-                        />
+                        <input type="hidden" {...props} value={field.value} />
                     )}
                 </Field>
 
                 <FieldArray name="options">
                     {(fieldArray) => (
                         <div class="space-y-3">
-                            {fieldArray.items.map((option, index) => (
-                                <div key={option} class="flex items-center gap-2">
-                                    <Field name={`options.${index}`}>
-                                        {(field, props) => (
-                                            <div class="flex-1">
-                                                <TextInput
-                                                    {...props}
-                                                    label={_`Option ${index + 1}`}
-                                                    placeholder={_`Enter option ${index + 1}`}
-                                                    required
-                                                    value={field.value}
-                                                    error={field.error}
-                                                    maxLength={150}
-                                                />
-                                            </div>
+                            {(pollForm.internal.fields.type?.value === PollType.BINARY 
+                                ? fieldArray.items.slice(0, 2) 
+                                : fieldArray.items).map((option, index) => (
+                                    <div key={option} class="flex items-center gap-2">
+                                        <Field name={`options.${index}`}>
+                                            {(field, props) => (
+                                                <div class="flex-1">
+                                                    <TextInput
+                                                        {...props}
+                                                        label={_`Option ${index + 1}`}
+                                                        placeholder={_`Enter option ${index + 1}`}
+                                                        required
+                                                        value={field.value}
+                                                        error={field.error}
+                                                        maxLength={150}
+                                                    />
+                                                </div>
+                                            )}
+                                        </Field>
+                                        {fieldArray.items.length > 2 && pollForm.internal.fields.type?.value !== PollType.BINARY && (
+                                            <button 
+                                                type="button" 
+                                                class="mt-6 p-2 text-muted-foreground hover:text-destructive transition-colors"
+                                                onClick$={() => remove(pollForm, 'options', { at: index })}
+                                                aria-label={`${_`Remove Option`} ${index + 1}`}
+                                            >
+                                                <LuMinus />
+                                            </button>
                                         )}
-                                    </Field>
-                                    {fieldArray.items.length > 2 && (
-                                        <button 
-                                            type="button" 
-                                            class="mt-6 p-2 text-muted-foreground hover:text-destructive transition-colors"
-                                            onClick$={() => remove(pollForm, 'options', { at: index })}
-                                        >
-                                            {_`Remove`}
-                                        </button>
-                                    )}
-                                </div>
+                                    </div>
                             ))}
                             {fieldArray.items.length < 10 && pollForm.internal.fields.type?.value !== PollType.BINARY && (
                                 <button 
