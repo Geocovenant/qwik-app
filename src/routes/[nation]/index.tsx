@@ -1,13 +1,16 @@
 import { component$, useComputed$ } from "@builder.io/qwik";
 import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
 import { _ } from "compiled-i18n";
-import { LuBarChart2, LuFlag, LuUsers, LuMessageSquare, LuBriefcase, LuAlertTriangle } from "@qwikest/icons/lucide";
+import { LuBarChart2, LuFlag, LuUsers, LuMessageSquare, LuBriefcase, LuAlertTriangle, LuUserPlus, LuUserMinus } from "@qwikest/icons/lucide";
 import { dataArray as countries, getFlagByCca2 } from "~/data/countries";
 import { capitalizeFirst } from '~/utils/capitalizeFirst';
-import { useGetNationalDebates, useGetNationalPolls, useGetNationalProjects, useGetNationalIssues, useGetCountry } from "~/shared/loaders";
+import { useGetNationalDebates, useGetNationalPolls, useGetNationalProjects, useGetNationalIssues, useGetCountry, useGetUser } from "~/shared/loaders";
 import { Image } from "@unpic/qwik";
+import { Button } from "~/components/ui";
+import { useJoinCommunity, useLeaveCommunity } from "~/shared/actions";
 
-export { useGetNationalPolls, useGetNationalDebates, useGetNationalProjects, useGetNationalIssues, useGetCountry } from "~/shared/loaders";
+export { useGetNationalPolls, useGetNationalDebates, useGetNationalProjects, useGetNationalIssues, useGetCountry, useGetUser } from "~/shared/loaders";
+export { useJoinCommunity, useLeaveCommunity } from "~/shared/actions";
 
 // Defining types to avoid TypeScript errors
 interface NationData {
@@ -63,6 +66,17 @@ export default component$(() => {
     const projects = useGetNationalProjects();
     const issues = useGetNationalIssues();
     const country = useGetCountry();
+    const user = useGetUser();
+
+    const joinCommunityAction = useJoinCommunity();
+    const leaveCommunityAction = useLeaveCommunity();
+
+    // Verify if the user is already a member of the community
+    const isMember = useComputed$(() => {
+        return user.value.communities?.some(
+            (community: any) => community.id === country.value.community_id
+        );
+    });
 
     const pollsCount = polls.value.total || 0;
     const debatesCount = debates.value.total || 0;
@@ -71,160 +85,190 @@ export default component$(() => {
 
     return (
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-auto p-4 bg-gray-50 dark:bg-gray-800">
-            <header class="mb-6">
-                <div class="flex items-center gap-3">
+            {/* Header Section */}
+            <div class="mb-6">
+                <div class="flex items-center gap-3 mb-2">
                     {nation.value?.cca2
                         ? <span class="text-2xl">{getFlagByCca2(nation.value?.cca2)}</span>
-                        : <LuFlag class="w-10 h-10 text-blue-600 dark:text-blue-400" />
+                        : <LuFlag class="w-8 h-8 text-blue-600 dark:text-blue-400" />
                     }
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{nation.value?.name || capitalizeFirst(nationName)}</h1>
                 </div>
-                <p class="text-gray-600 dark:text-gray-300 mt-2">
+                <p class="text-gray-600 dark:text-gray-300 mb-4">
                     {_`Welcome to the national community where citizens connect, share ideas, and work together.`}
                 </p>
-            </header>
+                
+                <Button
+                    class={`flex items-center gap-2 font-medium py-2 px-4 rounded-lg transition-colors ${
+                        isMember.value 
+                            ? 'bg-red-600 hover:bg-red-700 text-white' 
+                            : 'bg-blue-600 hover:bg-blue-700 text-white'
+                    }`}
+                    onClick$={() => {
+                        if (isMember.value) {
+                            leaveCommunityAction.submit({
+                                communityId: country.value.community_id
+                            });
+                        } else {
+                            joinCommunityAction.submit({
+                                communityId: country.value.community_id
+                            });
+                        }
+                    }}
+                >
+                    {isMember.value ? (
+                        <>
+                            <LuUserMinus class="w-5 h-5" />
+                            <span>{_`Leave Community`}</span>
+                        </>
+                    ) : (
+                        <>
+                            <LuUserPlus class="w-5 h-5" />
+                            <span>{_`Join Community`}</span>
+                        </>
+                    )}
+                </Button>
+            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow dark:shadow-gray-700">
+            {/* Main Content */}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                {/* Country Information */}
+                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuFlag class="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         {_`Country Information`}
                     </h2>
                     
-                    {country.value?.coat_of_arms_svg && (
-                        <div class="flex justify-center mb-4">
-                            <Image 
-                                src={country.value.coat_of_arms_svg} 
-                                alt={`Coat of arms of ${country.value.name || capitalizeFirst(nationName)}`} 
-                                class="h-32 w-auto max-w-[150px] object-contain"
-                            />
-                        </div>
-                    )}
-                    
-                    <div class="space-y-4">
-                        <div class="flex items-start gap-3">
-                            <LuFlag class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
-                            <div class="dark:text-gray-300">
-                                <span class="font-medium">{_`Native Name`}:</span> {country.value.native_name || _`Not available`}
-                            </div>
-                        </div>
-
-                        {country.value.capital && (
-                            <div class="flex items-start gap-3">
-                                <LuUsers class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
-                                <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`Capital`}:</span> {country.value.capital}
-                                </div>
+                    <div class="flex flex-col sm:flex-row gap-6">
+                        {/* Coat of Arms */}
+                        {country.value?.coat_of_arms_svg && (
+                            <div class="flex justify-center">
+                                <Image 
+                                    src={country.value.coat_of_arms_svg || "/placeholder.svg"} 
+                                    alt={`Coat of arms of ${country.value.name || capitalizeFirst(nationName)}`} 
+                                    class="h-32 w-auto max-w-[150px] object-contain"
+                                />
                             </div>
                         )}
-
-                        {country.value.population && (
-                            <div class="flex items-start gap-3">
-                                <LuUsers class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
-                                <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`Population`}:</span> {country.value.population.toLocaleString()}
-                                </div>
-                            </div>
-                        )}
-
-                        {country.value.area && (
+                        
+                        {/* Country Details */}
+                        <div class="flex-1 space-y-3">
                             <div class="flex items-start gap-3">
                                 <LuFlag class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                 <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`Area`}:</span> {country.value.area.toLocaleString()} km²
+                                    <span class="font-medium">{_`Native Name`}:</span> {country.value.native_name || _`Not available`}
                                 </div>
                             </div>
-                        )}
 
-                        {country.value.cca2 && (
-                            <div class="flex items-start gap-3">
-                                <LuFlag class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
-                                <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`ISO Code`}:</span> {country.value.cca2} {country.value.cca3 ? `/ ${country.value.cca3}` : ''}
+                            {country.value.capital && (
+                                <div class="flex items-start gap-3">
+                                    <LuUsers class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
+                                    <div class="dark:text-gray-300">
+                                        <span class="font-medium">{_`Capital`}:</span> {country.value.capital}
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-
-                        {country.value.currency_name && (
-                            <div class="flex items-start gap-3">
-                                <LuBarChart2 class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
-                                <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`Currency`}:</span> {country.value.currency_name} ({country.value.currency_code})
-                                </div>
-                            </div>
-                        )}
-
-                        {country.value.languages && (
-                            <div class="flex items-start gap-3">
-                                <LuMessageSquare class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
-                                <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`Languages`}:</span> {country.value.languages}
-                                </div>
-                            </div>
-                        )}
-
-                        {country.value.timezone && (
-                            <div class="flex items-start gap-3">
-                                <LuBarChart2 class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
-                                <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`Timezone`}:</span> {country.value.timezone}
-                                </div>
-                            </div>
-                        )}
-
-                        {country.value.region && (
-                            <div class="flex items-start gap-3">
-                                <LuBarChart2 class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
-                                <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`Region`}:</span> {country.value.region}
-                                </div>
-                            </div>
-                        )}
-
-                        {country.value.subregion && (
-                            <div class="flex items-start gap-3">
-                                <LuBarChart2 class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
-                                <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`Subregion`}:</span> {country.value.subregion}
-                                </div>
-                            </div>
-                        )}
-
-                        {country.value.borders && (
-                            <div class="flex items-start gap-3">
-                                <LuFlag class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
-                                <div class="dark:text-gray-300">
-                                    <span class="font-medium">{_`Bordering Countries`}:</span> {country.value.borders}
-                                </div>
-                            </div>
-                        )}
-
-                        <div class="flex gap-3 mt-4">
-                            {country.value.google_maps_link && (
-                                <a
-                                    href={country.value.google_maps_link}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="text-sm bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 text-blue-800 dark:text-blue-200 px-3 py-1.5 rounded flex items-center gap-1"
-                                >
-                                    <span>{_`View on Google Maps`}</span>
-                                </a>
                             )}
-                            {country.value.openstreetmap_link && (
-                                <a
-                                    href={country.value.openstreetmap_link}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="text-sm bg-green-100 hover:bg-green-200 dark:bg-green-900 dark:hover:bg-green-800 text-green-800 dark:text-green-200 px-3 py-1.5 rounded flex items-center gap-1"
-                                >
-                                    <span>{_`View on OpenStreetMap`}</span>
-                                </a>
+
+                            {country.value.population && (
+                                <div class="flex items-start gap-3">
+                                    <LuUsers class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
+                                    <div class="dark:text-gray-300">
+                                        <span class="font-medium">{_`Population`}:</span> {country.value.population.toLocaleString()}
+                                    </div>
+                                </div>
+                            )}
+
+                            {country.value.area && (
+                                <div class="flex items-start gap-3">
+                                    <LuFlag class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
+                                    <div class="dark:text-gray-300">
+                                        <span class="font-medium">{_`Area`}:</span> {country.value.area.toLocaleString()} km²
+                                    </div>
+                                </div>
+                            )}
+
+                            {country.value.cca2 && (
+                                <div class="flex items-start gap-3">
+                                    <LuFlag class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
+                                    <div class="dark:text-gray-300">
+                                        <span class="font-medium">{_`ISO Code`}:</span> {country.value.cca2} {country.value.cca3 ? `/ ${country.value.cca3}` : ''}
+                                    </div>
+                                </div>
+                            )}
+
+                            {country.value.currency_name && (
+                                <div class="flex items-start gap-3">
+                                    <LuBarChart2 class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
+                                    <div class="dark:text-gray-300">
+                                        <span class="font-medium">{_`Currency`}:</span> {country.value.currency_name} ({country.value.currency_code})
+                                    </div>
+                                </div>
+                            )}
+
+                            {country.value.languages && (
+                                <div class="flex items-start gap-3">
+                                    <LuMessageSquare class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
+                                    <div class="dark:text-gray-300">
+                                        <span class="font-medium">{_`Languages`}:</span> {country.value.languages}
+                                    </div>
+                                </div>
+                            )}
+
+                            {country.value.timezone && (
+                                <div class="flex items-start gap-3">
+                                    <LuBarChart2 class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
+                                    <div class="dark:text-gray-300">
+                                        <span class="font-medium">{_`Timezone`}:</span> {country.value.timezone}
+                                    </div>
+                                </div>
+                            )}
+
+                            {country.value.region && (
+                                <div class="flex items-start gap-3">
+                                    <LuBarChart2 class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
+                                    <div class="dark:text-gray-300">
+                                        <span class="font-medium">{_`Region`}:</span> {country.value.region}
+                                    </div>
+                                </div>
                             )}
                         </div>
                     </div>
+
+                    {country.value.borders && (
+                        <div class="flex items-start gap-3 mt-4">
+                            <LuFlag class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
+                            <div class="dark:text-gray-300">
+                                <span class="font-medium">{_`Bordering Countries`}:</span> {country.value.borders}
+                            </div>
+                        </div>
+                    )}
+
+                    <div class="flex gap-3 mt-4">
+                        {country.value.google_maps_link && (
+                            <a
+                                href={country.value.google_maps_link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-sm bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 text-blue-800 dark:text-blue-200 px-3 py-1.5 rounded flex items-center gap-1"
+                            >
+                                <span>{_`View on Google Maps`}</span>
+                            </a>
+                        )}
+                        {country.value.openstreetmap_link && (
+                            <a
+                                href={country.value.openstreetmap_link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-sm bg-green-100 hover:bg-green-200 dark:bg-green-900 dark:hover:bg-green-800 text-green-800 dark:text-green-200 px-3 py-1.5 rounded flex items-center gap-1"
+                            >
+                                <span>{_`View on OpenStreetMap`}</span>
+                            </a>
+                        )}
+                    </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow dark:shadow-gray-700">
+                {/* Platform Statistics */}
+                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuBarChart2 class="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         {_`Platform Statistics`}
@@ -250,8 +294,9 @@ export default component$(() => {
                 </div>
             </div>
 
+            {/* Featured Topics and Active Projects */}
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow dark:shadow-gray-700 col-span-1 lg:col-span-2">
+                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow col-span-1 lg:col-span-2">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuMessageSquare class="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         {_`Featured Topics in ${nation.value?.name || capitalizeFirst(nationName)}`}
@@ -282,7 +327,7 @@ export default component$(() => {
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow dark:shadow-gray-700">
+                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuBriefcase class="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         {_`Active Projects`}
@@ -311,8 +356,9 @@ export default component$(() => {
                 </div>
             </div>
 
+            {/* Reported Issues and Active Polls */}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow dark:shadow-gray-700">
+                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuAlertTriangle class="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         {_`Reported Issues`}
@@ -343,7 +389,7 @@ export default component$(() => {
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow dark:shadow-gray-700">
+                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuBarChart2 class="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         {_`Active Polls`}

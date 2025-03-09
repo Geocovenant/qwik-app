@@ -16,9 +16,8 @@ export { useUpdateCommunityVisibility } from "~/shared/actions";
 export default component$(() => {
     const session = useSession();
     const members = useGetGlobalMembers();
-    console.log('members', members.value)
     const updateCommunityVisibilityAction = useUpdateCommunityVisibility();
-    const isPublic = useSignal(members.value?.current_user?.is_public || false);
+    const isPublic = useSignal(members.value.current_user?.is_public || false);
     const currentPage = useSignal(1);
     const nav = useNavigate();
     const isAuthenticated = useComputed$(() => !!session.value?.user);
@@ -47,7 +46,7 @@ export default component$(() => {
                             <div>
                                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{_`Global Community Members`}</h1>
                                 <p class="text-gray-600 dark:text-gray-400">
-                                    {_`Discover and connect with other users on the platform.`}
+                                    {_`Discover and connect with other users in this community.`}
                                 </p>
                             </div>
                         </div>

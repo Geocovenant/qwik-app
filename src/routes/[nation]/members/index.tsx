@@ -9,28 +9,28 @@ import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
 // Note: We need to create a specific loader for national members
 // Using the global loader with adaptations in the meantime
-import { useGetGlobalMembers } from "~/shared/loaders";
+import { useGetCountry, useGetNationalMembers } from "~/shared/loaders";
 import { useUpdateCommunityVisibility } from "~/shared/actions";
 
-export { useGetGlobalMembers } from "~/shared/loaders";
+export { useGetCountry, useGetNationalMembers } from "~/shared/loaders";
 export { useUpdateCommunityVisibility } from "~/shared/actions";
 
 export default component$(() => {
-    const session = useSession();
     const location = useLocation();
     const nationName = location.params.nation;
     const nation = useComputed$(() => {
         return countries.find(country => country.name.toLowerCase() === nationName.toLowerCase());
     });
-    
-    // Temporary: use global loader until we have a specific national one
-    const members = useGetGlobalMembers();
+
+    const session = useSession();
+    const country = useGetCountry();
+    const members = useGetNationalMembers();
     const updateCommunityVisibilityAction = useUpdateCommunityVisibility();
+    const isPublic = useSignal(members.value.current_user?.is_public || false);
+    const currentPage = useSignal(1);
     
     // Assume the national community has ID 2 (adjust as necessary)
-    const nationalCommunityId = 2;
-    const isPublic = useSignal(members.value.items.find((m: any) => m.is_current_user)?.is_public || false);
-    const currentPage = useSignal(1);
+    const nationalCommunityId = country.value.community_id;
     const nav = useNavigate();
     const isAuthenticated = useComputed$(() => !!session.value?.user);
 
@@ -64,7 +64,7 @@ export default component$(() => {
                         </div>
                         <div class="mt-4 sm:mt-0 flex items-center gap-2 pl-3">
                             <span class="text-lg font-semibold text-blue-700 dark:text-blue-400">
-                                {members.value.total} {_`members`}
+                                {members.value.total_public + members.value.total_anonymous} {_`members`}
                             </span>
                         </div>
                     </div>
@@ -79,15 +79,15 @@ export default component$(() => {
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <span class="text-sm text-gray-600 dark:text-gray-400">
-                                        {isPublic.value ? _`Visible to everyone` : _`Hidden profile`}
+                                        {isPublic.value ? _`Visible to everyone` : _`Profile hidden`}
                                     </span>
                                     <button
                                         onClick$={togglePublicVisibility}
                                         class={`w-14 h-7 rounded-full flex items-center px-1 transition-colors ${isPublic.value ? "bg-blue-600 justify-end" : "bg-gray-300 dark:bg-gray-600 justify-start"}`}
                                         aria-label={
                                             isPublic.value
-                                                ? _`Switch to hidden profile`
-                                                : _`Switch to visible profile`
+                                                ? _`Change to hidden profile`
+                                                : _`Change to visible profile`
                                         }
                                     >
                                         <div class="w-5 h-5 bg-white rounded-full shadow-md"></div>
@@ -97,7 +97,7 @@ export default component$(() => {
                             <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 ml-8">
                                 {isPublic.value
                                     ? _`Your profile is visible to all community members.`
-                                    : _`Your profile is hidden. Only you can see it in this list.`}
+                                    : _`Your profile is hidden. Only you can see it on this list.`}
                             </p>
                         </div>
                     )}
@@ -131,7 +131,7 @@ export default component$(() => {
                                             )}
                                         </div>
                                         <div class="flex-1 overflow-hidden">
-                                            <h3 class="font-medium truncate text-gray-900 dark:text-white">{member.name || member.username || _`Anonymous user`}</h3>
+                                            <h3 class="font-medium truncate text-gray-900 dark:text-white">{member.name || member.username || _`Anonymous User`}</h3>
                                             {member.username && (
                                                 <p class="text-sm text-gray-600 dark:text-gray-400 truncate">@{member.username}</p>
                                             )}
@@ -161,13 +161,22 @@ export default component$(() => {
                         )}
 
                         {/* Pagination */}
+                        {members.value.total_anonymous > 0 && (
+                            <div class="flex justify-center items-center p-4 border-t border-gray-200 dark:border-gray-700">
+                                <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                                    <LuEyeOff class="w-4 h-4" />
+                                    <span>{members.value.total_anonymous} anonymous members</span>
+                                </div>
+                            </div>
+                        )}
+
                         {members.value.pages > 1 && (
                             <div class="flex justify-center items-center gap-2 p-4 border-t border-gray-200 dark:border-gray-700">
                                 <button
                                     onClick$={async () => {
                                         if (currentPage.value > 1) {
                                             currentPage.value--;
-                                            await nav(`/${nationName}/members?page=${currentPage.value}`);
+                                            await nav(`/global/members?page=${currentPage.value}`);
                                         }
                                     }}
                                     disabled={currentPage.value === 1}
@@ -187,7 +196,7 @@ export default component$(() => {
                                     onClick$={async () => {
                                         if (currentPage.value < members.value.pages) {
                                             currentPage.value++;
-                                            await nav(`/${nationName}/members?page=${currentPage.value}`);
+                                            await nav(`/global/members?page=${currentPage.value}`);
                                         }
                                     }}
                                     disabled={currentPage.value === members.value.pages}

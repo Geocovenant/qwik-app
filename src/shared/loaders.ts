@@ -15,14 +15,13 @@ import type { CommunityRequestForm } from "~/schemas/communityRequestSchema";
 // eslint-disable-next-line qwik/loader-location
 export const useGetUser = routeLoader$(async ({ cookie }) => {
     const token = cookie.get('authjs.session-token')
-    console.log('token', token)
     if (!token) {
         return null
     }
     const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/me`, {
         headers: {
             Accept: 'application/json',
-            Authorization: token.value
+            Authorization: `Bearer ${token.value}`
         }
     })
     const data = await response.json()
@@ -1088,21 +1087,21 @@ export const useGetGlobalMembers = routeLoader$(async ({ cookie, query }) => {
 });
 
 // eslint-disable-next-line qwik/loader-location
-export const useGetNationalMembers = routeLoader$(async ({ cookie, params, query }) => {
+export const useGetNationalMembers = routeLoader$(async ({ cookie, query, resolveValue }) => {
+    console.log('============ useGetNationalMembers ============')
+    const country = await resolveValue(useGetCountry);
+    console.log('country1', country)
     const page = Number(query.get("page") || "1");
     const size = Number(query.get("size") || "100");
     const token = cookie.get('authjs.session-token');
     if (!token) {
         return { items: [], total: 0, page: 1, size: 20, pages: 1 };
     }
-    const cca2 = getCountryCode(params.nation);
-    if (!cca2) {
-        console.error('Country not found!', params.nation);
-        return [];
-    }
+    
+    const communityId = country.community_id;
 
     try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/countries/${cca2}/members?page=${page}&size=${size}`, {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${communityId}/members?page=${page}&size=${size}`, {
             headers: {
                 Accept: 'application/json',
                 Authorization: token.value

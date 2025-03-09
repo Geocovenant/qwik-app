@@ -760,20 +760,21 @@ export const useUpdateCommunityVisibility = routeAction$(
 // Acción para unirse a una comunidad
 // eslint-disable-next-line qwik/loader-location
 export const useJoinCommunity = routeAction$(
-    async (form: { communityId: number }, { cookie }) => {
+    async (data, { cookie }) => {
+        const { communityId } = data;
         console.log('### useJoinCommunity ###');
+        console.log('communityId', communityId)
         const token = cookie.get('authjs.session-token');
         if (!token) {
             return { success: false, error: "No authentication token found" };
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${form.communityId}/join`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${communityId}/join`, {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
                     "Authorization": token.value,
-                    "Content-Type": "application/json",
                 },
             });
 
@@ -794,15 +795,16 @@ export const useJoinCommunity = routeAction$(
 // Acción para abandonar una comunidad
 // eslint-disable-next-line qwik/loader-location
 export const useLeaveCommunity = routeAction$(
-    async (form: { communityId: number }, { cookie }) => {
+    async (data, { cookie }) => {
         console.log('### useLeaveCommunity ###');
+        const { communityId } = data;
         const token = cookie.get('authjs.session-token');
         if (!token) {
             return { success: false, error: "No authentication token found" };
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${form.communityId}/join`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${communityId}/join`, {
                 method: "DELETE",
                 headers: {
                     "Accept": "application/json",
