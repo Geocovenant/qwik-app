@@ -7,7 +7,8 @@ import { useSession } from "~/routes/plugin@auth";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
 export { useGetRegionalPolls, useGetRegionalDebates, useGetRegionalProjects, useGetRegionalIssues, useFormPollLoader, useFormDebateLoader, useFormIssueLoader, useGetRegions, useGetTags } from "~/shared/loaders";
-export { useFormPollAction, useFormDebateAction, useVotePoll, useReactPoll } from "~/shared/actions";
+export { useFormDebateAction, useVotePoll, useReactPoll } from "~/shared/actions";
+export { useFormPollAction } from "~/shared/forms/actions";
 
 export default component$(() => {
     const session = useSession();

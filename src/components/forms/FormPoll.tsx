@@ -5,7 +5,6 @@ import { TextArea } from '~/components/input/TextArea';
 import type { PollForm } from '~/schemas/pollSchema';
 import { PollSchema } from '~/schemas/pollSchema';
 import { useFormPollLoader } from '~/shared/loaders';
-import { useFormPollAction, type PollResponseData } from '~/shared/actions';
 import { FormFooter } from '~/components/forms/FormFooter';
 import { PollType } from '~/constants/pollType';
 import { _ } from 'compiled-i18n';
@@ -18,7 +17,8 @@ import { useComputed$ } from '@builder.io/qwik';
 import { CountrySelectInput } from '../input/CountrySelectInput';
 import { TagInput } from '~/components/input/TagInput';
 import { LuMinus } from '@qwikest/icons/lucide';
-
+import { useFormPollAction } from '~/shared/forms/actions';
+import type { PollResponseData } from '~/schemas/pollSchema';
 export interface FormPollProps {
     onSubmitCompleted: () => void;
     defaultScope?: CommunityType;

@@ -11,7 +11,8 @@ import { useSession } from "~/routes/plugin@auth";
 import { useGetGlobalPolls } from "~/shared/global/loaders";
 
 export { useFormPollLoader } from "~/shared/loaders";
-export { useFormPollAction, useVotePoll, useReactPoll, useDeletePoll } from "~/shared/actions";
+export { useVotePoll, useReactPoll, useDeletePoll } from "~/shared/actions";
+export { useFormPollAction } from "~/shared/forms/actions";
 
 export default component$(() => {
     const polls = useGetGlobalPolls();

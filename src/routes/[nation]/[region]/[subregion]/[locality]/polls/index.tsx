@@ -14,7 +14,8 @@ import { useGetLocalityPolls } from "~/shared/loaders";
 
 // Export loaders so Qwik City can find them
 export { useGetLocalityPolls, useFormPollLoader } from "~/shared/loaders";
-export { useFormPollAction, useVotePoll, useReactPoll } from "~/shared/actions";
+export { useVotePoll, useReactPoll } from "~/shared/actions";
+export { useFormPollAction } from "~/shared/forms/actions";
 
 export default component$(() => {
     const session = useSession();

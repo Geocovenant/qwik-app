@@ -25,7 +25,8 @@ export {
     useGetSubregionalPolls, useGetSubregionalDebates, useGetSubregionalProjects, useGetSubregionalIssues, useFormPollLoader,
     useFormDebateLoader, useFormIssueLoader, useGetSubregions, useGetTags, useGetRegions
 } from "~/shared/loaders";
-export { useFormPollAction, useFormDebateAction, useVotePoll, useReactPoll } from "~/shared/actions";
+export { useFormDebateAction, useVotePoll, useReactPoll } from "~/shared/actions";
+export { useFormPollAction } from "~/shared/forms/actions";
 
 export default component$(() => {
     const session = useSession();

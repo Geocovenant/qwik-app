@@ -44,3 +44,13 @@ export const PollSchema = v.object({
 });
 
 export type PollForm = v.InferInput<typeof PollSchema>;
+
+export interface PollResponseData {
+    success: boolean;
+    message: string;
+    data?: {
+        poll_id: string;
+        share_link: string;
+        timestamp?: string;
+    };
+}
