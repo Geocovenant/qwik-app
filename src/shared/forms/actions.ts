@@ -101,6 +101,7 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
 
 export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
     async (values, event) => {
+        console.log('values4', values)
         const uploadImage = async (file: Blob) => {
             const response_signature = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/cloudinary/generate_signature`, {
                 method: 'POST',
@@ -145,26 +146,26 @@ export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
         }
 
         // Image validations
-        if (values.image && typeof values.image === 'object' && 'size' in values.image && values.image.size > 0) {
-            // 1. File size validation (12MB max)
-            const maxSize = 12 * 1024 * 1024; // 12MB in bytes
-            if (values.image.size > maxSize) {
-                return {
-                    success: false,
-                    message: _`Image is too large. Maximum size allowed is 12MB.`,
-                };
-            }
+        // if (values.image && typeof values.image === 'object' && 'size' in values.image && values.image.size > 0) {
+        //     // 1. File size validation (12MB max)
+        //     const maxSize = 12 * 1024 * 1024; // 12MB in bytes
+        //     if (values.image.size > maxSize) {
+        //         return {
+        //             success: false,
+        //             message: _`Image is too large. Maximum size allowed is 12MB.`,
+        //         };
+        //     }
 
-            // 2. File type validation
-            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-            if (values.image.type && !allowedTypes.includes(values.image.type)) {
-                console.log(7)
-                return {
-                    success: false,
-                    message: _`Invalid image format. Allowed formats are: JPG, PNG, GIF, and WEBP.`,
-                };
-            }
-        }
+        //     // 2. File type validation
+        //     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        //     if (values.image.type && !allowedTypes.includes(values.image.type)) {
+        //         console.log(7)
+        //         return {
+        //             success: false,
+        //             message: _`Invalid image format. Allowed formats are: JPG, PNG, GIF, and WEBP.`,
+        //         };
+        //     }
+        // }
 
         // Define payload with a more complete type
         const payload: {
@@ -178,15 +179,15 @@ export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
             title: values.title,
             description: values.description,
             tags: values.tags,
-            is_anonymous: values.is_anonymous === 'on',
+            is_anonymous: values.is_anonymous,
             type: values.scope,
         };
 
         // Upload image if valid
-        if (values.image && typeof values.image === 'object' && 'size' in values.image && values.image.size > 0) {
-            const cloudinaryResponse = await uploadImage(values.image as Blob);
-            payload.images = [cloudinaryResponse.secureUrl];
-        }
+        // if (values.image && typeof values.image === 'object' && 'size' in values.image && values.image.size > 0) {
+        //     const cloudinaryResponse = await uploadImage(values.image as Blob);
+        //     payload.images = [cloudinaryResponse.secureUrl];
+        // }
 
         // Add specific fields according to the scope
         switch (values.scope) {

@@ -119,8 +119,10 @@ export const MultiCountryCombobox = component$<MultiCountryComboboxProps>(({
               if (onBlur$) onBlur$(e, e.target as HTMLInputElement);
             }}
             onInput$={(e) => {
-              searchText.value = (e.target as HTMLInputElement).value;
-              if (onInput$) onInput$(e, e.target as HTMLInputElement);
+              setTimeout(() => {
+                searchText.value = (e.target as HTMLInputElement).value;
+                if (onInput$) onInput$(e, e.target as HTMLInputElement);
+              }, 200);
             }}
             onKeyUp$={() => {
               showDropdown.value = true;

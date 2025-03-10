@@ -1,5 +1,5 @@
 import { $, component$, useStylesScoped$, useSignal } from "@builder.io/qwik";
-import { LuCalendar, LuMessageSquare, LuTag, LuClock, LuLink, LuGlobe, LuTrash2, LuFlag, LuUser2 } from '@qwikest/icons/lucide';
+import { LuCalendar, LuMessageSquare, LuTag, LuLink, LuGlobe, LuTrash2, LuFlag, LuUser2 } from '@qwikest/icons/lucide';
 import { Link, useNavigate } from "@builder.io/qwik-city";
 import { PollScope } from "~/shared/types";
 import { timeAgo } from "~/utils/dateUtils";
@@ -11,6 +11,7 @@ import type { QRL } from "@builder.io/qwik";
 import ConfirmationModal from "~/components/ConfirmationModal";
 import Modal from "~/components/Modal";
 import FormReport from "~/components/forms/FormReport";
+import { dataArray } from "~/data/countries";
 
 export interface DebateCardProps {
     commentsCount: number;
@@ -26,10 +27,12 @@ export interface DebateCardProps {
     lastCommentAt?: string;
     onShowLoginModal$?: QRL<() => void>;
     pointsOfView?: any[];
+    communities?: any[];
     scope: string;
     slug?: string;
     tags?: string[];
     title: string;
+    viewsCount?: number;
 }
 
 export default component$<DebateCardProps>(({
@@ -45,11 +48,12 @@ export default component$<DebateCardProps>(({
     isAuthenticated = true,
     lastCommentAt,
     onShowLoginModal$,
-    pointsOfView = [],
+    communities = [],
     scope,
     slug,
     tags = [],
     title,
+    viewsCount = 0,
 }) => {
     useStylesScoped$(styles);
     const nav = useNavigate();
@@ -59,7 +63,7 @@ export default component$<DebateCardProps>(({
     const showConfirmDeleteModal = useSignal(false);
 
     const mainImage = images && images.length > 0 ? images[0] : undefined;
-    const countriesCount = pointsOfView?.length || 0;
+    const countriesCount = communities?.length || 0;
     
     // Determine if the current user is the creator
     const isCreator = currentUsername === creatorUsername;
@@ -96,24 +100,37 @@ export default component$<DebateCardProps>(({
         showConfirmDeleteModal.value = false;
     });
 
+    const getCountryData = (code: string) => {
+        return dataArray.find((country) => country.cca2 === code);
+    };
+
     return (
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div class="p-5">
                 {/* Header with title and scope badge */}
                 <div class="flex justify-between items-start mb-3">
-                    <h3 class="text-xl font-bold text-gray-800 dark:text-white">{title}</h3>
-                    {scope === PollScope.GLOBAL && 
-                        <div
-                            class="flex items-center justify-center w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400"
-                            title={_`Global`}
-                        >
-                            <LuGlobe class="w-5 h-5" />
-                        </div>
-                    }
+                    <div class="flex items-center gap-2">
+                        <h3 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white line-clamp-2">{title}</h3>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        {isCreator && (
+                            <div class="bg-slate-200 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase px-3 py-1.5 rounded-full border border-slate-300 dark:border-slate-600">
+                                {_`Owner`}
+                            </div>
+                        )}
+                        {scope === PollScope.GLOBAL && 
+                            <div
+                                class="flex items-center justify-center w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400"
+                                title={_`Global`}
+                            >
+                                <LuGlobe class="w-5 h-5" />
+                            </div>
+                        }
+                    </div>
                 </div>
 
                 {/* Description */}
-                <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">{description}</p>
+                <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">{description}</p>
 
                 {/* Image if exists */}
                 {mainImage && (
@@ -139,19 +156,54 @@ export default component$<DebateCardProps>(({
                     </div>
                 )}
 
-                {/* Country information */}
-                {scope === PollScope.GLOBAL && countriesCount > 0 && (
-                    <div class="flex items-center gap-2 text-sm mb-3">
-                        <span class="text-gray-500 dark:text-gray-400">{_`Participating countries:`}</span>
-                        <span class="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full font-medium text-gray-700 dark:text-gray-300">
-                            {countriesCount}
-                        </span>
+                {/* Countries */}
+                {communities.length > 0 && (
+                    <div class="mb-4">
+                        <div class="flex items-center gap-1 mb-2">
+                            <span class="text-xs font-medium text-gray-500 dark:text-gray-400">{_`Participating countries:`}</span>
+                            <span class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full text-xs font-medium text-gray-700 dark:text-gray-300">
+                                {countriesCount}
+                            </span>
+                        </div>
+                        <div class="flex gap-1 flex-wrap">
+                            {communities.map((community) => {
+                                const country = getCountryData(community.cca2);
+                                return (
+                                    country && (
+                                        <span
+                                            key={community.id}
+                                            class="text-xl cursor-help hover:transform hover:scale-125 transition-transform"
+                                            title={community.name}
+                                        >
+                                            {country.flag}
+                                        </span>
+                                    )
+                                );
+                            })}
+                        </div>
                     </div>
                 )}
 
+                {/* Stats row */}
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-4 text-sm">
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-500 dark:text-gray-400">{_`Views:`}</span>
+                        <span class="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full font-medium text-gray-700 dark:text-gray-300">
+                            {viewsCount}
+                        </span>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-500 dark:text-gray-400">{_`Comments:`}</span>
+                        <span class="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full font-medium text-gray-700 dark:text-gray-300">
+                            {commentsCount}
+                        </span>
+                    </div>
+                </div>
+
                 {/* Creator and date information */}
-                <div class="flex flex-wrap justify-between items-center mt-4 text-gray-500 dark:text-gray-400 text-xs">
-                    <div class="flex items-center space-x-4">
+                <div class="flex flex-wrap justify-between items-center border-t border-gray-200 dark:border-gray-700 pt-4 text-sm">
+                    <div class="flex items-center gap-3">
                         {isAnonymous ? (
                             <div class="flex items-center">
                                 <div class="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
@@ -162,7 +214,7 @@ export default component$<DebateCardProps>(({
                                 </span>
                             </div>
                         ) : (
-                            <div class="flex items-center" onClick$={() => onClickUsername(creatorUsername)}>
+                            <div class="flex items-center cursor-pointer" onClick$={() => onClickUsername(creatorUsername)}>
                                 <Avatar.Root>
                                     <Avatar.Image
                                         src={creatorAvatar}
@@ -170,34 +222,28 @@ export default component$<DebateCardProps>(({
                                         class="w-6 h-6 rounded-full"
                                     />
                                 </Avatar.Root>
-                                <span class="hover:text-cyan-600 dark:hover:text-cyan-400 cursor-pointer ml-1">
+                                <span class="ml-1 hover:text-cyan-600 dark:hover:text-cyan-400 font-medium">
                                     {creatorUsername}
                                 </span>
                             </div>
                         )}
-                        <div class="flex items-center">
-                            <LuCalendar class="w-4 h-4 mr-1" />
-                            <span title={new Date(createdAt).toLocaleString()}>
+                        
+                        <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-full">
+                            <LuCalendar class="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                            <span class="text-gray-700 dark:text-gray-300" title={new Date(createdAt).toLocaleString()}>
                                 {timeAgo(new Date(createdAt))}
                             </span>
                         </div>
                     </div>
                     
-                    <div class="flex items-center mt-2 sm:mt-0">
-                        <div class="flex items-center">
-                            <LuMessageSquare class="w-4 h-4 mr-1" />
-                            <span>{commentsCount} {_`comments`}</span>
+                    {lastCommentAt && (
+                        <div class="flex items-center mt-2 sm:mt-0 text-xs">
+                            <span class="text-gray-500 dark:text-gray-400 mr-1">{_`Last activity:`}</span>
+                            <span class="text-gray-700 dark:text-gray-300 font-medium" title={new Date(lastCommentAt).toLocaleString()}>
+                                {timeAgo(new Date(lastCommentAt))}
+                            </span>
                         </div>
-                        
-                        {lastCommentAt && (
-                            <div class="flex items-center ml-3">
-                                <LuClock class="w-4 h-4 mr-1" />
-                                <span title="Last comment">
-                                    {timeAgo(new Date(lastCommentAt))}
-                                </span>
-                            </div>
-                        )}
-                    </div>
+                    )}
                 </div>
 
                 {/* Action buttons */}

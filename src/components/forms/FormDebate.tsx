@@ -93,13 +93,8 @@ export default component$<FormDebateProps>(({
     onSubmitCompleted()
   });
 
-  const displayValues = useSignal<string[]>([]);
-  const selected = useSignal<string[]>([]);
-
-  const inputRef = useSignal<HTMLInputElement>();
-
   return (
-    <Form onSubmit$={handleSubmit} class="space-y-6" encType="multipart/form-data">
+    <Form onSubmit$={handleSubmit} class="space-y-6">
       {/* Debate type indicator */}
       {defaultScope === CommunityType.GLOBAL && (
         <div class="flex items-center gap-2 mb-4">
@@ -208,7 +203,7 @@ export default component$<FormDebateProps>(({
             case CommunityType.REGIONAL:
               return (
                 <div class="space-y-2">
-                  <Select.Root 
+                  <Select.Root
                     onChange$={$((value: string) => {
                       setValue(debateForm, 'community_ids', [value]);
                     })}
@@ -243,7 +238,7 @@ export default component$<FormDebateProps>(({
             case CommunityType.SUBREGIONAL:
               return (
                 <div class="space-y-2">
-                  <Select.Root 
+                  <Select.Root
                     onChange$={$((value: string) => {
                       setValue(debateForm, 'community_ids', [value]);
                     })}
@@ -329,7 +324,7 @@ export default component$<FormDebateProps>(({
         </Field>
       </div>
 
-      <div class="space-y-4">
+      {/* <div class="space-y-4">
         <Field name="image" type="File">
           {(field, props) => (
             <FileInput
@@ -340,28 +335,32 @@ export default component$<FormDebateProps>(({
             />
           )}
         </Field>
-      </div>
+      </div> */}
 
-      {/* Additional settings */}
-      <Field name="is_anonymous">
-        {(field, props) => (
-          <input {...props} type="hidden" value={field.value} />
-        )}
-      </Field>
-      <div>
-        <CustomToggle
-          label={_`Anonymous poll`}
-          checked={isAnonymous.value}
-          onChange$={$((checked) => {
-            console.log('checked', checked)
-            setValue(debateForm, 'is_anonymous', checked ? 'on' : 'off');
-          })}
-        />
-        <p class="mt-2 text-sm text-muted-foreground">
-          {debateForm.internal.fields.is_anonymous?.value === 'on'
-            ? _`Your identity will be hidden as debate creator.`
-            : _`Your username will be visible as debate creator.`}
-        </p>
+      {/* Additional Settings Section */}
+      <div class="space-y-4">
+        <h2 class="font-medium text-foreground">{_`Additional Settings`}</h2>
+
+        <div class="space-y-4">
+          <CustomToggle
+            label={_`Anonymous debate`}
+            checked={isAnonymous.value}
+            onChange$={$((checked) => {
+              isAnonymous.value = checked;
+              setValue(debateForm, 'is_anonymous', checked);
+            })}
+          />
+          <Field name="is_anonymous" type="boolean">
+            {(field, props) => (
+              <input type="hidden" {...props} value={field.value ? 'true' : 'false'} />
+            )}
+          </Field>
+          <p class="mt-2 text-sm text-muted-foreground">
+            {debateForm.internal.fields.is_anonymous?.value
+              ? _`Your identity will be hidden as debate creator.`
+              : _`Your username will be visible as debate creator.`}
+          </p>
+        </div>
       </div>
 
       {/* Form footer */}

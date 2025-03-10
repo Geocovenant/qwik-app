@@ -20,8 +20,8 @@ export const DebateSchema = v.object({
             _`Your description must have ${MAX_DESCRIPTION_LENGTH} characters or less.`
         )
     ),
-    image: v.optional(v.custom<NoSerialize<Blob>>(isBlob)),
-    is_anonymous: v.string(),
+    // image: v.optional(v.custom<NoSerialize<Blob>>(isBlob)),
+    is_anonymous: v.boolean(),
     scope: v.string(),
     tags: v.optional(v.array(v.string())),
     title: v.pipe(

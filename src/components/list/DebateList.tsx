@@ -201,11 +201,12 @@ export default component$<DebateListProps>(({
                             lastCommentAt={debate.created_at}
                             slug={debate.slug}
                             tags={debate.tags}
-                            commentsCount={debate.points_of_view.reduce((total, pov) => total + (pov.comments.length || 0), 0) || 0}
+                            commentsCount={debate.points_of_view?.reduce((total, pov) => total + (pov?.comments?.length || 0), 0) || 0}
                             scope={debate.scope}
                             isAuthenticated={isAuthenticated}
                             onShowLoginModal$={onShowLoginModal$}
-                            pointsOfView={debate.points_of_view}
+                            communities={debate.communities}
+                            viewsCount={debate.views_count}
                             currentUsername={currentUsername}
                         />
                     </li>

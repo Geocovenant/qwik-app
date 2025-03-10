@@ -24,8 +24,8 @@ export const useFormDebateLoader = routeLoader$<InitialValues<DebateForm>>(() =>
     return {
         community_ids: [],
         description: '',
-        image: undefined,
-        is_anonymous: 'off',
+        // image: undefined,
+        is_anonymous: false,
         scope: '',
         tags: [],
         title: '',

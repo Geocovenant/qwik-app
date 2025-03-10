@@ -1,3 +1,5 @@
+import type { Community } from "./project";
+
 export enum DebateScope {
     GLOBAL = 'GLOBAL',
     INTERNATIONAL = 'INTERNATIONAL',
@@ -20,6 +22,7 @@ export type PointOfView = {
 
 export interface Debate {
     comments_count: number;
+    communities: Community[];
     created_at: string;
     creator?: {
         username: string;
@@ -37,6 +40,7 @@ export interface Debate {
     slug: string;
     tags?: string[];
     title: string;
+    views_count: number;
 }
 
 export interface DebateResponse {
