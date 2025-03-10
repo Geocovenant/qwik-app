@@ -9,9 +9,8 @@ import { type CustomSession } from "~/shared/types";
 export { useFormCommunityRequestLoader } from "~/shared/loaders";
 export { useFormCommunityRequestAction } from "~/shared/actions";
 
-export const onRequest: RequestHandler = async ({ query, headers, locale, sharedMap, redirect, url }) => {
+export const onRequest: RequestHandler = async ({ query, headers, locale, sharedMap, redirect }) => {
   const session: CustomSession | null = sharedMap.get('session');
-  console.log('url.pathname', url.pathname)
   if(session?.user?.id && !session.user.username) {
     throw redirect(302, '/onboarding/username')
   }

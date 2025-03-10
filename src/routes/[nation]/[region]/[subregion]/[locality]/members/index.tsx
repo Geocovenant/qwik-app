@@ -7,10 +7,10 @@ import { Image } from "@unpic/qwik";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
 // Using global members loader until we have a specific locality one
-import { useGetGlobalMembers } from "~/shared/loaders";
+import { useGetGlobalMembers } from "~/shared/global/loaders";
 import { useUpdateCommunityVisibility } from "~/shared/actions";
 
-export { useGetGlobalMembers } from "~/shared/loaders";
+export { useGetGlobalMembers } from "~/shared/global/loaders";
 export { useUpdateCommunityVisibility } from "~/shared/actions";
 
 export default component$(() => {

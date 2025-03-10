@@ -17,7 +17,6 @@ import { Avatar } from "~/components/ui";
 import ConfirmationModal from "~/components/ConfirmationModal";
 import Modal from "~/components/Modal";
 import FormReport from "~/components/forms/FormReport";
-import type { ProjectStatus } from "~/shared/types";
 import { _ } from "compiled-i18n";
 
 export interface ProjectCardProps {
@@ -25,12 +24,12 @@ export interface ProjectCardProps {
     title: string;
     description?: string;
     slug: string;
-    status: ProjectStatus;
-    created_at: string;
-    creator_username: string;
-    creator_avatar: string;
-    current_amount: number;
-    goal_amount?: number | null;
+    status: string;
+    createdAt: string;
+    creatorUsername: string;
+    creatorAvatar: string;
+    currentAmount: number;
+    goalAmount?: number | null;
     steps: {
         id: number;
         title: string;
@@ -39,7 +38,7 @@ export interface ProjectCardProps {
     communities: {
         id: number;
         name: string;
-        cca2?: string;
+        cca2?: string | null;
     }[];
     commitments: any[];
     isAuthenticated?: boolean;
@@ -53,11 +52,11 @@ export default component$<ProjectCardProps>(({
     description,
     slug,
     status,
-    created_at,
-    creator_username,
-    creator_avatar,
-    current_amount,
-    goal_amount,
+    createdAt,
+    creatorUsername,
+    creatorAvatar,
+    currentAmount,
+    goalAmount,
     steps,
     communities,
     commitments,
@@ -71,10 +70,10 @@ export default component$<ProjectCardProps>(({
     const showConfirmDeleteModal = useSignal(false);
     
     // Determine if the current user is the creator
-    const isCreator = currentUsername === creator_username;
+    const isCreator = currentUsername === creatorUsername;
 
-    const getStatusIcon = (status: ProjectStatus) => {
-        switch (status) {
+    const getStatusIcon = (statusValue: string) => {
+        switch (statusValue) {
             case "DRAFT":
                 return <LuClock class="w-4 h-4" />;
             case "OPEN":
@@ -84,14 +83,15 @@ export default component$<ProjectCardProps>(({
             case "COMPLETED":
                 return <LuCheckCircle class="w-4 h-4" />;
             case "CANCELLED":
+            case "CLOSED":
                 return <LuXCircle class="w-4 h-4" />;
             default:
                 return <LuClock class="w-4 h-4" />;
         }
     };
 
-    const getStatusBadgeClass = (status: ProjectStatus) => {
-        switch (status) {
+    const getStatusBadgeClass = (statusValue: string) => {
+        switch (statusValue) {
             case "DRAFT":
                 return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
             case "OPEN":
@@ -101,6 +101,7 @@ export default component$<ProjectCardProps>(({
             case "COMPLETED":
                 return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
             case "CANCELLED":
+            case "CLOSED":
                 return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300";
             default:
                 return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
@@ -145,7 +146,7 @@ export default component$<ProjectCardProps>(({
         showConfirmDeleteModal.value = false;
     });
 
-    const onClickUsername = $(() => nav(`/user/${creator_username}`));
+    const onClickUsername = $(() => nav(`/user/${creatorUsername}`));
 
     return (
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden border border-gray-200 dark:border-gray-700">
@@ -168,7 +169,7 @@ export default component$<ProjectCardProps>(({
                 <div class="flex flex-wrap gap-4 mb-4">
                     <div class="flex items-center text-sm text-gray-500 dark:text-gray-400">
                         <LuCalendar class="w-4 h-4 mr-1" />
-                        {_`Created: ${timeAgo(new Date(created_at))}`}
+                        {_`Created: ${timeAgo(new Date(createdAt))}`}
                     </div>
 
                     <div class="flex items-center text-sm text-gray-500 dark:text-gray-400">
@@ -178,19 +179,19 @@ export default component$<ProjectCardProps>(({
                 </div>
 
                 {/* Progress bar if there is a goal */}
-                {goal_amount && (
+                {goalAmount && (
                     <div class="mb-3">
                         <div class="flex justify-between text-sm mb-1">
                             <span class="text-gray-700 dark:text-gray-300">{_`Progress`}</span>
                             <span class="text-gray-700 dark:text-gray-300">
-                                {current_amount} / {goal_amount}
-                                {goal_amount > 0 && ` (${Math.round((current_amount / goal_amount) * 100)}%)`}
+                                {currentAmount} / {goalAmount}
+                                {goalAmount > 0 && ` (${Math.round((currentAmount / goalAmount) * 100)}%)`}
                             </span>
                         </div>
                         <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
                             <div
                                 class="bg-cyan-600 h-2.5 rounded-full"
-                                style={`width: ${calculateProgress(current_amount, goal_amount)}%`}
+                                style={`width: ${calculateProgress(currentAmount, goalAmount)}%`}
                             ></div>
                         </div>
                     </div>
@@ -247,14 +248,14 @@ export default component$<ProjectCardProps>(({
                         <Avatar.Root>
                             <Avatar.Image
                                 class="h-8 w-8 rounded-full"
-                                src={creator_avatar || "/placeholder-user.svg"}
-                                alt={creator_username}
+                                src={creatorAvatar || "/placeholder-user.svg"}
+                                alt={creatorUsername}
                             />
                         </Avatar.Root>
                     </div>
                     <div class="ml-3">
                         <p class="text-sm font-medium text-gray-900 dark:text-white hover:text-cyan-600 dark:hover:text-cyan-400 cursor-pointer">
-                            {creator_username}
+                            {creatorUsername}
                         </p>
                     </div>
                 </div>

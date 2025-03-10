@@ -8,10 +8,12 @@ import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
 // Note: We need to create a specific loader for regional members
 // Using the global loader with adaptations in the meantime
-import { useGetGlobalMembers, useGetRegions } from "~/shared/loaders";
+import { useGetRegions } from "~/shared/loaders";
+import { useGetGlobalMembers } from "~/shared/global/loaders";
 import { useUpdateCommunityVisibility } from "~/shared/actions";
 
-export { useGetGlobalMembers, useGetRegions } from "~/shared/loaders";
+export { useGetRegions } from "~/shared/loaders";
+export { useGetGlobalMembers } from "~/shared/global/loaders";
 export { useUpdateCommunityVisibility } from "~/shared/actions";
 
 export default component$(() => {

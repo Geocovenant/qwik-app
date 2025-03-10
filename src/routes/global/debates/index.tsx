@@ -67,7 +67,7 @@ export default component$(() => {
                         </Modal>
                     }
                     <DebateList
-                        communityName="The Global community"
+                        communityName={_`The Global community`}
                         currentUsername={currentUsername.value}
                         debates={{
                             items: debates.value.items,

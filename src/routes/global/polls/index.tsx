@@ -65,7 +65,7 @@ export default component$(() => {
                         </Modal>
                     }
                     <PollList
-                        communityName="The Global community"
+                        communityName={_`The Global community`}
                         currentUsername={currentUsername.value}
                         isAuthenticated={isAuthenticated.value}
                         onCreatePoll={onCreatePoll}

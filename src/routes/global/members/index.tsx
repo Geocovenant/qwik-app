@@ -6,11 +6,11 @@ import { useSession } from "~/routes/plugin@auth";
 import { Image } from "@unpic/qwik";
 
 // Import the necessary loaders
-import { useGetGlobalMembers } from "~/shared/loaders";
+import { useGetGlobalMembers } from "~/shared/global/loaders";
 import { useUpdateCommunityVisibility } from "~/shared/actions";
 
 // Export the loaders so that Qwik City can find them
-export { useGetGlobalMembers } from "~/shared/loaders";
+export { useGetGlobalMembers } from "~/shared/global/loaders";
 export { useUpdateCommunityVisibility } from "~/shared/actions";
 
 export default component$(() => {

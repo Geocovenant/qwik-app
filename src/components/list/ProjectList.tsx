@@ -1,4 +1,4 @@
-import { $, component$, useComputed$, useSignal, type QRL } from "@builder.io/qwik"
+import { component$, useComputed$, useSignal, type QRL } from "@builder.io/qwik"
 import { _ } from "compiled-i18n"
 import { Button } from "~/components/ui"
 import {
@@ -6,28 +6,29 @@ import {
     LuSearch,
     LuFilter,
 } from "@qwikest/icons/lucide"
-import type { ProjectRead } from "~/shared/types"
 import { Pagination } from "@qwik-ui/headless"
 import EmptyProjects from "~/components/empty-states/EmptyProjects"
 import ProjectCard from "~/components/cards/ProjectCard"
+import type { Project } from "~/types/project"
 
 export interface ProjectListProps {
+    communityName?: string
+    currentUsername?: string
+    isAuthenticated?: boolean
     onCreateProject: QRL<() => void>
+    onPageChange$: QRL<(page: number) => void>
+    onShowLoginModal$?: QRL<() => void>
     projects: {
-        items: ProjectRead[]
+        items: Project[]
         total: number
         page: number
         size: number
         pages: number
     }
-    communityName?: string
-    onPageChange$: QRL<(page: number) => void>
-    isAuthenticated?: boolean
-    currentUsername?: string
 }
 
 export default component$<ProjectListProps>(
-    ({ projects, onCreateProject, communityName, onPageChange$, isAuthenticated = true, currentUsername = "" }) => {
+    ({ projects, onCreateProject, communityName, onPageChange$, isAuthenticated = true, currentUsername = "", onShowLoginModal$ }) => {
         const searchTerm = useSignal("")
         const statusFilter = useSignal<"ALL" | "DRAFT" | "OPEN" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED">("ALL")
 
@@ -256,7 +257,7 @@ export default component$<ProjectListProps>(
                         <h2 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
                             <span>{_`Projects`}</span>
                             <span class="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 text-sm px-2.5 py-0.5 rounded-full">
-                                {filteredProjects.value.length}
+                                {searchTerm.value.trim() ? filteredProjects.value.length : projects.total }
                             </span>
                         </h2>
                         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -277,16 +278,17 @@ export default component$<ProjectListProps>(
                                 description={project.description}
                                 slug={project.slug}
                                 status={project.status}
-                                created_at={project.created_at}
-                                creator_username={project.creator.username}
-                                creator_avatar={project.creator.image || ""}
-                                current_amount={project.current_amount}
-                                goal_amount={project.goal_amount}
+                                createdAt={project.created_at}
+                                creatorUsername={project.creator?.username || ""}
+                                creatorAvatar={project.creator?.image || ""}
+                                currentAmount={project.current_amount}
+                                goalAmount={project.goal_amount}
                                 steps={project.steps}
                                 communities={project.communities}
                                 commitments={project.commitments}
                                 isAuthenticated={isAuthenticated}
                                 currentUsername={currentUsername}
+                                onShowLoginModal$={onShowLoginModal$}
                             />
                         </li>
                     ))}

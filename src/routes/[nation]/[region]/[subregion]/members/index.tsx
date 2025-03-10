@@ -7,10 +7,12 @@ import { Image } from "@unpic/qwik";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
 // Using global members loader until we have a specific subregional one
-import { useGetGlobalMembers, useGetSubregions } from "~/shared/loaders";
+import { useGetSubregions } from "~/shared/loaders";
+import { useGetGlobalMembers } from "~/shared/global/loaders";
 import { useUpdateCommunityVisibility } from "~/shared/actions";
 
-export { useGetGlobalMembers, useGetSubregions } from "~/shared/loaders";
+export { useGetSubregions } from "~/shared/loaders";
+export { useGetGlobalMembers } from "~/shared/global/loaders";
 export { useUpdateCommunityVisibility } from "~/shared/actions";
 
 export default component$(() => {

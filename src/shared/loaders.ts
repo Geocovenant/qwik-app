@@ -30,10 +30,10 @@ export const useGetUser = routeLoader$(async ({ cookie }) => {
 
 // eslint-disable-next-line qwik/loader-location
 export const useGetCommunityIdByName = routeLoader$(async ({ query }) => {
-    const _nation = query.get('nation');
-    const _region = query.get('region');
-    const _subregion = query.get('subregion');
-    const _locality = query.get('locality');
+    const nation = query.get('nation');
+    const region = query.get('region');
+    const subregion = query.get('subregion');
+    const locality = query.get('locality');
     const name = query.get('name');
     if (!name) {
         return null;
@@ -45,35 +45,6 @@ export const useGetCommunityIdByName = routeLoader$(async ({ query }) => {
     });
     const data = await response.json();
     return data[0].id;
-});
-
-// eslint-disable-next-line qwik/loader-location
-export const useGetGlobalProjects = routeLoader$(async ({ query }) => {
-    console.log('============ useGetGlobalProjects ============')
-    const page = query.get('page');
-
-    try {
-        let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/projects?scope=GLOBAL`;
-        if (page) {
-            url += `&page=${page}`;
-        }
-
-        const response = await fetch(url, {
-            headers: {
-                Accept: 'application/json',
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Error fetching global projects');
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching global projects:', error);
-        return [];
-    }
 });
 
 // eslint-disable-next-line qwik/loader-location
@@ -645,7 +616,7 @@ export const useFormProjectLoader = routeLoader$<InitialValues<ProjectForm>>(() 
             {
                 title: '',
                 description: '',
-                order: '0',
+                order: 0,
                 status: 'PENDING',
                 resources: []
             }
@@ -942,15 +913,11 @@ export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue
     let countryCode = null;
 
     if (debate) {
-        // Check if properties exist before accessing them
-        // Remove the direct property access that doesn't exist
-        // and replace with more reliable properties
+        // Corregir el acceso a country_code
         if (debate.tags && debate.tags.some(tag => tag.country_code)) {
             countryCode = debate.tags.find(tag => tag.country_code)?.country_code;
-        } else if (debate.creator && debate.creator.country_code) {
-            countryCode = debate.creator.country_code;
         } else {
-            // Fallback to a default country code if needed
+            // Usar un valor predeterminado
             countryCode = "US";
         }
     }
@@ -977,45 +944,6 @@ export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue
     } catch (error) {
         console.error('Error fetching country divisions:', error);
         return [];
-    }
-});
-
-// eslint-disable-next-line qwik/loader-location
-export const useGetGlobalMembers = routeLoader$(async ({ cookie, query }) => {
-    const page = Number(query.get("page") || "1");
-    const size = Number(query.get("size") || "100");
-    const token = cookie.get('authjs.session-token');
-
-    // Comunidad global tiene ID 1
-    const communityId = 1;
-
-    try {
-        const response = await fetch(
-            `${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${communityId}/members?page=${page}&size=${size}`,
-            {
-                headers: {
-                    Accept: 'application/json',
-                    ...(token ? { Authorization: `Bearer ${token.value}` } : {})
-                }
-            }
-        );
-        
-        if (!response.ok) {
-            throw new Error('Error fetching global members');
-        }
-
-        const data = await response.json();
-
-        data.items = data.items.map((member: any) => ({
-            ...member,
-            is_public: member.is_public || false
-        }));
-
-        return data;
-    } catch (error) {
-        console.log('error', error)
-        console.error("Error fetching global members:", error);
-        return { items: [], total: 0, page: 1, size: 20, pages: 1 };
     }
 });
 

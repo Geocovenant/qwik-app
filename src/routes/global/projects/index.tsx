@@ -5,9 +5,10 @@ import ProjectList from "~/components/list/ProjectList";
 import { CommunityType } from "~/constants/communityType";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
-import { useGetGlobalProjects } from "~/shared/loaders";
 import FormProject from "~/components/forms/FormProject";
 import { _ } from "compiled-i18n";
+
+import { useGetGlobalProjects } from "~/shared/global/loaders";
 
 export { useFormProjectLoader } from "~/shared/loaders";
 export { useFormProjectAction, useDeleteProject } from "~/shared/actions";
@@ -28,6 +29,10 @@ export default component$(() => {
     });
 
     const onCreateProject = $(() => {
+        showModalProject.value = true;
+    });
+
+    const onShowLoginModal = $(() => {
         showModalProject.value = true;
     });
 
@@ -59,20 +64,21 @@ export default component$(() => {
                     }
                     <ProjectList
                         communityName={_`Global Community`}
-                        projects={{
-                            items: Array.isArray(projects.value.items) ? projects.value.items : [],
-                            total: projects.value.total || 0,
-                            page: projects.value.page || 1,
-                            size: projects.value.size || 10,
-                            pages: projects.value.pages || 1
-                        }}
+                        currentUsername={currentUsername.value}
+                        isAuthenticated={isAuthenticated.value}
                         onCreateProject={onCreateProject}
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
                             await nav(`/global/projects?page=${page}`);
                         }}
-                        isAuthenticated={isAuthenticated.value}
-                        currentUsername={currentUsername.value}
+                        onShowLoginModal$={onShowLoginModal}
+                        projects={{
+                            items: projects.value.items,
+                            total: projects.value.total,
+                            page: projects.value.page,
+                            size: projects.value.size,
+                            pages: projects.value.pages
+                        }}
                     />
                 </div>
             </div>

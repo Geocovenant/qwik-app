@@ -1,11 +1,10 @@
 import { component$ } from "@builder.io/qwik"
 import type { DocumentHead } from "@builder.io/qwik-city"
 import { LuGlobe, LuUsers, LuBarChart2, LuMessageSquare, LuBriefcase, LuFlag, LuInfo } from "@qwikest/icons/lucide"
-import { useGetGlobalProjects } from "~/shared/loaders"
 import { Alert } from "~/components/ui/alert/alert"
 import { _ } from "compiled-i18n"
 
-import { useGetGlobalPolls, useGetGlobalDebates } from "~/shared/global/loaders"
+import { useGetGlobalPolls, useGetGlobalDebates, useGetGlobalProjects } from "~/shared/global/loaders"
 
 export { useFormDebateLoader } from "~/shared/loaders"
 export { useFormDebateAction } from "~/shared/forms/actions"
@@ -13,7 +12,6 @@ export { useFormDebateAction } from "~/shared/forms/actions"
 export default component$(() => {
 
     const polls = useGetGlobalPolls();
-    console.log('polls', polls.value)
     const debates = useGetGlobalDebates();
     const projects = useGetGlobalProjects();
 
