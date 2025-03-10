@@ -14,8 +14,8 @@ import { _ } from "compiled-i18n";
 import { useGetLocalityDebates, useGetLocalityPolls, useGetLocalityProjects, useGetLocalityIssues, useGetTags } from "~/shared/loaders";
 
 export { useGetLocalityPolls, useGetLocalityDebates, useGetLocalityProjects, useGetLocalityIssues, useFormPollLoader, useFormDebateLoader, useGetTags } from "~/shared/loaders";
-export { useFormDebateAction, useVotePoll, useReactPoll } from "~/shared/actions";
-export { useFormPollAction } from "~/shared/forms/actions";
+export { useVotePoll, useReactPoll } from "~/shared/actions";
+export { useFormPollAction, useFormDebateAction } from "~/shared/forms/actions";
 
 export default component$(() => {
     const location = useLocation();

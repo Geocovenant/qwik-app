@@ -36,3 +36,12 @@ export const DebateSchema = v.object({
 });
 
 export type DebateForm = v.InferInput<typeof DebateSchema>; 
+
+export interface DebateResponseData {
+    success: boolean;
+    message: string;
+    data?: {
+        debate_id: string;
+        share_link: string;
+    };
+}

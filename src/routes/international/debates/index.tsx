@@ -10,7 +10,7 @@ import { useSession } from "~/routes/plugin@auth";
 import { useGetInternationalDebates, useGetTags } from "~/shared/loaders";
 
 export { useGetInternationalDebates, useFormDebateLoader, useGetTags } from "~/shared/loaders";
-export { useFormDebateAction } from "~/shared/actions";
+export { useFormDebateAction } from "~/shared/forms/actions";
 
 export default component$(() => {
     const session = useSession();

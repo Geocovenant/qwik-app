@@ -6,16 +6,16 @@ import { FormFooter } from '~/components/forms/FormFooter';
 import { CustomToggle } from '~/components/input/CustomToggle';
 import { _ } from 'compiled-i18n';
 import { CommunityType } from '~/constants/communityType';
-import type { DebateForm } from '~/schemas/debateSchema';
+import type { DebateForm, DebateResponseData } from '~/schemas/debateSchema';
 import { DebateSchema } from '~/schemas/debateSchema';
 import { useFormDebateLoader } from '~/shared/loaders';
-import { useFormDebateAction, type DebateResponseData } from '~/shared/actions';
 import { TagInput } from '~/components/input/TagInput';
 import { CountrySelectInput } from '~/components/input/CountrySelectInput';
 import { dataArray as countries } from "~/data/countries";
 import { Select } from '~/components/ui';
 import { useLocation } from '@builder.io/qwik-city';
 import { FileInput } from '~/components/input/FileInput';
+import { useFormDebateAction } from '~/shared/forms/actions';
 
 export interface FormDebateProps {
   onSubmitCompleted: () => void;
@@ -84,12 +84,9 @@ export default component$<FormDebateProps>(({
     }
   });
 
-  const handleSubmit = $((values: DebateForm, event: any) => {
-    console.log('Submitting Debate form:', values);
-    console.log('event', event);
+  const handleSubmit = $(() => {
     // eslint-disable-next-line qwik/valid-lexical-scope
     onSubmitCompleted()
-    // Here you can perform the submit action (client-side or progressively enhanced with action)
   });
 
   const countriesOptions = countries.map(c => ({

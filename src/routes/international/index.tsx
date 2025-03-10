@@ -6,7 +6,7 @@ import { _ } from "compiled-i18n"
 import { Alert } from "~/components/ui/alert/alert"
 
 export { useGetInternationalPolls, useGetInternationalDebates, useGetInternationalProjects, useFormDebateLoader, useGetTags } from "~/shared/loaders"
-export { useFormDebateAction } from "~/shared/actions"
+export { useFormDebateAction } from "~/shared/forms/actions"
 
 export default component$(() => {
     // Get real data from the API

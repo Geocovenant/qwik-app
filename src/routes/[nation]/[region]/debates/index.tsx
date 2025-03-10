@@ -14,7 +14,7 @@ import { useGetRegionalDebates, useGetRegions, useGetTags } from "~/shared/loade
 
 // Export loaders so Qwik City can find them
 export { useGetRegionalDebates, useFormDebateLoader, useGetRegions, useGetTags } from "~/shared/loaders";
-export { useFormDebateAction } from "~/shared/actions";
+export { useFormDebateAction } from "~/shared/forms/actions";
 
 export default component$(() => {
     const session = useSession();

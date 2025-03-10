@@ -14,7 +14,7 @@ import { useGetInternationalProjects } from "~/shared/loaders";
 
 
 export { useGetInternationalProjects } from "~/shared/loaders";
-export { useFormDebateAction } from "~/shared/actions";
+export { useFormDebateAction } from "~/shared/forms/actions";
 
 export default component$(() => {
     const session = useSession();

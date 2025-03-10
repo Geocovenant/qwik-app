@@ -14,8 +14,7 @@ import { useGetLocalityDebates, useGetTags } from "~/shared/loaders";
 
 // Export loaders so Qwik City can find them
 export { useGetLocalityDebates, useFormDebateLoader, useGetTags } from "~/shared/loaders";
-export { useFormDebateAction } from "~/shared/actions";
-
+export { useFormDebateAction } from "~/shared/forms/actions";
 export default component$(() => {
     const session = useSession();
     const showModalDebate = useSignal(false);

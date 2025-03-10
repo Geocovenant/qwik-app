@@ -12,7 +12,8 @@ import { useGetTags } from "~/shared/loaders";
 import { useGetGlobalDebates } from "~/shared/global/loaders";
 
 export { useFormDebateLoader } from "~/shared/loaders";
-export { useFormDebateAction, useDeleteDebate } from "~/shared/actions";
+export { useDeleteDebate } from "~/shared/actions"
+export { useFormDebateAction } from "~/shared/forms/actions";
 
 export default component$(() => {
     const session = useSession();
