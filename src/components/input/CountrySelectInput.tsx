@@ -3,6 +3,7 @@ import type { PropFunction } from '@builder.io/qwik';
 import { InputError } from './InputError';
 import { capitalizeFirst } from '~/utils/capitalizeFirst';
 import clsx from 'clsx';
+import { setValue } from '@modular-forms/qwik';
 
 type CountryOption = {
     value: string;
@@ -34,7 +35,7 @@ export const CountrySelectInput = component$((props: CountrySelectInputProps) =>
     const handleSelect = $((country: CountryOption) => {
         const selectedCountries = form.internal.fields[name]?.value || [];
         if (!selectedCountries.includes(country.value)) {
-            form.internal.fields[name].value = [...selectedCountries, country.value];
+            setValue(form, name, [...selectedCountries, country.value]);
         }
         showDropdown.value = false;
         searchTerm.value = '';
@@ -42,7 +43,7 @@ export const CountrySelectInput = component$((props: CountrySelectInputProps) =>
 
     const handleRemove = $((countryValue: string) => {
         const selectedCountries = form.internal.fields[name]?.value || [];
-        form.internal.fields[name].value = selectedCountries.filter((value: string) => value !== countryValue);
+        setValue(form, name, selectedCountries.filter((value: string) => value !== countryValue));
     });
 
     const handleKeyDown = $((e: KeyboardEvent) => {

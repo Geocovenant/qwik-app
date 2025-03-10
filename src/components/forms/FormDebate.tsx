@@ -8,15 +8,15 @@ import { _ } from 'compiled-i18n';
 import { CommunityType } from '~/constants/communityType';
 import type { DebateForm, DebateResponseData } from '~/schemas/debateSchema';
 import { DebateSchema } from '~/schemas/debateSchema';
-import { useFormDebateLoader } from '~/shared/loaders';
 import { TagInput } from '~/components/input/TagInput';
 import { CountrySelectInput } from '~/components/input/CountrySelectInput';
 import { dataArray as countries } from "~/data/countries";
 import { Select } from '~/components/ui';
 import { useLocation } from '@builder.io/qwik-city';
 import { FileInput } from '~/components/input/FileInput';
-import { useFormDebateAction } from '~/shared/forms/actions';
 
+import { useFormDebateLoader } from '~/shared/forms/loaders';
+import { useFormDebateAction } from '~/shared/forms/actions';
 export interface FormDebateProps {
   onSubmitCompleted: () => void;
   defaultScope?: CommunityType;

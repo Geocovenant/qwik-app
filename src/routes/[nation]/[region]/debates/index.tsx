@@ -12,8 +12,7 @@ import { capitalizeFirst } from "~/utils/capitalizeFirst";
 // Import necessary loaders
 import { useGetRegionalDebates, useGetRegions, useGetTags } from "~/shared/loaders";
 
-// Export loaders so Qwik City can find them
-export { useGetRegionalDebates, useFormDebateLoader, useGetRegions, useGetTags } from "~/shared/loaders";
+export { useGetRegionalDebates, useGetRegions, useGetTags } from "~/shared/loaders";
 export { useFormDebateAction } from "~/shared/forms/actions";
 
 export default component$(() => {

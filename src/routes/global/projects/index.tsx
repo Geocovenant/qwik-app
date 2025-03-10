@@ -21,9 +21,9 @@ export default component$(() => {
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
-    const isAuthenticated = useComputed$(() => !!session.value?.user);
     // @ts-ignore
     const currentUsername = useComputed$(() => session.value?.user?.username || "");
+    const isAuthenticated = useComputed$(() => !!session.value?.user);
 
     const onSubmitCompleted = $(() => {
         showModalProject.value = false;

@@ -43,7 +43,6 @@ export const FileInput = component$(
         const files = useSignal<NoSerialize<Blob>[] | NoSerialize<File>[]>();
         useTask$(({ track }) => {
             track(() => value);
-            console.log('value file inputt', value)
             files.value = value ? (Array.isArray(value) ? value : [value]) : [];
         });
 

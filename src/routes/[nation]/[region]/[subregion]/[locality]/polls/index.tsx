@@ -12,8 +12,7 @@ import { capitalizeFirst } from "~/utils/capitalizeFirst";
 // Import necessary loaders
 import { useGetLocalityPolls } from "~/shared/loaders";
 
-// Export loaders so Qwik City can find them
-export { useGetLocalityPolls, useFormPollLoader } from "~/shared/loaders";
+export { useGetLocalityPolls } from "~/shared/loaders";
 export { useVotePoll, useReactPoll } from "~/shared/actions";
 export { useFormPollAction } from "~/shared/forms/actions";
 

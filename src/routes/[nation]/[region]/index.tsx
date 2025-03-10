@@ -6,7 +6,7 @@ import { useGetRegions, useGetRegionalPolls, useGetTags, useGetRegionalDebates, 
 import { useSession } from "~/routes/plugin@auth";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-export { useGetRegionalPolls, useGetRegionalDebates, useGetRegionalProjects, useGetRegionalIssues, useFormPollLoader, useFormDebateLoader, useFormIssueLoader, useGetRegions, useGetTags } from "~/shared/loaders";
+export { useGetRegionalPolls, useGetRegionalDebates, useGetRegionalProjects, useGetRegionalIssues, useFormIssueLoader, useGetRegions, useGetTags } from "~/shared/loaders";
 export { useVotePoll, useReactPoll } from "~/shared/actions";
 export { useFormPollAction, useFormDebateAction } from "~/shared/forms/actions";
 

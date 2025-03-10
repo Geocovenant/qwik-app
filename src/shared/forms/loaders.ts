@@ -3,6 +3,7 @@ import type { InitialValues } from "@modular-forms/qwik";
 import type { PollForm } from "~/schemas/pollSchema";
 import type { DebateForm } from "~/schemas/debateSchema";
 import type { ProjectForm } from "~/schemas/projectSchema";
+import type { ReportForm } from "~/schemas/reportSchema";
 import { PollType } from "~/constants/pollType";
 
 export const useFormPollLoader = routeLoader$<InitialValues<PollForm>>(() => {
@@ -50,5 +51,17 @@ export const useFormProjectLoader = routeLoader$<InitialValues<ProjectForm>>(() 
                 resources: []
             }
         ]
+    };
+});
+
+export const useFormReportLoader = routeLoader$<InitialValues<ReportForm>>((requestEvent) => {
+    const itemId = parseInt(requestEvent.query.get('itemId') || '0');
+    const itemType = requestEvent.query.get('itemType') || 'POLL';
+
+    return {
+        itemId: itemId,
+        itemType: itemType as any,
+        reason: 'INAPPROPRIATE',
+        details: '',
     };
 });

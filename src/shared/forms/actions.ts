@@ -7,6 +7,7 @@ import { _ } from "compiled-i18n";
 
 export const useFormPollAction = formAction$<PollForm, PollResponseData>(
     async (values, event) => {
+        console.log('values', values)
         const token = event.cookie.get('authjs.session-token')?.value;
 
         // Validate token existence

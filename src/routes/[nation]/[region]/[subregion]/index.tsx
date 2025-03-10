@@ -22,8 +22,8 @@ import {
 import { LuBarChart2, LuFlag, LuUsers, LuMessageSquare, LuBriefcase, LuAlertTriangle } from "@qwikest/icons/lucide";
 
 export {
-    useGetSubregionalPolls, useGetSubregionalDebates, useGetSubregionalProjects, useGetSubregionalIssues, useFormPollLoader,
-    useFormDebateLoader, useFormIssueLoader, useGetSubregions, useGetTags, useGetRegions
+    useGetSubregionalPolls, useGetSubregionalDebates, useGetSubregionalProjects, useGetSubregionalIssues,
+    useFormIssueLoader, useGetSubregions, useGetTags, useGetRegions
 } from "~/shared/loaders";
 export { useVotePoll, useReactPoll } from "~/shared/actions";
 export { useFormPollAction, useFormDebateAction } from "~/shared/forms/actions";

@@ -1,20 +1,18 @@
 import { $, component$, useSignal, useComputed$ } from "@builder.io/qwik";
 import { type DocumentHead, useNavigate } from "@builder.io/qwik-city";
-import { _ } from "compiled-i18n";
 import Modal from "~/components/Modal";
 import ProjectList from "~/components/list/ProjectList";
 import { CommunityType } from "~/constants/communityType";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 import FormProject from "~/components/forms/FormProject";
-import { useGetInternationalProjects } from "~/shared/loaders";
+import { _ } from "compiled-i18n";
 
-// Para el caso internacional, tendremos que crear un loader específico similar al global
-// Este es un ejemplo simplificado, puede que necesites crear esta función en loaders.ts
+import { useGetInternationalProjects } from "~/shared/international/loaders";
 
-
-export { useGetInternationalProjects } from "~/shared/loaders";
-export { useFormDebateAction } from "~/shared/forms/actions";
+export { useFormProjectLoader } from "~/shared/forms/loaders";
+export { useFormProjectAction } from "~/shared/forms/actions";
+export { useDeleteProject } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
@@ -23,6 +21,8 @@ export default component$(() => {
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
+    // @ts-ignore
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
     const isAuthenticated = useComputed$(() => !!session.value?.user);
 
     const onSubmitCompleted = $(() => {
@@ -30,6 +30,10 @@ export default component$(() => {
     });
 
     const onCreateProject = $(() => {
+        showModalProject.value = true;
+    });
+
+    const onShowLoginModal = $(() => {
         showModalProject.value = true;
     });
 
@@ -60,20 +64,22 @@ export default component$(() => {
                         </Modal>
                     }
                     <ProjectList
-                        communityName="La comunidad Internacional"
-                        projects={{
-                            items: Array.isArray(projects.value) ? projects.value : [],
-                            total: projects.value?.length || 0,
-                            page: currentPage.value,
-                            size: 10,
-                            pages: Math.ceil((projects.value?.length || 0) / 10)
-                        }}
+                        communityName={_`The International community`}
+                        currentUsername={currentUsername.value}
+                        isAuthenticated={isAuthenticated.value}
                         onCreateProject={onCreateProject}
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
                             await nav(`/international/projects?page=${page}`);
                         }}
-                        isAuthenticated={isAuthenticated.value}
+                        onShowLoginModal$={onShowLoginModal}
+                        projects={{
+                            items: projects.value.items,
+                            total: projects.value.total,
+                            page: projects.value.page,
+                            size: projects.value.size,
+                            pages: projects.value.pages
+                        }}
                     />
                 </div>
             </div>
@@ -82,11 +88,11 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = {
-    title: "Proyectos Internacionales",
+    title: "International Projects",
     meta: [
         {
             name: "description",
-            content: "Proyectos de la comunidad internacional en Geounity",
+            content: "Projects of the international community in Geounity",
         },
     ],
 }; 

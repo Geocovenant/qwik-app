@@ -7,11 +7,12 @@ import PollList from "~/components/list/PollList";
 import { CommunityType } from "~/constants/communityType";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
-import { useGetInternationalPolls } from "~/shared/loaders";
 
-export { useGetInternationalPolls, useFormPollLoader } from "~/shared/loaders";
-export { useVotePoll, useReactPoll } from "~/shared/actions";
+import { useGetInternationalPolls } from "~/shared/international/loaders";
+
+export { useFormPollLoader } from "~/shared/forms/loaders";
 export { useFormPollAction } from "~/shared/forms/actions";
+export { useVotePoll, useReactPoll, useDeletePoll } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
@@ -22,11 +23,18 @@ export default component$(() => {
 
     const isAuthenticated = useComputed$(() => !!session.value?.user);
 
+    // @ts-ignore
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
+
     const onSubmitCompleted = $(() => {
         showModalPoll.value = false;
     });
 
     const onCreatePoll = $(() => {
+        showModalPoll.value = true;
+    });
+
+    const onShowLoginModal = $(() => {
         showModalPoll.value = true;
     });
 
@@ -57,20 +65,22 @@ export default component$(() => {
                         </Modal>
                     }
                     <PollList
+                        communityName={_`The International community`}
+                        currentUsername={currentUsername.value}
+                        isAuthenticated={isAuthenticated.value}
                         onCreatePoll={onCreatePoll}
-                        polls={{
-                            items: Array.isArray(polls.value?.items) ? polls.value.items : [],
-                            total: polls.value?.total || 0,
-                            page: polls.value?.page || 1,
-                            size: polls.value?.size || 10,
-                            pages: polls.value?.pages || 1
-                        }}
-                        communityName="La comunidad Internacional"
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
                             await nav(`/international/polls?page=${page}`);
                         }}
-                        isAuthenticated={isAuthenticated.value}
+                        onShowLoginModal$={onShowLoginModal}
+                        polls={{
+                            items: polls.value.items,
+                            total: polls.value.total || 0,
+                            page: polls.value.page || 1,
+                            size: polls.value.size || 10,
+                            pages: polls.value.pages || 1
+                        }}
                     />
                 </div>
             </div>

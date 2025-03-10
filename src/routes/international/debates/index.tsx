@@ -7,10 +7,13 @@ import DebateList from "~/components/list/DebateList";
 import { CommunityType } from "~/constants/communityType";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
-import { useGetInternationalDebates, useGetTags } from "~/shared/loaders";
+import { useGetTags } from "~/shared/loaders";
 
-export { useGetInternationalDebates, useFormDebateLoader, useGetTags } from "~/shared/loaders";
+import { useGetInternationalDebates } from "~/shared/international/loaders";
+
+export { useFormDebateLoader } from "~/shared/forms/loaders";
 export { useFormDebateAction } from "~/shared/forms/actions";
+export { useDeleteDebate } from "~/shared/actions"
 
 export default component$(() => {
     const session = useSession();
@@ -20,6 +23,8 @@ export default component$(() => {
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
+    // @ts-ignore
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
     const isAuthenticated = useComputed$(() => !!session.value?.user);
 
     const onSubmitCompleted = $(() => {
@@ -62,13 +67,14 @@ export default component$(() => {
                         </Modal>
                     }
                     <DebateList
-                        communityName="La comunidad Internacional"
+                        communityName={_`The International community`}
+                        currentUsername={currentUsername.value}
                         debates={{
-                            items: Array.isArray(debates.value) ? debates.value : [],
-                            total: debates.value?.length || 0,
-                            page: currentPage.value,
-                            size: 10,
-                            pages: Math.ceil((debates.value?.length || 0) / 10)
+                            items: debates.value.items,
+                            total: debates.value.total,
+                            page: debates.value.page,
+                            size: debates.value.size,
+                            pages: debates.value.pages
                         }}
                         onCreateDebate={onCreateDebate}
                         onPageChange$={async (page: number) => {

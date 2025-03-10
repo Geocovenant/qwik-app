@@ -5,8 +5,9 @@ import { setValue, useForm, valiForm$ } from "@modular-forms/qwik";
 import { LuSend } from "@qwikest/icons/lucide";
 import { type ReportForm, ReportSchema } from "~/schemas/reportSchema";
 import { Button } from "~/components/ui";
-import { useFormReportLoader } from "~/shared/loaders";
 import { type ReportResponseData, useFormReportAction } from "~/shared/actions";
+
+import { useFormReportLoader } from "~/shared/forms/loaders";
 
 interface FormReportProps {
   type: 'POLL' | 'DEBATE' | 'PROJECT' | 'ISSUE' | 'COMMENT' | 'USER';

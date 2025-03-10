@@ -1,20 +1,16 @@
 import { component$ } from "@builder.io/qwik"
 import type { DocumentHead } from "@builder.io/qwik-city"
 import { LuGlobe, LuBarChart2, LuMessageSquare, LuBriefcase, LuInfo } from "@qwikest/icons/lucide"
-import { useGetInternationalPolls, useGetInternationalDebates, useGetInternationalProjects } from "~/shared/loaders"
 import { _ } from "compiled-i18n"
 import { Alert } from "~/components/ui/alert/alert"
 
-export { useGetInternationalPolls, useGetInternationalDebates, useGetInternationalProjects, useFormDebateLoader, useGetTags } from "~/shared/loaders"
-export { useFormDebateAction } from "~/shared/forms/actions"
+import { useGetInternationalPolls, useGetInternationalDebates, useGetInternationalProjects } from "~/shared/international/loaders"
 
 export default component$(() => {
-    // Get real data from the API
     const polls = useGetInternationalPolls();
     const debates = useGetInternationalDebates();
     const projects = useGetInternationalProjects();
 
-    // Calculate counts from the API responses
     const pollsCount = polls.value.total || 0;
     const debatesCount = debates.value.total || 0;
     const projectsCount = projects.value.total || 0;

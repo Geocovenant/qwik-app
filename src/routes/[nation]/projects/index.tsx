@@ -13,9 +13,7 @@ import { capitalizeFirst } from "~/utils/capitalizeFirst";
 // Import necessary loaders
 import { useGetNationalProjects, useGetTags } from "~/shared/loaders";
 
-// Export loaders so Qwik City can find them
-export { useGetNationalProjects, useGetTags, useFormProjectLoader } from "~/shared/loaders";
-export { useFormProjectAction } from "~/shared/actions";
+export { useGetNationalProjects, useGetTags } from "~/shared/loaders";
 
 export default component$(() => {
     const session = useSession();

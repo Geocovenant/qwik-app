@@ -9,11 +9,9 @@ import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Import necessary loaders
 import { useGetLocalityDebates, useGetTags } from "~/shared/loaders";
 
-// Export loaders so Qwik City can find them
-export { useGetLocalityDebates, useFormDebateLoader, useGetTags } from "~/shared/loaders";
+export { useGetLocalityDebates, useGetTags } from "~/shared/loaders";
 export { useFormDebateAction } from "~/shared/forms/actions";
 export default component$(() => {
     const session = useSession();

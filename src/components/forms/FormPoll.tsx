@@ -4,10 +4,8 @@ import { TextInput } from '~/components/input/TextInput';
 import { TextArea } from '~/components/input/TextArea';
 import type { PollForm } from '~/schemas/pollSchema';
 import { PollSchema } from '~/schemas/pollSchema';
-import { useFormPollLoader } from '~/shared/loaders';
 import { FormFooter } from '~/components/forms/FormFooter';
 import { PollType } from '~/constants/pollType';
-import { _ } from 'compiled-i18n';
 import { CommunityType } from '~/constants/communityType';
 import { dataArray as countries } from "~/data/countries";
 import { Select, ToggleGroup } from '~/components/ui';
@@ -19,6 +17,9 @@ import { TagInput } from '~/components/input/TagInput';
 import { LuMinus } from '@qwikest/icons/lucide';
 import { useFormPollAction } from '~/shared/forms/actions';
 import type { PollResponseData } from '~/schemas/pollSchema';
+import { _ } from 'compiled-i18n';
+import { useFormPollLoader } from '~/shared/forms/loaders';
+
 export interface FormPollProps {
     onSubmitCompleted: () => void;
     defaultScope?: CommunityType;

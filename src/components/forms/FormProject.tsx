@@ -15,8 +15,9 @@ import { TagInput } from '~/components/input/TagInput';
 // Importar el esquema del proyecto desde un archivo separado
 import type { ProjectForm } from '~/schemas/projectSchema';
 import { ProjectSchema } from '~/schemas/projectSchema';
-import { useFormProjectLoader } from '~/shared/loaders';
-import { useFormProjectAction, type ProjectResponseData } from '~/shared/actions';
+import { useFormProjectAction } from '~/shared/forms/actions';
+import type { ProjectResponseData } from '~/schemas/projectSchema';
+import { useFormProjectLoader } from '~/shared/forms/loaders';
 
 // Interfaces
 export interface FormProjectProps {

@@ -6,7 +6,6 @@ import type { OpinionForm } from "~/schemas/opinionSchema";
 import { CommunityType } from "~/constants/communityType";
 import { type IssueForm } from "~/schemas/issueSchema";
 import type { ReportForm } from "~/schemas/reportSchema";
-import { type ProjectForm } from "~/schemas/projectSchema";
 import type { CommunityRequestForm } from "~/schemas/communityRequestSchema";
 
 // eslint-disable-next-line qwik/loader-location
@@ -38,62 +37,6 @@ export const useGetCommunityIdByName = routeLoader$(async ({ query }) => {
     });
     const data = await response.json();
     return data[0].id;
-});
-
-// eslint-disable-next-line qwik/loader-location
-export const useGetInternationalPolls = routeLoader$(async ({ cookie }) => {
-    console.log('============ useGetInternationalPolls ============')
-    const token = cookie.get('authjs.session-token');
-    if (!token) {
-        return [];
-    }
-
-    try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=INTERNATIONAL`, {
-            headers: {
-                Accept: 'application/json',
-                Authorization: token.value
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Error fetching international polls');
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching international polls:', error);
-        return [];
-    }
-})
-
-// eslint-disable-next-line qwik/loader-location
-export const useGetInternationalProjects = routeLoader$(async ({ cookie }) => {
-    console.log('============ useGetInternationalProjects ============')
-    const token = cookie.get('authjs.session-token');
-    if (!token) {
-        return [];
-    }
-
-    try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects?scope=INTERNATIONAL`, {
-            headers: {
-                Accept: 'application/json',
-                Authorization: token.value
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Error fetching international projects');
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching international projects:', error);
-        return [];
-    }
 });
 
 // eslint-disable-next-line qwik/loader-location
@@ -278,34 +221,6 @@ export const useGetDebateBySlug = routeLoader$(async ({ cookie, params }) => {
         updated_at: string;
     };
 });
-
-// eslint-disable-next-line qwik/loader-location
-export const useGetInternationalDebates = routeLoader$(async ({ cookie }) => {
-    console.log('============ useGetInternationalDebates ============')
-    const token = cookie.get('authjs.session-token');
-    if (!token) {
-        return [];
-    }
-
-    try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates?type=INTERNATIONAL`, {
-            headers: {
-                Accept: 'application/json',
-                Authorization: token.value
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Error fetching international debates');
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching international debates:', error);
-        return [];
-    }
-})
 
 // eslint-disable-next-line qwik/loader-location
 export const useGetNationalDebates = routeLoader$(async ({ cookie, params }) => {
@@ -564,29 +479,6 @@ export const useGetNationalProjects = routeLoader$(async ({ params }) => {
         console.error('Error fetching national projects:', error);
         return [];
     }
-});
-
-// eslint-disable-next-line qwik/loader-location
-export const useFormProjectLoader = routeLoader$<InitialValues<ProjectForm>>(() => {
-    return {
-        scope: '',
-        community_ids: [],
-        title: '',
-        description: '',
-        status: 'DRAFT',
-        goal_amount: 0,
-        tags: [],
-        is_anonymous: false,
-        steps: [
-            {
-                title: '',
-                description: '',
-                order: 0,
-                status: 'PENDING',
-                resources: []
-            }
-        ]
-    };
 });
 
 // eslint-disable-next-line qwik/loader-location
@@ -986,21 +878,6 @@ export const useCheckCommunityMembership = routeLoader$(async ({ cookie, params 
     }
 });
 
-// eslint-disable-next-line qwik/loader-location
-export const useFormReportLoader = routeLoader$<InitialValues<ReportForm>>((requestEvent) => {
-    // Puedes obtener valores de la URL si es necesario
-    const itemId = parseInt(requestEvent.query.get('itemId') || '0');
-    const itemType = requestEvent.query.get('itemType') || 'POLL';
-
-    return {
-        itemId: itemId,
-        itemType: itemType as any,
-        reason: 'INAPPROPRIATE',
-        details: '',
-    };
-});
-
-// Loader para obtener encuestas a nivel de localidad
 // eslint-disable-next-line qwik/loader-location
 export const useGetLocalityPolls = routeLoader$(async ({ params, query, cookie }) => {
     console.log('============ useGetLocalityPolls ============');

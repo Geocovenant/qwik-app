@@ -30,8 +30,9 @@ import SocialLoginButtons from "~/components/SocialLoginButtons"
 import ViewPointCard from "~/components/debates/ViewPointCard"
 import { _ } from "compiled-i18n"
 
-export { useGetDebateBySlug, useFormOpinionLoader, useGetCountryDivisions, useFormReportLoader } from "~/shared/loaders"
+export { useGetDebateBySlug, useFormOpinionLoader, useGetCountryDivisions } from "~/shared/loaders"
 export { useFormOpinionAction, useReactOpinion, useFormReportAction, useDeleteOpinion } from "~/shared/actions"
+export { useFormReportLoader } from "~/shared/forms/loaders"
 
 // Navigation arrow component
 const ScrollArrow = component$(
