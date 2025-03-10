@@ -1,0 +1,142 @@
+.country-combobox-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.country-combobox-root {
+  width: 100%;
+}
+
+.country-combobox-control {
+  width: 100%;
+  position: relative;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  background-color: white;
+  cursor: text;
+  min-height: 42px;
+}
+
+.country-combobox-control:focus-within {
+  border-color: #9b60ed;
+  box-shadow: 0 0 0 2px rgba(155, 96, 237, 0.1);
+}
+
+.country-combobox-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.country-combobox-trigger {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0 0.25rem;
+  color: #64748b;
+}
+
+.country-selected-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.country-pill {
+  display: flex;
+  align-items: center;
+  background-color: #f0f9ff;
+  border: 1px solid #e0f2fe;
+  border-radius: 9999px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+
+.country-pill:hover {
+  background-color: #e0f2fe;
+}
+
+.country-pill button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.25rem;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.country-pill button:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.country-dropdown {
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.country-combobox-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+}
+
+.country-combobox-item:hover {
+  background-color: #f8fafc;
+}
+
+.country-combobox-item[data-highlighted="true"] {
+  background-color: #f1f5f9;
+}
+
+.country-combobox-item[data-selected="true"] {
+  background-color: #f0f9ff;
+}
+
+.country-clear-btn {
+  font-size: 0.75rem;
+  color: #64748b;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.dark .country-combobox-control {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+.dark .country-combobox-popover {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+.dark .country-combobox-item:hover {
+  background-color: #0f172a;
+}
+
+.dark .country-combobox-item[data-highlighted="true"] {
+  background-color: #334155;
+}
+
+.dark .country-pill {
+  background-color: rgba(14, 165, 233, 0.1);
+  border-color: rgba(14, 165, 233, 0.2);
+  color: #0ea5e9;
+}
+
+.dark .country-pill button:hover {
+  background-color: rgba(239, 68, 68, 0.2);
+} 

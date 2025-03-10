@@ -9,14 +9,18 @@ import { CommunityType } from '~/constants/communityType';
 import type { DebateForm, DebateResponseData } from '~/schemas/debateSchema';
 import { DebateSchema } from '~/schemas/debateSchema';
 import { TagInput } from '~/components/input/TagInput';
-import { CountrySelectInput } from '~/components/input/CountrySelectInput';
 import { dataArray as countries } from "~/data/countries";
-import { Select } from '~/components/ui';
+import { Combobox, Select } from '~/components/ui';
 import { useLocation } from '@builder.io/qwik-city';
 import { FileInput } from '~/components/input/FileInput';
+import { MultiCountryCombobox } from '~/components/input/MultiCountryCombobox';
 
 import { useFormDebateLoader } from '~/shared/forms/loaders';
 import { useFormDebateAction } from '~/shared/forms/actions';
+import { LuCheck } from '@qwikest/icons/lucide';
+import { LuChevronDown } from '@qwikest/icons/lucide';
+import { LuX } from '@qwikest/icons/lucide';
+
 export interface FormDebateProps {
   onSubmitCompleted: () => void;
   defaultScope?: CommunityType;
@@ -89,10 +93,10 @@ export default component$<FormDebateProps>(({
     onSubmitCompleted()
   });
 
-  const countriesOptions = countries.map(c => ({
-    value: c.cca2,
-    name: `${c.flag} ${c.name}`
-  }))
+  const displayValues = useSignal<string[]>([]);
+  const selected = useSignal<string[]>([]);
+
+  const inputRef = useSignal<HTMLInputElement>();
 
   return (
     <Form onSubmit$={handleSubmit} class="space-y-6" encType="multipart/form-data">
@@ -159,12 +163,14 @@ export default component$<FormDebateProps>(({
             case CommunityType.INTERNATIONAL:
               return (
                 <div class="space-y-2">
-                  <CountrySelectInput
+                  <MultiCountryCombobox
                     {...props}
-                    form={debateForm}
-                    label={_`Countries involved`}
-                    predefinedCountries={countriesOptions}
+                    label={_`Select countries`}
+                    value={field.value}
                     error={field.error}
+                    onChange$={$((value) => {
+                      setValue(debateForm, 'community_ids', value);
+                    })}
                   />
                 </div>
               );
@@ -173,7 +179,9 @@ export default component$<FormDebateProps>(({
               return (
                 <div class="space-y-2">
                   <Select.Root
-                    {...props}
+                    onChange$={$((value: string) => {
+                      setValue(debateForm, 'community_ids', [value]);
+                    })}
                     value={defaultCountry.value?.cca2 || (Array.isArray(field.value) ? field.value[0] : field.value)}
                   >
                     <Select.Label>{_`Select a country`}</Select.Label>
@@ -200,7 +208,12 @@ export default component$<FormDebateProps>(({
             case CommunityType.REGIONAL:
               return (
                 <div class="space-y-2">
-                  <Select.Root {...props} value={defaultRegionId ? defaultRegionId.toString() : undefined}>
+                  <Select.Root 
+                    onChange$={$((value: string) => {
+                      setValue(debateForm, 'community_ids', [value]);
+                    })}
+                    value={defaultRegionId ? defaultRegionId.toString() : undefined}
+                  >
                     <Select.Label>{_`Select a region`}</Select.Label>
                     <Select.Trigger>
                       <Select.DisplayValue placeholder={_`Select region...`} />
@@ -230,7 +243,12 @@ export default component$<FormDebateProps>(({
             case CommunityType.SUBREGIONAL:
               return (
                 <div class="space-y-2">
-                  <Select.Root {...props} value={defaultSubregionId ? defaultSubregionId.toString() : undefined}>
+                  <Select.Root 
+                    onChange$={$((value: string) => {
+                      setValue(debateForm, 'community_ids', [value]);
+                    })}
+                    value={defaultSubregionId ? defaultSubregionId.toString() : undefined}
+                  >
                     <Select.Label>{_`Select a region`}</Select.Label>
                     <Select.Trigger>
                       <Select.DisplayValue placeholder={_`Select subregion...`} />

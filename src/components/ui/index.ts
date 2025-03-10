@@ -12,3 +12,4 @@ export * from "./badge/badge";
 export * from "./textarea/textarea";
 export * from "./toggle-group/toggle-group";
 export * from "./toggle/toggle";
+export * from "./combobox/combobox";
