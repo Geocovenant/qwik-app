@@ -10,8 +10,9 @@ import { _ } from "compiled-i18n";
 
 import { useGetGlobalProjects } from "~/shared/global/loaders";
 
-export { useFormProjectLoader } from "~/shared/loaders";
-export { useFormProjectAction, useDeleteProject } from "~/shared/actions";
+export { useFormProjectLoader } from "~/shared/forms/loaders";
+export { useFormProjectAction } from "~/shared/forms/actions";
+export { useDeleteProject } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();

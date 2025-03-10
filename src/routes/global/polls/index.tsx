@@ -10,9 +10,9 @@ import { useSession } from "~/routes/plugin@auth";
 
 import { useGetGlobalPolls } from "~/shared/global/loaders";
 
-export { useFormPollLoader } from "~/shared/loaders";
-export { useVotePoll, useReactPoll, useDeletePoll } from "~/shared/actions";
+export { useFormPollLoader } from "~/shared/forms/loaders";
 export { useFormPollAction } from "~/shared/forms/actions";
+export { useVotePoll, useReactPoll, useDeletePoll } from "~/shared/actions";
 
 export default component$(() => {
     const polls = useGetGlobalPolls();

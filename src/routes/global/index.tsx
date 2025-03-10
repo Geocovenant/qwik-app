@@ -6,9 +6,6 @@ import { _ } from "compiled-i18n"
 
 import { useGetGlobalPolls, useGetGlobalDebates, useGetGlobalProjects } from "~/shared/global/loaders"
 
-export { useFormDebateLoader } from "~/shared/loaders"
-export { useFormDebateAction } from "~/shared/forms/actions"
-
 export default component$(() => {
 
     const polls = useGetGlobalPolls();

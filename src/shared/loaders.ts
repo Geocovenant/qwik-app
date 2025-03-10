@@ -1,9 +1,6 @@
 import { routeLoader$ } from "@builder.io/qwik-city";
 import type { InitialValues } from "@modular-forms/qwik";
-import { PollType } from "~/constants/pollType";
-import type { PollForm } from "~/schemas/pollSchema";
 import { dataArray } from "~/data/countries";
-import type { DebateForm } from "~/schemas/debateSchema";
 import type { UserForm } from "~/schemas/userSchema";
 import type { OpinionForm } from "~/schemas/opinionSchema";
 import { CommunityType } from "~/constants/communityType";
@@ -30,10 +27,6 @@ export const useGetUser = routeLoader$(async ({ cookie }) => {
 
 // eslint-disable-next-line qwik/loader-location
 export const useGetCommunityIdByName = routeLoader$(async ({ query }) => {
-    const nation = query.get('nation');
-    const region = query.get('region');
-    const subregion = query.get('subregion');
-    const locality = query.get('locality');
     const name = query.get('name');
     if (!name) {
         return null;
@@ -401,21 +394,6 @@ function getCountryCode(countryPath: string): string | null {
 }
 
 // eslint-disable-next-line qwik/loader-location
-export const useFormPollLoader = routeLoader$<InitialValues<PollForm>>(() => {
-    return {
-        community_ids: [],
-        description: '',
-        ends_at: '',
-        is_anonymous: false,
-        options: ['', ''],
-        scope: '',
-        type: PollType.BINARY,
-        tags: [],
-        title: '',
-    };
-});
-
-// eslint-disable-next-line qwik/loader-location
 export const useGetRegions = routeLoader$(async ({ params }) => {
     const nationPath = params.nation;
     if (!nationPath) return [];
@@ -472,19 +450,6 @@ export const useGetSubregions = routeLoader$(async ({ params, resolveValue }) =>
         console.error('Error fetching subregions:', error);
         return [];
     }
-});
-
-// eslint-disable-next-line qwik/loader-location
-export const useFormDebateLoader = routeLoader$<InitialValues<DebateForm>>(() => {
-    return {
-        community_ids: [],
-        description: '',
-        image: undefined,
-        is_anonymous: 'off',
-        scope: '',
-        tags: [],
-        title: '',
-    };
 });
 
 // eslint-disable-next-line qwik/loader-location

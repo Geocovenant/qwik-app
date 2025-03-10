@@ -7,7 +7,6 @@ import { FormFooter } from '~/components/forms/FormFooter';
 import { CustomToggle } from '~/components/input/CustomToggle';
 import { CommunityType } from '~/constants/communityType';
 import { LuPlus, LuTrash, LuGripVertical } from "@qwikest/icons/lucide";
-import { Select } from '~/components/ui';
 import { useLocation } from '@builder.io/qwik-city';
 import { dataArray as countries } from "~/data/countries";
 import { CountrySelectInput } from '~/components/input/CountrySelectInput';

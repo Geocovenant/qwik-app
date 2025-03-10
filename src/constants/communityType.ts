@@ -4,5 +4,5 @@ export enum CommunityType {
     NATIONAL = "NATIONAL",
     REGIONAL = "REGIONAL",
     SUBREGIONAL = "SUBREGIONAL",
-    LOCALITY = "LOCALITY",
+    LOCAL = "LOCAL",
 }

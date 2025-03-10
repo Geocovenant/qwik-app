@@ -3,10 +3,6 @@ import { Breadcrumb } from "~/components/ui";
 import { _ } from "compiled-i18n";
 import { NavLink } from "~/components/NavLink";
 
-export {
-    useGetTags, useFormReportLoader
-} from "~/shared/loaders"
-export { useFormReportAction } from "~/shared/actions"
 export { useGetGlobalPolls, useGetGlobalDebates, useGetGlobalProjects } from "~/shared/global/loaders"
 
 export default component$(() => {

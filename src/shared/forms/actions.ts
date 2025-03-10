@@ -2,6 +2,7 @@ import { formAction$, valiForm$ } from "@modular-forms/qwik";
 import { CommunityType } from "~/constants/communityType";
 import { type PollForm, type PollResponseData, PollSchema } from "~/schemas/pollSchema";
 import { type DebateForm, type DebateResponseData, DebateSchema } from "~/schemas/debateSchema";
+import { type ProjectForm, type ProjectResponseData, ProjectSchema } from "~/schemas/projectSchema";
 import { _ } from "compiled-i18n";
 
 export const useFormPollAction = formAction$<PollForm, PollResponseData>(
@@ -164,7 +165,6 @@ export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
             }
         }
 
-
         // Define payload with a more complete type
         const payload: {
             title: string;
@@ -237,4 +237,91 @@ export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
         }
     },
     valiForm$(DebateSchema)
+);
+
+export const useFormProjectAction = formAction$<ProjectForm, ProjectResponseData>(
+    async (values, event) => {
+
+        const token = event.cookie.get('authjs.session-token')?.value;
+
+        if (!token) {
+            return {
+                success: false,
+                message: _`Authentication required to create a debate`,
+            };
+        }
+
+        // Preparar payload según el scope
+        const payload = {
+            title: values.title,
+            description: values.description,
+            goal_amount: values.goal_amount,
+            status: values.status,
+            is_anonymous: values.is_anonymous,
+            scope: values.scope,
+            tags: values.tags || [],
+            steps: values.steps.map(step => ({
+                title: step.title,
+                description: step.description || "",
+                order: step.order || "0",
+                status: step.status,
+                resources: step.resources.map(resource => ({
+                    type: resource.type,
+                    description: resource.description,
+                    quantity: resource.quantity || "",
+                    unit: resource.unit || ""
+                }))
+            }))
+        };
+
+        // Añadir los campos específicos según el scope
+        switch (values.scope) {
+            case CommunityType.GLOBAL:
+                Object.assign(payload, { community_ids: [1] });
+                break;
+            case CommunityType.INTERNATIONAL:
+                Object.assign(payload, { country_codes: values.community_ids });
+                break;
+            case CommunityType.NATIONAL:
+                Object.assign(payload, { country_code: values.community_ids[0] });
+                break;
+            case CommunityType.REGIONAL:
+                Object.assign(payload, { region_id: values.community_ids[0] });
+                break;
+            case CommunityType.SUBREGIONAL:
+                Object.assign(payload, { subregion_id: values.community_ids[0] });
+                break;
+        }
+
+        try {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to create project');
+            }
+
+            const data = await response.json();
+
+            return {
+                success: true,
+                message: _`Project created successfully`,
+                data: data,
+            };
+        } catch (error: any) {
+            console.error('Error in useFormProjectAction:', error);
+            return {
+                success: false,
+                message: error.message || 'An unexpected error occurred',
+            };
+        }
+    },
+    valiForm$(ProjectSchema)
 );

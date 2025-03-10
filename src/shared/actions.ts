@@ -1,15 +1,10 @@
 import { formAction$, valiForm$ } from '@modular-forms/qwik';
-import { _ } from 'compiled-i18n';
 import { routeAction$, z, zod$ } from '@builder.io/qwik-city';
 import { CommunityType } from '~/constants/communityType';
-import type { DebateForm } from '~/schemas/debateSchema';
-import { DebateSchema } from '~/schemas/debateSchema';
 import type { UserForm } from '~/schemas/userSchema';
 import { UserSchema } from '~/schemas/userSchema';
 import type { OpinionForm } from "~/schemas/opinionSchema";
 import { OpinionSchema } from "~/schemas/opinionSchema";
-import type { ProjectForm } from '~/schemas/projectSchema';
-import { ProjectSchema } from '~/schemas/projectSchema';
 import type { IssueForm } from '~/schemas/issueSchema';
 import { IssueSchema } from '~/schemas/issueSchema';
 import type { CommentForm } from '~/schemas/commentSchema';
@@ -18,6 +13,7 @@ import type { ReportForm } from "~/schemas/reportSchema";
 import { ReportSchema } from "~/schemas/reportSchema";
 import type { CommunityRequestForm } from "~/schemas/communityRequestSchema";
 import { CommunityRequestSchema } from "~/schemas/communityRequestSchema";
+import { _ } from 'compiled-i18n';
 
 // eslint-disable-next-line qwik/loader-location
 export const useVotePoll = routeAction$(
@@ -251,99 +247,6 @@ export const useFormOpinionAction = formAction$<OpinionForm, OpinionResponseData
     valiForm$(OpinionSchema)
 );
 
-export interface ProjectResponseData {
-    success: boolean;
-    message: string;
-    data?: {
-        project_id: string;
-        share_link: string;
-    };
-}
-
-export const useFormProjectAction = formAction$<ProjectForm, ProjectResponseData>(
-    async (values, event) => {
-        console.log('############ useFormProjectAction ############');
-        console.log('values', values);
-
-        const token = event.cookie.get('authjs.session-token')?.value;
-
-        // Preparar payload según el scope
-        const payload = {
-            title: values.title,
-            description: values.description,
-            goal_amount: values.goal_amount,
-            status: values.status,
-            is_anonymous: values.is_anonymous,
-            scope: values.scope,
-            tags: values.tags || [],
-            steps: values.steps.map(step => ({
-                title: step.title,
-                description: step.description || "",
-                order: step.order || "0",
-                status: step.status,
-                resources: step.resources.map(resource => ({
-                    type: resource.type,
-                    description: resource.description,
-                    quantity: resource.quantity || "",
-                    unit: resource.unit || ""
-                }))
-            }))
-        };
-
-        // Añadir los campos específicos según el scope
-        switch (values.scope) {
-            case CommunityType.GLOBAL:
-                Object.assign(payload, { community_ids: [1] });
-                break;
-            case CommunityType.INTERNATIONAL:
-                Object.assign(payload, { country_codes: values.community_ids });
-                break;
-            case CommunityType.NATIONAL:
-                Object.assign(payload, { country_code: values.community_ids[0] });
-                break;
-            case CommunityType.REGIONAL:
-                Object.assign(payload, { region_id: values.community_ids[0] });
-                break;
-            case CommunityType.SUBREGIONAL:
-                Object.assign(payload, { subregion_id: values.community_ids[0] });
-                break;
-        }
-
-        console.log('payload', payload);
-
-        try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(payload),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to create project');
-            }
-
-            const data = await response.json();
-
-            return {
-                success: true,
-                message: _`Project created successfully`,
-                data: data,
-            };
-        } catch (error: any) {
-            console.error('Error in useFormProjectAction:', error);
-            return {
-                success: false,
-                message: error.message || 'An unexpected error occurred',
-            };
-        }
-    },
-    valiForm$(ProjectSchema)
-);
-
 export interface IssueResponseData {
     success: boolean;
     message: string;
@@ -480,13 +383,13 @@ export const useFormCommentAction = formAction$<CommentForm, CommentResponseData
 
 // eslint-disable-next-line qwik/loader-location
 export const useCheckUserOpinionInDebate = routeAction$(
-    async (data: { debateId: number }, { cookie }) => {
+    async (data, { cookie }) => {
         console.log('### useCheckUserOpinionInDebate ###')
-        console.log('data', data)
+        const { debateId } = data
         const token = cookie.get('authjs.session-token')?.value;
         
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/${data.debateId}/user-has-opinion`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/${debateId}/user-has-opinion`, {
                 method: 'GET',
                 headers: {
                     Accept: 'application/json',
@@ -525,22 +428,23 @@ export const useCheckUserOpinionInDebate = routeAction$(
 // Acción para actualizar la visibilidad del usuario en una comunidad específica
 // eslint-disable-next-line qwik/loader-location
 export const useUpdateCommunityVisibility = routeAction$(
-    async (form: { communityId: number, isPublic: boolean }, { cookie }) => {
+    async (data, { cookie }) => {
         console.log('### useUpdateCommunityVisibility ###');
+        const { communityId, isPublic } = data
         const token = cookie.get('authjs.session-token');
         if (!token) {
             return { success: false, error: "No authentication token found" };
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/me/community/${form.communityId}/visibility`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/me/community/${communityId}/visibility`, {
                 method: "PATCH",
                 headers: {
                     "Accept": "application/json",
                     "Authorization": token.value,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ is_public: form.isPublic }),
+                body: JSON.stringify({ is_public: isPublic }),
             });
 
             if (!response.ok) {

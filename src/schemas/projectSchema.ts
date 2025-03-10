@@ -32,7 +32,8 @@ const COMMUNITY_TYPE_ENUM = {
     INTERNATIONAL: CommunityType.INTERNATIONAL,
     NATIONAL: CommunityType.NATIONAL,
     REGIONAL: CommunityType.REGIONAL,
-    SUBREGIONAL: CommunityType.SUBREGIONAL
+    SUBREGIONAL: CommunityType.SUBREGIONAL,
+    LOCAL: CommunityType.LOCAL
 } as const;
 
 // Definition of the resource schema
@@ -89,4 +90,13 @@ export const ProjectSchema = v.object({
 });
 
 // Inferred type from the schema
-export type ProjectForm = v.InferInput<typeof ProjectSchema>; 
+export type ProjectForm = v.InferInput<typeof ProjectSchema>;
+
+export interface ProjectResponseData {
+    success: boolean;
+    message: string;
+    data?: {
+        project_id: string;
+        share_link: string;
+    };
+}
