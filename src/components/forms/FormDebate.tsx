@@ -1,4 +1,4 @@
-import { $, component$, useComputed$, useSignal, useTask$ } from '@builder.io/qwik';
+import { $, component$, useSignal, useTask$ } from '@builder.io/qwik';
 import { useForm, valiForm$, setValue } from '@modular-forms/qwik';
 import { TextInput } from '~/components/input/TextInput';
 import { TextArea } from '~/components/input/TextArea';
@@ -10,20 +10,16 @@ import type { DebateForm, DebateResponseData } from '~/schemas/debateSchema';
 import { DebateSchema } from '~/schemas/debateSchema';
 import { TagInput } from '~/components/input/TagInput';
 import { dataArray as countries } from "~/data/countries";
-import { Combobox, Select } from '~/components/ui';
-import { useLocation } from '@builder.io/qwik-city';
-import { FileInput } from '~/components/input/FileInput';
+import { Select } from '~/components/ui';
 import { MultiCountryCombobox } from '~/components/input/MultiCountryCombobox';
 
 import { useFormDebateLoader } from '~/shared/forms/loaders';
 import { useFormDebateAction } from '~/shared/forms/actions';
-import { LuCheck } from '@qwikest/icons/lucide';
-import { LuChevronDown } from '@qwikest/icons/lucide';
-import { LuX } from '@qwikest/icons/lucide';
 
 export interface FormDebateProps {
   onSubmitCompleted: () => void;
   defaultScope?: CommunityType;
+  defaultCountry?: string;
   defaultRegionId?: number;
   defaultSubregionId?: number;
   regions?: any[];
@@ -33,6 +29,7 @@ export interface FormDebateProps {
 
 export default component$<FormDebateProps>(({
   onSubmitCompleted,
+  defaultCountry = null,
   defaultScope = CommunityType.NATIONAL,
   defaultRegionId = null,
   defaultSubregionId = null,
@@ -72,21 +69,6 @@ export default component$<FormDebateProps>(({
   });
 
   const isAnonymous = useSignal<boolean>(false);
-  const location = useLocation();
-  const nationName = location.params.nation;
-  const defaultCountry = useComputed$(() => {
-    if (!nationName) return null;
-    return countries.find(country =>
-      country.name.toLowerCase() === nationName.toLowerCase()
-    );
-  });
-
-  useTask$(({ track }) => {
-    const country = track(() => defaultCountry.value);
-    if (country) {
-      setValue(debateForm, 'community_ids', [country.cca2]);
-    }
-  });
 
   const handleSubmit = $(() => {
     // eslint-disable-next-line qwik/valid-lexical-scope
@@ -203,19 +185,14 @@ export default component$<FormDebateProps>(({
             case CommunityType.REGIONAL:
               return (
                 <div class="space-y-2">
-                  <Select.Root
-                    onChange$={$((value: string) => {
-                      setValue(debateForm, 'community_ids', [value]);
-                    })}
-                    value={defaultRegionId ? defaultRegionId.toString() : undefined}
-                  >
+                  <Select.Root {...props} value={defaultRegionId?.toString()}>
                     <Select.Label>{_`Select a region`}</Select.Label>
                     <Select.Trigger>
                       <Select.DisplayValue placeholder={_`Select region...`} />
                     </Select.Trigger>
                     <Select.Popover>
                       {regions.length > 0 ? regions.map((region) => (
-                        <Select.Item key={region.id} value={region.id}>
+                        <Select.Item key={region.id} value={region.community_id.toString()}>
                           <Select.ItemLabel>
                             {region.name}
                           </Select.ItemLabel>

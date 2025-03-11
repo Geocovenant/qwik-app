@@ -1,9 +1,11 @@
 import { component$, Slot } from "@builder.io/qwik";
 import { Breadcrumb } from "~/components/ui";
-import { _ } from "compiled-i18n";
 import { NavLink } from "~/components/NavLink";
 import { useLocation } from "@builder.io/qwik-city";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
+import { _ } from "compiled-i18n";
+
+export { useGetCountry, useGetNationalPolls, useGetNationalDebates, useGetNationalProjects, useGetNationalIssues, useGetNationalMembers } from "~/shared/national/loaders"
 
 export default component$(() => {
     const location = useLocation();

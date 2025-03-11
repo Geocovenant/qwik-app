@@ -12,7 +12,7 @@ import { capitalizeFirst } from "~/utils/capitalizeFirst";
 // Import necessary loaders
 import { useGetSubregionalProjects, useGetSubregions, useGetTags } from "~/shared/loaders";
 
-export { useGetSubregionalProjects, useGetSubregions, useGetTags } from "~/shared/loaders";
+export { useGetSubregionalProjects, useGetSubregions } from "~/shared/loaders";
 
 export default component$(() => {
     const session = useSession();

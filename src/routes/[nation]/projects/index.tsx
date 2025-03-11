@@ -10,10 +10,12 @@ import { useSession } from "~/routes/plugin@auth";
 import { dataArray as countries } from "~/data/countries";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Import necessary loaders
-import { useGetNationalProjects, useGetTags } from "~/shared/loaders";
+import { useGetTags } from "~/shared/loaders";
+import { useGetNationalProjects } from "~/shared/national/loaders";
 
-export { useGetNationalProjects, useGetTags } from "~/shared/loaders";
+export { useFormProjectLoader } from "~/shared/forms/loaders";
+export { useFormProjectAction } from "~/shared/forms/actions";
+export { useDeleteProject } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
@@ -29,6 +31,8 @@ export default component$(() => {
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
+    // @ts-ignore
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
     const isAuthenticated = useComputed$(() => !!session.value?.user);
 
     const onSubmitCompleted = $(() => {
@@ -36,6 +40,10 @@ export default component$(() => {
     });
 
     const onCreateProject = $(() => {
+        showModalProject.value = true;
+    });
+
+    const onShowLoginModal = $(() => {
         showModalProject.value = true;
     });
 
@@ -57,20 +65,22 @@ export default component$(() => {
                         }
                     </Modal>
                     <ProjectList
+                        communityName={_`The ${nation.value?.name || capitalizeFirst(nationName)} community`}
+                        currentUsername={currentUsername.value}
+                        isAuthenticated={isAuthenticated.value}
                         onCreateProject={onCreateProject}
-                        projects={{
-                            items: Array.isArray(projects.value?.items) ? projects.value.items : [],
-                            total: projects.value?.total || 0,
-                            page: projects.value?.page || 1,
-                            size: projects.value?.size || 10,
-                            pages: projects.value?.pages || 1
-                        }}
-                        communityName={nation.value?.name || capitalizeFirst(nationName)}
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
                             await nav(`/${nationName}/projects?page=${page}`);
                         }}
-                        isAuthenticated={isAuthenticated.value}
+                        onShowLoginModal$={onShowLoginModal}
+                        projects={{
+                            items: projects.value.items,
+                            total: projects.value.total,
+                            page: projects.value.page,
+                            size: projects.value.size,
+                            pages: projects.value.pages
+                        }}
                     />
                 </div>
             </div>

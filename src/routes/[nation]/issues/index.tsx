@@ -11,11 +11,11 @@ import { dataArray as countries } from "~/data/countries";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
 // Import necessary loaders
-import { useGetNationalIssues, useGetTags } from "~/shared/loaders";
+import { useGetTags } from "~/shared/loaders";
+import { useGetNationalIssues } from "~/shared/national/loaders";
 
-// Export loaders so Qwik City can find them
-export { useGetNationalIssues, useFormIssueLoader, useGetTags } from "~/shared/loaders";
-export { useFormIssueAction } from "~/shared/actions";
+export { useFormIssueLoader } from "~/shared/forms/loaders";
+export { useFormIssueAction } from "~/shared/forms/actions";
 
 export default component$(() => {
     const session = useSession();
@@ -31,6 +31,8 @@ export default component$(() => {
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
+    // @ts-ignore
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
     const isAuthenticated = useComputed$(() => !!session.value?.user);
 
     const onSubmitCompleted = $(() => {
@@ -38,6 +40,10 @@ export default component$(() => {
     });
 
     const onCreateIssue = $(() => {
+        showModalIssue.value = true;
+    });
+
+    const onShowLoginModal = $(() => {
         showModalIssue.value = true;
     });
 
@@ -59,20 +65,22 @@ export default component$(() => {
                         }
                     </Modal>
                     <IssueList
-                        onCreateIssue={onCreateIssue}
-                        issues={{
-                            items: Array.isArray(issues.value?.items) ? issues.value.items : [],
-                            total: issues.value?.total || 0,
-                            page: issues.value?.page || 1,
-                            size: issues.value?.size || 10,
-                            pages: issues.value?.pages || 1
-                        }}
                         communityName={nation.value?.name || capitalizeFirst(nationName)}
+                        currentUsername={currentUsername.value}
+                        isAuthenticated={isAuthenticated.value}
+                        issues={{
+                            items: issues.value.items,
+                            total: issues.value.total,
+                            page: issues.value.page,
+                            size: issues.value.size,
+                            pages: issues.value.pages
+                        }}
+                        onCreateIssue={onCreateIssue}
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
                             await nav(`/${nationName}/issues?page=${page}`);
                         }}
-                        isAuthenticated={isAuthenticated.value}
+                        onShowLoginModal$={onShowLoginModal}
                     />
                 </div>
             </div>

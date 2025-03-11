@@ -16,10 +16,10 @@ export default component$(() => {
     const showSearchMessage = useSignal<boolean>(false);
     const isMobileMenuOpen = useSignal<boolean>(false);
 
-    // Función para abrir/cerrar el sidebar en dispositivos móviles
+    // Function to open/close the sidebar on mobile devices
     const toggleMobileSidebar = $(() => {
         isMobileMenuOpen.value = !isMobileMenuOpen.value;
-        // Disparar un evento personalizado que el sidebar pueda escuchar
+        // Dispatch a custom event that the sidebar can listen to
         if (typeof window !== 'undefined') {
             window.dispatchEvent(new CustomEvent('toggle-mobile-sidebar', {
                 detail: { isOpen: isMobileMenuOpen.value }
@@ -31,11 +31,11 @@ export default component$(() => {
         <header class="bg-[#713fc2] border-b border-[#8255c9] h-16 flex items-center px-3 sm:px-6 shadow-sm">
             <div class="flex items-center justify-between w-full">
                 <div class="flex items-center">
-                    {/* Botón de menú solo visible en móviles */}
+                    {/* Menu button only visible on mobile */}
                     <button 
                         onClick$={toggleMobileSidebar}
                         class="mr-2 p-1.5 text-white hover:bg-white/10 rounded-lg transition-colors md:hidden"
-                        aria-label="Menú"
+                        aria-label="Menu"
                     >
                         <LuMenu class="w-6 h-6" />
                     </button>
@@ -46,13 +46,13 @@ export default component$(() => {
                                 style={{ width: '48px', height: '48px' }}
                                 class="text-white hover:text-gray-100 transition-colors duration-200 animate-spin-fast"
                             />
-                            {/* Título solo visible en pantallas medianas y grandes */}
+                            {/* Title only visible on medium and large screens */}
                             <span class="ml-2 font-semibold text-xl text-white hidden sm:inline">{_`Geounity`}</span>
                         </div>
                     </Link>
                 </div>
                 
-                {/* Barra de búsqueda con ancho responsive */}
+                {/* Search bar with responsive width */}
                 <div class="flex-1 max-w-xl mx-2 sm:mx-4">
                     <div class="relative">
                         <input
@@ -75,14 +75,14 @@ export default component$(() => {
                                         <line x1="12" y1="8" x2="12" y2="12"></line>
                                         <line x1="12" y1="16" x2="12.01" y2="16"></line>
                                     </svg>
-                                    <span>{_`La función de búsqueda estará disponible pronto. Estamos trabajando para implementarla.`}</span>
+                                    <span>{_`The search function will be available soon. We are working to implement it.`}</span>
                                 </div>
                             </div>
                         )}
                     </div>
                 </div>
                 
-                {/* Área de usuario/login con botón más compacto en móvil */}
+                {/* User/login area with a more compact button on mobile */}
                 <div>
                     {session.value?.user ? (
                         <NestedDropdown

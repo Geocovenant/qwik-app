@@ -13,7 +13,7 @@ import { CommunityType } from "~/constants/communityType";
 import { _ } from "compiled-i18n";
 import { useGetLocalityDebates, useGetLocalityPolls, useGetLocalityProjects, useGetLocalityIssues, useGetTags } from "~/shared/loaders";
 
-export { useGetLocalityPolls, useGetLocalityDebates, useGetLocalityProjects, useGetLocalityIssues, useGetTags } from "~/shared/loaders";
+export { useGetLocalityPolls, useGetLocalityDebates, useGetLocalityProjects, useGetLocalityIssues } from "~/shared/loaders";
 export { useVotePoll, useReactPoll } from "~/shared/actions";
 export { useFormPollAction, useFormDebateAction } from "~/shared/forms/actions";
 

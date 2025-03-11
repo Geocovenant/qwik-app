@@ -10,19 +10,18 @@ import { CommunityType } from '~/constants/communityType';
 import { dataArray as countries } from "~/data/countries";
 import { Select, ToggleGroup } from '~/components/ui';
 import { CustomToggle } from '~/components/input/CustomToggle';
-import { useLocation } from '@builder.io/qwik-city';
-import { useComputed$ } from '@builder.io/qwik';
-import { CountrySelectInput } from '../input/CountrySelectInput';
 import { TagInput } from '~/components/input/TagInput';
 import { LuMinus } from '@qwikest/icons/lucide';
 import { useFormPollAction } from '~/shared/forms/actions';
 import type { PollResponseData } from '~/schemas/pollSchema';
 import { _ } from 'compiled-i18n';
 import { useFormPollLoader } from '~/shared/forms/loaders';
+import { MultiCountryCombobox } from '../input/MultiCountryCombobox';
 
 export interface FormPollProps {
     onSubmitCompleted: () => void;
     defaultScope?: CommunityType;
+    defaultCountry?: string;
     defaultRegionId?: number;
     defaultSubregionId?: number;
     regions?: any[];
@@ -33,6 +32,7 @@ export interface FormPollProps {
 export default component$<FormPollProps>(({ 
     onSubmitCompleted,
     defaultScope = CommunityType.NATIONAL,
+    defaultCountry = null,
     defaultRegionId = null,
     defaultSubregionId = null,
     regions = [],
@@ -45,6 +45,8 @@ export default component$<FormPollProps>(({
         fieldArrays: ['options'],
         validate: valiForm$(PollSchema)
     });
+    console.log('pollForm', pollForm)
+
     // Control to show/hide end date
     const showEndDate = useSignal(false);
 
@@ -81,26 +83,7 @@ export default component$<FormPollProps>(({
         }
     });
 
-
     const isAnonymous = useSignal(false);
-
-    // Get country from URL
-    const location = useLocation();
-    const nationName = location.params.nation;
-    const defaultCountry = useComputed$(() => {
-        if (!nationName) return null;
-        return countries.find(country => 
-            country.name.toLowerCase() === nationName.toLowerCase()
-        );
-    });
-
-    // Set default country when component mounts
-    useTask$(({ track }) => {
-        const country = track(() => defaultCountry.value);
-        if (country) {
-            setValue(pollForm, 'community_ids', [country.cca2]);
-        }
-    });
 
     const handleSubmit = $((values: PollForm, event: any) => {
         console.log('Submitting Poll form:', values);
@@ -109,11 +92,6 @@ export default component$<FormPollProps>(({
         onSubmitCompleted()
         // Here you can perform the submit action (client-side or progressively enhanced with action)
     });
-
-    const countriesOptions = countries.map(c => ({ 
-        value: c.cca2,
-        name: `${c.flag} ${c.name}` 
-    }))
 
     return (
         <Form onSubmit$={handleSubmit} class="space-y-6">
@@ -182,13 +160,15 @@ export default component$<FormPollProps>(({
                             case CommunityType.INTERNATIONAL:
                                 return (
                                     <div class="space-y-2">
-                                        <CountrySelectInput
-                                            {...props}
-                                            form={pollForm}
-                                            label={_`Countries involved`}
-                                            predefinedCountries={countriesOptions}
-                                            error={field.error}
-                                        />
+                                    <MultiCountryCombobox
+                                        {...props}
+                                        label={_`Select countries`}
+                                        value={field.value}
+                                        error={field.error}
+                                        onChange$={$((value) => {
+                                            setValue(pollForm, 'community_ids', value);
+                                        })}
+                                    />
                                     </div>
                                 );
 
@@ -223,14 +203,14 @@ export default component$<FormPollProps>(({
                             case CommunityType.REGIONAL:
                                 return (
                                     <div class="space-y-2">
-                                        <Select.Root {...props} value={defaultRegionId ? defaultRegionId.toString() : undefined}>
+                                        <Select.Root {...props} value={defaultRegionId?.toString()}>
                                             <Select.Label>{_`Select a region`}</Select.Label>
                                             <Select.Trigger>
                                                 <Select.DisplayValue placeholder={_`Select region...`} />
                                             </Select.Trigger>
                                             <Select.Popover>
                                                 {regions.length > 0 ? regions.map((region) => (
-                                                    <Select.Item key={region.id} value={region.id}>
+                                                    <Select.Item key={region.id} value={region.community_id.toString()}>
                                                         <Select.ItemLabel>
                                                             {region.name}
                                                         </Select.ItemLabel>

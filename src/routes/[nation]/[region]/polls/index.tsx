@@ -7,14 +7,16 @@ import PollList from "~/components/list/PollList";
 import { CommunityType } from "~/constants/communityType";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
+import { dataArray as countries } from "~/data/countries";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Import necessary loaders
-import { useGetRegionalPolls, useGetRegions } from "~/shared/loaders";
+// Regional polls loader
+import { useGetRegion, useGetRegionalPolls } from "~/shared/regional/loaders";
+import { useGetRegions } from "~/shared/national/loaders";
 
-export { useGetRegionalPolls, useGetRegions } from "~/shared/loaders";
-export { useVotePoll, useReactPoll } from "~/shared/actions";
+export { useFormPollLoader } from "~/shared/forms/loaders";
 export { useFormPollAction } from "~/shared/forms/actions";
+export { useVotePoll, useReactPoll, useFormReportAction, useDeletePoll } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
@@ -23,22 +25,21 @@ export default component$(() => {
     const nationName = location.params.nation;
     const regionName = location.params.region;
     
+    const nation = useComputed$(() => {
+        return countries.find(country => country.name.toLowerCase() === nationName.toLowerCase());
+    });
+    
+    // This request fetches the other regions of the nation
     const regions = useGetRegions();
+
+    const region = useGetRegion();
     const polls = useGetRegionalPolls();
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
-    const defaultRegion = useComputed$(() => {
-        const normalizedRegionName = regionName
-            .split('-')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-        
-        return regions.value.find((r: { name: string; }) => r.name === normalizedRegionName);
-    });
-
+    // @ts-ignore
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
     const isAuthenticated = useComputed$(() => !!session.value?.user);
-    const regionDisplayName = capitalizeFirst(regionName.replace(/-/g, ' '));
 
     const onSubmitCompleted = $(() => {
         showModalPoll.value = false;
@@ -48,44 +49,56 @@ export default component$(() => {
         showModalPoll.value = true;
     });
 
+    const onShowLoginModal = $(() => {
+        showModalPoll.value = true;
+    });
+
     return (
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
             <div class="flex flex-col min-h-0">
                 <div class="h-full overflow-y-auto">
                     {session.value?.user
                         ? <Modal
-                            title={_`Create poll for ${regionDisplayName}`}
+                            title={_`Create poll for ${regionName || capitalizeFirst(regionName)}, ${nation.value?.name || capitalizeFirst(nationName)}`}
                             show={showModalPoll}
                         >
                             <FormPoll
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.REGIONAL}
-                                defaultRegionId={defaultRegion.value?.id}
-                                regions={Array.isArray(regions.value) ? regions.value : []}
+                                defaultRegionId={region.value.id}
+                                // @ts-ignore
+                                regions={regions.value}
                             />
                         </Modal>
                         : <Modal
                             title={_`Sign in to create a poll`}
                             show={showModalPoll}
                         >
-                            <SocialLoginButtons />
+                            <div class="p-4 text-center">
+                                <p class="mb-6 text-gray-600 dark:text-gray-300">
+                                    {_`You need to sign in to create polls and participate in the community.`}
+                                </p>
+                                <SocialLoginButtons />
+                            </div>
                         </Modal>
                     }
                     <PollList
+                        communityName={_`The ${regionName || capitalizeFirst(regionName)} community in ${nation.value?.name || capitalizeFirst(nationName)}`}
+                        currentUsername={currentUsername.value}
+                        isAuthenticated={isAuthenticated.value}
                         onCreatePoll={onCreatePoll}
-                        polls={{
-                            items: Array.isArray(polls.value?.items) ? polls.value.items : [],
-                            total: polls.value?.total || 0,
-                            page: polls.value?.page || 1,
-                            size: polls.value?.size || 10,
-                            pages: polls.value?.pages || 1
-                        }}
-                        communityName={regionDisplayName}
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
                             await nav(`/${nationName}/${regionName}/polls?page=${page}`);
                         }}
-                        isAuthenticated={isAuthenticated.value}
+                        onShowLoginModal$={onShowLoginModal}
+                        polls={{
+                            items: polls.value.items,
+                            total: polls.value.total || 0,
+                            page: polls.value.page || 1,
+                            size: polls.value.size || 10,
+                            pages: polls.value.pages || 1
+                        }}
                     />
                 </div>
             </div>
@@ -94,13 +107,14 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = ({ params }) => {
-    const regionName = capitalizeFirst(params.region.replace(/-/g, ' '));
+    const nationName = capitalizeFirst(params.nation || "");
+    const regionName = capitalizeFirst(params.region || "");
     return {
-        title: `${regionName} - Polls`,
+        title: `${regionName}, ${nationName} - Polls`,
         meta: [
             {
                 name: "description",
-                content: `Community polls of ${regionName}`,
+                content: `Regional polls of ${regionName} in ${nationName}`,
             },
         ],
     };

@@ -7,8 +7,8 @@ import DebateList from "~/components/list/DebateList";
 import { CommunityType } from "~/constants/communityType";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
-import { useGetTags } from "~/shared/loaders";
 
+import { useGetTags } from "~/shared/loaders";
 import { useGetGlobalDebates } from "~/shared/global/loaders";
 
 export { useFormDebateLoader } from "~/shared/forms/loaders";

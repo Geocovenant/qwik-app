@@ -5,6 +5,8 @@ import type { DebateForm } from "~/schemas/debateSchema";
 import type { ProjectForm } from "~/schemas/projectSchema";
 import type { ReportForm } from "~/schemas/reportSchema";
 import { PollType } from "~/constants/pollType";
+import { IssueForm } from "~/schemas/issueSchema";
+import { CommunityType } from "~/constants/communityType";
 
 export const useFormPollLoader = routeLoader$<InitialValues<PollForm>>(() => {
     return {
@@ -51,6 +53,18 @@ export const useFormProjectLoader = routeLoader$<InitialValues<ProjectForm>>(() 
                 resources: []
             }
         ]
+    };
+});
+
+export const useFormIssueLoader = routeLoader$<InitialValues<IssueForm>>(() => {
+    return {
+        title: '',
+        description: '',
+        status: 'OPEN',
+        scope: CommunityType.NATIONAL,
+        community_ids: [],
+        is_anonymous: false,
+        tags: []
     };
 });
 

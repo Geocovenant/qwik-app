@@ -1518,4 +1518,12 @@ export function getFlagByCca2(cca2: string): string {
     return country?.flag || "🏳️";
 }
 
+export function getCountryCode(countryPath: string): string | null {
+    if (!countryPath) return null;
+    
+    // Find the country in the array of countries
+    const country = dataArray.find(country => country.path === countryPath);
+    return country ? country.cca2 : null;
+}
+
 export default data;

@@ -11,7 +11,7 @@ import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
 import { useGetLocalityDebates, useGetTags } from "~/shared/loaders";
 
-export { useGetLocalityDebates, useGetTags } from "~/shared/loaders";
+export { useGetLocalityDebates } from "~/shared/loaders";
 export { useFormDebateAction } from "~/shared/forms/actions";
 export default component$(() => {
     const session = useSession();

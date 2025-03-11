@@ -9,12 +9,12 @@ import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Import necessary loaders
-import { useGetRegionalIssues, useGetRegions, useGetTags } from "~/shared/loaders";
+// Updated imports for regional data
+import { useGetTags } from "~/shared/loaders";
+import { useGetRegionalIssues } from "~/shared/regional/loaders";
 
-// Export loaders so Qwik City can find them
-export { useGetRegionalIssues, useFormIssueLoader, useGetRegions, useGetTags } from "~/shared/loaders";
-export { useFormIssueAction } from "~/shared/actions";
+export { useFormIssueLoader } from "~/shared/forms/loaders";
+export { useFormIssueAction } from "~/shared/forms/actions";
 
 export default component$(() => {
     const session = useSession();
@@ -22,24 +22,15 @@ export default component$(() => {
     const location = useLocation();
     const nationName = location.params.nation;
     const regionName = location.params.region;
-    
-    const regions = useGetRegions();
+
     const tags = useGetTags();
     const issues = useGetRegionalIssues();
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
-    const defaultRegion = useComputed$(() => {
-        const normalizedRegionName = regionName
-            .split('-')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-        
-        return regions.value.find((r: { name: string; }) => r.name === normalizedRegionName);
-    });
-
+    // @ts-ignore
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
     const isAuthenticated = useComputed$(() => !!session.value?.user);
-    const regionDisplayName = capitalizeFirst(regionName.replace(/-/g, ' '));
 
     const onSubmitCompleted = $(() => {
         showModalIssue.value = false;
@@ -49,39 +40,44 @@ export default component$(() => {
         showModalIssue.value = true;
     });
 
+    const onShowLoginModal = $(() => {
+        showModalIssue.value = true;
+    });
+
     return (
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
             <div class="flex flex-col min-h-0">
                 <div class="h-full overflow-y-auto">
                     <Modal 
-                        title={_`Report issue in ${regionDisplayName}`} 
+                        title={_`Report issue in ${capitalizeFirst(regionName)}`} 
                         show={showModalIssue}
                     >
                         {session.value?.user
                             ? <FormIssue
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.REGIONAL}
-                                regions={Array.isArray(regions.value) ? regions.value : []}
                                 tags={tags.value}
                             />
                             : <SocialLoginButtons />
                         }
                     </Modal>
                     <IssueList
-                        onCreateIssue={onCreateIssue}
+                        communityName={_`The ${capitalizeFirst(regionName)} community in ${capitalizeFirst(nationName)}`}
+                        currentUsername={currentUsername.value}
+                        isAuthenticated={isAuthenticated.value}
                         issues={{
-                            items: Array.isArray(issues.value?.items) ? issues.value.items : [],
-                            total: issues.value?.total || 0,
-                            page: issues.value?.page || 1,
-                            size: issues.value?.size || 10,
-                            pages: issues.value?.pages || 1
+                            items: issues.value.items,
+                            total: issues.value.total,
+                            page: issues.value.page,
+                            size: issues.value.size,
+                            pages: issues.value.pages
                         }}
-                        communityName={regionDisplayName}
+                        onCreateIssue={onCreateIssue}
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
                             await nav(`/${nationName}/${regionName}/issues?page=${page}`);
                         }}
-                        isAuthenticated={isAuthenticated.value}
+                        onShowLoginModal$={onShowLoginModal}
                     />
                 </div>
             </div>
@@ -90,7 +86,7 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = ({ params }) => {
-    const regionName = capitalizeFirst(params.region.replace(/-/g, ' '));
+    const regionName = capitalizeFirst(params.region || "");
     return {
         title: `${regionName} - Issues`,
         meta: [

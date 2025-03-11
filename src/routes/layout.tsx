@@ -6,8 +6,9 @@ import Sidebar from "~/components/Sidebar/Sidebar";
 import { useLocation } from "@builder.io/qwik-city";
 import { type CustomSession } from "~/shared/types";
 
-export { useFormCommunityRequestLoader } from "~/shared/loaders";
-export { useFormCommunityRequestAction } from "~/shared/actions";
+export { useFormCommunityRequestLoader, useGetUser, useGetTags } from "~/shared/loaders";
+export { useFormReportLoader } from "~/shared/forms/loaders";
+export { useFormCommunityRequestAction, useJoinCommunity, useLeaveCommunity } from "~/shared/actions";
 
 export const onRequest: RequestHandler = async ({ query, headers, locale, sharedMap, redirect }) => {
   const session: CustomSession | null = sharedMap.get('session');

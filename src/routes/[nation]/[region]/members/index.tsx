@@ -6,55 +6,36 @@ import { useSession } from "~/routes/plugin@auth";
 import { Image } from "@unpic/qwik";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Note: We need to create a specific loader for regional members
-// Using the global loader with adaptations in the meantime
-import { useGetRegions } from "~/shared/loaders";
-import { useGetGlobalMembers } from "~/shared/global/loaders";
+import { useGetRegion, useGetRegionalMembers } from "~/shared/regional/loaders";
 import { useUpdateCommunityVisibility } from "~/shared/actions";
 
-export { useGetRegions } from "~/shared/loaders";
-export { useGetGlobalMembers } from "~/shared/global/loaders";
 export { useUpdateCommunityVisibility } from "~/shared/actions";
 
 export default component$(() => {
-    const session = useSession();
     const location = useLocation();
     const nationName = location.params.nation;
     const regionName = location.params.region;
+    const region = useGetRegion();
+    const members = useGetRegionalMembers();
     
-    const regions = useGetRegions();
-    
-    // Temporary: use global loader until we have a specific regional one
-    const members = useGetGlobalMembers();
+    const session = useSession();
     const updateCommunityVisibilityAction = useUpdateCommunityVisibility();
-    
-    const defaultRegion = useComputed$(() => {
-        const normalizedRegionName = regionName
-            .split('-')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-        
-        return regions.value.find((r: { name: string; }) => r.name === normalizedRegionName);
-    });
-    
-    // Assume the regional community has ID 3 (adjust as necessary)
-    const regionalCommunityId = defaultRegion.value?.id || 3;
-    const isPublic = useSignal(members.value.items.find((m: any) => m.is_current_user)?.is_public || false);
+    const isPublic = useSignal(members.value.current_user?.is_public || false);
     const currentPage = useSignal(1);
+    
+    const regionalCommunityId = region.value.community_id;
     const nav = useNavigate();
     const isAuthenticated = useComputed$(() => !!session.value?.user);
-    const regionDisplayName = capitalizeFirst(regionName.replace(/-/g, ' '));
 
-    // Toggle to change user visibility
     const togglePublicVisibility = $(async () => {
         if (!isAuthenticated.value) return;
 
         const newValue = !isPublic.value;
         isPublic.value = newValue;
 
-        await updateCommunityVisibilityAction.submit({
+        await updateCommunityVisibilityAction.submit({ 
             communityId: regionalCommunityId,
-            isPublic: newValue
+            isPublic: newValue 
         });
     });
 
@@ -62,43 +43,45 @@ export default component$(() => {
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-auto">
             <div class="flex flex-col min-h-0">
                 <div class="h-full p-4 bg-gray-50 dark:bg-gray-800">
-                    {/* Header with title and statistics */}
+                    {/* Header updated for region */}
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 bg-white dark:bg-gray-900 p-4 rounded-lg shadow dark:shadow-gray-700">
                         <div class="flex items-center">
                             <LuUsers class="w-8 h-8 text-blue-600 dark:text-blue-400 mr-3" />
                             <div>
-                                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{_`Members of ${regionDisplayName}`}</h1>
+                                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                                    {_`Members of ${region.value?.name || capitalizeFirst(regionName)} Region`}
+                                </h1>
                                 <p class="text-gray-600 dark:text-gray-400">
-                                    {_`Connect with others in your regional community.`}
+                                    {_`Connect with citizens in ${capitalizeFirst(nationName)}'s ${capitalizeFirst(regionName)} region.`}
                                 </p>
                             </div>
                         </div>
                         <div class="mt-4 sm:mt-0 flex items-center gap-2 pl-3">
                             <span class="text-lg font-semibold text-blue-700 dark:text-blue-400">
-                                {members.value.total} {_`members`}
+                                {members.value.total_public + members.value.total_anonymous} {_`members`}
                             </span>
                         </div>
                     </div>
 
-                    {/* Privacy settings */}
+                    {/* Rest of the component remains similar with regional context */}
                     {isAuthenticated.value && (
                         <div class="mb-6 bg-white dark:bg-gray-900 p-4 rounded-lg shadow dark:shadow-gray-700">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
                                     <LuSettings class="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">{_`Your visibility in ${regionDisplayName}`}</h2>
+                                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">{_`Privacy Settings`}</h2>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <span class="text-sm text-gray-600 dark:text-gray-400">
-                                        {isPublic.value ? _`Visible to everyone` : _`Hidden profile`}
+                                        {isPublic.value ? _`Visible to everyone` : _`Profile hidden`}
                                     </span>
                                     <button
                                         onClick$={togglePublicVisibility}
                                         class={`w-14 h-7 rounded-full flex items-center px-1 transition-colors ${isPublic.value ? "bg-blue-600 justify-end" : "bg-gray-300 dark:bg-gray-600 justify-start"}`}
                                         aria-label={
                                             isPublic.value
-                                                ? _`Switch to hidden profile`
-                                                : _`Switch to visible profile`
+                                                ? _`Change to hidden profile`
+                                                : _`Change to visible profile`
                                         }
                                     >
                                         <div class="w-5 h-5 bg-white rounded-full shadow-md"></div>
@@ -107,13 +90,12 @@ export default component$(() => {
                             </div>
                             <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 ml-8">
                                 {isPublic.value
-                                    ? _`You're visible to everyone in the community.`
-                                    : _`You're only visible to community administrators.`}
+                                    ? _`Your profile is visible to all regional community members.`
+                                    : _`Your profile is hidden. Only you can see it in this regional list.`}
                             </p>
                         </div>
                     )}
 
-                    {/* Members list */}
                     <div class="bg-white dark:bg-gray-900 rounded-lg shadow dark:shadow-gray-700">
                         <div class="border-b border-gray-200 dark:border-gray-700 p-4">
                             <div class="flex items-center gap-2">
@@ -121,10 +103,11 @@ export default component$(() => {
                                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white">{_`Visible Members`}</h2>
                             </div>
                             <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 ml-7">
-                                {_`These members have chosen to make their profile visible in the community.`}
+                                {_`Discover active members in the ${capitalizeFirst(regionName)} region.`}
                             </p>
                         </div>
 
+                        {/* Members list and pagination same structure */}
                         {members.value.items.length > 0 ? (
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
                                 {members.value.items.map((member: any) => (
@@ -165,13 +148,21 @@ export default component$(() => {
                                 <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300">{_`No visible members`}</h3>
                                 <p class="text-gray-500 dark:text-gray-400 mt-1 max-w-md">
                                     {isAuthenticated.value
-                                        ? _`You can be the first to make your profile visible by toggling the switch above.`
-                                        : _`Members have chosen to keep their profiles private.`}
+                                        ? _`Be the first to make your profile visible in ${capitalizeFirst(regionName)} region.`
+                                        : _`Regional members have chosen to keep their profiles private.`}
                                 </p>
                             </div>
                         )}
 
-                        {/* Pagination */}
+                        {members.value.total_anonymous > 0 && (
+                            <div class="flex justify-center items-center p-4 border-t border-gray-200 dark:border-gray-700">
+                                <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                                    <LuEyeOff class="w-4 h-4" />
+                                    <span>{members.value.total_anonymous} anonymous members</span>
+                                </div>
+                            </div>
+                        )}
+
                         {members.value.pages > 1 && (
                             <div class="flex justify-center items-center gap-2 p-4 border-t border-gray-200 dark:border-gray-700">
                                 <button
@@ -219,13 +210,14 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = ({ params }) => {
-    const regionName = capitalizeFirst(params.region.replace(/-/g, ' '));
+    const regionName = capitalizeFirst(params.region || "");
+    const nationName = capitalizeFirst(params.nation || "");
     return {
-        title: _`${regionName} - Members`,
+        title: _`${regionName}, ${nationName} - Members`,
         meta: [
             {
                 name: "description",
-                content: _`Members of the ${regionName} community`,
+                content: _`Members of the regional community in ${regionName}, ${nationName}`,
             },
         ],
     };

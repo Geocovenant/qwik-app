@@ -24,7 +24,6 @@ import SocialLoginButtons from "~/components/SocialLoginButtons"
 // Export necessary loaders and actions
 export { useGetPollBySlug } from "~/shared/loaders"
 export { useVotePoll, useReactPoll } from "~/shared/actions"
-export { useFormReportLoader } from "~/shared/forms/loaders"
 
 export default component$(() => {
     const session = useSession()

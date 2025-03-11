@@ -12,7 +12,7 @@ import { capitalizeFirst } from "~/utils/capitalizeFirst";
 // Import necessary loaders
 import { useGetSubregionalDebates, useGetSubregions, useGetTags } from "~/shared/loaders";
 
-export { useGetSubregionalDebates, useGetSubregions, useGetTags } from "~/shared/loaders";
+export { useGetSubregionalDebates, useGetSubregions } from "~/shared/loaders";
 export { useFormDebateAction } from "~/shared/forms/actions";
 
 export default component$(() => {

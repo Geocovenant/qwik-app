@@ -52,3 +52,12 @@ export type IssueForm = {
     is_anonymous: boolean;
     tags?: string[];
 }; 
+
+export interface IssueResponseData {
+    success: boolean;
+    message: string;
+    data?: {
+        issue_id: string;
+        share_link: string;
+    };
+}

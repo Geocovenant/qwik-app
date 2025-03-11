@@ -1,72 +1,34 @@
 import { component$, useComputed$ } from "@builder.io/qwik";
 import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
-import { _ } from "compiled-i18n";
 import { LuBarChart2, LuFlag, LuUsers, LuMessageSquare, LuBriefcase, LuAlertTriangle, LuUserPlus, LuUserMinus } from "@qwikest/icons/lucide";
 import { dataArray as countries, getFlagByCca2 } from "~/data/countries";
 import { capitalizeFirst } from '~/utils/capitalizeFirst';
-import { useGetNationalDebates, useGetNationalPolls, useGetNationalProjects, useGetNationalIssues, useGetCountry, useGetUser } from "~/shared/loaders";
 import { Image } from "@unpic/qwik";
 import { Button } from "~/components/ui";
 import { useJoinCommunity, useLeaveCommunity } from "~/shared/actions";
+import { _ } from "compiled-i18n";
 
-export { useGetNationalPolls, useGetNationalDebates, useGetNationalProjects, useGetNationalIssues, useGetCountry, useGetUser } from "~/shared/loaders";
-export { useJoinCommunity, useLeaveCommunity } from "~/shared/actions";
+import { useGetUser } from "~/shared/loaders";
+import { useGetCountry, useGetNationalDebates, useGetNationalPolls, useGetNationalProjects, useGetNationalIssues } from "~/shared/national/loaders";
 
-// Defining types to avoid TypeScript errors
-interface NationData {
-    name: string;
-    flag: string;
-    continent: string;
-    cca2: string;
-    adminDivisionName?: string;
-    path: string;
-    capital?: string[];
-    region?: string;
-    subregion?: string;
-}
-
-interface ProjectItem {
-    id?: string;
-    title: string;
-    progress?: number;
-    participants_count?: number;
-}
-
-interface PollItem {
-    id?: string;
-    title: string;
-    votes_count?: number;
-    ends_at?: string;
-}
-
-interface IssueItem {
-    id?: string;
-    title: string;
-    location?: string;
-    status: 'OPEN' | 'IN_PROGRESS' | 'RESOLVED';
-}
-
-interface DebateItem {
-    id?: string;
-    title: string;
-    description?: string;
-    views_count?: number;
-    comments_count?: number;
-}
+import type { Debate } from "~/types/debate";
+import type { Issue } from "~/types/issue";
+import type { Poll } from "~/types/poll";
+import type { Project } from "~/types/project";
 
 export default component$(() => {
     const location = useLocation();
     const nationName = location.params.nation;
-    const nation = useComputed$<NationData | undefined>(() => {
-        return countries.find(country => country.name.toLowerCase() === nationName.toLowerCase()) as NationData | undefined;
+    const nation = useComputed$(() => {
+        return countries.find(country => country.name.toLowerCase() === nationName.toLowerCase());
     });
-
+    
+    const user = useGetUser();
+    const country = useGetCountry();
     const polls = useGetNationalPolls();
     const debates = useGetNationalDebates();
     const projects = useGetNationalProjects();
     const issues = useGetNationalIssues();
-    const country = useGetCountry();
-    const user = useGetUser();
 
     const joinCommunityAction = useJoinCommunity();
     const leaveCommunityAction = useLeaveCommunity();
@@ -144,7 +106,7 @@ export default component$(() => {
                         {country.value?.coat_of_arms_svg && (
                             <div class="flex justify-center">
                                 <Image 
-                                    src={country.value.coat_of_arms_svg || "/placeholder.svg"} 
+                                    src={country.value.coat_of_arms_svg} 
                                     alt={`Coat of arms of ${country.value.name || capitalizeFirst(nationName)}`} 
                                     class="h-32 w-auto max-w-[150px] object-contain"
                                 />
@@ -302,7 +264,7 @@ export default component$(() => {
                         {_`Featured Topics in ${nation.value?.name || capitalizeFirst(nationName)}`}
                     </h2>
                     <div class="space-y-4">
-                        {Array.isArray(debates.value) && debates.value.slice(0, 3).map((debate: DebateItem, index: number) => (
+                        {Array.isArray(debates.value) && debates.value.slice(0, 3).map((debate: Debate, index: number) => (
                             <div key={debate.id || index} class="border-b border-gray-200 dark:border-gray-700 pb-3">
                                 <h3 class="font-medium text-gray-900 dark:text-white">{debate.title}</h3>
                                 <p class="text-sm text-gray-600 dark:text-gray-300">
@@ -333,7 +295,7 @@ export default component$(() => {
                         {_`Active Projects`}
                     </h2>
                     <div class="space-y-4">
-                        {projects.value?.items?.slice(0, 3).map((project: ProjectItem, index: number) => (
+                        {projects.value.items.slice(0, 3).map((project: Project, index: number) => (
                             <div key={project.id || index} class="border-b border-gray-200 dark:border-gray-700 pb-3">
                                 <h3 class="font-medium text-gray-900 dark:text-white">{project.title}</h3>
                                 <div class="flex justify-between text-sm mt-1 text-gray-700 dark:text-gray-300">
@@ -347,7 +309,7 @@ export default component$(() => {
                             </div>
                         ))}
 
-                        {(!projects.value?.items || projects.value.items.length === 0) && (
+                        {(projects.value.items.length === 0) && (
                             <div class="text-center py-6 text-gray-500 dark:text-gray-400">
                                 {_`There are no active projects yet. Start the first one!`}
                             </div>
@@ -364,7 +326,7 @@ export default component$(() => {
                         {_`Reported Issues`}
                     </h2>
                     <div class="space-y-3">
-                        {issues.value?.items?.slice(0, 5).map((issue: IssueItem, index: number) => (
+                        {issues.value?.items?.slice(0, 5).map((issue: Issue, index: number) => (
                             <div key={issue.id || index} class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
                                 <div>
                                     <h3 class="font-medium text-gray-900 dark:text-white">{issue.title}</h3>
@@ -381,7 +343,7 @@ export default component$(() => {
                             </div>
                         ))}
 
-                        {(!issues.value?.items || issues.value.items.length === 0) && (
+                        {(issues.value.items.length === 0) && (
                             <div class="text-center py-6 text-gray-500 dark:text-gray-400">
                                 {_`There are no reported issues yet.`}
                             </div>
@@ -395,7 +357,7 @@ export default component$(() => {
                         {_`Active Polls`}
                     </h2>
                     <div class="space-y-3">
-                        {polls.value?.items?.slice(0, 5).map((poll: PollItem, index: number) => (
+                        {polls.value?.items?.slice(0, 5).map((poll: Poll, index: number) => (
                             <div key={poll.id || index} class="border-b border-gray-200 dark:border-gray-700 pb-2">
                                 <h3 class="font-medium text-gray-900 dark:text-white">{poll.title}</h3>
                                 <div class="flex justify-between items-center mt-1">
@@ -411,7 +373,7 @@ export default component$(() => {
                             </div>
                         ))}
 
-                        {(!polls.value?.items || polls.value.items.length === 0) && (
+                        {(polls.value.items.length === 0) && (
                             <div class="text-center py-6 text-gray-500 dark:text-gray-400">
                                 {_`There are no active polls currently.`}
                             </div>

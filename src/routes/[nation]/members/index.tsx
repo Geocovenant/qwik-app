@@ -7,12 +7,9 @@ import { Image } from "@unpic/qwik";
 import { dataArray as countries } from "~/data/countries";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Note: We need to create a specific loader for national members
-// Using the global loader with adaptations in the meantime
-import { useGetCountry, useGetNationalMembers } from "~/shared/loaders";
+import { useGetCountry, useGetNationalMembers } from "~/shared/national/loaders";
 import { useUpdateCommunityVisibility } from "~/shared/actions";
 
-export { useGetCountry, useGetNationalMembers } from "~/shared/loaders";
 export { useUpdateCommunityVisibility } from "~/shared/actions";
 
 export default component$(() => {

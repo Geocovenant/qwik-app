@@ -10,11 +10,12 @@ import { useSession } from "~/routes/plugin@auth";
 import { dataArray as countries } from "~/data/countries";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Import necessary loaders
-import { useGetNationalDebates, useGetTags } from "~/shared/loaders";
+import { useGetTags } from "~/shared/loaders";
+import { useGetNationalDebates } from "~/shared/national/loaders";
 
-export { useGetNationalDebates, useGetTags } from "~/shared/loaders";
+export { useFormDebateLoader } from "~/shared/forms/loaders";
 export { useFormDebateAction } from "~/shared/forms/actions";
+export { useDeleteDebate } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
@@ -30,6 +31,8 @@ export default component$(() => {
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
+    // @ts-ignore
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
     const isAuthenticated = useComputed$(() => !!session.value?.user);
 
     const onSubmitCompleted = $(() => {
@@ -72,20 +75,21 @@ export default component$(() => {
                         </Modal>
                     }
                     <DebateList
+                        communityName={_`The ${nation.value?.name || capitalizeFirst(nationName)} community`}
+                        currentUsername={currentUsername.value}
                         debates={{
-                            items: Array.isArray(debates.value) ? debates.value : [],
-                            total: debates.value?.length || 0,
-                            page: currentPage.value,
-                            size: 10,
-                            pages: Math.ceil((debates.value?.length || 0) / 10)
+                            items: debates.value.items,
+                            total: debates.value.total,
+                            page: debates.value.page,
+                            size: debates.value.size,
+                            pages: debates.value.pages
                         }}
-                        communityName={nation.value?.name || capitalizeFirst(nationName)}
+                        isAuthenticated={isAuthenticated.value}
                         onCreateDebate={onCreateDebate}
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
                             await nav(`/${nationName}/debates?page=${page}`);
                         }}
-                        isAuthenticated={isAuthenticated.value}
                         onShowLoginModal$={onShowLoginModal}
                     />
                 </div>

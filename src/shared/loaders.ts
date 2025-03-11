@@ -1,14 +1,10 @@
 import { routeLoader$ } from "@builder.io/qwik-city";
 import type { InitialValues } from "@modular-forms/qwik";
-import { dataArray } from "~/data/countries";
 import type { UserForm } from "~/schemas/userSchema";
 import type { OpinionForm } from "~/schemas/opinionSchema";
-import { CommunityType } from "~/constants/communityType";
-import { type IssueForm } from "~/schemas/issueSchema";
-import type { ReportForm } from "~/schemas/reportSchema";
 import type { CommunityRequestForm } from "~/schemas/communityRequestSchema";
+import { useGetRegions } from "./national/loaders";
 
-// eslint-disable-next-line qwik/loader-location
 export const useGetUser = routeLoader$(async ({ cookie }) => {
     const token = cookie.get('authjs.session-token')
     if (!token) {
@@ -24,7 +20,6 @@ export const useGetUser = routeLoader$(async ({ cookie }) => {
     return data
 })
 
-// eslint-disable-next-line qwik/loader-location
 export const useGetCommunityIdByName = routeLoader$(async ({ query }) => {
     const name = query.get('name');
     if (!name) {
@@ -39,39 +34,6 @@ export const useGetCommunityIdByName = routeLoader$(async ({ query }) => {
     return data[0].id;
 });
 
-// eslint-disable-next-line qwik/loader-location
-export const useGetNationalPolls = routeLoader$(async ({ cookie, params }) => {
-    console.log('============ useGetNationalPolls ============')
-    const token = cookie.get('authjs.session-token');
-    if (!token) {
-        return [];
-    }
-    const cca2 = getCountryCode(params.nation);
-    if (!cca2) {
-        console.error('Country not found!', params.nation);
-        return [];
-    }
-    try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=NATIONAL&country=${cca2}`, {
-            headers: {
-                Accept: 'application/json',
-                Authorization: token.value
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Error fetching national polls');
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching national polls:', error);
-        return [];
-    }
-})
-
-// eslint-disable-next-line qwik/loader-location
 export const useGetRegionalPolls = routeLoader$(async ({ cookie, params, resolveValue }) => {
     console.log('============ useGetRegionalPolls ============')
     const token = cookie.get('authjs.session-token');
@@ -83,7 +45,7 @@ export const useGetRegionalPolls = routeLoader$(async ({ cookie, params, resolve
 
     const normalizedRegionName = params.region
         .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
     const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
     console.log('regionData', regionData)
@@ -114,7 +76,6 @@ export const useGetRegionalPolls = routeLoader$(async ({ cookie, params, resolve
     }
 })
 
-// eslint-disable-next-line qwik/loader-location
 export const useGetSubregionalPolls = routeLoader$(async ({ cookie, params, resolveValue }) => {
     console.log('============ useGetSubregionalPolls ============')
     const token = cookie.get('authjs.session-token');
@@ -125,7 +86,7 @@ export const useGetSubregionalPolls = routeLoader$(async ({ cookie, params, reso
 
     const normalizedRegionName = params.region
         .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
     const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
     console.log('regionData', regionData)
@@ -139,7 +100,7 @@ export const useGetSubregionalPolls = routeLoader$(async ({ cookie, params, reso
     // Normalize subregion name
     const normalizedSubregionName = params.subregion
         .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
 
     // Fetch subregion data
@@ -183,7 +144,6 @@ export const useGetSubregionalPolls = routeLoader$(async ({ cookie, params, reso
     }
 })
 
-// eslint-disable-next-line qwik/loader-location
 export const useGetDebateBySlug = routeLoader$(async ({ cookie, params }) => {
     console.log('============ useGetDebateBySlug ============')
     const token = cookie.get('authjs.session-token');
@@ -222,41 +182,6 @@ export const useGetDebateBySlug = routeLoader$(async ({ cookie, params }) => {
     };
 });
 
-// eslint-disable-next-line qwik/loader-location
-export const useGetNationalDebates = routeLoader$(async ({ cookie, params }) => {
-    console.log('============ useGetNationalDebates ============')
-    const token = cookie.get('authjs.session-token');
-    if (!token) {
-        return [];
-    }
-
-    const cca2 = getCountryCode(params.nation);
-    if (!cca2) {
-        console.error('Country not found:', params.nation);
-        return [];
-    }
-
-    try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates?type=NATIONAL&country=${cca2}`, {
-            headers: {
-                Accept: 'application/json',
-                Authorization: token.value
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Error fetching national debates');
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching national debates:', error);
-        return [];
-    }
-})
-
-// eslint-disable-next-line qwik/loader-location
 export const useGetRegionalDebates = routeLoader$(async ({ cookie, params, resolveValue }) => {
     console.log('============ useGetRegionalDebates ============')
     const token = cookie.get('authjs.session-token');
@@ -268,7 +193,7 @@ export const useGetRegionalDebates = routeLoader$(async ({ cookie, params, resol
 
     const normalizedRegionName = params.region
         .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
     const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
 
@@ -298,41 +223,6 @@ export const useGetRegionalDebates = routeLoader$(async ({ cookie, params, resol
     }
 })
 
-
-// Helper function to get country code using countries.ts file
-function getCountryCode(countryPath: string): string | null {
-    if (!countryPath) return null
-
-    // Find the country in the array of countries
-    const country = dataArray.find(country => country.path === countryPath)
-    return country ? country.cca2 : null
-}
-
-// eslint-disable-next-line qwik/loader-location
-export const useGetRegions = routeLoader$(async ({ params }) => {
-    const nationPath = params.nation;
-    if (!nationPath) return [];
-
-    const cca2 = getCountryCode(nationPath);
-    if (!cca2) {
-        console.error('Country not found:', nationPath);
-        return [];
-    }
-
-    try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/countries/${cca2}/divisions`);
-        if (!response.ok) {
-            throw new Error('Error fetching country divisions');
-        }
-        const divisions = await response.json();
-        return divisions;
-    } catch (error) {
-        console.error('Error fetching country divisions:', error);
-        return [];
-    }
-});
-
-// eslint-disable-next-line qwik/loader-location
 export const useGetSubregions = routeLoader$(async ({ params, resolveValue }) => {
     const nationPath = params.nation;
     const regionPath = params.region;
@@ -344,7 +234,7 @@ export const useGetSubregions = routeLoader$(async ({ params, resolveValue }) =>
 
     const normalizedRegionName = regionPath
         .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
     const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
 
@@ -367,7 +257,6 @@ export const useGetSubregions = routeLoader$(async ({ params, resolveValue }) =>
     }
 });
 
-// eslint-disable-next-line qwik/loader-location
 export const useGetTags = routeLoader$(async ({ cookie }) => {
     const token = cookie.get('authjs.session-token');
     if (!token) {
@@ -385,7 +274,6 @@ export const useGetTags = routeLoader$(async ({ cookie }) => {
     }>;
 });
 
-// eslint-disable-next-line qwik/loader-location
 export const useGetUserByUsername = routeLoader$(async ({ cookie, params }) => {
     const token = cookie.get('authjs.session-token');
     if (!token) {
@@ -407,7 +295,6 @@ export const useGetUserByUsername = routeLoader$(async ({ cookie, params }) => {
     return data;
 });
 
-// eslint-disable-next-line qwik/loader-location
 export const useFormUserLoader = routeLoader$<InitialValues<UserForm>>(async ({ resolveValue }) => {
     const user = await resolveValue(useGetUserByUsername);
     return {
@@ -431,7 +318,6 @@ export const useFormOpinionLoader = routeLoader$<InitialValues<OpinionForm>>(asy
     };
 });
 
-// eslint-disable-next-line qwik/loader-location
 export const useGetPollBySlug = routeLoader$(async ({ cookie, params }) => {
     console.log('============ useGetPollBySlug ============')
     const token = cookie.get('authjs.session-token');
@@ -460,62 +346,6 @@ export const useGetPollBySlug = routeLoader$(async ({ cookie, params }) => {
     }
 });
 
-// eslint-disable-next-line qwik/loader-location
-export const useGetNationalProjects = routeLoader$(async ({ params }) => {
-    const cca2 = getCountryCode(params.nation);
-    if (!cca2) {
-        console.error('Country not found:', params.nation);
-        return [];
-    }
-    try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects?scope=NATIONAL&country=${cca2}`, {
-            headers: {
-                Accept: 'application/json',
-            }
-        });
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching national projects:', error);
-        return [];
-    }
-});
-
-// eslint-disable-next-line qwik/loader-location
-export const useGetNationalIssues = routeLoader$(async ({ params }) => {
-    const cca2 = getCountryCode(params.nation);
-    if (!cca2) {
-        console.error('Country not found:', params.nation);
-        return [];
-    }
-    try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/issues?scope=NATIONAL&country=${cca2}`, {
-            headers: {
-                Accept: 'application/json'
-            }
-        });
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching national issues:', error);
-        return [];
-    }
-});
-
-// eslint-disable-next-line qwik/loader-location
-export const useFormIssueLoader = routeLoader$<InitialValues<IssueForm>>(() => {
-    return {
-        title: '',
-        description: '',
-        status: 'OPEN',
-        scope: CommunityType.NATIONAL,
-        community_ids: [],
-        is_anonymous: false,
-        tags: []
-    };
-});
-
-// eslint-disable-next-line qwik/loader-location
 export const useGetRegionalProjects = routeLoader$(async ({ params }) => {
     const regionId = params.region;
     if (!regionId) return [];
@@ -551,7 +381,6 @@ export const useGetRegionalIssues = routeLoader$(async ({ params }) => {
     }
 });
 
-// eslint-disable-next-line qwik/loader-location
 export const useGetSubregionalDebates = routeLoader$(async ({ cookie, params, resolveValue }) => {
     console.log('============ useGetSubregionalDebates ============')
     const token = cookie.get('authjs.session-token');
@@ -563,7 +392,7 @@ export const useGetSubregionalDebates = routeLoader$(async ({ cookie, params, re
     const regions = await resolveValue(useGetRegions);
     const normalizedRegionName = params.region
         .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
     const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
     const regionId = regionData?.id;
@@ -576,7 +405,7 @@ export const useGetSubregionalDebates = routeLoader$(async ({ cookie, params, re
     // Ahora obtener el subregion ID
     const normalizedSubregionName = params.subregion
         .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
 
     try {
@@ -619,7 +448,6 @@ export const useGetSubregionalDebates = routeLoader$(async ({ cookie, params, re
     }
 });
 
-// eslint-disable-next-line qwik/loader-location
 export const useGetSubregionalProjects = routeLoader$(async ({ cookie, params, resolveValue }) => {
     console.log('============ useGetSubregionalProjects ============')
     const token = cookie.get('authjs.session-token');
@@ -631,7 +459,7 @@ export const useGetSubregionalProjects = routeLoader$(async ({ cookie, params, r
     const regions = await resolveValue(useGetRegions);
     const normalizedRegionName = params.region
         .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
     const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
     const regionId = regionData?.id;
@@ -644,7 +472,7 @@ export const useGetSubregionalProjects = routeLoader$(async ({ cookie, params, r
     // Ahora obtener el subregion ID
     const normalizedSubregionName = params.subregion
         .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
 
     try {
@@ -687,7 +515,6 @@ export const useGetSubregionalProjects = routeLoader$(async ({ cookie, params, r
     }
 });
 
-// eslint-disable-next-line qwik/loader-location
 export const useGetSubregionalIssues = routeLoader$(async ({ cookie, params, resolveValue }) => {
     console.log('============ useGetSubregionalIssues ============')
     const token = cookie.get('authjs.session-token');
@@ -699,7 +526,7 @@ export const useGetSubregionalIssues = routeLoader$(async ({ cookie, params, res
     const regions = await resolveValue(useGetRegions);
     const normalizedRegionName = params.region
         .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
     const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
     const regionId = regionData?.id;
@@ -712,7 +539,7 @@ export const useGetSubregionalIssues = routeLoader$(async ({ cookie, params, res
     // Ahora obtener el subregion ID
     const normalizedSubregionName = params.subregion
         .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
 
     try {
@@ -755,7 +582,6 @@ export const useGetSubregionalIssues = routeLoader$(async ({ cookie, params, res
     }
 });
 
-// eslint-disable-next-line qwik/loader-location
 export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue }) => {
     console.log('============ useGetCountryDivisions ============')
     const token = cookie.get('authjs.session-token');
@@ -804,41 +630,6 @@ export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue
     }
 });
 
-// eslint-disable-next-line qwik/loader-location
-export const useGetNationalMembers = routeLoader$(async ({ cookie, query, resolveValue }) => {
-    console.log('============ useGetNationalMembers ============')
-    const country = await resolveValue(useGetCountry);
-    const page = Number(query.get("page") || "1");
-    const size = Number(query.get("size") || "100");
-    const token = cookie.get('authjs.session-token');
-    if (!token) {
-        return { items: [], total: 0, page: 1, size: 20, pages: 1 };
-    }
-    
-    const communityId = country.community_id;
-
-    try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${communityId}/members?page=${page}&size=${size}`, {
-            headers: {
-                Accept: 'application/json',
-                Authorization: token.value
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Error fetching national members');
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching national members:', error);
-        return { items: [], total: 0, page: 1, size: 20, pages: 1 };
-    }
-});
-
-
-// eslint-disable-next-line qwik/loader-location
 export const useCheckCommunityMembership = routeLoader$(async ({ cookie, params }) => {
     console.log('============ useCheckCommunityMembership ============')
     const token = cookie.get('authjs.session-token');
@@ -878,7 +669,6 @@ export const useCheckCommunityMembership = routeLoader$(async ({ cookie, params 
     }
 });
 
-// eslint-disable-next-line qwik/loader-location
 export const useGetLocalityPolls = routeLoader$(async ({ params, query, cookie }) => {
     console.log('============ useGetLocalityPolls ============');
     const page = query.get('page') || '1';
@@ -922,7 +712,6 @@ export const useGetLocalityPolls = routeLoader$(async ({ params, query, cookie }
 });
 
 // Loader para obtener debates a nivel de localidad
-// eslint-disable-next-line qwik/loader-location
 export const useGetLocalityDebates = routeLoader$(async ({ params, query, cookie }) => {
     console.log('============ useGetLocalityDebates ============');
     const page = query.get('page') || '1';
@@ -966,7 +755,6 @@ export const useGetLocalityDebates = routeLoader$(async ({ params, query, cookie
 });
 
 // Loader para obtener proyectos a nivel de localidad
-// eslint-disable-next-line qwik/loader-location
 export const useGetLocalityProjects = routeLoader$(async ({ params, query, cookie }) => {
     console.log('============ useGetLocalityProjects ============');
     const page = query.get('page') || '1';
@@ -1010,7 +798,6 @@ export const useGetLocalityProjects = routeLoader$(async ({ params, query, cooki
 });
 
 // Loader para obtener problemas reportados a nivel de localidad
-// eslint-disable-next-line qwik/loader-location
 export const useGetLocalityIssues = routeLoader$(async ({ params, query, cookie }) => {
     console.log('============ useGetLocalityIssues ============');
     const page = query.get('page') || '1';
@@ -1053,24 +840,6 @@ export const useGetLocalityIssues = routeLoader$(async ({ params, query, cookie 
     }
 });
 
-// eslint-disable-next-line qwik/loader-location
-export const useGetCountry = routeLoader$(async ({ params }) => {
-    const cca2 = getCountryCode(params.nation);
-    if (!cca2) {
-        console.error('Country not found!', params.nation);
-        return [];
-    }
-    try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/countries/${cca2}`);
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching country:', error);
-        return { country: null };
-    }
-});
-
-// eslint-disable-next-line qwik/loader-location
 export const useFormCommunityRequestLoader = routeLoader$<InitialValues<CommunityRequestForm>>(() => {
     return {
         country: "",

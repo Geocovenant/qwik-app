@@ -8,32 +8,33 @@ export enum PollScope {
 }
 
 export interface Poll {
-    id: number;
-    title: string;
-    description: string;
-    options: { text: string; votes: number; id: number; voted: boolean }[];
-    status: string;
-    scope: PollScope;
-    type: string;
-    slug: string;
-    is_anonymous: boolean;
-    ends_at?: string | null;
+    comments_count: number;
+    countries?: string[];
     created_at: string;
     creator?: {
         username: string;
         name: string;
         image: string;
     };
-    comments_count: number;
+    description: string;
+    ends_at?: string | null;
+    id: number;
+    is_anonymous: boolean;
+    options: { text: string; votes: number; id: number; voted: boolean }[];
     reactions: {
         LIKE: number;
         DISLIKE: number;
     };
-    countries?: string[];
+    regions?: string[];
+    scope: PollScope;
+    slug: string;
+    status: string;
+    tags: string[];
+    title: string;
+    type: string;
     user_voted_options?: number[];
     user_reaction?: 'LIKE' | 'DISLIKE' | null;
-    regions?: string[];
-    tags: string[];
+    votes_count: number;
 }
 
 export interface PollResponse {

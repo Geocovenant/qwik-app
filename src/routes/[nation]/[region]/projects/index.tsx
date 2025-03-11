@@ -7,12 +7,16 @@ import ProjectList from "~/components/list/ProjectList";
 import { CommunityType } from "~/constants/communityType";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
+import { dataArray as countries } from "~/data/countries";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Import necessary loaders
-import { useGetRegionalProjects, useGetRegions, useGetTags } from "~/shared/loaders";
+import { useGetTags } from "~/shared/loaders";
+import { useGetRegion, useGetRegionalProjects } from "~/shared/regional/loaders";
+import { useGetRegions } from "~/shared/national/loaders";
 
-export { useGetRegionalProjects, useGetRegions, useGetTags } from "~/shared/loaders";
+export { useFormProjectLoader } from "~/shared/forms/loaders";
+export { useFormProjectAction } from "~/shared/forms/actions";
+export { useDeleteProject } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
@@ -21,23 +25,23 @@ export default component$(() => {
     const nationName = location.params.nation;
     const regionName = location.params.region;
     
+    const nation = useComputed$(() => {
+        return countries.find(country => country.name.toLowerCase() === nationName.toLowerCase());
+    });
+
+    // This request fetches the other regions of the nation
     const regions = useGetRegions();
+
+    const region = useGetRegion();
+    
     const tags = useGetTags();
     const projects = useGetRegionalProjects();
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
-    const defaultRegion = useComputed$(() => {
-        const normalizedRegionName = regionName
-            .split('-')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-        
-        return regions.value.find((r: { name: string; }) => r.name === normalizedRegionName);
-    });
-
+    // @ts-ignore
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
     const isAuthenticated = useComputed$(() => !!session.value?.user);
-    const regionDisplayName = capitalizeFirst(regionName.replace(/-/g, ' '));
 
     const onSubmitCompleted = $(() => {
         showModalProject.value = false;
@@ -47,40 +51,47 @@ export default component$(() => {
         showModalProject.value = true;
     });
 
+    const onShowLoginModal = $(() => {
+        showModalProject.value = true;
+    });
+
     return (
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
             <div class="flex flex-col min-h-0">
                 <div class="h-full overflow-y-auto">
                     <Modal 
-                        title={_`Create project for ${regionDisplayName}`} 
+                        title={_`Create project for ${capitalizeFirst(regionName)}, ${nation.value?.name || capitalizeFirst(nationName)}`} 
                         show={showModalProject}
                     >
                         {session.value?.user
                             ? <FormProject
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.REGIONAL}
-                                defaultRegionId={defaultRegion.value?.id}
-                                regions={Array.isArray(regions.value) ? regions.value : []}
+                                defaultRegionId={region.value.id}
+                                // @ts-ignore
+                                regions={regions.value}
                                 tags={tags.value}
                             />
                             : <SocialLoginButtons />
                         }
                     </Modal>
                     <ProjectList
+                        communityName={_`The ${capitalizeFirst(regionName)} community, ${nation.value?.name || capitalizeFirst(nationName)}`}
+                        currentUsername={currentUsername.value}
+                        isAuthenticated={isAuthenticated.value}
                         onCreateProject={onCreateProject}
-                        projects={{
-                            items: Array.isArray(projects.value?.items) ? projects.value.items : [],
-                            total: projects.value?.total || 0,
-                            page: projects.value?.page || 1,
-                            size: projects.value?.size || 10,
-                            pages: projects.value?.pages || 1
-                        }}
-                        communityName={regionDisplayName}
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
                             await nav(`/${nationName}/${regionName}/projects?page=${page}`);
                         }}
-                        isAuthenticated={isAuthenticated.value}
+                        onShowLoginModal$={onShowLoginModal}
+                        projects={{
+                            items: projects.value.items,
+                            total: projects.value.total,
+                            page: projects.value.page,
+                            size: projects.value.size,
+                            pages: projects.value.pages
+                        }}
                     />
                 </div>
             </div>
@@ -89,13 +100,14 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = ({ params }) => {
-    const regionName = capitalizeFirst(params.region.replace(/-/g, ' '));
+    const nationName = capitalizeFirst(params.nation || "");
+    const regionName = capitalizeFirst(params.region || "");
     return {
-        title: `${regionName} - Projects`,
+        title: `${regionName}, ${nationName} - Projects`,
         meta: [
             {
                 name: "description",
-                content: `Community projects of ${regionName}`,
+                content: `Community projects of ${regionName}, ${nationName}`,
             },
         ],
     };

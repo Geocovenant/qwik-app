@@ -11,9 +11,8 @@ import { dataArray as countries } from "~/data/countries";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
 // Import necessary loaders
-import { useGetNationalPolls } from "~/shared/loaders";
+import { useGetNationalPolls } from "~/shared/national/loaders";
 
-export { useGetNationalPolls } from "~/shared/loaders";
 export { useVotePoll, useReactPoll, useFormReportAction, useDeletePoll } from "~/shared/actions";
 export { useFormPollLoader } from "~/shared/forms/loaders";
 export { useFormPollAction } from "~/shared/forms/actions";
@@ -31,6 +30,8 @@ export default component$(() => {
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
+    // @ts-ignore
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
     const isAuthenticated = useComputed$(() => !!session.value?.user);
 
     const onSubmitCompleted = $(() => {
@@ -38,6 +39,10 @@ export default component$(() => {
     });
 
     const onCreatePoll = $(() => {
+        showModalPoll.value = true;
+    });
+
+    const onShowLoginModal = $(() => {
         showModalPoll.value = true;
     });
 
@@ -68,20 +73,22 @@ export default component$(() => {
                         </Modal>
                     }
                     <PollList
+                        communityName={_`The ${nation.value?.name || capitalizeFirst(nationName)} community`}
+                        currentUsername={currentUsername.value}
+                        isAuthenticated={isAuthenticated.value}
                         onCreatePoll={onCreatePoll}
-                        polls={{
-                            items: Array.isArray(polls.value?.items) ? polls.value.items : [],
-                            total: polls.value?.total || 0,
-                            page: polls.value?.page || 1,
-                            size: polls.value?.size || 10,
-                            pages: polls.value?.pages || 1
-                        }}
-                        communityName={nation.value?.name || capitalizeFirst(nationName)}
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
                             await nav(`/${nationName}/polls?page=${page}`);
                         }}
-                        isAuthenticated={isAuthenticated.value}
+                        onShowLoginModal$={onShowLoginModal}
+                        polls={{
+                            items: polls.value.items,
+                            total: polls.value.total || 0,
+                            page: polls.value.page || 1,
+                            size: polls.value.size || 10,
+                            pages: polls.value.pages || 1
+                        }}
                     />
                 </div>
             </div>

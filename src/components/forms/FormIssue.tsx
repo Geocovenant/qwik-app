@@ -3,9 +3,10 @@ import { useForm, valiForm$ } from "@modular-forms/qwik"
 import { _ } from "compiled-i18n"
 import { Button } from "~/components/ui"
 import { CommunityType } from "~/constants/communityType"
-import { type IssueForm, IssueSchema } from "~/schemas/issueSchema"
-import { useFormIssueAction, type IssueResponseData } from "~/shared/actions"
-import { useFormIssueLoader } from "~/shared/loaders"
+import { type IssueForm, type IssueResponseData, IssueSchema } from "~/schemas/issueSchema"
+
+import { useFormIssueLoader } from "~/shared/forms/loaders"
+import { useFormIssueAction } from "~/shared/forms/actions"
 
 export interface FormIssueProps {
     onSubmitCompleted: QRL<() => void>

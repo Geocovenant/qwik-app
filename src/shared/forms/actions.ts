@@ -3,6 +3,7 @@ import { CommunityType } from "~/constants/communityType";
 import { type PollForm, type PollResponseData, PollSchema } from "~/schemas/pollSchema";
 import { type DebateForm, type DebateResponseData, DebateSchema } from "~/schemas/debateSchema";
 import { type ProjectForm, type ProjectResponseData, ProjectSchema } from "~/schemas/projectSchema";
+import { type IssueForm, type IssueResponseData, IssueSchema } from "~/schemas/issueSchema";
 import { _ } from "compiled-i18n";
 
 export const useFormPollAction = formAction$<PollForm, PollResponseData>(
@@ -58,7 +59,7 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
                 Object.assign(payload, { country_code: values.community_ids[0] });
                 break;
             case CommunityType.REGIONAL:
-                Object.assign(payload, { region_id: values.community_ids[0] });
+                Object.assign(payload, { community_ids: values.community_ids });
                 break;
             case CommunityType.SUBREGIONAL:
                 Object.assign(payload, { subregion_id: values.community_ids[0] });
@@ -102,31 +103,6 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
 export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
     async (values, event) => {
         console.log('values4', values)
-        const uploadImage = async (file: Blob) => {
-            const response_signature = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/cloudinary/generate_signature`, {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                },
-            });
-            const data_signature = await response_signature.json();
-            const formdata = new FormData();
-            formdata.append("signature", data_signature.signature);
-            formdata.append("timestamp", data_signature.timestamp);
-            formdata.append("api_key", data_signature.api_key);
-            formdata.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
-            formdata.append("file", file);
-            const endpoint = "https://api.cloudinary.com/v1_1/" + import.meta.env.VITE_CLOUDINARY_CLOUD_NAME + "/auto/upload";
-            const res = await fetch(endpoint, {
-                body: formdata,
-                method: "post",
-            });
-            const data = await res.json();
-            return {
-                secureUrl: data.secure_url,
-            };
-        }
 
         const token = event.cookie.get('authjs.session-token')?.value;
 
@@ -201,13 +177,14 @@ export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
                 Object.assign(payload, { country_code: values.community_ids[0] });
                 break;
             case CommunityType.REGIONAL:
-                Object.assign(payload, { region_id: values.community_ids[0] });
+                Object.assign(payload, { community_ids: values.community_ids });
                 break;
             case CommunityType.SUBREGIONAL:
                 Object.assign(payload, { subregion_id: values.community_ids[0] });
                 break;
         }
 
+        console.log('payload', payload)
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates`, {
                 method: 'POST',
@@ -288,7 +265,7 @@ export const useFormProjectAction = formAction$<ProjectForm, ProjectResponseData
                 Object.assign(payload, { country_code: values.community_ids[0] });
                 break;
             case CommunityType.REGIONAL:
-                Object.assign(payload, { region_id: values.community_ids[0] });
+                Object.assign(payload, { community_ids: values.community_ids });
                 break;
             case CommunityType.SUBREGIONAL:
                 Object.assign(payload, { subregion_id: values.community_ids[0] });
@@ -327,3 +304,101 @@ export const useFormProjectAction = formAction$<ProjectForm, ProjectResponseData
     },
     valiForm$(ProjectSchema)
 );
+
+export const useFormIssueAction = formAction$<IssueForm, IssueResponseData>(
+    async (values, event) => {
+        console.log('############ useFormIssueAction ############');
+        console.log('values', values);
+
+        const token = event.cookie.get('authjs.session-token')?.value;
+
+        // Preparar payload según el scope
+        const payload = {
+            title: values.title,
+            description: values.description,
+            status: values.status,
+            is_anonymous: values.is_anonymous,
+            scope: values.scope,
+            tags: values.tags || [],
+        };
+
+        // Añadir los campos específicos según el scope
+        switch (values.scope) {
+            case CommunityType.GLOBAL:
+                Object.assign(payload, { community_ids: [1] });
+                break;
+            case CommunityType.INTERNATIONAL:
+                Object.assign(payload, { country_codes: values.community_ids });
+                break;
+            case CommunityType.NATIONAL:
+                Object.assign(payload, { country_code: values.community_ids[0] });
+                break;
+            case CommunityType.REGIONAL:
+                Object.assign(payload, { community_ids: values.community_ids });
+                break;
+            case CommunityType.SUBREGIONAL:
+                Object.assign(payload, { subregion_id: values.community_ids[0] });
+                break;
+        }
+
+        console.log('payload', payload);
+
+        try {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/issues`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to create issue');
+            }
+
+            const data = await response.json();
+
+            return {
+                success: true,
+                message: _`Issue reported successfully`,
+                data: data,
+            };
+        } catch (error: any) {
+            console.error('Error in useFormIssueAction:', error);
+            return {
+                success: false,
+                message: error.message || 'An unexpected error occurred',
+            };
+        }
+    },
+    valiForm$(IssueSchema)
+);
+
+// TODO: use this function in the useFormDebateAction
+// const uploadImage = async (file: Blob) => {
+//     const response_signature = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/cloudinary/generate_signature`, {
+//         method: 'POST',
+//         headers: {
+//             Accept: 'application/json',
+//             'Content-Type': 'application/json'
+//         },
+//     });
+//     const data_signature = await response_signature.json();
+//     const formdata = new FormData();
+//     formdata.append("signature", data_signature.signature);
+//     formdata.append("timestamp", data_signature.timestamp);
+//     formdata.append("api_key", data_signature.api_key);
+//     formdata.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
+//     formdata.append("file", file);
+//     const endpoint = "https://api.cloudinary.com/v1_1/" + import.meta.env.VITE_CLOUDINARY_CLOUD_NAME + "/auto/upload";
+//     const res = await fetch(endpoint, {
+//         body: formdata,
+//         method: "post",
+//     });
+//     const data = await res.json();
+//     return {
+//         secureUrl: data.secure_url,
+//     };
+// }

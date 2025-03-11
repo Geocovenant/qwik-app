@@ -1,4 +1,4 @@
-import { $, component$, useComputed$, useSignal, useTask$ } from '@builder.io/qwik';
+import { $, component$, useSignal, useTask$ } from '@builder.io/qwik';
 import { useForm, valiForm$, setValue, insert, remove } from '@modular-forms/qwik';
 import { _ } from 'compiled-i18n';
 import { TextInput } from '~/components/input/TextInput';
@@ -7,12 +7,10 @@ import { FormFooter } from '~/components/forms/FormFooter';
 import { CustomToggle } from '~/components/input/CustomToggle';
 import { CommunityType } from '~/constants/communityType';
 import { LuPlus, LuTrash, LuGripVertical } from "@qwikest/icons/lucide";
-import { useLocation } from '@builder.io/qwik-city';
 import { dataArray as countries } from "~/data/countries";
 import { CountrySelectInput } from '~/components/input/CountrySelectInput';
 import { TagInput } from '~/components/input/TagInput';
-
-// Importar el esquema del proyecto desde un archivo separado
+import { Select } from '~/components/ui';
 import type { ProjectForm } from '~/schemas/projectSchema';
 import { ProjectSchema } from '~/schemas/projectSchema';
 import { useFormProjectAction } from '~/shared/forms/actions';
@@ -23,6 +21,7 @@ import { useFormProjectLoader } from '~/shared/forms/loaders';
 export interface FormProjectProps {
     onSubmitCompleted: () => void;
     defaultScope?: CommunityType;
+    defaultCountry?: string;
     defaultRegionId?: number;
     defaultSubregionId?: number;
     regions?: any[];
@@ -33,6 +32,7 @@ export interface FormProjectProps {
 export default component$<FormProjectProps>(({
     onSubmitCompleted,
     defaultScope = CommunityType.NATIONAL,
+    defaultCountry = null,
     defaultRegionId = null,
     defaultSubregionId = null,
     tags = [],
@@ -72,23 +72,7 @@ export default component$<FormProjectProps>(({
     });
 
     const isAnonymous = useSignal(false);
-    const location = useLocation();
-    const nationName = location.params.nation;
-    const defaultCountry = useComputed$(() => {
-        if (!nationName) return null;
-        return countries.find(country =>
-            country.name.toLowerCase() === nationName.toLowerCase()
-        );
-    });
-
-    // Establecer el país por defecto cuando se monta el componente
-    useTask$(({ track }) => {
-        const country = track(() => defaultCountry.value);
-        if (country) {
-            setValue(projectForm, 'community_ids', [country.cca2]);
-        }
-    });
-
+    
     // Update is_anonymous when toggle changes
     useTask$(({ track }) => {
         const anonymousValue = track(() => isAnonymous.value);
@@ -231,28 +215,35 @@ export default component$<FormProjectProps>(({
                                 </div>
                             );
 
-                        case CommunityType.REGIONAL:
-                            return (
-                                <div class="space-y-2">
-                                    <label class="text-sm font-medium">{_`Select a region`}</label>
-                                    <select
-                                        {...props}
-                                        class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                                        value={defaultRegionId ? defaultRegionId.toString() : undefined}
-                                    >
-                                        {regions.length > 0 ? regions.map((region) => (
-                                            <option key={region.id} value={region.id}>
-                                                {region.name}
-                                            </option>
-                                        )) : (
-                                            <option value="">{_`No region available`}</option>
+                            case CommunityType.REGIONAL:
+                                return (
+                                    <div class="space-y-2">
+                                        <Select.Root {...props} value={defaultRegionId?.toString()}>
+                                            <Select.Label>{_`Select a region`}</Select.Label>
+                                            <Select.Trigger>
+                                                <Select.DisplayValue placeholder={_`Select region...`} />
+                                            </Select.Trigger>
+                                            <Select.Popover>
+                                                {regions.length > 0 ? regions.map((region) => (
+                                                    <Select.Item key={region.id} value={region.community_id.toString()}>
+                                                        <Select.ItemLabel>
+                                                            {region.name}
+                                                        </Select.ItemLabel>
+                                                        <Select.ItemIndicator />
+                                                    </Select.Item>
+                                                )) : (
+                                                    <Select.Item value="placeholder">
+                                                        <Select.ItemLabel>{_`No region available`}</Select.ItemLabel>
+                                                        <Select.ItemIndicator />
+                                                    </Select.Item>
+                                                )}
+                                            </Select.Popover>
+                                        </Select.Root>
+                                        {field.error && (
+                                            <div class="text-sm text-destructive">{field.error}</div>
                                         )}
-                                    </select>
-                                    {field.error && (
-                                        <div class="text-sm text-destructive">{field.error}</div>
-                                    )}
-                                </div>
-                            );
+                                    </div>
+                                );
 
                         case CommunityType.SUBREGIONAL:
                             return (

@@ -7,28 +7,10 @@ import EmptyIssue from "~/components/empty-states/EmptyIssue"
 import { Image } from "@unpic/qwik"
 import { Card } from "~/components/ui"
 import { Pagination } from "@qwik-ui/headless"
-
-export interface Issue {
-    id: number
-    title: string
-    description: string
-    status: string
-    creator: {
-        id: number
-        username: string
-        image: string | null
-    }
-    created_at: string
-    updated_at: string
-    views_count: number
-    communities: Array<{
-        id: number
-        name: string
-        cca2: string | null
-    }>
-}
+import type { Issue } from "~/types/issue"
 
 export interface IssueListProps {
+    currentUsername: string
     issues: {
         items: Issue[]
         total: number
@@ -40,10 +22,11 @@ export interface IssueListProps {
     onCreateIssue: QRL<() => void>
     onPageChange$: QRL<(page: number) => Promise<void>>
     isAuthenticated: boolean
+    onShowLoginModal$: QRL<() => void>
 }
 
 export const IssueList = component$<IssueListProps>(
-    ({ issues, communityName, onCreateIssue, onPageChange$, isAuthenticated }) => {
+    ({ issues, communityName, onCreateIssue, onPageChange$, isAuthenticated, currentUsername, onShowLoginModal$ }) => {
         const statusColors = useComputed$(() => ({
             OPEN: "bg-green-100 text-green-800",
             IN_PROGRESS: "bg-blue-100 text-blue-800",

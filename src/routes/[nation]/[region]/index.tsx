@@ -1,115 +1,176 @@
-import { $, component$, useSignal, useComputed$ } from "@builder.io/qwik";
-import { useLocation, useNavigate, type DocumentHead } from "@builder.io/qwik-city";
+import { component$, useComputed$ } from "@builder.io/qwik";
+import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
+import { LuBarChart2, LuFlag, LuUsers, LuMessageSquare, LuBriefcase, LuAlertTriangle, LuUserPlus, LuUserMinus } from "@qwikest/icons/lucide";
+import { capitalizeFirst } from '~/utils/capitalizeFirst';
+import { Image } from "@unpic/qwik";
+import { Button } from "~/components/ui";
+import { useJoinCommunity, useLeaveCommunity } from "~/shared/actions";
 import { _ } from "compiled-i18n";
-import { LuBarChart2, LuFlag, LuUsers, LuMessageSquare, LuBriefcase } from "@qwikest/icons/lucide";
-import { useGetRegions, useGetRegionalPolls, useGetTags, useGetRegionalDebates, useGetRegionalProjects, useGetRegionalIssues } from "~/shared/loaders";
-import { useSession } from "~/routes/plugin@auth";
-import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-export { useGetRegionalPolls, useGetRegionalDebates, useGetRegionalProjects, useGetRegionalIssues, useFormIssueLoader, useGetRegions, useGetTags } from "~/shared/loaders";
-export { useVotePoll, useReactPoll } from "~/shared/actions";
-export { useFormPollAction, useFormDebateAction } from "~/shared/forms/actions";
+import { useGetRegion, useGetRegionalDebates, useGetRegionalPolls, useGetRegionalProjects, useGetRegionalIssues } from "~/shared/regional/loaders";
+import { useGetUser } from "~/shared/loaders";
+
+import type { Debate } from "~/types/debate";
+import type { Issue } from "~/types/issue";
+import type { Poll } from "~/types/poll";
+import type { Project } from "~/types/project";
 
 export default component$(() => {
-    const session = useSession();
     const location = useLocation();
-    const showModalPoll = useSignal(false);
-    const showModalDebate = useSignal(false);
-    const showModalProject = useSignal(false);
-    const showModalIssue = useSignal(false);
     const nationName = location.params.nation;
     const regionName = location.params.region;
-    const currentPage = useSignal(1);
-    const nav = useNavigate();
-    // useGetRegions is used to populate the select options in the regional poll form
-    const regions = useGetRegions();
-    const tags = useGetTags();
+    
+    const user = useGetUser();
+    const region = useGetRegion();
     const polls = useGetRegionalPolls();
     const debates = useGetRegionalDebates();
     const projects = useGetRegionalProjects();
     const issues = useGetRegionalIssues();
 
-    const defaultRegion = useComputed$(() => {
-        const normalizedRegionName = regionName
-            .split('-')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-        
-        return regions.value.find((r: { name: string; }) => r.name === normalizedRegionName);
+    const joinCommunityAction = useJoinCommunity();
+    const leaveCommunityAction = useLeaveCommunity();
+
+    const isMember = useComputed$(() => {
+        return user.value.communities?.some(
+            (community: any) => community.id === region.value.community_id
+        );
     });
 
-    const isAuthenticated = useComputed$(() => !!session.value?.user);
-
-    const onSubmitCompleted = $(() => {
-        showModalPoll.value = false;
-        showModalDebate.value = false;
-        showModalProject.value = false;
-        showModalIssue.value = false;
-    });
-
-    const onCreatePoll = $(() => {
-        showModalPoll.value = true;
-    });
-
-    const onCreateDebate = $(() => {
-        showModalDebate.value = true;
-    });
-
-    const onCreateProject = $(() => {
-        showModalProject.value = true;
-    });
-
-    const onCreateIssue = $(() => {
-        showModalIssue.value = true;
-    });
-
-    // Count items of each type
-    const pollsCount = polls.value?.total || 0;
-    const debatesCount = Array.isArray(debates.value?.items) ? debates.value.items.length : 0;
-    const projectsCount = projects.value?.total || 0;
-    const issuesCount = issues.value?.total || 0;
-    
-    const regionDisplayName = capitalizeFirst(regionName.replace(/-/g, ' '));
+    const pollsCount = polls.value.total || 0;
+    const debatesCount = debates.value.total || 0;
+    const projectsCount = projects.value.total || 0;
+    const issuesCount = issues.value.total || 0;
 
     return (
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-auto p-4 bg-gray-50 dark:bg-gray-800">
-            <header class="mb-6">
-                <div class="flex items-center gap-3">
-                    <LuFlag class="w-10 h-10 text-blue-600 dark:text-blue-400" />
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{regionDisplayName}</h1>
+            {/* Header Section */}
+            <div class="mb-6">
+                <div class="flex items-center gap-3 mb-2">
+                    <LuFlag class="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+                        {region.value.name || capitalizeFirst(regionName)} ({capitalizeFirst(nationName)})
+                    </h1>
                 </div>
-                <p class="text-gray-600 dark:text-gray-300 mt-2">
-                    {_`Welcome to the regional community where citizens connect, share ideas, and work together on local initiatives.`}
+                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                    {_`Welcome to the regional community where citizens collaborate on local matters.`}
                 </p>
-            </header>
+                
+                <Button
+                    class={`flex items-center gap-2 font-medium py-2 px-4 rounded-lg transition-colors ${
+                        isMember.value 
+                            ? 'bg-red-600 hover:bg-red-700 text-white' 
+                            : 'bg-blue-600 hover:bg-blue-700 text-white'
+                    }`}
+                    onClick$={() => {
+                        if (isMember.value) {
+                            leaveCommunityAction.submit({
+                                communityId: region.value.community_id
+                            });
+                        } else {
+                            joinCommunityAction.submit({
+                                communityId: region.value.community_id
+                            });
+                        }
+                    }}
+                >
+                    {isMember.value ? (
+                        <>
+                            <LuUserMinus class="w-5 h-5" />
+                            <span>{_`Leave Community`}</span>
+                        </>
+                    ) : (
+                        <>
+                            <LuUserPlus class="w-5 h-5" />
+                            <span>{_`Join Community`}</span>
+                        </>
+                    )}
+                </Button>
+            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow dark:shadow-gray-700">
+            {/* Main Content */}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                {/* Region Information */}
+                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuFlag class="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        {_`Information about ${regionDisplayName}`}
+                        {_`Region Information`}
                     </h2>
-                    <div class="space-y-4">
-                        {defaultRegion.value && (
-                            <>
+                    
+                    <div class="flex flex-col sm:flex-row gap-6">
+                        {region.value?.emblem_svg && (
+                            <div class="flex justify-center">
+                                <Image 
+                                    src={region.value.emblem_svg} 
+                                    alt={`Emblem of ${region.value.name || capitalizeFirst(regionName)}`} 
+                                    class="h-32 w-auto max-w-[150px] object-contain"
+                                />
+                            </div>
+                        )}
+                        
+                        <div class="flex-1 space-y-3">
+                            {region.value?.population && (
                                 <div class="flex items-start gap-3">
                                     <LuUsers class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                     <div class="dark:text-gray-300">
-                                        <span class="font-medium">{_`Region`}:</span> {defaultRegion.value.name}
+                                        <span class="font-medium">{_`Population`}:</span> {region.value.population.toLocaleString()}
                                     </div>
                                 </div>
+                            )}
+
+                            {region.value?.area && (
                                 <div class="flex items-start gap-3">
                                     <LuFlag class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                     <div class="dark:text-gray-300">
-                                        <span class="font-medium">{_`Country`}:</span> {capitalizeFirst(nationName)}
+                                        <span class="font-medium">{_`Area`}:</span> {region.value.area.toLocaleString()} km²
                                     </div>
                                 </div>
-                            </>
+                            )}
+
+                            {region.value?.capital && (
+                                <div class="flex items-start gap-3">
+                                    <LuUsers class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
+                                    <div class="dark:text-gray-300">
+                                        <span class="font-medium">{_`Capital`}:</span> {region.value.capital}
+                                    </div>
+                                </div>
+                            )}
+
+                            {region.value?.governor && (
+                                <div class="flex items-start gap-3">
+                                    <LuUsers class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
+                                    <div class="dark:text-gray-300">
+                                        <span class="font-medium">{_`Governor`}:</span> {region.value.governor}
+                                    </div>
+                                </div>
+                            )}
+
+                            {region.value?.founding_year && (
+                                <div class="flex items-start gap-3">
+                                    <LuFlag class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
+                                    <div class="dark:text-gray-300">
+                                        <span class="font-medium">{_`Founded`}:</span> {region.value.founding_year}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 mt-4">
+                        {region.value?.website && (
+                            <a
+                                href={region.value.website}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-sm bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 text-blue-800 dark:text-blue-200 px-3 py-1.5 rounded flex items-center gap-1"
+                            >
+                                <span>{_`Official Website`}</span>
+                            </a>
                         )}
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow dark:shadow-gray-700">
+                {/* Platform Statistics */}
+                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuBarChart2 class="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         {_`Platform Statistics`}
@@ -135,14 +196,15 @@ export default component$(() => {
                 </div>
             </div>
 
+            {/* Featured Topics and Active Projects */}
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow dark:shadow-gray-700 col-span-1 lg:col-span-2">
+                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow col-span-1 lg:col-span-2">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuMessageSquare class="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        {_`Featured Topics in ${regionDisplayName}`}
+                        {_`Featured Topics in ${region.value?.name || capitalizeFirst(regionName)}`}
                     </h2>
                     <div class="space-y-4">
-                        {Array.isArray(debates.value?.items) && debates.value.items.slice(0, 3).map((debate: any, index: number) => (
+                        {Array.isArray(debates.value) && debates.value.slice(0, 3).map((debate: Debate, index: number) => (
                             <div key={debate.id || index} class="border-b border-gray-200 dark:border-gray-700 pb-3">
                                 <h3 class="font-medium text-gray-900 dark:text-white">{debate.title}</h3>
                                 <p class="text-sm text-gray-600 dark:text-gray-300">
@@ -158,22 +220,22 @@ export default component$(() => {
                                 </div>
                             </div>
                         ))}
-                        
-                        {(!debates.value?.items || debates.value.items.length === 0) && (
+
+                        {(!Array.isArray(debates.value) || debates.value.length === 0) && (
                             <div class="text-center py-6 text-gray-500 dark:text-gray-400">
-                                {_`No featured debates yet. Be the first to create one!`}
+                                {_`There are no featured debates yet. Be the first to create one!`}
                             </div>
                         )}
                     </div>
                 </div>
-                
-                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow dark:shadow-gray-700">
+
+                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuBriefcase class="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         {_`Active Projects`}
                     </h2>
                     <div class="space-y-4">
-                        {projects.value?.items?.slice(0, 3).map((project: any, index: number) => (
+                        {projects.value.items.slice(0, 3).map((project: Project, index: number) => (
                             <div key={project.id || index} class="border-b border-gray-200 dark:border-gray-700 pb-3">
                                 <h3 class="font-medium text-gray-900 dark:text-white">{project.title}</h3>
                                 <div class="flex justify-between text-sm mt-1 text-gray-700 dark:text-gray-300">
@@ -187,58 +249,59 @@ export default component$(() => {
                             </div>
                         ))}
 
-                        {(!projects.value?.items || projects.value.items.length === 0) && (
+                        {(projects.value.items.length === 0) && (
                             <div class="text-center py-6 text-gray-500 dark:text-gray-400">
-                                {_`No active projects yet. Start the first one!`}
+                                {_`There are no active projects yet. Start the first one!`}
                             </div>
                         )}
                     </div>
                 </div>
             </div>
 
+            {/* Reported Issues and Active Polls */}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow dark:shadow-gray-700">
+                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
-                        <LuFlag class="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                        <LuAlertTriangle class="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         {_`Reported Issues`}
                     </h2>
                     <div class="space-y-3">
-                        {issues.value?.items?.slice(0, 5).map((issue: any, index: number) => (
+                        {issues.value?.items?.slice(0, 5).map((issue: Issue, index: number) => (
                             <div key={issue.id || index} class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
                                 <div>
                                     <h3 class="font-medium text-gray-900 dark:text-white">{issue.title}</h3>
                                     <p class="text-xs text-gray-600 dark:text-gray-400">{issue.location || _`No specific location`}</p>
                                 </div>
                                 <span class={`text-xs px-2 py-1 rounded ${issue.status === 'OPEN' ? 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200' :
-                                        issue.status === 'IN_PROGRESS' ? 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-200' :
-                                            'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200'
+                                    issue.status === 'IN_PROGRESS' ? 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-200' :
+                                        'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200'
                                     }`}>
                                     {issue.status === 'OPEN' ? _`Open` :
-                                        issue.status === 'IN_PROGRESS' ? _`In progress` :
+                                        issue.status === 'IN_PROGRESS' ? _`In Progress` :
                                             _`Resolved`}
                                 </span>
                             </div>
                         ))}
 
-                        {(!issues.value?.items || issues.value.items.length === 0) && (
+                        {(issues.value.items.length === 0) && (
                             <div class="text-center py-6 text-gray-500 dark:text-gray-400">
-                                {_`No reported issues yet.`}
+                                {_`There are no reported issues yet.`}
                             </div>
                         )}
                     </div>
                 </div>
-                
-                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow dark:shadow-gray-700">
+
+                <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuBarChart2 class="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         {_`Active Polls`}
                     </h2>
                     <div class="space-y-3">
-                        {polls.value?.items?.slice(0, 5).map((poll: any, index: number) => (
+                        {polls.value?.items?.slice(0, 5).map((poll: Poll, index: number) => (
                             <div key={poll.id || index} class="border-b border-gray-200 dark:border-gray-700 pb-2">
                                 <h3 class="font-medium text-gray-900 dark:text-white">{poll.title}</h3>
                                 <div class="flex justify-between items-center mt-1">
-                                    <span class="text-xs text-gray-600 dark:text-gray-300">
+                                    <span class="text-xs text-gray-600 dark:text-gray-400">
                                         {poll.votes_count || 0} {_`votes`}
                                     </span>
                                     {poll.ends_at && (
@@ -249,10 +312,10 @@ export default component$(() => {
                                 </div>
                             </div>
                         ))}
-                        
-                        {(!polls.value?.items || polls.value.items.length === 0) && (
+
+                        {(polls.value.items.length === 0) && (
                             <div class="text-center py-6 text-gray-500 dark:text-gray-400">
-                                {_`No active polls currently.`}
+                                {_`There are no active polls currently.`}
                             </div>
                         )}
                     </div>
@@ -263,13 +326,14 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = ({ params }) => {
-    const regionName = capitalizeFirst(params.region.replace(/-/g, ' '));
+    const regionName = capitalizeFirst(params.region || "");
+    const nationName = capitalizeFirst(params.nation || "");
     return {
-        title: _`${regionName} - Community`,
+        title: _`${regionName}, ${nationName} - Community`,
         meta: [
             {
                 name: "description",
-                content: _`Citizen participation platform for the ${regionName} community`,
+                content: _`Local participation platform for the ${regionName} community in ${nationName}`,
             },
         ],
     };

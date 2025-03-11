@@ -1,4 +1,4 @@
-export enum ProjectScope {
+export enum IssueScope {
     GLOBAL = 'GLOBAL',
     INTERNATIONAL = 'INTERNATIONAL',
     NATIONAL = 'NATIONAL',
@@ -7,7 +7,7 @@ export enum ProjectScope {
     LOCAL = 'LOCAL',
 }
 
-export enum ProjectStatus {
+export enum IssueStatus {
     OPEN = 'OPEN',
     IN_PROGRESS = 'IN_PROGRESS',
     COMPLETED = 'COMPLETED',
@@ -22,7 +22,7 @@ export interface Resource {
     unit: string;
 }
 
-export interface ProjectStep {
+export interface IssueStep {
     id: number;
     title: string;
     description: string;
@@ -37,7 +37,7 @@ export interface Community {
     cca2: string | null;
 }
 
-export interface Project {
+export interface Issue {
     comments_count: number;
     commitments: any[];
     communities: Community[];
@@ -56,19 +56,18 @@ export interface Project {
     images: string[];
     is_anonymous: boolean;
     last_comment_at?: string;
-    participants_count: number;
-    progress: number;
-    scope: ProjectScope;
+    location: string;
+    scope: IssueScope;
     slug: string;
-    steps: ProjectStep[];
-    status: ProjectStatus;
+    steps: IssueStep[];
+    status: IssueStatus;
     tags?: string[];
     title: string;
     updated_at: string;
 }
 
-export interface ProjectResponse {
-    items: Project[];
+export interface IssueResponse {
+    items: Issue[];
     total: number;
     page: number;
     size: number;

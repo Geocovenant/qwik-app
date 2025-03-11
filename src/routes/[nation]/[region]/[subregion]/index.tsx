@@ -23,9 +23,10 @@ import { LuBarChart2, LuFlag, LuUsers, LuMessageSquare, LuBriefcase, LuAlertTria
 
 export {
     useGetSubregionalPolls, useGetSubregionalDebates, useGetSubregionalProjects, useGetSubregionalIssues,
-    useFormIssueLoader, useGetSubregions, useGetTags, useGetRegions
+    useGetSubregions, useGetTags
 } from "~/shared/loaders";
 export { useVotePoll, useReactPoll } from "~/shared/actions";
+export { useFormIssueLoader } from "~/shared/forms/loaders";
 export { useFormPollAction, useFormDebateAction } from "~/shared/forms/actions";
 
 export default component$(() => {
