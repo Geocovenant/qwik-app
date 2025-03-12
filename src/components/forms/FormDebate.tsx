@@ -29,8 +29,8 @@ export interface FormDebateProps {
 
 export default component$<FormDebateProps>(({
   onSubmitCompleted,
-  defaultCountry = null,
   defaultScope = CommunityType.NATIONAL,
+  defaultCountry = null,
   defaultRegionId = null,
   defaultSubregionId = null,
   tags = [],
@@ -159,7 +159,7 @@ export default component$<FormDebateProps>(({
                     onChange$={$((value: string) => {
                       setValue(debateForm, 'community_ids', [value]);
                     })}
-                    value={defaultCountry.value?.cca2 || (Array.isArray(field.value) ? field.value[0] : field.value)}
+                    value={defaultCountry || (Array.isArray(field.value) ? field.value[0] : field.value)}
                   >
                     <Select.Label>{_`Select a country`}</Select.Label>
                     <Select.Trigger>

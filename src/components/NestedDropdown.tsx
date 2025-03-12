@@ -78,7 +78,6 @@ export const NestedDropdown = component$<NestedDropdownProps>((props) => {
                         <Avatar.Image
                             src={props.image}
                             alt={props.name}
-                            sizes="sm"
                         />
                     </Avatar.Root>
                 </div>

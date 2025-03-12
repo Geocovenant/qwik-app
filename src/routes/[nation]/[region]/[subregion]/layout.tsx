@@ -1,18 +1,31 @@
 import { component$, Slot } from "@builder.io/qwik";
 import { Breadcrumb } from "~/components/ui";
-import { _ } from "compiled-i18n";
 import { NavLink } from "~/components/NavLink";
 import { useLocation } from "@builder.io/qwik-city";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
+import { _ } from "compiled-i18n";
+
+export { useGetSubregions } from "~/shared/regional/loaders"
+export { useGetSubregion, useGetSubregionalPolls, useGetSubregionalDebates, useGetSubregionalProjects, useGetSubregionalIssues, useGetSubregionalMembers } from "~/shared/subregional/loaders"
 
 export default component$(() => {
     const location = useLocation();
     const nationParam = location.params.nation;
     const regionParam = location.params.region;
     const subregionParam = location.params.subregion;
+    const localityParam = location.params.locality;
 
     const baseClass = "py-2 px-4 font-medium transition-colors text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300";
     const activeClass = "!text-blue-600 font-semibold border-b-2 border-blue-600 dark:!text-blue-400 dark:border-blue-400";
+
+    // If we are in a locality view, we only render the Slot without the subregional-specific navigation
+    if (localityParam) {
+        return (
+            <div class="container mx-auto px-4 pt-1 pb-4">
+                <Slot />
+            </div>
+        );
+    }
 
     return (
         <div class="container mx-auto px-4 pt-1 pb-4">
@@ -90,4 +103,4 @@ export default component$(() => {
             </div>
         </div>
     );
-}); 
+});

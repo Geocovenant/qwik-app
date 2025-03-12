@@ -8,6 +8,7 @@ import Modal from "~/components/Modal";
 import RequestCommunityForm from "~/components/forms/RequestCommunityForm";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
+import Footer from "~/components/Footer";
 
 // Component for the LuGlobe icon
 const LuGlobeIcon = component$(() => <LuGlobe class="h-5 w-5" />);
@@ -259,29 +260,12 @@ export default component$(() => {
                         <ClassicTheme />
                     </div>
                     
-                    {/* Footer Links */}
-                    <div class={`px-3 py-2 border-t border-gray-200 dark:border-gray-700 ${isCollapsed.value && !isMobileView.value ? 'text-center' : ''}`}>
-                        <div class={`flex ${isCollapsed.value && !isMobileView.value ? 'flex-col items-center' : 'flex-wrap gap-2'} text-xs text-gray-500 dark:text-gray-400`}>
-                            <a href="/privacy-policy" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
-                                {_`Privacy`}
-                            </a>
-                            {(!isCollapsed.value || isMobileView.value) && <span>·</span>}
-                            <a href="/terms-of-service" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
-                                {_`Terms`}
-                            </a>
-                            {(!isCollapsed.value || isMobileView.value) && <span>·</span>}
-                            <a href="/about-us" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
-                                {_`About us`}
-                            </a>
-                            {(!isCollapsed.value || isMobileView.value) && <span>·</span>}
-                            <a href="/donation" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
-                                {_`Donation`}
-                            </a>
-                        </div>
-                        <div class="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
-                            {_`Geounity © 2025`}
-                        </div>
-                    </div>
+                    {/* Reemplazar el footer con el nuevo componente */}
+                    <Footer 
+                        isCollapsed={isCollapsed.value} 
+                        isMobileView={isMobileView.value} 
+                        variant="sidebar"
+                    />
                 </div>
 
                 {!isMobileView.value && (

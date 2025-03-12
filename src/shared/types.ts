@@ -5,7 +5,6 @@ export interface CustomUser {
     name?: string | null;
     email?: string | null;
     image?: string | null;
-    // Propiedades adicionales
     emailVerified?: string | null;
     username?: string | null;
     is_active?: boolean | null;
@@ -29,7 +28,8 @@ export enum PollScope {
     INTERNATIONAL = 'INTERNATIONAL',
     NATIONAL = 'NATIONAL',
     REGIONAL = 'REGIONAL',
-    // ... otros scopes según necesites
+    SUBREGIONAL = 'SUBREGIONAL',
+    LOCAL = 'LOCAL',
 }
 
 export interface Poll {
@@ -143,7 +143,6 @@ export interface DetailedDebate extends Debate {
     };
 }
 
-// Mantener el tipo Comment existente para polls pero renombrarlo para claridad
 export interface PollComment {
     id: number;
     content: string;

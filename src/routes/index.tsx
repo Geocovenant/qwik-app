@@ -7,8 +7,6 @@ import ImgLogo from '~/icons/logo.svg?jsx';
 
 export const onRequest: RequestHandler = async (event) => {
   const session: Session | null = event.sharedMap.get('session');
-  console.log('index')
-  console.log('+++++ session +++++', session)
   if (session && new Date(session.expires) >= new Date()) {
     throw event.redirect(302, '/global')
   }
@@ -20,7 +18,6 @@ export default component$(() => {
       <div class="sm:mx-auto sm:w-full sm:max-w-2xl">
         <div class="flex flex-col items-center mb-10">
           <ImgLogo class="w-20 h-20 text-[#713fc2] dark:text-[#9333EA] mb-4" aria-hidden="true" />
-          ``
           <h1 class="text-center text-5xl font-bold bg-gradient-to-r from-[#713fc2] to-[#8255c9] bg-clip-text text-transparent dark:from-[#9333EA] dark:to-[#A855F7]">
             {_`Welcome to Geounity`}
           </h1>

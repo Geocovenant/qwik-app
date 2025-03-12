@@ -6,11 +6,10 @@ import { useSession } from "~/routes/plugin@auth";
 import { Image } from "@unpic/qwik";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Using global members loader until we have a specific locality one
-import { useGetGlobalMembers } from "~/shared/global/loaders";
+// Import specific loaders for locality
+import { useGetLocality, useGetLocalMembers } from "~/shared/local/loaders";
 import { useUpdateCommunityVisibility } from "~/shared/actions";
 
-export { useGetGlobalMembers } from "~/shared/global/loaders";
 export { useUpdateCommunityVisibility } from "~/shared/actions";
 
 export default component$(() => {
@@ -21,17 +20,21 @@ export default component$(() => {
     const subregionName = location.params.subregion;
     const localityName = location.params.locality;
     
-    // Temporary: use global loader until we have a specific locality one
-    const members = useGetGlobalMembers();
+    const locality = useGetLocality();
+    
+    // Use local members loader
+    const members = useGetLocalMembers();
     const updateCommunityVisibilityAction = useUpdateCommunityVisibility();
     
-    // Assume the locality community has ID 5 (adjust as necessary)
-    const localityCommunityId = 5;
-    const isPublic = useSignal(members.value.items.find((m: any) => m.is_current_user)?.is_public || false);
+    // Handle member visibility setting
+    const isPublic = useSignal(members.value.find((m: any) => m.is_current_user)?.is_public || false);
     const currentPage = useSignal(1);
     const nav = useNavigate();
     const isAuthenticated = useComputed$(() => !!session.value?.user);
     const localityDisplayName = capitalizeFirst(localityName.replace(/-/g, ' '));
+
+    // Use community ID from locality data
+    const localCommunityId = locality.value?.id || 5; // Default ID if not available
 
     // Toggle to change user visibility
     const togglePublicVisibility = $(async () => {
@@ -41,7 +44,7 @@ export default component$(() => {
         isPublic.value = newValue;
 
         await updateCommunityVisibilityAction.submit({
-            communityId: localityCommunityId,
+            communityId: localCommunityId,
             isPublic: newValue
         });
     });
@@ -63,7 +66,7 @@ export default component$(() => {
                         </div>
                         <div class="mt-4 sm:mt-0 flex items-center gap-2 pl-3">
                             <span class="text-lg font-semibold text-blue-700 dark:text-blue-400">
-                                {members.value.total} {_`members`}
+                                {members.value.total || 0} {_`members`}
                             </span>
                         </div>
                     </div>
@@ -95,7 +98,7 @@ export default component$(() => {
                             </div>
                             <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 ml-8">
                                 {isPublic.value
-                                    ? _`You're visible to everyone in the local community.`
+                                    ? _`You're visible to everyone in this community.`
                                     : _`You're only visible to community administrators.`}
                             </p>
                         </div>
@@ -113,7 +116,7 @@ export default component$(() => {
                             </p>
                         </div>
 
-                        {members.value.items.length > 0 ? (
+                        {members.value.items && members.value.items.length > 0 ? (
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
                                 {members.value.items.map((member: any) => (
                                     <div key={member.id} class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
@@ -213,8 +216,8 @@ export const head: DocumentHead = ({ params }) => {
         meta: [
             {
                 name: "description",
-                content: _`Members of the ${localityName} local community`,
+                content: _`Members of the community of ${localityName}`,
             },
         ],
     };
-}; 
+};

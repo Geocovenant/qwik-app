@@ -9,10 +9,9 @@ import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Import necessary loaders
-import { useGetSubregionalPolls, useGetSubregions } from "~/shared/loaders";
+import { useGetSubregions } from "~/shared/regional/loaders";
+import { useGetSubregionalPolls } from "~/shared/subregional/loaders";
 
-export { useGetSubregionalPolls, useGetSubregions } from "~/shared/loaders";
 export { useVotePoll, useReactPoll } from "~/shared/actions";
 export { useFormPollAction } from "~/shared/forms/actions";
 
@@ -29,15 +28,6 @@ export default component$(() => {
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
-    const defaultSubregion = useComputed$(() => {
-        const normalizedSubregionName = subregionName
-            .split('-')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-        
-        return subregions.value.find((r: { name: string; }) => r.name === normalizedSubregionName);
-    });
-
     const isAuthenticated = useComputed$(() => !!session.value?.user);
     const subregionDisplayName = capitalizeFirst(subregionName.replace(/-/g, ' '));
 
@@ -46,6 +36,10 @@ export default component$(() => {
     });
 
     const onCreatePoll = $(() => {
+        showModalPoll.value = true;
+    });
+
+    const onShowLoginModal = $(() => {
         showModalPoll.value = true;
     });
 
@@ -86,6 +80,7 @@ export default component$(() => {
                             await nav(`/${nationName}/${regionName}/${subregionName}/polls?page=${page}`);
                         }}
                         isAuthenticated={isAuthenticated.value}
+                        onShowLoginModal$={onShowLoginModal}
                     />
                 </div>
             </div>

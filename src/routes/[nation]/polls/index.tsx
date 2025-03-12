@@ -58,6 +58,7 @@ export default component$(() => {
                             <FormPoll
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.NATIONAL}
+                                defaultCountry={nation.value?.cca2}
                             />
                         </Modal>
                         : <Modal

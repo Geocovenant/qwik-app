@@ -1,9 +1,13 @@
 import { component$, Slot } from "@builder.io/qwik";
 import { Breadcrumb } from "~/components/ui";
-import { _ } from "compiled-i18n";
 import { NavLink } from "~/components/NavLink";
 import { useLocation } from "@builder.io/qwik-city";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
+import { _ } from "compiled-i18n";
+
+export { useGetSubregions } from "~/shared/regional/loaders";
+export { useGetSubregion } from "~/shared/subregional/loaders";
+export { useGetLocality, useGetLocalPolls, useGetLocalDebates, useGetLocalProjects, useGetLocalIssues, useGetLocalMembers } from "~/shared/local/loaders";
 
 export default component$(() => {
     const location = useLocation();
@@ -50,7 +54,7 @@ export default component$(() => {
                             class={baseClass}
                             activeClass={activeClass}
                         >
-                            {_`Overview`}
+                            {_`Summary`}
                         </NavLink>
                         <NavLink
                             href={`/${nationParam}/${regionParam}/${subregionParam}/${localityParam}/polls`}
@@ -95,4 +99,4 @@ export default component$(() => {
             </div>
         </div>
     );
-}); 
+});

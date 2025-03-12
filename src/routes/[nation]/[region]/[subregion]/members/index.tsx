@@ -6,13 +6,10 @@ import { useSession } from "~/routes/plugin@auth";
 import { Image } from "@unpic/qwik";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Using global members loader until we have a specific subregional one
-import { useGetSubregions } from "~/shared/loaders";
-import { useGetGlobalMembers } from "~/shared/global/loaders";
+import { useGetSubregions } from "~/shared/regional/loaders";
+import { useGetSubregionalMembers } from "~/shared/subregional/loaders";
 import { useUpdateCommunityVisibility } from "~/shared/actions";
 
-export { useGetSubregions } from "~/shared/loaders";
-export { useGetGlobalMembers } from "~/shared/global/loaders";
 export { useUpdateCommunityVisibility } from "~/shared/actions";
 
 export default component$(() => {
@@ -25,7 +22,7 @@ export default component$(() => {
     const subregions = useGetSubregions();
     
     // Temporary: use global loader until we have a specific subregional one
-    const members = useGetGlobalMembers();
+    const members = useGetSubregionalMembers();
     const updateCommunityVisibilityAction = useUpdateCommunityVisibility();
     
     const defaultSubregion = useComputed$(() => {

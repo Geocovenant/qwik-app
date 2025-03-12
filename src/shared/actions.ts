@@ -850,3 +850,43 @@ export const useFormCommunityRequestAction = formAction$<CommunityRequestForm, C
     },
     valiForm$(CommunityRequestSchema)
 );
+
+export const useReactProject = routeAction$(async (data, { cookie, fail }) => {
+    const token = cookie.get('authjs.session-token')
+    if (!token) {
+        return fail(401, {
+            message: 'Unauthorized'
+        })
+    }
+
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects/${data.projectId}/react`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: token.value
+            },
+            body: JSON.stringify({
+                reaction: data.reaction
+            })
+        })
+
+        if (!response.ok) {
+            return fail(response.status, {
+                message: 'Failed to react to project'
+            })
+        }
+
+        const result = await response.json()
+        return {
+            status: 200,
+            message: 'Reaction updated successfully',
+            data: result
+        }
+    } catch (error) {
+        console.error('Error reacting to project:', error)
+        return fail(500, {
+            message: 'Internal server error'
+        })
+    }
+})

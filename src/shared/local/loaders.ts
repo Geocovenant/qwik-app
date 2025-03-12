@@ -5,52 +5,35 @@ import type { ProjectResponse } from "~/types/project";
 import type { IssueResponse } from "~/types/issue";
 
 /**
- * Loader to get data for a region
- * Returns region data or an empty array if an error occurs
+ * Loader to obtain data for a specific locality
+ * Returns locality data or an empty object if an error occurs
  */
-export const useGetRegion = routeLoader$(async ({ params }) => {
+export const useGetLocality = routeLoader$(async ({ params }) => {
     try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/search?level=REGIONAL&country=${params.nation}&region=${params.region}`);
+        const response = await fetch(
+            `${import.meta.env.PUBLIC_API_URL}/api/v1/communities/search?level=LOCAL&country=${params.nation}&region=${params.region}&subregion=${params.subregion}&locality=${params.locality}`
+        );
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error fetching the region:', error);
-        return { region: null };
+        console.error('Error fetching locality:', error);
+        return { locality: null };
     }
 });
 
 /**
- * Loader to fetch regions data
- * Returns regions data or empty array if error occurs
- */
-export const useGetSubregions = routeLoader$(async ({ resolveValue }) => {
-    const region = await resolveValue(useGetRegion);
-    try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/countries/${region.region_id}/divisions`);
-        if (!response.ok) {
-            throw new Error('Error fetching country divisions');
-        }
-        const divisions = await response.json();
-        return divisions;
-    } catch (error) {
-        console.error('Error fetching country divisions:', error);
-        return [];
-    }
-});
-
-/**
- * Loader to get regional polls with pagination
+ * Loader to obtain local polls with pagination
  * Returns poll data or an empty array if an error occurs
  */
-export const useGetRegionalPolls = routeLoader$(async ({ cookie, query, resolveValue }) => {
-    const region = await resolveValue(useGetRegion);
+export const useGetLocalPolls = routeLoader$(async ({ cookie, query, resolveValue }) => {
+    const locality = await resolveValue(useGetLocality);
     const page = query.get('page');
     const authToken = cookie.get('authjs.session-token')?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls`;
 
     try {
         const url = new URL(baseUrl);
-        url.searchParams.append('community_id', region.id);
+        url.searchParams.append('community_id', locality.id);
         if (page) url.searchParams.append('page', page);
 
         const response = await fetch(url.toString(), {
@@ -61,14 +44,14 @@ export const useGetRegionalPolls = routeLoader$(async ({ cookie, query, resolveV
         });
 
         if (!response.ok) {
-            throw new Error(`Error fetching regional polls: ${response.statusText}`);
+            throw new Error(`Error fetching local polls: ${response.statusText}`);
         }
 
         const data: PollResponse = await response.json();
         return data;
 
     } catch (error) {
-        console.error('Error in useGetRegionalPolls:', error);
+        console.error('Error in useGetLocalPolls:', error);
         return {
             items: [],
             total: 0,
@@ -80,18 +63,18 @@ export const useGetRegionalPolls = routeLoader$(async ({ cookie, query, resolveV
 });
 
 /**
- * Loader to get regional debates with pagination
+ * Loader to obtain local debates with pagination
  * Returns debate data or an empty array if an error occurs
  */
-export const useGetRegionalDebates = routeLoader$(async ({ cookie, query, resolveValue }) => {
-    const region = await resolveValue(useGetRegion);
+export const useGetLocalDebates = routeLoader$(async ({ cookie, query, resolveValue }) => {
+    const locality = await resolveValue(useGetLocality);
     const page = query.get('page');
     const authToken = cookie.get('authjs.session-token')?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates`;
 
     try {
         const url = new URL(baseUrl);
-        url.searchParams.append('community_id', region.id);
+        url.searchParams.append('community_id', locality.id);
         if (page) url.searchParams.append('page', page);
 
         const response = await fetch(url.toString(), {
@@ -102,14 +85,14 @@ export const useGetRegionalDebates = routeLoader$(async ({ cookie, query, resolv
         });
 
         if (!response.ok) {
-            throw new Error(`Error fetching regional debates: ${response.statusText}`);
+            throw new Error(`Error fetching local debates: ${response.statusText}`);
         }
 
         const data: DebateResponse = await response.json();
         return data;
 
     } catch (error) {
-        console.error('Error in useGetRegionalDebates:', error);
+        console.error('Error in useGetLocalDebates:', error);
         return {
             items: [],
             total: 0,
@@ -121,18 +104,18 @@ export const useGetRegionalDebates = routeLoader$(async ({ cookie, query, resolv
 });
 
 /**
- * Loader to get regional projects with pagination
+ * Loader to obtain local projects with pagination
  * Returns project data or an empty array if an error occurs
  */
-export const useGetRegionalProjects = routeLoader$(async ({ cookie, query, resolveValue }) => {
-    const region = await resolveValue(useGetRegion);
+export const useGetLocalProjects = routeLoader$(async ({ cookie, query, resolveValue }) => {
+    const locality = await resolveValue(useGetLocality);
     const page = query.get('page');
     const authToken = cookie.get('authjs.session-token')?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/projects`;
 
     try {
         const url = new URL(baseUrl);
-        url.searchParams.append('community_id', region.id);
+        url.searchParams.append('community_id', locality.id);
         if (page) url.searchParams.append('page', page);
 
         const response = await fetch(url.toString(), {
@@ -143,14 +126,14 @@ export const useGetRegionalProjects = routeLoader$(async ({ cookie, query, resol
         });
 
         if (!response.ok) {
-            throw new Error(`Error fetching regional projects: ${response.statusText}`);
+            throw new Error(`Error fetching local projects: ${response.statusText}`);
         }
 
         const data: ProjectResponse = await response.json();
         return data;
 
     } catch (error) {
-        console.error('Error in useGetRegionalProjects:', error);
+        console.error('Error in useGetLocalProjects:', error);
         return {
             items: [],
             total: 0,
@@ -162,19 +145,19 @@ export const useGetRegionalProjects = routeLoader$(async ({ cookie, query, resol
 });
 
 /**
- * Loader to get regional issues with pagination
+ * Loader to obtain local issues with pagination
  * Returns issue data or an empty array if an error occurs
  */
-export const useGetRegionalIssues = routeLoader$(async ({ cookie, query, resolveValue }) => {
-    const region = await resolveValue(useGetRegion);
+export const useGetLocalIssues = routeLoader$(async ({ cookie, query, resolveValue }) => {
+    const locality = await resolveValue(useGetLocality);
     const page = query.get('page');
     const authToken = cookie.get('authjs.session-token')?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/issues`;
 
     try {
         const url = new URL(baseUrl);
-        url.searchParams.append('scope', 'REGIONAL');
-        url.searchParams.append('region', region.id);
+        url.searchParams.append('scope', 'LOCAL');
+        url.searchParams.append('locality', locality.id);
         if (page) url.searchParams.append('page', page);
 
         const response = await fetch(url.toString(), {
@@ -185,14 +168,14 @@ export const useGetRegionalIssues = routeLoader$(async ({ cookie, query, resolve
         });
 
         if (!response.ok) {
-            throw new Error(`Error fetching regional issues: ${response.statusText}`);
+            throw new Error(`Error fetching local issues: ${response.statusText}`);
         }
 
         const data: IssueResponse = await response.json();
         return data;
 
     } catch (error) {
-        console.error('Error in useGetRegionalIssues:', error);
+        console.error('Error in useGetLocalIssues:', error);
         return {
             items: [],
             total: 0,
@@ -204,11 +187,11 @@ export const useGetRegionalIssues = routeLoader$(async ({ cookie, query, resolve
 });
 
 /**
- * Loader to get regional members with pagination
+ * Loader to obtain locality members with pagination
  * Returns member data or an empty array if an error occurs
  */
-export const useGetRegionalMembers = routeLoader$(async ({ cookie, query, resolveValue }) => {
-    const region = await resolveValue(useGetRegion);
+export const useGetLocalMembers = routeLoader$(async ({ cookie, query, resolveValue }) => {
+    const locality = await resolveValue(useGetLocality);
     const page = Number(query.get("page") || "1");
     const size = Number(query.get("size") || "100");
     const token = cookie.get('authjs.session-token');
@@ -216,7 +199,7 @@ export const useGetRegionalMembers = routeLoader$(async ({ cookie, query, resolv
         return { items: [], total: 0, page: 1, size: 20, pages: 1 };
     }
     
-    const communityId = region.id;
+    const communityId = locality.id;
 
     try {
         const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${communityId}/members?page=${page}&size=${size}`, {
@@ -227,13 +210,13 @@ export const useGetRegionalMembers = routeLoader$(async ({ cookie, query, resolv
         });
 
         if (!response.ok) {
-            throw new Error('Error fetching regional members');
+            throw new Error('Error fetching locality members');
         }
 
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error fetching regional members:', error);
+        console.error('Error fetching locality members:', error);
         return { items: [], total: 0, page: 1, size: 20, pages: 1 };
     }
 });

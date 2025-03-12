@@ -147,6 +147,7 @@ export const CommunityItem = component$(({
                                 href={`/${community.path}`}
                                 class={`flex flex-1 items-center gap-2 ${itemClass}`}
                                 onClick$={onClick$}
+                                prefetch={false}
                             >
                                 <div class="h-5 w-5 flex-shrink-0 transition-transform group-hover:scale-110">
                                     {community.icon}

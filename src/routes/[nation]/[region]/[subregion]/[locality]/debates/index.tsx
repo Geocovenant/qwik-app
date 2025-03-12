@@ -9,10 +9,12 @@ import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-import { useGetLocalityDebates, useGetTags } from "~/shared/loaders";
+// Import specific loaders for locality
+import { useGetTags } from "~/shared/loaders";
+import { useGetLocality, useGetLocalDebates } from "~/shared/local/loaders";
 
-export { useGetLocalityDebates } from "~/shared/loaders";
 export { useFormDebateAction } from "~/shared/forms/actions";
+
 export default component$(() => {
     const session = useSession();
     const showModalDebate = useSignal(false);
@@ -22,8 +24,9 @@ export default component$(() => {
     const subregionName = location.params.subregion;
     const localityName = location.params.locality;
     
+    const locality = useGetLocality();
     const tags = useGetTags();
-    const debates = useGetLocalityDebates();
+    const debates = useGetLocalDebates();
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
@@ -53,7 +56,8 @@ export default component$(() => {
                         >
                             <FormDebate
                                 onSubmitCompleted={onSubmitCompleted}
-                                defaultScope={CommunityType.LOCALITY}
+                                defaultScope={CommunityType.LOCAL}
+                                defaultLocalityId={locality.value?.id}
                                 tags={tags.value}
                             />
                         </Modal>
@@ -98,4 +102,4 @@ export const head: DocumentHead = ({ params }) => {
             },
         ],
     };
-}; 
+};

@@ -9,10 +9,10 @@ import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Import necessary loaders
-import { useGetLocalityIssues, useGetTags } from "~/shared/loaders";
+// Import specific loaders for locality
+import { useGetTags } from "~/shared/loaders";
+import { useGetLocality, useGetLocalIssues } from "~/shared/local/loaders";
 
-export { useGetLocalityIssues } from "~/shared/loaders";
 export { useFormIssueLoader } from "~/shared/forms/loaders";
 export { useFormIssueAction } from "~/shared/forms/actions";
 
@@ -26,10 +26,13 @@ export default component$(() => {
     const localityName = location.params.locality;
     
     const tags = useGetTags();
-    const issues = useGetLocalityIssues();
+    const locality = useGetLocality();
+    const issues = useGetLocalIssues();
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
+    // @ts-ignore
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
     const isAuthenticated = useComputed$(() => !!session.value?.user);
     const localityDisplayName = capitalizeFirst(localityName.replace(/-/g, ' '));
 
@@ -38,6 +41,10 @@ export default component$(() => {
     });
 
     const onCreateIssue = $(() => {
+        showModalIssue.value = true;
+    });
+
+    const onShowLoginModal = $(() => {
         showModalIssue.value = true;
     });
 
@@ -52,14 +59,17 @@ export default component$(() => {
                         {session.value?.user
                             ? <FormIssue
                                 onSubmitCompleted={onSubmitCompleted}
-                                defaultScope={CommunityType.LOCALITY}
+                                defaultScope={CommunityType.LOCAL}
+                                defaultLocalityId={locality.value?.id}
                                 tags={tags.value}
                             />
                             : <SocialLoginButtons />
                         }
                     </Modal>
                     <IssueList
-                        onCreateIssue={onCreateIssue}
+                        communityName={_`The ${localityDisplayName} community`}
+                        currentUsername={currentUsername.value}
+                        isAuthenticated={isAuthenticated.value}
                         issues={{
                             items: Array.isArray(issues.value?.items) ? issues.value.items : [],
                             total: issues.value?.total || 0,
@@ -67,12 +77,12 @@ export default component$(() => {
                             size: issues.value?.size || 10,
                             pages: issues.value?.pages || 1
                         }}
-                        communityName={localityDisplayName}
+                        onCreateIssue={onCreateIssue}
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
                             await nav(`/${nationName}/${regionName}/${subregionName}/${localityName}/issues?page=${page}`);
                         }}
-                        isAuthenticated={isAuthenticated.value}
+                        onShowLoginModal$={onShowLoginModal}
                     />
                 </div>
             </div>
@@ -91,4 +101,4 @@ export const head: DocumentHead = ({ params }) => {
             },
         ],
     };
-}; 
+};

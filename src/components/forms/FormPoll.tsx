@@ -177,7 +177,7 @@ export default component$<FormPollProps>(({
                                     <div class="space-y-2">
                                         <Select.Root 
                                             {...props} 
-                                            value={defaultCountry.value?.cca2 || (Array.isArray(field.value) ? field.value[0] : field.value)}
+                                            value={defaultCountry || (Array.isArray(field.value) ? field.value[0] : field.value)}
                                         >
                                             <Select.Label>{_`Select a country`}</Select.Label>
                                             <Select.Trigger>

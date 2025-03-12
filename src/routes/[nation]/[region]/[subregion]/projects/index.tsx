@@ -9,10 +9,9 @@ import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Import necessary loaders
-import { useGetSubregionalProjects, useGetSubregions, useGetTags } from "~/shared/loaders";
-
-export { useGetSubregionalProjects, useGetSubregions } from "~/shared/loaders";
+import { useGetTags } from "~/shared/loaders";
+import { useGetSubregions } from "~/shared/regional/loaders";
+import { useGetSubregionalProjects } from "~/shared/subregional/loaders";
 
 export default component$(() => {
     const session = useSession();
@@ -27,15 +26,6 @@ export default component$(() => {
     const projects = useGetSubregionalProjects();
     const currentPage = useSignal(1);
     const nav = useNavigate();
-
-    const defaultSubregion = useComputed$(() => {
-        const normalizedSubregionName = subregionName
-            .split('-')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-        
-        return subregions.value.find((r: { name: string; }) => r.name === normalizedSubregionName);
-    });
 
     const isAuthenticated = useComputed$(() => !!session.value?.user);
     const subregionDisplayName = capitalizeFirst(subregionName.replace(/-/g, ' '));

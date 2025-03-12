@@ -76,74 +76,6 @@ export const useGetRegionalPolls = routeLoader$(async ({ cookie, params, resolve
     }
 })
 
-export const useGetSubregionalPolls = routeLoader$(async ({ cookie, params, resolveValue }) => {
-    console.log('============ useGetSubregionalPolls ============')
-    const token = cookie.get('authjs.session-token');
-    if (!token) {
-        return [];
-    }
-    const regions = await resolveValue(useGetRegions);
-
-    const normalizedRegionName = params.region
-        .split('-')
-        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-    const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
-    console.log('regionData', regionData)
-
-    const regionId = regionData?.id
-    if (!regionId) {
-        console.error('Region not found:', params.region);
-        return [];
-    }
-
-    // Normalize subregion name
-    const normalizedSubregionName = params.subregion
-        .split('-')
-        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-
-    // Fetch subregion data
-    try {
-        const subregionResponse = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/regions/${regionId}/subregions?name=${normalizedSubregionName}`, {
-            headers: {
-                Accept: 'application/json',
-                Authorization: token.value
-            }
-        });
-
-        if (!subregionResponse.ok) {
-            throw new Error('Error fetching subregion data');
-        }
-
-        const subregionData = await subregionResponse.json();
-        console.log('subregionData', subregionData);
-
-        const subregionId = subregionData?.[0]?.id;
-        if (!subregionId) {
-            console.error('Subregion not found:', normalizedSubregionName);
-            return [];
-        }
-
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=SUBREGIONAL&subregion=${subregionId}`, {
-            headers: {
-                Accept: 'application/json',
-                Authorization: token.value
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Error fetching subregional polls');
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching subregional polls:', error);
-        return [];
-    }
-})
-
 export const useGetDebateBySlug = routeLoader$(async ({ cookie, params }) => {
     console.log('============ useGetDebateBySlug ============')
     const token = cookie.get('authjs.session-token');
@@ -222,40 +154,6 @@ export const useGetRegionalDebates = routeLoader$(async ({ cookie, params, resol
         return [];
     }
 })
-
-export const useGetSubregions = routeLoader$(async ({ params, resolveValue }) => {
-    const nationPath = params.nation;
-    const regionPath = params.region;
-    const subregionPath = params.subregion;
-
-    if (!nationPath || !regionPath || !subregionPath) return [];
-
-    const regions = await resolveValue(useGetRegions);
-
-    const normalizedRegionName = regionPath
-        .split('-')
-        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-    const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
-
-    const regionId = regionData?.id
-    if (!regionId) {
-        console.error('Region not found:', regionPath);
-        return [];
-    }
-
-    try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/regions/${regionId}/subregions`);
-        if (!response.ok) {
-            throw new Error('Error fetching subregions');
-        }
-        const subregions = await response.json();
-        return subregions;
-    } catch (error) {
-        console.error('Error fetching subregions:', error);
-        return [];
-    }
-});
 
 export const useGetTags = routeLoader$(async ({ cookie }) => {
     const token = cookie.get('authjs.session-token');
@@ -377,207 +275,6 @@ export const useGetRegionalIssues = routeLoader$(async ({ params }) => {
         return data;
     } catch (error) {
         console.error('Error fetching regional issues:', error);
-        return [];
-    }
-});
-
-export const useGetSubregionalDebates = routeLoader$(async ({ cookie, params, resolveValue }) => {
-    console.log('============ useGetSubregionalDebates ============')
-    const token = cookie.get('authjs.session-token');
-    if (!token) {
-        return [];
-    }
-
-    // Obtener primero el region ID
-    const regions = await resolveValue(useGetRegions);
-    const normalizedRegionName = params.region
-        .split('-')
-        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-    const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
-    const regionId = regionData?.id;
-
-    if (!regionId) {
-        console.error('Region not found:', params.region);
-        return [];
-    }
-
-    // Ahora obtener el subregion ID
-    const normalizedSubregionName = params.subregion
-        .split('-')
-        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-
-    try {
-        const subregionResponse = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/regions/${regionId}/subregions?name=${normalizedSubregionName}`, {
-            headers: {
-                Accept: 'application/json',
-                Authorization: token.value
-            }
-        });
-
-        if (!subregionResponse.ok) {
-            throw new Error('Error fetching subregion data');
-        }
-
-        const subregionData = await subregionResponse.json();
-        const subregionId = subregionData?.[0]?.id;
-
-        if (!subregionId) {
-            console.error('Subregion not found:', normalizedSubregionName);
-            return [];
-        }
-
-        // Finalmente, obtener los debates de la subregión
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates?type=SUBREGIONAL&subregion=${subregionId}`, {
-            headers: {
-                Accept: 'application/json',
-                Authorization: token.value
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Error fetching subregional debates');
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching subregional debates:', error);
-        return [];
-    }
-});
-
-export const useGetSubregionalProjects = routeLoader$(async ({ cookie, params, resolveValue }) => {
-    console.log('============ useGetSubregionalProjects ============')
-    const token = cookie.get('authjs.session-token');
-    if (!token) {
-        return [];
-    }
-
-    // Obtener primero el region ID
-    const regions = await resolveValue(useGetRegions);
-    const normalizedRegionName = params.region
-        .split('-')
-        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-    const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
-    const regionId = regionData?.id;
-
-    if (!regionId) {
-        console.error('Region not found:', params.region);
-        return [];
-    }
-
-    // Ahora obtener el subregion ID
-    const normalizedSubregionName = params.subregion
-        .split('-')
-        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-
-    try {
-        const subregionResponse = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/regions/${regionId}/subregions?name=${normalizedSubregionName}`, {
-            headers: {
-                Accept: 'application/json',
-                Authorization: token.value
-            }
-        });
-
-        if (!subregionResponse.ok) {
-            throw new Error('Error fetching subregion data');
-        }
-
-        const subregionData = await subregionResponse.json();
-        const subregionId = subregionData?.[0]?.id;
-
-        if (!subregionId) {
-            console.error('Subregion not found:', normalizedSubregionName);
-            return [];
-        }
-
-        // Finalmente, obtener los proyectos de la subregión
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects?scope=SUBREGIONAL&subregion=${subregionId}`, {
-            headers: {
-                Accept: 'application/json',
-                Authorization: token.value
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Error fetching subregional projects');
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching subregional projects:', error);
-        return [];
-    }
-});
-
-export const useGetSubregionalIssues = routeLoader$(async ({ cookie, params, resolveValue }) => {
-    console.log('============ useGetSubregionalIssues ============')
-    const token = cookie.get('authjs.session-token');
-    if (!token) {
-        return [];
-    }
-
-    // Obtener primero el region ID
-    const regions = await resolveValue(useGetRegions);
-    const normalizedRegionName = params.region
-        .split('-')
-        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-    const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
-    const regionId = regionData?.id;
-
-    if (!regionId) {
-        console.error('Region not found:', params.region);
-        return [];
-    }
-
-    // Ahora obtener el subregion ID
-    const normalizedSubregionName = params.subregion
-        .split('-')
-        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-
-    try {
-        const subregionResponse = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/regions/${regionId}/subregions?name=${normalizedSubregionName}`, {
-            headers: {
-                Accept: 'application/json',
-                Authorization: token.value
-            }
-        });
-
-        if (!subregionResponse.ok) {
-            throw new Error('Error fetching subregion data');
-        }
-
-        const subregionData = await subregionResponse.json();
-        const subregionId = subregionData?.[0]?.id;
-
-        if (!subregionId) {
-            console.error('Subregion not found:', normalizedSubregionName);
-            return [];
-        }
-
-        // Finalmente, obtener los issues de la subregión
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/issues?scope=SUBREGIONAL&subregion=${subregionId}`, {
-            headers: {
-                Accept: 'application/json',
-                Authorization: token.value
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Error fetching subregional issues');
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching subregional issues:', error);
         return [];
     }
 });
@@ -848,3 +545,34 @@ export const useFormCommunityRequestLoader = routeLoader$<InitialValues<Communit
         email: ""
     };
 });
+
+export const useGetProjectBySlug = routeLoader$(async ({ cookie, params }) => {
+    console.log('============ useGetProjectBySlug ============')
+    const token = cookie.get('authjs.session-token')
+    if (!token) {
+        return undefined
+    }
+
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects/${params.slug}`, {
+            headers: {
+                Accept: 'application/json',
+                Authorization: token.value
+            },
+        })
+
+        if (!response.ok) {
+            console.error('Error fetching project details:', response.statusText)
+            return undefined
+        }
+
+        const data = await response.json()
+        return {
+            ...data,
+            is_creator: data.creator?.id === data.current_user_id
+        }
+    } catch (error) {
+        console.error('Error fetching project details:', error)
+        return undefined
+    }
+})

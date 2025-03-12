@@ -1,0 +1,9 @@
+.theme-toggle__classic {
+    color: #000000;
+    width: 1.2em;
+    height: 1.2em;
+}
+
+.theme-toggle__classic--dark {
+    color: #888888;
+} 

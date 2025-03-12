@@ -31,11 +31,11 @@ export default component$(() => {
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 aria-hidden="true"
-                width="1.3em"
-                height="1.3em"
+                width="1.2em"
+                height="1.2em"
                 fill="currentColor"
                 stroke-linecap="round"
-                class="theme-toggle__classic"
+                class={`theme-toggle__classic ${theme.value === 'dark' ? 'theme-toggle__classic--dark' : ''}`}
                 viewBox="0 0 32 32"
             >
                 <clipPath id="theme-toggle__classic__cutout">

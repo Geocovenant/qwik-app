@@ -9,10 +9,12 @@ import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Import necessary loaders
-import { useGetLocalityProjects, useGetTags } from "~/shared/loaders";
+// Import specific loaders for locality
+import { useGetTags } from "~/shared/loaders";
+import { useGetLocality, useGetLocalProjects } from "~/shared/local/loaders";
 
-export { useGetLocalityProjects } from "~/shared/loaders";
+export { useFormProjectAction } from "~/shared/forms/actions";
+export { useDeleteProject } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
@@ -23,11 +25,14 @@ export default component$(() => {
     const subregionName = location.params.subregion;
     const localityName = location.params.locality;
     
+    const locality = useGetLocality();
     const tags = useGetTags();
-    const projects = useGetLocalityProjects();
+    const projects = useGetLocalProjects();
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
+    // @ts-ignore
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
     const isAuthenticated = useComputed$(() => !!session.value?.user);
     const localityDisplayName = capitalizeFirst(localityName.replace(/-/g, ' '));
 
@@ -54,14 +59,23 @@ export default component$(() => {
                         {session.value?.user
                             ? <FormProject
                                 onSubmitCompleted={onSubmitCompleted}
-                                defaultScope={CommunityType.LOCALITY}
+                                defaultScope={CommunityType.LOCAL}
+                                defaultLocalityId={locality.value?.id}
                                 tags={tags.value}
                             />
                             : <SocialLoginButtons />
                         }
                     </Modal>
                     <ProjectList
+                        communityName={_`The ${localityDisplayName} community`}
+                        currentUsername={currentUsername.value}
+                        isAuthenticated={isAuthenticated.value}
                         onCreateProject={onCreateProject}
+                        onPageChange$={async (page: number) => {
+                            currentPage.value = page;
+                            await nav(`/${nationName}/${regionName}/${subregionName}/${localityName}/projects?page=${page}`);
+                        }}
+                        onShowLoginModal$={onShowLoginModal}
                         projects={{
                             items: Array.isArray(projects.value?.items) ? projects.value.items : [],
                             total: projects.value?.total || 0,
@@ -69,13 +83,6 @@ export default component$(() => {
                             size: projects.value?.size || 10,
                             pages: projects.value?.pages || 1
                         }}
-                        communityName={localityDisplayName}
-                        onPageChange$={async (page: number) => {
-                            currentPage.value = page;
-                            await nav(`/${nationName}/${regionName}/${subregionName}/${localityName}/projects?page=${page}`);
-                        }}
-                        isAuthenticated={isAuthenticated.value}
-                        onShowLoginModal$={onShowLoginModal}
                     />
                 </div>
             </div>
@@ -94,4 +101,4 @@ export const head: DocumentHead = ({ params }) => {
             },
         ],
     };
-}; 
+};

@@ -9,10 +9,9 @@ import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Import necessary loaders
-import { useGetSubregionalIssues, useGetSubregions, useGetTags } from "~/shared/loaders";
+import { useGetTags } from "~/shared/loaders";
+import { useGetSubregionalIssues } from "~/shared/subregional/loaders";
 
-export { useGetSubregionalIssues, useGetSubregions } from "~/shared/loaders";
 export { useFormIssueLoader } from "~/shared/forms/loaders";
 export { useFormIssueAction } from "~/shared/forms/actions";
 
@@ -24,22 +23,15 @@ export default component$(() => {
     const regionName = location.params.region;
     const subregionName = location.params.subregion;
     
-    const subregions = useGetSubregions();
     const tags = useGetTags();
     const issues = useGetSubregionalIssues();
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
-    const defaultSubregion = useComputed$(() => {
-        const normalizedSubregionName = subregionName
-            .split('-')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-        
-        return subregions.value.find((r: { name: string; }) => r.name === normalizedSubregionName);
-    });
-
+    // @ts-ignore
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
     const isAuthenticated = useComputed$(() => !!session.value?.user);
+
     const subregionDisplayName = capitalizeFirst(subregionName.replace(/-/g, ' '));
 
     const onSubmitCompleted = $(() => {
@@ -47,6 +39,10 @@ export default component$(() => {
     });
 
     const onCreateIssue = $(() => {
+        showModalIssue.value = true;
+    });
+
+    const onShowLoginModal = $(() => {
         showModalIssue.value = true;
     });
 
@@ -62,14 +58,15 @@ export default component$(() => {
                             ? <FormIssue
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.SUBREGIONAL}
-                                subregions={Array.isArray(subregions.value) ? subregions.value : []}
                                 tags={tags.value}
                             />
                             : <SocialLoginButtons />
                         }
                     </Modal>
                     <IssueList
-                        onCreateIssue={onCreateIssue}
+                        communityName={_`The ${capitalizeFirst(subregionName)} community in ${capitalizeFirst(nationName)}`}
+                        currentUsername={currentUsername.value}
+                        isAuthenticated={isAuthenticated.value}
                         issues={{
                             items: Array.isArray(issues.value?.items) ? issues.value.items : [],
                             total: issues.value?.total || 0,
@@ -77,12 +74,12 @@ export default component$(() => {
                             size: issues.value?.size || 10,
                             pages: issues.value?.pages || 1
                         }}
-                        communityName={subregionDisplayName}
+                        onCreateIssue={onCreateIssue}
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
                             await nav(`/${nationName}/${regionName}/${subregionName}/issues?page=${page}`);
                         }}
-                        isAuthenticated={isAuthenticated.value}
+                        onShowLoginModal$={onShowLoginModal}
                     />
                 </div>
             </div>

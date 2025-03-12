@@ -9,10 +9,9 @@ import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Import necessary loaders
-import { useGetLocalityPolls } from "~/shared/loaders";
+// Import specific loaders for locality
+import { useGetLocality, useGetLocalPolls } from "~/shared/local/loaders";
 
-export { useGetLocalityPolls } from "~/shared/loaders";
 export { useVotePoll, useReactPoll } from "~/shared/actions";
 export { useFormPollAction } from "~/shared/forms/actions";
 
@@ -25,7 +24,8 @@ export default component$(() => {
     const subregionName = location.params.subregion;
     const localityName = location.params.locality;
     
-    const polls = useGetLocalityPolls();
+    const locality = useGetLocality();
+    const polls = useGetLocalPolls();
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
@@ -40,6 +40,10 @@ export default component$(() => {
         showModalPoll.value = true;
     });
 
+    const onShowLoginModal = $(() => {
+        showModalPoll.value = true;
+    });
+
     return (
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
             <div class="flex flex-col min-h-0">
@@ -51,7 +55,8 @@ export default component$(() => {
                         >
                             <FormPoll
                                 onSubmitCompleted={onSubmitCompleted}
-                                defaultScope={CommunityType.LOCALITY}
+                                defaultScope={CommunityType.LOCAL}
+                                defaultLocalityId={locality.value?.id}
                             />
                         </Modal>
                         : <Modal
@@ -76,6 +81,7 @@ export default component$(() => {
                             await nav(`/${nationName}/${regionName}/${subregionName}/${localityName}/polls?page=${page}`);
                         }}
                         isAuthenticated={isAuthenticated.value}
+                        onShowLoginModal$={onShowLoginModal}
                     />
                 </div>
             </div>
@@ -94,4 +100,4 @@ export const head: DocumentHead = ({ params }) => {
             },
         ],
     };
-}; 
+};
