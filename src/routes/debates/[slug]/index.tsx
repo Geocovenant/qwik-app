@@ -11,8 +11,6 @@ import {
     LuUsers,
     LuChevronLeft,
     LuChevronRight,
-    LuShare2,
-    LuBookmark,
 } from "@qwikest/icons/lucide"
 import { Image } from "@unpic/qwik"
 import { Alert, Avatar, Badge, Button, Input } from "~/components/ui"
@@ -532,6 +530,7 @@ export default component$(() => {
                                             view={view} 
                                             isAuthenticated={!!session.value?.user}
                                             onShowLoginModal$={onShowLoginModal$}
+                                            // @ts-ignore
                                             currentUsername={session.value?.user?.username || ""}
                                         />
                                     </div>

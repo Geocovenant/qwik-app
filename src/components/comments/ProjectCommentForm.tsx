@@ -2,8 +2,8 @@ import { $, component$ } from "@builder.io/qwik"
 import { useForm, valiForm$ } from "@modular-forms/qwik"
 import { _ } from "compiled-i18n"
 import { TextArea } from "~/components/input/TextArea"
-import { CommentSchema } from "~/schemas/commentSchema"
-import type { CommentForm } from "~/schemas/commentSchema"
+import { CommentProjectSchema } from "~/schemas/commentProjectSchema"
+import type { CommentProjectForm, CommentProjectResponseData } from "~/schemas/commentProjectSchema"
 import { useFormCommentAction } from "~/shared/actions"
 
 export interface ProjectCommentFormProps {
@@ -12,18 +12,18 @@ export interface ProjectCommentFormProps {
 }
 
 export default component$<ProjectCommentFormProps>(({ projectId, onSubmitCompleted }) => {
-    const [commentForm, { Form, Field }] = useForm<CommentForm>({
+    const [commentForm, { Form, Field }] = useForm<CommentProjectForm, CommentProjectResponseData>({
         loader: {
             value: {
+                projectId: projectId.toString(),
                 text: "",
-                projectId: projectId
             }
         },
-        validate: valiForm$(CommentSchema),
         action: useFormCommentAction(),
+        validate: valiForm$(CommentProjectSchema),
     })
 
-    const handleSubmit = $((values: CommentForm, event: any) => {
+    const handleSubmit = $((values: CommentProjectForm) => {
         console.log("Comment submitted:", values)
         // eslint-disable-next-line qwik/valid-lexical-scope
         onSubmitCompleted()

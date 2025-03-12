@@ -1,51 +1,18 @@
 import { component$, useSignal } from "@builder.io/qwik";
-import { LuBell } from "@qwikest/icons/lucide";
+import { Dropdown } from "~/components/ui";
 import { _ } from "compiled-i18n";
-const LuBellIcon = component$(() => <LuBell class="h-5 w-5 text-gray-700" />)
 
 export default component$(() => {
     const unreadCount = useSignal(0);
-    // TODO: traer las notificaciones de la API
-    const notifications = [
-        {
-            id: 1,
-            title: "Nueva respuesta en tu encuesta",
-            description: "Juan comentó en 'Mejoras para el barrio'",
-            time: "hace 5 minutos",
-            unread: true,
-        },
-        {
-            id: 2,
-            title: "Debate actualizado",
-            description: "Se añadieron 3 nuevas respuestas",
-            time: "hace 1 hora",
-            unread: true,
-        },
-        {
-            id: 3,
-            title: "Recordatorio", 
-            description: "La encuesta termina en 24 horas",
-            time: "hace 2 horas",
-            unread: false,
-        },
-    ];
+    const notifications: any[] = [];
 
     return (
-        <Dropdown
-            label=""
-            class="z-50"
-            as={
-                <button class="relative text-gray-600 hover:text-gray-800">
-                    <LuBellIcon />
-                    {unreadCount.value > 0 && (
-                        <span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs">
-                            {unreadCount.value}
-                        </span>
-                    )}
-                </button>
-            }
-        >
-            <Dropdown.Item header>
+        <Dropdown.Root class="z-50">
+            <Dropdown.Trigger>
+                {'trigger'}
+            </Dropdown.Trigger>
+            
+            <Dropdown.Item>
                 <div class="flex items-center justify-between px-4 py-2">
                     <span class="text-sm font-semibold text-gray-900">{_`Notifications`}</span>
                     <button
@@ -56,7 +23,7 @@ export default component$(() => {
                     </button>
                 </div>
             </Dropdown.Item>
-            <Dropdown.Item divider />
+            <Dropdown.Separator />
             {notifications.map((n) => (
                 <Dropdown.Item key={n.id}>
                     <div class="flex flex-col items-start gap-1 p-2">
@@ -71,10 +38,10 @@ export default component$(() => {
                     </div>
                 </Dropdown.Item>
             ))}
-            <Dropdown.Item divider />
+            <Dropdown.Separator />
             <Dropdown.Item>
                 <span class="text-center text-blue-600">{_`View all notifications`}</span>
             </Dropdown.Item>
-        </Dropdown>
+        </Dropdown.Root>
     );
 });

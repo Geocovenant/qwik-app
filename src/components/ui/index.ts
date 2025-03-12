@@ -15,3 +15,4 @@ export * from "./toggle/toggle";
 export * from "./combobox/combobox";
 export * from "./accordion/accordion";
 export * from "./dropdown/dropdown";
+export * from "./card/card";

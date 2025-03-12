@@ -64,6 +64,7 @@ export interface Issue {
     tags?: string[];
     title: string;
     updated_at: string;
+    views_count: number;
 }
 
 export interface IssueResponse {

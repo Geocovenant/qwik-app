@@ -138,7 +138,7 @@ export default component$<DebateListProps>(({
                             {_`No debates found`}
                         </h3>
                         <p class="text-gray-500 dark:text-gray-400 mb-6">
-                            {_`No debate matches your search "${searchTerm.value}". Try other keywords or clear the search.`}
+                            {_`No debate matches your search ${searchTerm.value}. Try other keywords or clear the search.`}
                         </p>
                         <Button 
                             class="bg-cyan-600 hover:bg-cyan-700 text-white"

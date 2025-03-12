@@ -85,14 +85,16 @@ export default component$(() => {
                 {/* User/login area with a more compact button on mobile */}
                 <div>
                     {session.value?.user ? (
-                        <NestedDropdown
-                            userId={session.value.user.id}
-                            // @ts-ignore
-                            username={session.value.user.username || undefined}
-                            name={session.value.user.name || undefined}
-                            email={session.value.user.email || undefined}
-                            image={session.value.user.image || undefined}
-                        />
+                        <div class="flex items-center gap-2 sm:gap-3">
+                            <NestedDropdown
+                                userId={session.value.user.id}
+                                // @ts-ignore
+                                username={session.value.user.username || undefined}
+                                name={session.value.user.name || undefined}
+                                email={session.value.user.email || undefined}
+                                image={session.value.user.image || undefined}
+                            />
+                        </div>
                     ) : (
                         <Button
                             onClick$={() => loginModalVisible.value = true}

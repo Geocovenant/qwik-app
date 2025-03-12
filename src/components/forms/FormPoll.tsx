@@ -24,19 +24,23 @@ export interface FormPollProps {
     defaultCountry?: string;
     defaultRegionId?: number;
     defaultSubregionId?: number;
+    defaultLocalityId?: number;
     regions?: any[];
     subregions?: any[];
+    localities?: any[];
     tags?: { id: string, name: string }[];
 }
 
-export default component$<FormPollProps>(({ 
+export default component$<FormPollProps>(({
     onSubmitCompleted,
     defaultScope = CommunityType.NATIONAL,
     defaultCountry = null,
     defaultRegionId = null,
     defaultSubregionId = null,
+    defaultLocalityId = null,
     regions = [],
     subregions = [],
+    localities = [],
     tags = []
 }) => {
     const [pollForm, { Form, Field, FieldArray }] = useForm<PollForm, PollResponseData>({
@@ -60,9 +64,9 @@ export default component$<FormPollProps>(({
     useTask$(({ track }) => {
         const scope = track(() => defaultScope);
         setValue(pollForm, 'scope', scope.toUpperCase());
-        
+
         // Clear community_ids when scope changes
-        setValue(pollForm, 'community_ids', 
+        setValue(pollForm, 'community_ids',
             scope === CommunityType.GLOBAL ? ['1'] : []
         );
     });
@@ -72,7 +76,7 @@ export default component$<FormPollProps>(({
         track(() => defaultScope);
         track(() => defaultRegionId);
         track(() => defaultSubregionId);
-        
+
         if (defaultScope === CommunityType.REGIONAL && defaultRegionId) {
             // Instead of assigning to provinces, we should use setValue for community_ids
             setValue(pollForm, 'community_ids', [defaultRegionId.toString()]);
@@ -80,6 +84,10 @@ export default component$<FormPollProps>(({
 
         if (defaultScope === CommunityType.SUBREGIONAL && defaultSubregionId) {
             setValue(pollForm, 'community_ids', [defaultSubregionId.toString()]);
+        }
+
+        if (defaultScope === CommunityType.LOCAL && defaultLocalityId) {
+            setValue(pollForm, 'community_ids', [defaultLocalityId.toString()]);
         }
     });
 
@@ -91,6 +99,11 @@ export default component$<FormPollProps>(({
         // eslint-disable-next-line qwik/valid-lexical-scope
         onSubmitCompleted()
         // Here you can perform the submit action (client-side or progressively enhanced with action)
+    });
+
+    const handleChangeSelectNational = $((value: string | string[]) => {
+        const valueArray = typeof value === 'string' ? [value] : value;
+        setValue(pollForm, 'community_ids', valueArray);
     });
 
     return (
@@ -136,6 +149,16 @@ export default component$<FormPollProps>(({
                     </span>
                 </div>
             )}
+            {defaultScope === CommunityType.LOCAL && (
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="inline-flex items-center rounded-full bg-cyan-100 px-2.5 py-1 text-xs font-medium text-cyan-800">
+                        {_`Local poll`}
+                    </div>
+                    <span class="text-sm text-muted-foreground">
+                        {_`This poll will be visible to users from selected locality`}
+                    </span>
+                </div>
+            )}
 
             {/* Poll Settings Section */}
             <div class="space-y-4">
@@ -143,10 +166,10 @@ export default component$<FormPollProps>(({
                 {/* Hidden field for scope */}
                 <Field name="scope">
                     {(field, props) => (
-                        <input 
-                            type="hidden" 
-                            {...props} 
-                            value={defaultScope} 
+                        <input
+                            type="hidden"
+                            {...props}
+                            value={defaultScope}
                         />
                     )}
                 </Field>
@@ -160,23 +183,24 @@ export default component$<FormPollProps>(({
                             case CommunityType.INTERNATIONAL:
                                 return (
                                     <div class="space-y-2">
-                                    <MultiCountryCombobox
-                                        {...props}
-                                        label={_`Select countries`}
-                                        value={field.value}
-                                        error={field.error}
-                                        onChange$={$((value) => {
-                                            setValue(pollForm, 'community_ids', value);
-                                        })}
-                                    />
+                                        <MultiCountryCombobox
+                                            {...props}
+                                            label={_`Select countries`}
+                                            value={field.value}
+                                            error={field.error}
+                                            onChange$={$((value) => {
+                                                setValue(pollForm, 'community_ids', value);
+                                            })}
+                                        />
                                     </div>
                                 );
 
                             case CommunityType.NATIONAL:
                                 return (
                                     <div class="space-y-2">
-                                        <Select.Root 
-                                            {...props} 
+                                        <Select.Root
+                                            {...props as any}
+                                            onChange$={handleChangeSelectNational}
                                             value={defaultCountry || (Array.isArray(field.value) ? field.value[0] : field.value)}
                                         >
                                             <Select.Label>{_`Select a country`}</Select.Label>
@@ -203,7 +227,7 @@ export default component$<FormPollProps>(({
                             case CommunityType.REGIONAL:
                                 return (
                                     <div class="space-y-2">
-                                        <Select.Root {...props} value={defaultRegionId?.toString()}>
+                                        <Select.Root {...props as any} value={defaultRegionId?.toString()}>
                                             <Select.Label>{_`Select a region`}</Select.Label>
                                             <Select.Trigger>
                                                 <Select.DisplayValue placeholder={_`Select region...`} />
@@ -229,11 +253,11 @@ export default component$<FormPollProps>(({
                                         )}
                                     </div>
                                 );
-                            
+
                             case CommunityType.SUBREGIONAL:
                                 return (
                                     <div class="space-y-2">
-                                        <Select.Root {...props} value={defaultSubregionId ? defaultSubregionId.toString() : undefined}>
+                                        <Select.Root {...props as any} value={defaultSubregionId ? defaultSubregionId.toString() : undefined}>
                                             <Select.Label>{_`Select a region`}</Select.Label>
                                             <Select.Trigger>
                                                 <Select.DisplayValue placeholder={_`Select subregion...`} />
@@ -249,6 +273,36 @@ export default component$<FormPollProps>(({
                                                 )) : (
                                                     <Select.Item value="placeholder">
                                                         <Select.ItemLabel>{_`No subregion available`}</Select.ItemLabel>
+                                                        <Select.ItemIndicator />
+                                                    </Select.Item>
+                                                )}
+                                            </Select.Popover>
+                                        </Select.Root>
+                                        {field.error && (
+                                            <div class="text-sm text-destructive">{field.error}</div>
+                                        )}
+                                    </div>
+                                );
+
+                            case CommunityType.LOCAL:
+                                return (
+                                    <div class="space-y-2">
+                                        <Select.Root {...props as any} value={defaultLocalityId?.toString()}>
+                                            <Select.Label>{_`Select a locality`}</Select.Label>
+                                            <Select.Trigger>
+                                                <Select.DisplayValue placeholder={_`Select locality...`} />
+                                            </Select.Trigger>
+                                            <Select.Popover>
+                                                {localities.length > 0 ? localities.map((locality) => (
+                                                    <Select.Item key={locality.id} value={locality.id}>
+                                                        <Select.ItemLabel>
+                                                            {locality.name}
+                                                        </Select.ItemLabel>
+                                                        <Select.ItemIndicator />
+                                                    </Select.Item>
+                                                )) : (
+                                                    <Select.Item value="placeholder">
+                                                        <Select.ItemLabel>{_`No locality available`}</Select.ItemLabel>
                                                         <Select.ItemIndicator />
                                                     </Select.Item>
                                                 )}
@@ -350,8 +404,8 @@ export default component$<FormPollProps>(({
                 <FieldArray name="options">
                     {(fieldArray) => (
                         <div class="space-y-3">
-                            {(pollForm.internal.fields.type?.value === PollType.BINARY 
-                                ? fieldArray.items.slice(0, 2) 
+                            {(pollForm.internal.fields.type?.value === PollType.BINARY
+                                ? fieldArray.items.slice(0, 2)
                                 : fieldArray.items).map((option, index) => (
                                     <div key={option} class="flex items-center gap-2">
                                         <Field name={`options.${index}`}>
@@ -370,8 +424,8 @@ export default component$<FormPollProps>(({
                                             )}
                                         </Field>
                                         {fieldArray.items.length > 2 && pollForm.internal.fields.type?.value !== PollType.BINARY && (
-                                            <button 
-                                                type="button" 
+                                            <button
+                                                type="button"
                                                 class="mt-6 p-2 text-muted-foreground hover:text-destructive transition-colors"
                                                 onClick$={() => remove(pollForm, 'options', { at: index })}
                                                 aria-label={`${_`Remove Option`} ${index + 1}`}
@@ -380,10 +434,10 @@ export default component$<FormPollProps>(({
                                             </button>
                                         )}
                                     </div>
-                            ))}
+                                ))}
                             {fieldArray.items.length < 10 && pollForm.internal.fields.type?.value !== PollType.BINARY && (
-                                <button 
-                                    type="button" 
+                                <button
+                                    type="button"
                                     class="text-primary hover:text-primary/80 transition-colors text-sm"
                                     onClick$={() => insert(pollForm, 'options', { value: '' })}
                                 >

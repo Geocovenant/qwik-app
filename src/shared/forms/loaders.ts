@@ -4,8 +4,8 @@ import type { PollForm } from "~/schemas/pollSchema";
 import type { DebateForm } from "~/schemas/debateSchema";
 import type { ProjectForm } from "~/schemas/projectSchema";
 import type { ReportForm } from "~/schemas/reportSchema";
+import type { IssueForm } from "~/schemas/issueSchema";
 import { PollType } from "~/constants/pollType";
-import { IssueForm } from "~/schemas/issueSchema";
 import { CommunityType } from "~/constants/communityType";
 
 export const useFormPollLoader = routeLoader$<InitialValues<PollForm>>(() => {

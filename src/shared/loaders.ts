@@ -89,28 +89,29 @@ export const useGetDebateBySlug = routeLoader$(async ({ cookie, params }) => {
         },
     });
     return (await response.json()) as {
-        id: number;
-        tags: Array<any>;
-        type: string;
-        title: string;
-        slug: string;
-        description: string;
-        images: string[];
-        public: boolean;
-        status: string;
-        views_count: number;
-        likes_count: number;
-        dislikes_count: number;
-        last_comment_at: string;
-        language: string;
+        communities: Array<any>;
         creator: {
             id: number;
             username: string;
             image: string;
         };
-        points_of_view: Array<any>;
         created_at: string;
+        description: string;
+        dislikes_count: number;
+        id: number;
+        images: string[];
+        language: string;
+        last_comment_at: string;
+        likes_count: number;
+        points_of_view: Array<any>;
+        public: boolean;
+        slug: string;
+        status: string;
+        tags: Array<any>;
+        title: string;
+        type: string;
         updated_at: string;
+        views_count: number;
     };
 });
 

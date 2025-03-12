@@ -47,7 +47,7 @@ export const UnstyledButton = component$((props: UnstyledButtonProps) => {
                 props.onClick$
                     ? $(async () => {
                         loading.value = true;
-                        await props.onClick$();
+                        await props.onClick$?.();
                         loading.value = false;
                     })
                     : undefined

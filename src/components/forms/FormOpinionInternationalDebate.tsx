@@ -54,7 +54,11 @@ export const FormOpinionInternationalDebate = component$<FormOpinionInternationa
                         <div class="space-y-2 max-w-xs">
                             <select {...props} class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2">
                                 {pointsOfView.map((view) => (
-                                    <option key={view.community.cca2} value={view.community.cca2} selected={field.value === view.community.cca2}>
+                                    <option 
+                                        key={view.community.cca2 || ""} 
+                                        value={view.community.cca2 || ""} 
+                                        selected={field.value === view.community.cca2}
+                                    >
                                         {`${getFlagByCca2(view.community.cca2)} ${view.community.name}`}
                                     </option>
                                 ))}

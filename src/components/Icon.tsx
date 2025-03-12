@@ -1,7 +1,8 @@
 import { component$ } from "@builder.io/qwik";
 
+export type IconName = 'poll' | 'chat' | 'sparkles' | 'exclamation-circle' | 'users';
 export interface IconProps {
-    name: string;
+    name: IconName;
     class?: string;
 }
 

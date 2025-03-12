@@ -1,6 +1,5 @@
 import { $, component$, useSignal } from "@builder.io/qwik"
 import { type DocumentHead } from "@builder.io/qwik-city"
-import { _ } from "compiled-i18n"
 import { 
     LuEye,
     LuShield,
@@ -17,16 +16,38 @@ import { Avatar, Breadcrumb } from "~/components/ui"
 import { useSession } from "~/routes/plugin@auth"
 import { timeAgo } from "~/utils/dateUtils"
 import { useGetProjectBySlug } from "~/shared/loaders"
-import { useReactProject } from "~/shared/actions"
 import CommentsList from "~/components/comments/CommentsList"
 import ProjectCommentForm from "~/components/comments/ProjectCommentForm"
 import Modal from "~/components/Modal"
 import FormReport from "~/components/forms/FormReport"
 import SocialLoginButtons from "~/components/SocialLoginButtons"
+import { _ } from "compiled-i18n"
 
 // Export necessary loaders and actions
 export { useGetProjectBySlug } from "~/shared/loaders"
 export { useReactProject } from "~/shared/actions"
+
+// Add interfaces for types
+interface Community {
+    id: string;
+    name: string;
+    cca2?: string;
+}
+
+interface Step {
+    id: string;
+    title: string;
+    description?: string;
+    status: string;
+    resources: Resource[];
+}
+
+interface Resource {
+    type: string;
+    description: string;
+    quantity?: number;
+    unit?: string;
+}
 
 export default component$(() => {
     const session = useSession()
@@ -36,8 +57,8 @@ export default component$(() => {
     const showReportModal = useSignal(false)
     const showCopiedMessage = useSignal(false)
     
-    // Action for reactions
-    const actionReact = useReactProject()
+    // Remove unused declaration or comment it
+    // const actionReact = useReactProject()
     
     const onShowLoginModal = $(() => {
         showLoginModal.value = true
@@ -173,7 +194,7 @@ export default component$(() => {
                                     {getStatusIcon(project.status)}
                                     {project.status}
                                 </span>
-                                {project.communities.map((community) => (
+                                {project.communities.map((community: Community) => (
                                     <span
                                         key={community.id}
                                         class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
@@ -288,7 +309,7 @@ export default component$(() => {
                         </h2>
 
                         <div class="space-y-6">
-                            {project.steps.map((step, index) => (
+                            {project.steps.map((step: Step, index: number) => (
                                 <div 
                                     key={step.id}
                                     class="border border-gray-200 dark:border-gray-700 rounded-lg p-4"
@@ -335,7 +356,7 @@ export default component$(() => {
                                                 {_`Resources needed`}
                                             </h4>
                                             <div class="space-y-2">
-                                                {step.resources.map((resource, resourceIndex) => (
+                                                {step.resources.map((resource: Resource, resourceIndex: number) => (
                                                     <div 
                                                         key={resourceIndex}
                                                         class="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700/50 rounded-md"
@@ -391,7 +412,6 @@ export default component$(() => {
                         <div class="mt-6">
                             <CommentsList 
                                 comments={project.comments || []}
-                                isAuthenticated={isAuthenticated}
                                 onShowLoginModal$={onShowLoginModal}
                             />
                         </div>
@@ -480,7 +500,7 @@ export default component$(() => {
                                     {_`Tags`}
                                 </h4>
                                 <div class="flex flex-wrap gap-2">
-                                    {project.tags.map((tag, index) => (
+                                    {project.tags.map((tag: string, index: number) => (
                                         <span
                                             key={index}
                                             class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300"

@@ -831,8 +831,7 @@ export const dataArray = [
         "name": "Malasia",
         "flag": "🇲🇾",
         "continent": "Asia",
-        "cca2": "MY",
-        "adminDivisionName": "Negeri",  // Estados
+        "cca2": "Negeri",  // Estados
         "path": "malasia"
     },
     {
@@ -1046,8 +1045,7 @@ export const dataArray = [
         "name": "Palestina",
         "flag": "🇵🇸",
         "continent": "Asia",
-        "cca2": "PS",
-        "adminDivisionName": "محافظات",  // Muhafazat (Gobernaciones)
+        "cca2": "محافظات",  // Muhafazat (Gobernaciones)
         "path": "palestina"
     },
     {
@@ -1086,8 +1084,7 @@ export const dataArray = [
         "name": "Filipinas",
         "flag": "🇵🇭",
         "continent": "Asia",
-        "cca2": "PH",
-        "adminDivisionName": "Mga Lalawigan",  // Provincias
+        "cca2": "Mga Lalawigan",  // Provincias
         "path": "filipinas"
     },
     {
@@ -1325,8 +1322,7 @@ export const dataArray = [
         "name": "Tayikistán",
         "flag": "🇹🇯",
         "continent": "Asia",
-        "cca2": "TJ",
-        "adminDivisionName": "Вилоятҳо",  // Viloyatho (Regiones)
+        "cca2": "Вилоятҳо",  // Viloyatho (Regiones)
         "path": "tayikistan"
     },
     {
@@ -1348,8 +1344,7 @@ export const dataArray = [
         "name": "Timor Oriental",
         "flag": "🇹🇱",
         "continent": "Asia",
-        "cca2": "TL",
-        "adminDivisionName": "Municípios",  // Municipios
+        "cca2": "Municípios",  // Municipios
         "path": "timor-oriental"
     },
     {
@@ -1379,24 +1374,21 @@ export const dataArray = [
         "name": "Túnez",
         "flag": "🇹🇳",
         "continent": "África",
-        "cca2": "TN",
-        "adminDivisionName": "ولايات",  // Wilayat (Gobernaciones)
+        "cca2": "ولايات",  // Wilayat (Gobernaciones)
         "path": "tunez"
     },
     {
         "name": "Turquía",
         "flag": "🇹🇷",
         "continent": "Asia",
-        "cca2": "TR",
-        "adminDivisionName": "İller",  // Provincias
+        "cca2": "İller",  // Provincias
         "path": "turquia"
     },
     {
         "name": "Turkmenistán",
         "flag": "🇹🇲",
         "continent": "Asia",
-        "cca2": "TM",
-        "adminDivisionName": "Welayatlar",  // Regiones
+        "cca2": "Welayatlar",  // Regiones
         "path": "turkmenistan"
     },
     {
@@ -1513,7 +1505,8 @@ const data: CountriesMap = dataArray.reduce((acc, country) => {
     return acc;
 }, {} as CountriesMap);
 
-export function getFlagByCca2(cca2: string): string {
+export function getFlagByCca2(cca2: string | null): string {
+    if (!cca2) return "🏳️";
     const country = dataArray.find(c => c.cca2 === cca2);
     return country?.flag || "🏳️";
 }

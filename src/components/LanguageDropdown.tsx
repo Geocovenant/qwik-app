@@ -1,28 +1,25 @@
 import { component$, getLocale } from "@builder.io/qwik";
 import { LuLanguages } from "@qwikest/icons/lucide";
 import { _, locales } from "compiled-i18n";
+import { Dropdown } from "~/components/ui";
 
 const LuLanguagesIcon = component$(() => <LuLanguages class="h-4 w-4 text-gray-700" />)
 
 export default component$(() => {
     const currentLocale = getLocale()
     return (
-        <Dropdown
-            label=""
-            class="z-50"
-            as={
+        <Dropdown.Root class="z-50">
+            <Dropdown.Trigger>
                 <button class="text-gray-600 hover:text-gray-800">
                     <LuLanguagesIcon />
                 </button>
-            }
-        >
-            <Dropdown.Item header>
+            </Dropdown.Trigger>
+
+            <Dropdown.Item>
                 <div class="px-4 py-2">
                     <p class="text-sm font-semibold text-gray-900">{_`Languages`}</p>
                 </div>
             </Dropdown.Item>
-
-            <Dropdown.Item divider />
 
             {locales.map((locale) => {
                 const isCurrent = locale === currentLocale
@@ -38,6 +35,6 @@ export default component$(() => {
                     </Dropdown.Item>
                 )
             })}
-        </Dropdown>
+        </Dropdown.Root>
     );
 });

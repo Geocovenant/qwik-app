@@ -1,12 +1,9 @@
 import { formAction$, valiForm$ } from '@modular-forms/qwik';
 import { routeAction$, z, zod$ } from '@builder.io/qwik-city';
-import { CommunityType } from '~/constants/communityType';
 import type { UserForm } from '~/schemas/userSchema';
 import { UserSchema } from '~/schemas/userSchema';
 import type { OpinionForm } from "~/schemas/opinionSchema";
 import { OpinionSchema } from "~/schemas/opinionSchema";
-import type { IssueForm } from '~/schemas/issueSchema';
-import { IssueSchema } from '~/schemas/issueSchema';
 import type { CommentForm } from '~/schemas/commentSchema';
 import { CommentSchema } from '~/schemas/commentSchema';
 import type { ReportForm } from "~/schemas/reportSchema";

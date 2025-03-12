@@ -25,6 +25,14 @@ import SocialLoginButtons from "~/components/SocialLoginButtons"
 export { useGetPollBySlug } from "~/shared/loaders"
 export { useVotePoll, useReactPoll } from "~/shared/actions"
 
+// Agregar interfaces para los tipos
+interface PollOption {
+    id: number;
+    text: string;
+    votes: number;
+    voted?: boolean;
+}
+
 export default component$(() => {
     const session = useSession()
     const isAuthenticated = !!session.value?.user
@@ -46,7 +54,7 @@ export default component$(() => {
     // Calculate total votes
     const totalVotes = useComputed$(() => {
         if (!pollData.value?.options) return 0
-        return pollData.value.options.reduce((sum, option) => sum + option.votes, 0)
+        return pollData.value.options.reduce((sum: number, option: PollOption) => sum + option.votes, 0)
     })
     
     const isClosed = useComputed$(() => {
@@ -79,7 +87,7 @@ export default component$(() => {
             newVotedOptions = isVoted ? [] : [optionId]
             
             // Update votes in UI
-            poll.options = poll.options.map(opt => ({
+            poll.options = poll.options.map((opt: PollOption) => ({
                 ...opt,
                 votes: opt.id === optionId 
                     ? opt.votes + (isVoted ? -1 : 1)
@@ -94,7 +102,7 @@ export default component$(() => {
                 : [...userVotedOptions.value, optionId]
                 
             // Update votes in UI
-            poll.options = poll.options.map(opt => ({
+            poll.options = poll.options.map((opt: PollOption) => ({
                 ...opt,
                 votes: opt.id === optionId ? opt.votes + (isVoted ? -1 : 1) : opt.votes,
                 voted: opt.id === optionId ? !isVoted : opt.voted
@@ -349,7 +357,7 @@ export default component$(() => {
                         </h2>
                         
                         <div class="space-y-4 mt-4">
-                            {poll.options.map(option => {
+                            {poll.options.map((option: PollOption) => {
                                 const isSelected = option.voted || userVotedOptions.value.includes(option.id)
                                 
                                 // Helper functions for classes

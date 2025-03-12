@@ -64,7 +64,7 @@ export default component$<CommentFormProps>(({ pollId, onSubmitCompleted }) => {
                         />
                         <Button
                             type="submit"
-                            disabled={isSubmitting.value || !field.value.trim()}
+                            disabled={isSubmitting.value || !field.value?.trim()}
                             class="absolute right-2 bottom-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-full p-2 px-12 disabled:opacity-50 disabled:cursor-not-allowed"
                             aria-label={_`Send comment`}
                         >

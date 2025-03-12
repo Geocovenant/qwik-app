@@ -1,4 +1,4 @@
-import { $, component$, useSignal } from "@builder.io/qwik";
+import { type QRL, $, component$, useSignal } from "@builder.io/qwik";
 import { _ } from "compiled-i18n";
 import { LuReply } from "@qwikest/icons/lucide";
 import { timeAgo } from "~/utils/dateUtils";
@@ -18,6 +18,8 @@ interface Comment {
 
 interface CommentsListProps {
   comments: Comment[];
+  isAuthenticated?: boolean;
+  onShowLoginModal$?: QRL<() => void>;
 }
 
 export default component$<CommentsListProps>(({ comments }) => {

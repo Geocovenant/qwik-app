@@ -1,4 +1,4 @@
-import { component$, PropsOf, Slot } from "@builder.io/qwik";
+import { type PropsOf, component$, Slot } from "@builder.io/qwik";
 import { Dropdown as HDropdown } from "@qwik-ui/headless";
 
 type RootProps = PropsOf<typeof HDropdown.Root>;

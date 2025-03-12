@@ -20,7 +20,7 @@ export const ActionButton = component$(
                     : 'bg-white border border-gray-300 text-gray-600 hover:border-gray-400 hover:text-gray-800 hover:scale-105 transition-all duration-200',
                 className
             )}
-            aria-label={props['aria-label'] || label}
+            aria-label={label}
         >
             {label}
         </UnstyledButton>

@@ -24,8 +24,10 @@ export interface FormProjectProps {
     defaultCountry?: string;
     defaultRegionId?: number;
     defaultSubregionId?: number;
+    defaultLocalityId?: number;
     regions?: any[];
     subregions?: any[];
+    localities?: any[];
     tags?: { id: string, name: string }[];
 }
 
@@ -35,9 +37,11 @@ export default component$<FormProjectProps>(({
     defaultCountry = null,
     defaultRegionId = null,
     defaultSubregionId = null,
+    defaultLocalityId = null,
     tags = [],
     regions = [],
     subregions = [],
+    localities = [],
 }) => {
     const [projectForm, { Form, Field, FieldArray }] = useForm<ProjectForm, ProjectResponseData>({
         loader: useFormProjectLoader(),
@@ -69,10 +73,14 @@ export default component$<FormProjectProps>(({
         if (defaultScope === CommunityType.SUBREGIONAL && defaultSubregionId) {
             setValue(projectForm, 'community_ids', [defaultSubregionId.toString()]);
         }
+
+        if (defaultScope === CommunityType.LOCAL && defaultLocalityId) {
+            setValue(projectForm, 'community_ids', [defaultLocalityId.toString()]);
+        }
     });
 
     const isAnonymous = useSignal(false);
-    
+
     // Update is_anonymous when toggle changes
     useTask$(({ track }) => {
         const anonymousValue = track(() => isAnonymous.value);
@@ -94,8 +102,10 @@ export default component$<FormProjectProps>(({
 
     // Función para añadir un step
     const addStep = $(() => {
-        const stepsLength = (projectForm.internal.fields['steps']?.value as any[])?.length || 0;
-        
+        // Usamos una variable temporal que ya tiene el tipo correcto
+        const fields = projectForm.internal.fields as any;
+        const stepsLength = fields['steps']?.value?.length || 0;
+
         insert(projectForm, 'steps', {
             value: {
                 title: '',
@@ -118,7 +128,10 @@ export default component$<FormProjectProps>(({
             }
         });
     });
-
+    const handleChangeSelectNational = $((value: string | string[]) => {
+        const valueArray = typeof value === 'string' ? [value] : value;
+        setValue(projectForm, 'community_ids', valueArray);
+    });
     return (
         <Form onSubmit$={handleSubmit} class="space-y-6">
             {/* Project type indicator */}
@@ -162,6 +175,16 @@ export default component$<FormProjectProps>(({
                     </span>
                 </div>
             )}
+            {defaultScope === CommunityType.LOCAL && (
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="inline-flex items-center rounded-full bg-cyan-100 px-2.5 py-1 text-xs font-medium text-cyan-800">
+                        {_`Local project`}
+                    </div>
+                    <span class="text-sm text-muted-foreground">
+                        {_`This project will be visible to users from selected locality`}
+                    </span>
+                </div>
+            )}
 
             {/* Hidden field for scope */}
             <Field name="scope">
@@ -197,71 +220,119 @@ export default component$<FormProjectProps>(({
                         case CommunityType.NATIONAL:
                             return (
                                 <div class="space-y-2">
-                                    <label class="text-sm font-medium">{_`Select a country`}</label>
-                                    <select
-                                        {...props}
-                                        class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                                    <Select.Root
+                                        {...props as any}
+                                        onChange$={handleChangeSelectNational}
                                         value={defaultCountry || (Array.isArray(field.value) ? field.value[0] : field.value)}
                                     >
-                                        {countries.map((country) => (
-                                            <option key={country.cca2} value={country.cca2}>
-                                                {`${country.flag} ${country.name}`}
-                                            </option>
-                                        ))}
-                                    </select>
+                                        <Select.Label>{_`Select a country`}</Select.Label>
+                                        <Select.Trigger>
+                                            <Select.DisplayValue placeholder={_`Search country...`} />
+                                        </Select.Trigger>
+                                        <Select.Popover>
+                                            {countries.map((country) => (
+                                                <Select.Item key={country.cca2} value={country.cca2}>
+                                                    <Select.ItemLabel>
+                                                        {`${country.flag} ${country.name}`}
+                                                    </Select.ItemLabel>
+                                                    <Select.ItemIndicator />
+                                                </Select.Item>
+                                            ))}
+                                        </Select.Popover>
+                                    </Select.Root>
                                     {field.error && (
                                         <div class="text-sm text-destructive">{field.error}</div>
                                     )}
                                 </div>
                             );
 
-                            case CommunityType.REGIONAL:
-                                return (
-                                    <div class="space-y-2">
-                                        <Select.Root {...props} value={defaultRegionId?.toString()}>
-                                            <Select.Label>{_`Select a region`}</Select.Label>
-                                            <Select.Trigger>
-                                                <Select.DisplayValue placeholder={_`Select region...`} />
-                                            </Select.Trigger>
-                                            <Select.Popover>
-                                                {regions.length > 0 ? regions.map((region) => (
-                                                    <Select.Item key={region.id} value={region.community_id.toString()}>
-                                                        <Select.ItemLabel>
-                                                            {region.name}
-                                                        </Select.ItemLabel>
-                                                        <Select.ItemIndicator />
-                                                    </Select.Item>
-                                                )) : (
-                                                    <Select.Item value="placeholder">
-                                                        <Select.ItemLabel>{_`No region available`}</Select.ItemLabel>
-                                                        <Select.ItemIndicator />
-                                                    </Select.Item>
-                                                )}
-                                            </Select.Popover>
-                                        </Select.Root>
-                                        {field.error && (
-                                            <div class="text-sm text-destructive">{field.error}</div>
-                                        )}
-                                    </div>
-                                );
+                        case CommunityType.REGIONAL:
+                            return (
+                                <div class="space-y-2">
+                                    <Select.Root {...props as any} value={defaultRegionId?.toString()}>
+                                        <Select.Label>{_`Select a region`}</Select.Label>
+                                        <Select.Trigger>
+                                            <Select.DisplayValue placeholder={_`Select region...`} />
+                                        </Select.Trigger>
+                                        <Select.Popover>
+                                            {regions.length > 0 ? regions.map((region) => (
+                                                <Select.Item key={region.id} value={region.community_id.toString()}>
+                                                    <Select.ItemLabel>
+                                                        {region.name}
+                                                    </Select.ItemLabel>
+                                                    <Select.ItemIndicator />
+                                                </Select.Item>
+                                            )) : (
+                                                <Select.Item value="placeholder">
+                                                    <Select.ItemLabel>{_`No region available`}</Select.ItemLabel>
+                                                    <Select.ItemIndicator />
+                                                </Select.Item>
+                                            )}
+                                        </Select.Popover>
+                                    </Select.Root>
+                                    {field.error && (
+                                        <div class="text-sm text-destructive">{field.error}</div>
+                                    )}
+                                </div>
+                            );
 
                         case CommunityType.SUBREGIONAL:
                             return (
                                 <div class="space-y-2">
-                                    <label class="text-sm font-medium">{_`Select a subregion`}</label>
-                                    <select
-                                        {...props}
-                                        class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                                    <Select.Root
+                                        {...props as any}
                                         value={defaultSubregionId ? defaultSubregionId.toString() : undefined}
                                     >
-                                        {subregions.length > 0 ? subregions.map((subregion) => (
-                                            <option key={subregion.id} value={subregion.id}>
-                                                {subregion.name}
-                                            </option>
-                                        )) : (
-                                            <option value="">{_`No subregion available`}</option>
-                                        )}
-                                    </select>
+                                        <Select.Label>{_`Select a region`}</Select.Label>
+                                        <Select.Trigger>
+                                            <Select.DisplayValue placeholder={_`Select subregion...`} />
+                                        </Select.Trigger>
+                                        <Select.Popover>
+                                            {subregions.length > 0 ? subregions.map((subregion) => (
+                                                <Select.Item key={subregion.id} value={subregion.id}>
+                                                    <Select.ItemLabel>
+                                                        {subregion.name}
+                                                    </Select.ItemLabel>
+                                                    <Select.ItemIndicator />
+                                                </Select.Item>
+                                            )) : (
+                                                <Select.Item value="placeholder">
+                                                    <Select.ItemLabel>{_`No subregion available`}</Select.ItemLabel>
+                                                    <Select.ItemIndicator />
+                                                </Select.Item>
+                                            )}
+                                        </Select.Popover>
+                                    </Select.Root>
+                                    {field.error && (
+                                        <div class="text-sm text-destructive">{field.error}</div>
+                                    )}
+                                </div>
+                            );
+
+                        case CommunityType.LOCAL:
+                            return (
+                                <div class="space-y-2">
+                                    <Select.Root {...props as any} value={defaultLocalityId?.toString()}>
+                                        <Select.Label>{_`Select a locality`}</Select.Label>
+                                        <Select.Trigger>
+                                            <Select.DisplayValue placeholder={_`Select locality...`} />
+                                        </Select.Trigger>
+                                        <Select.Popover>
+                                            {localities.length > 0 ? localities.map((locality) => (
+                                                <Select.Item key={locality.id} value={locality.id}>
+                                                    <Select.ItemLabel>
+                                                        {locality.name}
+                                                    </Select.ItemLabel>
+                                                    <Select.ItemIndicator />
+                                                </Select.Item>
+                                            )) : (
+                                                <Select.Item value="placeholder">
+                                                    <Select.ItemLabel>{_`No locality available`}</Select.ItemLabel>
+                                                    <Select.ItemIndicator />
+                                                </Select.Item>
+                                            )}
+                                        </Select.Popover>
+                                    </Select.Root>
                                     {field.error && (
                                         <div class="text-sm text-destructive">{field.error}</div>
                                     )}

@@ -1,4 +1,4 @@
-import { component$, $, useComputed$, type QRL } from "@builder.io/qwik"
+import { component$, useComputed$, type QRL } from "@builder.io/qwik"
 import { _ } from "compiled-i18n"
 import { Badge, Button } from "~/components/ui"
 import { LuPlus } from "@qwikest/icons/lucide"
@@ -26,17 +26,13 @@ export interface IssueListProps {
 }
 
 export const IssueList = component$<IssueListProps>(
-    ({ issues, communityName, onCreateIssue, onPageChange$, isAuthenticated, currentUsername, onShowLoginModal$ }) => {
+    ({ issues, communityName, onCreateIssue, onPageChange$, isAuthenticated }) => {
         const statusColors = useComputed$(() => ({
             OPEN: "bg-green-100 text-green-800",
             IN_PROGRESS: "bg-blue-100 text-blue-800",
             RESOLVED: "bg-purple-100 text-purple-800",
             CLOSED: "bg-gray-100 text-gray-800",
         }))
-
-        const handlePageChange = $((page: number) => {
-            onPageChange$(page)
-        })
 
         if (issues.items.length === 0) {
             return (
@@ -59,7 +55,7 @@ export const IssueList = component$<IssueListProps>(
 
                 <div class="space-y-4">
                     {issues.items.map((issue) => (
-                        <Card key={issue.id} class="hover:shadow-md transition-shadow">
+                        <Card.Root key={issue.id} class="hover:shadow-md transition-shadow">
                             <div class="p-4">
                                 <div class="flex justify-between items-start">
                                     <div class="flex items-center gap-2">
@@ -88,11 +84,11 @@ export const IssueList = component$<IssueListProps>(
                                 <div class="flex items-center mt-4 gap-2">
                                     <div class="flex items-center">
                                         <Image
-                                            src={issue.creator.image || "/placeholder.svg?height=24&width=24"}
-                                            alt={issue.creator.username}
+                                            src={issue.creator?.image || "/placeholder.svg?height=24&width=24"}
+                                            alt={issue.creator?.username || ""}
                                             class="w-6 h-6 rounded-full mr-2"
                                         />
-                                        <span class="text-sm">{issue.creator.username}</span>
+                                        <span class="text-sm">{issue.creator?.username || ""}</span>
                                     </div>
 
                                     {issue.communities.length > 0 && (
@@ -106,7 +102,7 @@ export const IssueList = component$<IssueListProps>(
                                     )}
                                 </div>
                             </div>
-                        </Card>
+                        </Card.Root>
                     ))}
 
                     {issues.pages > 1 && (

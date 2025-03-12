@@ -8,6 +8,11 @@ import { OpinionSchema } from "~/schemas/opinionSchema";
 import { useFormOpinionLoader, useGetCountryDivisions } from "~/shared/loaders";
 import { useFormOpinionAction, type OpinionResponseData } from "~/shared/actions";
 
+interface Division {
+    id: string | number;
+    name: string;
+}
+
 interface FormOpinionNationalDebateProps {
     onSubmitCompleted$: QRL<() => void>;
     defaultDivisionId?: string;
@@ -51,7 +56,7 @@ export const FormOpinionNationalDebate = component$<FormOpinionNationalDebatePro
                     return (
                         <div class="space-y-2 max-w-xs">
                             <select {...props} class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2">
-                                {divisions.value.map((division) => (
+                                {divisions.value.map((division: Division) => (
                                     <option 
                                         key={division.id} 
                                         value={division.id} 

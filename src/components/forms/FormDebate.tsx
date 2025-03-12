@@ -4,7 +4,6 @@ import { TextInput } from '~/components/input/TextInput';
 import { TextArea } from '~/components/input/TextArea';
 import { FormFooter } from '~/components/forms/FormFooter';
 import { CustomToggle } from '~/components/input/CustomToggle';
-import { _ } from 'compiled-i18n';
 import { CommunityType } from '~/constants/communityType';
 import type { DebateForm, DebateResponseData } from '~/schemas/debateSchema';
 import { DebateSchema } from '~/schemas/debateSchema';
@@ -12,6 +11,7 @@ import { TagInput } from '~/components/input/TagInput';
 import { dataArray as countries } from "~/data/countries";
 import { Select } from '~/components/ui';
 import { MultiCountryCombobox } from '~/components/input/MultiCountryCombobox';
+import { _ } from 'compiled-i18n';
 
 import { useFormDebateLoader } from '~/shared/forms/loaders';
 import { useFormDebateAction } from '~/shared/forms/actions';
@@ -22,8 +22,10 @@ export interface FormDebateProps {
   defaultCountry?: string;
   defaultRegionId?: number;
   defaultSubregionId?: number;
+  defaultLocalityId?: number;
   regions?: any[];
   subregions?: any[];
+  localities?: any[];
   tags: { id: string, name: string }[];
 }
 
@@ -33,9 +35,11 @@ export default component$<FormDebateProps>(({
   defaultCountry = null,
   defaultRegionId = null,
   defaultSubregionId = null,
+  defaultLocalityId = null,
   tags = [],
   regions = [],
   subregions = [],
+  localities = [],
 }) => {
   const [debateForm, { Form, Field }] = useForm<DebateForm, DebateResponseData>({
     loader: useFormDebateLoader(),
@@ -66,6 +70,10 @@ export default component$<FormDebateProps>(({
     if (defaultScope === CommunityType.SUBREGIONAL && defaultSubregionId) {
       setValue(debateForm, 'community_ids', [defaultSubregionId.toString()]);
     }
+
+    if (defaultScope === CommunityType.LOCAL && defaultLocalityId) {
+      setValue(debateForm, 'community_ids', [defaultLocalityId.toString()]);
+    }
   });
 
   const isAnonymous = useSignal<boolean>(false);
@@ -73,6 +81,11 @@ export default component$<FormDebateProps>(({
   const handleSubmit = $(() => {
     // eslint-disable-next-line qwik/valid-lexical-scope
     onSubmitCompleted()
+  });
+
+  const handleChangeSelectNational = $((value: string | string[]) => {
+    const valueArray = typeof value === 'string' ? [value] : value;
+    setValue(debateForm, 'community_ids', valueArray);
   });
 
   return (
@@ -118,6 +131,16 @@ export default component$<FormDebateProps>(({
           </span>
         </div>
       )}
+      {defaultScope === CommunityType.LOCAL && (
+        <div class="flex items-center gap-2 mb-4">
+          <div class="inline-flex items-center rounded-full bg-cyan-100 px-2.5 py-1 text-xs font-medium text-cyan-800">
+            {_`Local debate`}
+          </div>
+          <span class="text-sm text-muted-foreground">
+            {_`This debate will be visible to users from selected locality`}
+          </span>
+        </div>
+      )}
 
       {/* Hidden field for scope */}
       <Field name="scope">
@@ -156,9 +179,8 @@ export default component$<FormDebateProps>(({
               return (
                 <div class="space-y-2">
                   <Select.Root
-                    onChange$={$((value: string) => {
-                      setValue(debateForm, 'community_ids', [value]);
-                    })}
+                    {...props as any}
+                    onChange$={handleChangeSelectNational}
                     value={defaultCountry || (Array.isArray(field.value) ? field.value[0] : field.value)}
                   >
                     <Select.Label>{_`Select a country`}</Select.Label>
@@ -185,7 +207,7 @@ export default component$<FormDebateProps>(({
             case CommunityType.REGIONAL:
               return (
                 <div class="space-y-2">
-                  <Select.Root {...props} value={defaultRegionId?.toString()}>
+                  <Select.Root {...props as any} value={defaultRegionId?.toString()}>
                     <Select.Label>{_`Select a region`}</Select.Label>
                     <Select.Trigger>
                       <Select.DisplayValue placeholder={_`Select region...`} />
@@ -216,9 +238,7 @@ export default component$<FormDebateProps>(({
               return (
                 <div class="space-y-2">
                   <Select.Root
-                    onChange$={$((value: string) => {
-                      setValue(debateForm, 'community_ids', [value]);
-                    })}
+                    {...props as any}
                     value={defaultSubregionId ? defaultSubregionId.toString() : undefined}
                   >
                     <Select.Label>{_`Select a region`}</Select.Label>
@@ -236,6 +256,36 @@ export default component$<FormDebateProps>(({
                       )) : (
                         <Select.Item value="placeholder">
                           <Select.ItemLabel>{_`No subregion available`}</Select.ItemLabel>
+                          <Select.ItemIndicator />
+                        </Select.Item>
+                      )}
+                    </Select.Popover>
+                  </Select.Root>
+                  {field.error && (
+                    <div class="text-sm text-destructive">{field.error}</div>
+                  )}
+                </div>
+              );
+
+            case CommunityType.LOCAL:
+              return (
+                <div class="space-y-2">
+                  <Select.Root {...props as any} value={defaultLocalityId?.toString()}>
+                    <Select.Label>{_`Select a locality`}</Select.Label>
+                    <Select.Trigger>
+                      <Select.DisplayValue placeholder={_`Select locality...`} />
+                    </Select.Trigger>
+                    <Select.Popover>
+                      {localities.length > 0 ? localities.map((locality) => (
+                        <Select.Item key={locality.id} value={locality.id}>
+                          <Select.ItemLabel>
+                            {locality.name}
+                          </Select.ItemLabel>
+                          <Select.ItemIndicator />
+                        </Select.Item>
+                      )) : (
+                        <Select.Item value="placeholder">
+                          <Select.ItemLabel>{_`No locality available`}</Select.ItemLabel>
                           <Select.ItemIndicator />
                         </Select.Item>
                       )}
