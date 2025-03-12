@@ -25,9 +25,7 @@ export const NavLink = component$(
     // Handle nested routes by constructing the correct path based on the URL structure
     let finalHref = toPathname;
     
-    // Check if href is a simple section like 'polls', 'debates', etc.
-    // and not already a full path like '/argentina/polls'
-    if (!toPathname.includes('/') && location.params) {
+    if (!toPathname.includes('/')) {
       const { nation, region, subregion, locality } = location.params;
       
       // Build path based on available route parameters

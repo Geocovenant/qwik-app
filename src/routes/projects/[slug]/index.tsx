@@ -78,7 +78,7 @@ export default component$(() => {
 
     const copyProjectLink = $(() => {
         try {
-            const projectUrl = `${window.location.origin}/projects/${projectData.value?.slug}`
+            const projectUrl = `${window.location.origin}/projects/${projectData.value.slug}`
             navigator.clipboard.writeText(projectUrl)
             showCopiedMessage.value = true
             setTimeout(() => {
@@ -88,14 +88,6 @@ export default component$(() => {
             console.error("Error copying link:", error)
         }
     })
-
-    if (!projectData.value) {
-        return (
-            <div class="flex items-center justify-center h-screen">
-                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-600"></div>
-            </div>
-        )
-    }
 
     const project = projectData.value
     const commentsCount = project.comments_count || project.comments?.length || 0
@@ -350,7 +342,7 @@ export default component$(() => {
                                         </p>
                                     )}
 
-                                    {step.resources && step.resources.length > 0 && (
+                                    {step.resources.length > 0 && (
                                         <div class="mt-4">
                                             <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 {_`Resources needed`}
@@ -521,11 +513,11 @@ export default component$(() => {
 export const head: DocumentHead = ({ resolveValue }) => {
     const project = resolveValue(useGetProjectBySlug)
     return {
-        title: project?.title || _`Project Details`,
+        title: project.title || _`Project Details`,
         meta: [
             {
                 name: "description",
-                content: project?.description || _`View project details and join the collaboration`,
+                content: project.description || _`View project details and join the collaboration`,
             },
         ],
     }

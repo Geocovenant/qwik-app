@@ -51,7 +51,7 @@ export default component$(() => {
             <div class="mb-6">
                 <div class="flex items-center gap-3 mb-2">
                     {nation.value?.cca2
-                        ? <span class="text-2xl">{getFlagByCca2(nation.value?.cca2)}</span>
+                        ? <span class="text-2xl">{getFlagByCca2(nation.value.cca2)}</span>
                         : <LuFlag class="w-8 h-8 text-blue-600 dark:text-blue-400" />
                     }
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{nation.value?.name || capitalizeFirst(nationName)}</h1>
@@ -103,7 +103,7 @@ export default component$(() => {
                     
                     <div class="flex flex-col sm:flex-row gap-6">
                         {/* Coat of Arms */}
-                        {country.value?.coat_of_arms_svg && (
+                        {country.value.coat_of_arms_svg && (
                             <div class="flex justify-center">
                                 <Image 
                                     src={country.value.coat_of_arms_svg} 
@@ -268,7 +268,7 @@ export default component$(() => {
                             <div key={debate.id || index} class="border-b border-gray-200 dark:border-gray-700 pb-3">
                                 <h3 class="font-medium text-gray-900 dark:text-white">{debate.title}</h3>
                                 <p class="text-sm text-gray-600 dark:text-gray-300">
-                                    {debate.description?.substring(0, 100)}...
+                                    {debate.description.substring(0, 100)}...
                                 </p>
                                 <div class="flex gap-2 mt-2">
                                     <span class="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
@@ -326,7 +326,7 @@ export default component$(() => {
                         {_`Reported Issues`}
                     </h2>
                     <div class="space-y-3">
-                        {issues.value?.items?.slice(0, 5).map((issue: Issue, index: number) => (
+                        {issues.value.items.slice(0, 5).map((issue: Issue, index: number) => (
                             <div key={issue.id || index} class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
                                 <div>
                                     <h3 class="font-medium text-gray-900 dark:text-white">{issue.title}</h3>
@@ -357,7 +357,7 @@ export default component$(() => {
                         {_`Active Polls`}
                     </h2>
                     <div class="space-y-3">
-                        {polls.value?.items?.slice(0, 5).map((poll: Poll, index: number) => (
+                        {polls.value.items.slice(0, 5).map((poll: Poll, index: number) => (
                             <div key={poll.id || index} class="border-b border-gray-200 dark:border-gray-700 pb-2">
                                 <h3 class="font-medium text-gray-900 dark:text-white">{poll.title}</h3>
                                 <div class="flex justify-between items-center mt-1">

@@ -60,7 +60,7 @@ export default component$(() => {
                             ? <FormIssue
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.LOCAL}
-                                defaultLocalityId={locality.value?.id}
+                                defaultLocalityId={locality.value.id}
                                 tags={tags.value}
                             />
                             : <SocialLoginButtons />
@@ -71,11 +71,11 @@ export default component$(() => {
                         currentUsername={currentUsername.value}
                         isAuthenticated={isAuthenticated.value}
                         issues={{
-                            items: Array.isArray(issues.value?.items) ? issues.value.items : [],
-                            total: issues.value?.total || 0,
-                            page: issues.value?.page || 1,
-                            size: issues.value?.size || 10,
-                            pages: issues.value?.pages || 1
+                            items: issues.value.items,
+                            total: issues.value.total || 0,
+                            page: issues.value.page || 1,
+                            size: issues.value.size || 10,
+                            pages: issues.value.pages || 1
                         }}
                         onCreateIssue={onCreateIssue}
                         onPageChange$={async (page: number) => {

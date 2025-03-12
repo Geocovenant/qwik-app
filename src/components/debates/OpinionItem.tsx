@@ -98,7 +98,7 @@ export default component$<OpinionProps>(({
     });
     
     // If there is an error, revert the changes
-    if (!result.value?.success) {
+    if (!result.value.success) {
       reactionState.userReaction = previousReaction;
       
       // Restore original counters
@@ -120,7 +120,7 @@ export default component$<OpinionProps>(({
       opinionId: opinion.id
     });
     
-    if (result.value?.success) {
+    if (result.value.success) {
       // The deletion will be handled in the parent component
       showConfirmDeleteModal.value = false;
     }

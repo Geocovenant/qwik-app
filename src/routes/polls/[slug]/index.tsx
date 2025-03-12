@@ -44,21 +44,21 @@ export default component$(() => {
     const actionReact = useReactPoll()
     
     // States for handling votes and reactions
-    const userVotedOptions = useSignal<number[]>(pollData.value?.user_voted_options || [])
+    const userVotedOptions = useSignal<number[]>(pollData.value.user_voted_options || [])
     const reactionState = useSignal({
-        userReaction: pollData.value?.user_reaction,
-        likesCount: pollData.value?.reactions.LIKE || 0,
-        dislikesCount: pollData.value?.reactions.DISLIKE || 0
+        userReaction: pollData.value.user_reaction,
+        likesCount: pollData.value.reactions.LIKE || 0,
+        dislikesCount: pollData.value.reactions.DISLIKE || 0
     })
     
     // Calculate total votes
     const totalVotes = useComputed$(() => {
-        if (!pollData.value?.options) return 0
+        if (!pollData.value.options) return 0
         return pollData.value.options.reduce((sum: number, option: PollOption) => sum + option.votes, 0)
     })
     
     const isClosed = useComputed$(() => {
-        if (!pollData.value?.ends_at) return false
+        if (!pollData.value.ends_at) return false
         return new Date(pollData.value.ends_at) < new Date()
     })
     
@@ -76,7 +76,6 @@ export default component$(() => {
             onShowLoginModal()
             return
         }
-        if (!pollData.value) return
         
         const poll = pollData.value
         const isVoted = userVotedOptions.value.includes(optionId)
@@ -131,7 +130,6 @@ export default component$(() => {
             onShowLoginModal()
             return
         }
-        if (!pollData.value) return
         
         const previousReaction = reactionState.value.userReaction
         
@@ -180,14 +178,6 @@ export default component$(() => {
             }
         }
     })
-
-    if (!pollData.value) {
-        return (
-            <div class="flex items-center justify-center h-screen">
-                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-600"></div>
-            </div>
-        )
-    }
 
     const poll = pollData.value
     const commentsCount = poll.comments_count || poll.comments?.length || 0
@@ -672,11 +662,11 @@ function getTypeLabel(type: string) {
 export const head: DocumentHead = ({ resolveValue }) => {
     const poll = resolveValue(useGetPollBySlug)
     return {
-        title: poll?.title || _`Poll Details`,
+        title: poll.title || _`Poll Details`,
         meta: [
             {
                 name: "description",
-                content: poll?.description || _`View poll details and join the conversation`,
+                content: poll.description || _`View poll details and join the conversation`,
             },
         ],
     }

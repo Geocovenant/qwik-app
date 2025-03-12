@@ -49,7 +49,7 @@ export default component$(() => {
                             <LuUsers class="w-8 h-8 text-blue-600 dark:text-blue-400 mr-3" />
                             <div>
                                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                                    {_`Members of ${region.value?.name || capitalizeFirst(regionName)} Region`}
+                                    {_`Members of ${region.value.name || capitalizeFirst(regionName)} Region`}
                                 </h1>
                                 <p class="text-gray-600 dark:text-gray-400">
                                     {_`Connect with citizens in ${capitalizeFirst(nationName)}'s ${capitalizeFirst(regionName)} region.`}

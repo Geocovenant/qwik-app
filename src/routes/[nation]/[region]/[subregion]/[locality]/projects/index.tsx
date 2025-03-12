@@ -60,7 +60,7 @@ export default component$(() => {
                             ? <FormProject
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.LOCAL}
-                                defaultLocalityId={locality.value?.id}
+                                defaultLocalityId={locality.value.id}
                                 tags={tags.value}
                             />
                             : <SocialLoginButtons />
@@ -77,11 +77,11 @@ export default component$(() => {
                         }}
                         onShowLoginModal$={onShowLoginModal}
                         projects={{
-                            items: Array.isArray(projects.value?.items) ? projects.value.items : [],
-                            total: projects.value?.total || 0,
-                            page: projects.value?.page || 1,
-                            size: projects.value?.size || 10,
-                            pages: projects.value?.pages || 1
+                            items: projects.value.items,
+                            total: projects.value.total,
+                            page: projects.value.page,
+                            size: projects.value.size,
+                            pages: projects.value.pages
                         }}
                     />
                 </div>

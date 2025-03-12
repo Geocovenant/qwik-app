@@ -29,6 +29,8 @@ export default component$(() => {
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
+    // @ts-ignore
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
     const isAuthenticated = useComputed$(() => !!session.value?.user);
     const localityDisplayName = capitalizeFirst(localityName.replace(/-/g, ' '));
 
@@ -56,7 +58,7 @@ export default component$(() => {
                             <FormPoll
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.LOCAL}
-                                defaultLocalityId={locality.value?.id}
+                                defaultLocalityId={locality.value.id}
                             />
                         </Modal>
                         : <Modal
@@ -67,21 +69,22 @@ export default component$(() => {
                         </Modal>
                     }
                     <PollList
-                        onCreatePoll={onCreatePoll}
-                        polls={{
-                            items: Array.isArray(polls.value?.items) ? polls.value.items : [],
-                            total: polls.value?.total || 0,
-                            page: polls.value?.page || 1,
-                            size: polls.value?.size || 10,
-                            pages: polls.value?.pages || 1
-                        }}
                         communityName={localityDisplayName}
+                        currentUsername={currentUsername.value}
+                        isAuthenticated={isAuthenticated.value}
+                        onCreatePoll={onCreatePoll}
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
                             await nav(`/${nationName}/${regionName}/${subregionName}/${localityName}/polls?page=${page}`);
                         }}
-                        isAuthenticated={isAuthenticated.value}
                         onShowLoginModal$={onShowLoginModal}
+                        polls={{
+                            items: polls.value.items,
+                            total: polls.value.total || 0,
+                            page: polls.value.page || 1,
+                            size: polls.value.size || 10,
+                            pages: polls.value.pages || 1
+                        }}
                     />
                 </div>
             </div>

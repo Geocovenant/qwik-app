@@ -80,7 +80,7 @@ export default component$(() => {
 
     const hasCommented = useComputed$(() => {
         if (!session.value?.user) return false
-        return debate.value?.points_of_view?.some((view) =>
+        return debate.value?.points_of_view.some((view) =>
             // @ts-ignore
             view.opinions.some((opinion: any) => opinion.user.username === session.value.user?.username),
         )
@@ -88,7 +88,7 @@ export default component$(() => {
 
     const defaultCountryCca2 = useComputed$(() => {
         if (!session.value?.user) return null
-        const countryName = session.value?.user?.name
+        const countryName = session.value.user.name
         if (!countryName) return null
         
         const foundCountry = countriesList.find(
@@ -126,8 +126,6 @@ export default component$(() => {
     })
 
     const updateArrows = $((container: Element) => {
-        if (!container) return
-
         // Show left arrow if not at the beginning
         showLeftArrow.value = container.scrollLeft > 0
 
@@ -195,13 +193,13 @@ export default component$(() => {
     const getNoResultsText = () => {
         switch(debate.value?.type) {
             case "NATIONAL":
-                return _`No regions found matching "${searchTerm.value}"`
+                return _`No regions found matching ${searchTerm.value}`
             case "REGIONAL":
-                return _`No subregions found matching "${searchTerm.value}"`
+                return _`No subregions found matching ${searchTerm.value}`
             case "SUBREGIONAL":
-                return _`No localities found matching "${searchTerm.value}"`
+                return _`No localities found matching ${searchTerm.value}`
             default:
-                return _`No countries found matching "${searchTerm.value}"`
+                return _`No countries found matching ${searchTerm.value}`
         }
     }
     
@@ -292,15 +290,15 @@ export default component$(() => {
                                 </Badge>
                                 
                                 {/* Badge for national debates */}
-                                {debate.value?.type === "NATIONAL" && debate.value.communities && debate.value.communities.length > 0 && (
+                                {debate.value?.type === "NATIONAL"&& debate.value.communities.length > 0 && (
                                     <Badge
                                         look="secondary"
                                         class="bg-purple-600/90 backdrop-blur-sm text-white border border-purple-500/30 px-3 py-1.5 rounded-full shadow-md"
                                     >
                                         {countriesList.find(
-                                            country => country.cca2 === debate.value?.communities?.[0].cca2
+                                            country => country.cca2 === debate.value?.communities[0].cca2
                                         )?.flag || "🏳️"}{" "}
-                                        {debate.value?.communities?.[0].name}
+                                        {debate.value.communities[0].name}
                                     </Badge>
                                 )}
 
@@ -347,20 +345,20 @@ export default component$(() => {
                     <div class="p-8">
                         <div class="flex items-center gap-5 mb-6">
                             <Avatar.Root class="h-14 w-14 ring-4 ring-blue-100 dark:ring-blue-900/30 shadow-md">
-                                {debate.value?.creator?.image && (
+                                {debate.value?.creator.image && (
                                     <Avatar.Image src={debate.value.creator.image} alt={`@${debate.value.creator.username || ""}`} />
                                 )}
                                 <Avatar.Fallback class="bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-lg">
-                                    {debate.value?.creator?.username?.charAt(0).toUpperCase() || "?"}
+                                    {debate.value?.creator.username.charAt(0).toUpperCase() || "?"}
                                 </Avatar.Fallback>
                             </Avatar.Root>
                             <div>
                                 <p class="text-sm text-gray-600 dark:text-gray-400">{_`Created by`}</p>
                                 <Link
-                                    href={`/user/${debate.value?.creator?.username || ""}`}
+                                    href={`/user/${debate.value?.creator.username || ""}`}
                                     class="text-lg font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                                 >
-                                    @{debate.value?.creator?.username || ""}
+                                    @{debate.value?.creator.username || ""}
                                 </Link>
                                 <p class="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1.5 mt-0.5">
                                     <LuCalendar class="w-4 h-4" />
@@ -410,8 +408,8 @@ export default component$(() => {
                         >
                             <LuUsers class="w-4 h-4 mr-1.5" />
                             {debate.value?.type === "NATIONAL" 
-                                ? _`${debate.value?.points_of_view?.length || 0} regions participating`
-                                : _`${debate.value?.points_of_view?.length || 0} countries participating`
+                                ? _`${debate.value.points_of_view.length || 0} regions participating`
+                                : _`${debate.value?.points_of_view.length || 0} countries participating`
                             }
                         </Badge>
                     </div>
@@ -443,7 +441,7 @@ export default component$(() => {
                                     <FormOpinionInternationalDebate
                                         onSubmitCompleted$={onSubmitCompleted$}
                                         defaultCountryCca2={defaultCountryCca2.value || ""}
-                                        pointsOfView={debate.value?.points_of_view || []}
+                                        pointsOfView={debate.value.points_of_view}
                                     />
                                 ) : (
                                     <FormOpinionNationalDebate

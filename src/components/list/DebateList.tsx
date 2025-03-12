@@ -108,7 +108,7 @@ export default component$<DebateListProps>(({
     );
 
     // Show empty state if no debates match the filters
-    if (!filteredDebates.value?.length) {
+    if (!filteredDebates.value.length) {
         if (searchTerm.value.trim()) {
             return (
                 <div class="space-y-6 overflow-y-auto">
@@ -201,7 +201,7 @@ export default component$<DebateListProps>(({
                             lastCommentAt={debate.created_at}
                             slug={debate.slug}
                             tags={debate.tags}
-                            commentsCount={debate.points_of_view?.reduce((total, pov) => total + (pov?.comments?.length || 0), 0) || 0}
+                            commentsCount={debate.points_of_view.reduce((total, pov) => total + (pov.comments.length || 0), 0) || 0}
                             scope={debate.scope}
                             isAuthenticated={isAuthenticated}
                             onShowLoginModal$={onShowLoginModal$}

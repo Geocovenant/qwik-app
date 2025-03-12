@@ -1,5 +1,5 @@
 import { $, component$, useStylesScoped$, useSignal } from "@builder.io/qwik";
-import { LuCalendar, LuMessageSquare, LuTag, LuLink, LuGlobe, LuTrash2, LuFlag, LuUser2 } from '@qwikest/icons/lucide';
+import { LuCalendar, LuTag, LuLink, LuGlobe, LuTrash2, LuFlag, LuUser2 } from '@qwikest/icons/lucide';
 import { Link, useNavigate } from "@builder.io/qwik-city";
 import { PollScope } from "~/shared/types";
 import { timeAgo } from "~/utils/dateUtils";
@@ -63,7 +63,7 @@ export default component$<DebateCardProps>(({
     const showConfirmDeleteModal = useSignal(false);
 
     const mainImage = images && images.length > 0 ? images[0] : undefined;
-    const countriesCount = communities?.length || 0;
+    const countriesCount = communities.length || 0;
     
     // Determine if the current user is the creator
     const isCreator = currentUsername === creatorUsername;

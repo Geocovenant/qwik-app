@@ -287,18 +287,18 @@ export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue
         return [];
     }
 
-    // Obtener el debate
+    // Get the debate
     const debate = await resolveValue(useGetDebateBySlug);
 
-    // Necesitamos extraer el código de país de forma segura
+    // We need to safely extract the country code
     let countryCode = null;
 
     if (debate) {
-        // Corregir el acceso a country_code
-        if (debate.tags && debate.tags.some(tag => tag.country_code)) {
+        // Correct access to country_code
+        if (debate.tags.some(tag => tag.country_code)) {
             countryCode = debate.tags.find(tag => tag.country_code)?.country_code;
         } else {
-            // Usar un valor predeterminado
+            // Use a default value
             countryCode = "US";
         }
     }
@@ -335,7 +335,7 @@ export const useCheckCommunityMembership = routeLoader$(async ({ cookie, params 
         return { isMember: false };
     }
 
-    // Obtener el ID de la comunidad
+    // Get the community ID
     const communityId = params.communityId || params.id;
     if (!communityId) {
         console.error('Community ID not provided');
@@ -343,8 +343,8 @@ export const useCheckCommunityMembership = routeLoader$(async ({ cookie, params 
     }
 
     try {
-        // Usamos el endpoint de miembros y verificamos si el usuario actual está
-        // incluido en los resultados, lo que indicaría que es miembro
+        // We use the members endpoint and check if the current user is
+        // included in the results, which would indicate that they are a member
         const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${communityId}/members?size=1`, {
             headers: {
                 Accept: 'application/json',
@@ -357,7 +357,7 @@ export const useCheckCommunityMembership = routeLoader$(async ({ cookie, params 
         }
 
         const data = await response.json();
-        // Si hay al menos un miembro y ese miembro es el usuario actual
+        // If there is at least one member and that member is the current user
         const isMember = data.items.some((member: any) => member.is_current_user);
 
         return { isMember };
@@ -409,7 +409,7 @@ export const useGetLocalityPolls = routeLoader$(async ({ params, query, cookie }
     }
 });
 
-// Loader para obtener debates a nivel de localidad
+// Loader to get debates at the locality level
 export const useGetLocalityDebates = routeLoader$(async ({ params, query, cookie }) => {
     console.log('============ useGetLocalityDebates ============');
     const page = query.get('page') || '1';
@@ -452,7 +452,7 @@ export const useGetLocalityDebates = routeLoader$(async ({ params, query, cookie
     }
 });
 
-// Loader para obtener proyectos a nivel de localidad
+// Loader to get projects at the locality level
 export const useGetLocalityProjects = routeLoader$(async ({ params, query, cookie }) => {
     console.log('============ useGetLocalityProjects ============');
     const page = query.get('page') || '1';
@@ -495,7 +495,7 @@ export const useGetLocalityProjects = routeLoader$(async ({ params, query, cooki
     }
 });
 
-// Loader para obtener problemas reportados a nivel de localidad
+// Loader to get reported issues at the locality level
 export const useGetLocalityIssues = routeLoader$(async ({ params, query, cookie }) => {
     console.log('============ useGetLocalityIssues ============');
     const page = query.get('page') || '1';

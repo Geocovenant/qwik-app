@@ -3,7 +3,7 @@ import type { RequestHandler } from "@builder.io/qwik-city";
 import { guessLocale } from 'compiled-i18n'
 import { type CustomSession } from "~/shared/types";
 
-export const onRequest: RequestHandler = async ({ query, headers, locale, sharedMap, redirect, url }) => {
+export const onRequest: RequestHandler = async ({ query, headers, locale, sharedMap, redirect }) => {
   const session: CustomSession | null = sharedMap.get('session');
   if(session?.user?.id && session.user.username) {
     throw redirect(302, '/global')

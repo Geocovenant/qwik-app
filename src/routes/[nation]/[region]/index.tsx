@@ -97,7 +97,7 @@ export default component$(() => {
                     </h2>
                     
                     <div class="flex flex-col sm:flex-row gap-6">
-                        {region.value?.emblem_svg && (
+                        {region.value.emblem_svg && (
                             <div class="flex justify-center">
                                 <Image 
                                     src={region.value.emblem_svg} 
@@ -108,7 +108,7 @@ export default component$(() => {
                         )}
                         
                         <div class="flex-1 space-y-3">
-                            {region.value?.population && (
+                            {region.value.population && (
                                 <div class="flex items-start gap-3">
                                     <LuUsers class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                     <div class="dark:text-gray-300">
@@ -117,7 +117,7 @@ export default component$(() => {
                                 </div>
                             )}
 
-                            {region.value?.area && (
+                            {region.value.area && (
                                 <div class="flex items-start gap-3">
                                     <LuFlag class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                     <div class="dark:text-gray-300">
@@ -126,7 +126,7 @@ export default component$(() => {
                                 </div>
                             )}
 
-                            {region.value?.capital && (
+                            {region.value.capital && (
                                 <div class="flex items-start gap-3">
                                     <LuUsers class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                     <div class="dark:text-gray-300">
@@ -135,7 +135,7 @@ export default component$(() => {
                                 </div>
                             )}
 
-                            {region.value?.governor && (
+                            {region.value.governor && (
                                 <div class="flex items-start gap-3">
                                     <LuUsers class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                     <div class="dark:text-gray-300">
@@ -144,7 +144,7 @@ export default component$(() => {
                                 </div>
                             )}
 
-                            {region.value?.founding_year && (
+                            {region.value.founding_year && (
                                 <div class="flex items-start gap-3">
                                     <LuFlag class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                     <div class="dark:text-gray-300">
@@ -156,7 +156,7 @@ export default component$(() => {
                     </div>
 
                     <div class="flex gap-3 mt-4">
-                        {region.value?.website && (
+                        {region.value.website && (
                             <a
                                 href={region.value.website}
                                 target="_blank"
@@ -201,14 +201,14 @@ export default component$(() => {
                 <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow col-span-1 lg:col-span-2">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuMessageSquare class="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        {_`Featured Topics in ${region.value?.name || capitalizeFirst(regionName)}`}
+                        {_`Featured Topics in ${region.value.name || capitalizeFirst(regionName)}`}
                     </h2>
                     <div class="space-y-4">
                         {Array.isArray(debates.value) && debates.value.slice(0, 3).map((debate: Debate, index: number) => (
                             <div key={debate.id || index} class="border-b border-gray-200 dark:border-gray-700 pb-3">
                                 <h3 class="font-medium text-gray-900 dark:text-white">{debate.title}</h3>
                                 <p class="text-sm text-gray-600 dark:text-gray-300">
-                                    {debate.description?.substring(0, 100)}...
+                                    {debate.description.substring(0, 100)}...
                                 </p>
                                 <div class="flex gap-2 mt-2">
                                     <span class="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
@@ -266,7 +266,7 @@ export default component$(() => {
                         {_`Reported Issues`}
                     </h2>
                     <div class="space-y-3">
-                        {issues.value?.items?.slice(0, 5).map((issue: Issue, index: number) => (
+                        {issues.value.items.slice(0, 5).map((issue: Issue, index: number) => (
                             <div key={issue.id || index} class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
                                 <div>
                                     <h3 class="font-medium text-gray-900 dark:text-white">{issue.title}</h3>
@@ -297,7 +297,7 @@ export default component$(() => {
                         {_`Active Polls`}
                     </h2>
                     <div class="space-y-3">
-                        {polls.value?.items?.slice(0, 5).map((poll: Poll, index: number) => (
+                        {polls.value.items.slice(0, 5).map((poll: Poll, index: number) => (
                             <div key={poll.id || index} class="border-b border-gray-200 dark:border-gray-700 pb-2">
                                 <h3 class="font-medium text-gray-900 dark:text-white">{poll.title}</h3>
                                 <div class="flex justify-between items-center mt-1">

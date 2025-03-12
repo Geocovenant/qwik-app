@@ -27,6 +27,8 @@ export default component$(() => {
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
+    // @ts-ignore
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
     const isAuthenticated = useComputed$(() => !!session.value?.user);
     const subregionDisplayName = capitalizeFirst(subregionName.replace(/-/g, ' '));
 
@@ -57,20 +59,21 @@ export default component$(() => {
                         }
                     </Modal>
                     <ProjectList
-                        onCreateProject={onCreateProject}
-                        projects={{
-                            items: Array.isArray(projects.value?.items) ? projects.value.items : [],
-                            total: projects.value?.total || 0,
-                            page: projects.value?.page || 1,
-                            size: projects.value?.size || 10,
-                            pages: projects.value?.pages || 1
-                        }}
                         communityName={subregionDisplayName}
+                        currentUsername={currentUsername.value}
+                        onCreateProject={onCreateProject}
+                        isAuthenticated={isAuthenticated.value}
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
                             await nav(`/${nationName}/${regionName}/${subregionName}/projects?page=${page}`);
                         }}
-                        isAuthenticated={isAuthenticated.value}
+                        projects={{
+                            items: projects.value.items,
+                            total: projects.value.total || 0,
+                            page: projects.value.page || 1,
+                            size: projects.value.size || 10,
+                            pages: projects.value.pages || 1
+                        }}
                     />
                 </div>
             </div>

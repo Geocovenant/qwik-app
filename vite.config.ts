@@ -27,7 +27,18 @@ export default defineConfig(({ command, mode }): UserConfig => {
       qwikVite(),
       tsconfigPaths(),
       i18nPlugin({
-        locales: ['en_US', 'es_AR'],
+        locales: [
+          'en_US',   // English (United States)
+          'es_AR',   // Spanish (Argentina)
+          'zh_CN',   // Mandarin Chinese
+          'hi_IN',   // Hindi
+          'fr_FR',   // French
+          'ru_RU',   // Russian
+          'pt_BR',   // Portuguese (Brazil)
+          'bn_BD',   // Bengali
+          'de_DE',   // German
+          'ja_JP',   // Japanese
+        ],
       }),
     ],
     define: {

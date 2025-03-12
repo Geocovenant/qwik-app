@@ -34,7 +34,7 @@ export default component$(() => {
     const localityDisplayName = capitalizeFirst(localityName.replace(/-/g, ' '));
 
     // Use community ID from locality data
-    const localCommunityId = locality.value?.id || 5; // Default ID if not available
+    const localCommunityId = locality.value.id || 5; // Default ID if not available
 
     // Toggle to change user visibility
     const togglePublicVisibility = $(async () => {

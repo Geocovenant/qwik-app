@@ -1,6 +1,5 @@
 import * as v from 'valibot';
 import { _ } from 'compiled-i18n';
-import { CommunityType } from '~/constants/communityType';
 
 // Constants for length limits
 export const MAX_TITLE_LENGTH = 100;
@@ -25,15 +24,6 @@ const PROJECT_STATUS_ENUM = {
     IN_PROGRESS: 'IN_PROGRESS',
     COMPLETED: 'COMPLETED',
     CANCELLED: 'CANCELLED'
-} as const;
-
-const COMMUNITY_TYPE_ENUM = {
-    GLOBAL: CommunityType.GLOBAL,
-    INTERNATIONAL: CommunityType.INTERNATIONAL,
-    NATIONAL: CommunityType.NATIONAL,
-    REGIONAL: CommunityType.REGIONAL,
-    SUBREGIONAL: CommunityType.SUBREGIONAL,
-    LOCAL: CommunityType.LOCAL
 } as const;
 
 // Definition of the resource schema

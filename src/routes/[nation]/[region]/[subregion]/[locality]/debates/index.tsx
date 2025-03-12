@@ -57,7 +57,7 @@ export default component$(() => {
                             <FormDebate
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.LOCAL}
-                                defaultLocalityId={locality.value?.id}
+                                defaultLocalityId={locality.value.id}
                                 tags={tags.value}
                             />
                         </Modal>
@@ -69,20 +69,20 @@ export default component$(() => {
                         </Modal>
                     }
                     <DebateList
-                        debates={{
-                            items: Array.isArray(debates.value?.items) ? debates.value.items : [],
-                            total: debates.value?.total || 0,
-                            page: currentPage.value,
-                            size: 10,
-                            pages: Math.ceil((debates.value?.total || 0) / 10)
-                        }}
                         communityName={localityDisplayName}
+                        debates={{
+                            items: debates.value.items,
+                            total: debates.value.total,
+                            page: debates.value.page,
+                            size: debates.value.size,
+                            pages: debates.value.pages
+                        }}
+                        isAuthenticated={isAuthenticated.value}
                         onCreateDebate={onCreateDebate}
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
                             await nav(`/${nationName}/${regionName}/${subregionName}/${localityName}/debates?page=${page}`);
                         }}
-                        isAuthenticated={isAuthenticated.value}
                         onShowLoginModal$={onShowLoginModal}
                     />
                 </div>

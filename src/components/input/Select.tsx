@@ -1,4 +1,4 @@
-import { component$, useSignal, $, type QRL } from '@builder.io/qwik';
+import { type QRL, component$, useSignal } from '@builder.io/qwik';
 import clsx from 'clsx';
 import { InputError } from './InputError';
 
@@ -96,11 +96,9 @@ export const Select = component$(
                                     )}
                                     onClick$={() => {
                                         const selectElement = document.querySelector(`select[name="${props.name}"]`) as HTMLSelectElement;
-                                        if (selectElement) {
-                                            selectElement.value = option.value;
-                                            selectElement.dispatchEvent(new Event('input', { bubbles: true }));
-                                            selectElement.dispatchEvent(new Event('change', { bubbles: true }));
-                                        }
+                                        selectElement.value = option.value;
+                                        selectElement.dispatchEvent(new Event('input', { bubbles: true }));
+                                        selectElement.dispatchEvent(new Event('change', { bubbles: true }));
                                         showDropdown.value = false;
                                     }}
                                 >

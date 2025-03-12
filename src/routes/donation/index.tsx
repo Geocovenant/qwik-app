@@ -1,4 +1,4 @@
-import { component$, useSignal, $ } from '@builder.io/qwik';
+import { component$, useSignal } from '@builder.io/qwik';
 import { _ } from 'compiled-i18n';
 import {
     LuCoffee,
@@ -9,7 +9,6 @@ import {
     LuShield,
     LuCopy,
     LuCheckCircle,
-    LuBitcoin
 } from '@qwikest/icons/lucide';
 
 import { Accordion } from '~/components/ui/accordion/accordion';
@@ -17,13 +16,14 @@ import { Accordion } from '~/components/ui/accordion/accordion';
 export default component$(() => {
     const copiedAddress = useSignal<string | null>(null);
 
-    const copyToClipboard$ = $((text: string) => {
-        navigator.clipboard.writeText(text);
-        copiedAddress.value = text;
-        setTimeout(() => {
-            copiedAddress.value = null;
-        }, 2000);
-    });
+    // TODO: Add copy to clipboard
+    // const copyToClipboard$ = $((text: string) => {
+    //     navigator.clipboard.writeText(text);
+    //     copiedAddress.value = text;
+    //     setTimeout(() => {
+    //         copiedAddress.value = null;
+    //     }, 2000);
+    // });
 
     const cryptoData = [
         {

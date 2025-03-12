@@ -1,4 +1,4 @@
-import { component$, QRL, Resource, useResource$, useSignal, useTask$ } from "@builder.io/qwik";
+import { type QRL, component$, Resource, useResource$, useSignal, useTask$ } from "@builder.io/qwik";
 import { Link, useLocation } from "@builder.io/qwik-city";
 import { Collapsible } from '@qwik-ui/headless';
 import { LuBuilding, LuChevronRight } from "@qwikest/icons/lucide";
@@ -124,9 +124,6 @@ export const CommunityItem = component$(({
         </div>
     ) : null;
 
-    // Determine if it is a nation (has cca2 but is not a subdivision)
-    const isNation = community.cca2 && !community.divisionType;
-    
     if (canHaveSubdivisions) {
         return (
             <Collapsible.Root bind:open={isOpen}>
@@ -156,7 +153,7 @@ export const CommunityItem = component$(({
                                     <span class="font-medium">{community.name}</span>
                                 )}
                             </Link>
-                            {!isCollapsed && canHaveSubdivisions && (
+                            {!isCollapsed && (
                                 <Collapsible.Trigger 
                                     class="p-1.5 mr-2 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 
                                            hover:text-primary dark:hover:text-primary-foreground rounded-md 

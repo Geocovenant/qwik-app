@@ -194,7 +194,7 @@ export default component$<ProjectListProps>(
         );
 
         // Show empty state if no projects match the filters
-        if (!filteredProjects.value?.length) {
+        if (!filteredProjects.value.length) {
             if (searchTerm.value.trim() || statusFilter.value !== "ALL") {
                 return (
                     <div class="space-y-6 overflow-y-auto">
@@ -223,7 +223,7 @@ export default component$<ProjectListProps>(
                             <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{_`No projects found`}</h3>
                             <p class="text-gray-500 dark:text-gray-400 mb-6">
                                 {searchTerm.value
-                                    ? _`No project matches your search "${searchTerm.value}". Try different keywords or clear the filters.`
+                                    ? _`No project matches your search ${searchTerm.value}. Try different keywords or clear the filters.`
                                     : _`No project matches the selected filters. Try changing the filtering criteria.`}
                             </p>
                             <Button

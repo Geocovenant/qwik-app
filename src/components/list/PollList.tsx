@@ -91,7 +91,7 @@ export default component$<PollListProps>(({ polls, onCreatePoll, region, communi
     );
 
     // Show empty state if no polls match the filters
-    if (!filteredPolls.value?.length) {
+    if (!filteredPolls.value.length) {
         if (searchTerm.value.trim()) {
             return (
                 <div class="space-y-6 overflow-y-auto">
@@ -121,7 +121,7 @@ export default component$<PollListProps>(({ polls, onCreatePoll, region, communi
                             {_`No polls found`}
                         </h3>
                         <p class="text-gray-500 dark:text-gray-400 mb-6">
-                            {_`No polls match your search "${searchTerm.value}". Try different keywords or clear the search.`}
+                            {_`No polls match your search ${searchTerm.value}. Try different keywords or clear the search.`}
                         </p>
                         <Button 
                             class="bg-cyan-600 hover:bg-cyan-700 text-white"

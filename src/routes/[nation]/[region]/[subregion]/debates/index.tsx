@@ -29,7 +29,10 @@ export default component$(() => {
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
+    // @ts-ignore
+    const currentUsername = useComputed$(() => session.value?.user?.username || "");
     const isAuthenticated = useComputed$(() => !!session.value?.user);
+
     const subregionDisplayName = capitalizeFirst(subregionName.replace(/-/g, ' '));
 
     const onSubmitCompleted = $(() => {
@@ -68,20 +71,21 @@ export default component$(() => {
                         </Modal>
                     }
                     <DebateList
-                        debates={{
-                            items: Array.isArray(debates.value?.items) ? debates.value.items : [],
-                            total: debates.value?.total || 0,
-                            page: currentPage.value,
-                            size: 10,
-                            pages: Math.ceil((debates.value?.total || 0) / 10)
-                        }}
                         communityName={subregionDisplayName}
+                        currentUsername={currentUsername.value}
+                        debates={{
+                            items: debates.value.items,
+                            total: debates.value.total,
+                            page: debates.value.page,
+                            size: debates.value.size,
+                            pages: debates.value.pages
+                        }}
+                        isAuthenticated={isAuthenticated.value}
                         onCreateDebate={onCreateDebate}
                         onPageChange$={async (page: number) => {
                             currentPage.value = page;
                             await nav(`/${nationName}/${regionName}/${subregionName}/debates?page=${page}`);
                         }}
-                        isAuthenticated={isAuthenticated.value}
                         onShowLoginModal$={onShowLoginModal}
                     />
                 </div>
