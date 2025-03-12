@@ -8,7 +8,6 @@ import { _ } from "compiled-i18n";
 
 export const useFormPollAction = formAction$<PollForm, PollResponseData>(
     async (values, event) => {
-        console.log('values', values)
         const token = event.cookie.get('authjs.session-token')?.value;
 
         // Validate token existence
@@ -46,7 +45,7 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
             ends_at: values.ends_at !== '' ? values.ends_at : null,
             tags: values.tags || [],
         };
-
+        
         // Add specific fields according to the scope
         switch (values.scope) {
             case CommunityType.GLOBAL:

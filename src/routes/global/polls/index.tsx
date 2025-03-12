@@ -8,6 +8,7 @@ import { CommunityType } from "~/constants/communityType";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 
+import { useGetTags } from "~/shared/loaders";
 import { useGetGlobalPolls } from "~/shared/global/loaders";
 
 export { useFormPollLoader } from "~/shared/forms/loaders";
@@ -18,6 +19,7 @@ export default component$(() => {
     const polls = useGetGlobalPolls();
     const session = useSession();
     const showModalPoll = useSignal(false);
+    const tags = useGetTags();
     const currentPage = useSignal(1);
     const nav = useNavigate();
     
@@ -49,6 +51,7 @@ export default component$(() => {
                             <FormPoll
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.GLOBAL}
+                                tags={tags.value}
                             />
                         </Modal>
                         : <Modal

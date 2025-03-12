@@ -1,4 +1,4 @@
-import { $, component$, useStylesScoped$, useSignal } from "@builder.io/qwik";
+import { $, component$, useStylesScoped$, useSignal, useComputed$ } from "@builder.io/qwik";
 import { LuCalendar, LuTag, LuLink, LuGlobe, LuTrash2, LuFlag, LuUser2 } from '@qwikest/icons/lucide';
 import { Link, useNavigate } from "@builder.io/qwik-city";
 import { PollScope } from "~/shared/types";
@@ -12,9 +12,10 @@ import ConfirmationModal from "~/components/ConfirmationModal";
 import Modal from "~/components/Modal";
 import FormReport from "~/components/forms/FormReport";
 import { dataArray } from "~/data/countries";
+import { CommunityType } from "~/constants/communityType";
 
 export interface DebateCardProps {
-    commentsCount: number;
+    communities?: any[];
     createdAt: string;
     creatorAvatar: string;
     creatorUsername: string;
@@ -27,7 +28,6 @@ export interface DebateCardProps {
     lastCommentAt?: string;
     onShowLoginModal$?: QRL<() => void>;
     pointsOfView?: any[];
-    communities?: any[];
     scope: string;
     slug?: string;
     tags?: string[];
@@ -36,7 +36,7 @@ export interface DebateCardProps {
 }
 
 export default component$<DebateCardProps>(({
-    commentsCount,
+    communities = [],
     createdAt,
     creatorAvatar,
     creatorUsername,
@@ -48,7 +48,7 @@ export default component$<DebateCardProps>(({
     isAuthenticated = true,
     lastCommentAt,
     onShowLoginModal$,
-    communities = [],
+    pointsOfView = [],
     scope,
     slug,
     tags = [],
@@ -62,8 +62,11 @@ export default component$<DebateCardProps>(({
     const showReportModal = useSignal(false);
     const showConfirmDeleteModal = useSignal(false);
 
+    const commentsCount = useComputed$(() => {
+        return pointsOfView.reduce((total, pov) => total + (pov.comments?.length || 0), 0) || 0;
+    });
+
     const mainImage = images && images.length > 0 ? images[0] : undefined;
-    const countriesCount = communities.length || 0;
     
     // Determine if the current user is the creator
     const isCreator = currentUsername === creatorUsername;
@@ -157,30 +160,32 @@ export default component$<DebateCardProps>(({
                 )}
 
                 {/* Countries */}
-                {communities.length > 0 && (
+                {(scope === CommunityType.GLOBAL || scope === CommunityType.INTERNATIONAL) && (
                     <div class="mb-4">
                         <div class="flex items-center gap-1 mb-2">
                             <span class="text-xs font-medium text-gray-500 dark:text-gray-400">{_`Participating countries:`}</span>
                             <span class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full text-xs font-medium text-gray-700 dark:text-gray-300">
-                                {countriesCount}
+                                {pointsOfView.length}
                             </span>
                         </div>
-                        <div class="flex gap-1 flex-wrap">
-                            {communities.map((community) => {
-                                const country = getCountryData(community.cca2);
-                                return (
-                                    country && (
-                                        <span
-                                            key={community.id}
-                                            class="text-xl cursor-help hover:transform hover:scale-125 transition-transform"
-                                            title={community.name}
-                                        >
-                                            {country.flag}
-                                        </span>
-                                    )
-                                );
-                            })}
-                        </div>
+                        {scope === CommunityType.INTERNATIONAL && (
+                            <div class="flex gap-1 flex-wrap">
+                                {communities.map((community) => {
+                                    const country = getCountryData(community.cca2);
+                                    return (
+                                        country && (
+                                            <span
+                                                key={community.id}
+                                                class="text-xl cursor-help hover:transform hover:scale-125 transition-transform"
+                                                title={community.name}
+                                            >
+                                                {country.flag}
+                                            </span>
+                                        )
+                                    );
+                                })}
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -196,7 +201,7 @@ export default component$<DebateCardProps>(({
                     <div class="flex items-center gap-2">
                         <span class="text-gray-500 dark:text-gray-400">{_`Comments:`}</span>
                         <span class="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full font-medium text-gray-700 dark:text-gray-300">
-                            {commentsCount}
+                            {commentsCount.value}
                         </span>
                     </div>
                 </div>

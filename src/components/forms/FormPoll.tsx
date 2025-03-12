@@ -49,9 +49,7 @@ export default component$<FormPollProps>(({
         fieldArrays: ['options'],
         validate: valiForm$(PollSchema)
     });
-    console.log('pollForm', pollForm)
 
-    // Control to show/hide end date
     const showEndDate = useSignal(false);
 
     // If toggle is deactivated, clear date field

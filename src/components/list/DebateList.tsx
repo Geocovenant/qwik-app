@@ -190,24 +190,24 @@ export default component$<DebateListProps>(({
                 {filteredDebates.value.map((debate: Debate) => (
                     <li key={`debate-${debate.id}`} class="transform transition-transform hover:-translate-y-1 duration-300">
                         <DebateCard
-                            id={debate.id}
-                            title={debate.title}
-                            description={debate.description}
-                            images={debate.images}
-                            creatorUsername={debate.creator?.username || ''}
-                            creatorAvatar={debate.creator?.image || '' }
+                            communities={debate.communities}
                             createdAt={debate.created_at}
+                            creatorAvatar={debate.creator?.image || '' }
+                            creatorUsername={debate.creator?.username || ''}
+                            currentUsername={currentUsername}
+                            description={debate.description}
+                            id={debate.id}
+                            images={debate.images}
                             isAnonymous={debate.is_anonymous}
+                            isAuthenticated={isAuthenticated}
                             lastCommentAt={debate.created_at}
+                            onShowLoginModal$={onShowLoginModal$}
+                            pointsOfView={debate.points_of_view}
+                            scope={debate.type}
                             slug={debate.slug}
                             tags={debate.tags}
-                            commentsCount={debate.points_of_view.reduce((total, pov) => total + (pov.comments.length || 0), 0) || 0}
-                            scope={debate.scope}
-                            isAuthenticated={isAuthenticated}
-                            onShowLoginModal$={onShowLoginModal$}
-                            communities={debate.communities}
+                            title={debate.title}
                             viewsCount={debate.views_count}
-                            currentUsername={currentUsername}
                         />
                     </li>
                 ))}

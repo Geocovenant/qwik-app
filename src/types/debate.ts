@@ -1,6 +1,6 @@
 import type { Community } from "./project";
 
-export enum DebateScope {
+export enum DebateType {
     GLOBAL = 'GLOBAL',
     INTERNATIONAL = 'INTERNATIONAL',
     NATIONAL = 'NATIONAL',
@@ -36,9 +36,9 @@ export interface Debate {
     is_anonymous: boolean;
     last_comment_at?: string;
     points_of_view: PointOfView[];
-    scope: DebateScope;
     slug: string;
     tags?: string[];
+    type: DebateType;
     title: string;
     views_count: number;
 }
