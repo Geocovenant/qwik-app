@@ -43,7 +43,6 @@ export const useFormProjectLoader = routeLoader$<InitialValues<ProjectForm>>(() 
         status: 'DRAFT',
         goal_amount: 0,
         tags: [],
-        is_anonymous: false,
         steps: [
             {
                 title: '',
@@ -60,6 +59,7 @@ export const useFormIssueLoader = routeLoader$<InitialValues<IssueForm>>(() => {
     return {
         title: '',
         description: '',
+        organization_name: '',
         status: 'OPEN',
         scope: CommunityType.NATIONAL,
         community_ids: [],

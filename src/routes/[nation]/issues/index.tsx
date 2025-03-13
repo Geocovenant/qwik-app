@@ -59,6 +59,7 @@ export default component$(() => {
                             ? <FormIssue
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.NATIONAL}
+                                defaultCountry={nation.value?.cca2}
                                 tags={tags.value}
                             />
                             : <SocialLoginButtons />

@@ -1,10 +1,9 @@
-import { $, component$, useSignal, useTask$ } from '@builder.io/qwik';
+import { $, component$, useTask$ } from '@builder.io/qwik';
 import { useForm, valiForm$, setValue, insert, remove } from '@modular-forms/qwik';
 import { _ } from 'compiled-i18n';
 import { TextInput } from '~/components/input/TextInput';
 import { TextArea } from '~/components/input/TextArea';
 import { FormFooter } from '~/components/forms/FormFooter';
-import { CustomToggle } from '~/components/input/CustomToggle';
 import { CommunityType } from '~/constants/communityType';
 import { LuPlus, LuTrash, LuGripVertical } from "@qwikest/icons/lucide";
 import { dataArray as countries } from "~/data/countries";
@@ -79,14 +78,6 @@ export default component$<FormProjectProps>(({
         }
     });
 
-    const isAnonymous = useSignal(false);
-
-    // Update is_anonymous when toggle changes
-    useTask$(({ track }) => {
-        const anonymousValue = track(() => isAnonymous.value);
-        setValue(projectForm, 'is_anonymous', anonymousValue);
-    });
-
     const handleSubmit = $((values: ProjectForm, event: any) => {
         console.log('Submitting Project form:', values);
         console.log('event', event);
@@ -100,9 +91,9 @@ export default component$<FormProjectProps>(({
         name: `${c.flag} ${c.name}`
     }));
 
-    // Función para añadir un step
+    // Function to add a step
     const addStep = $(() => {
-        // Usamos una variable temporal que ya tiene el tipo correcto
+        // We use a temporary variable that already has the correct type
         const fields = projectForm.internal.fields as any;
         const stepsLength = fields['steps']?.value?.length || 0;
 
@@ -117,7 +108,7 @@ export default component$<FormProjectProps>(({
         });
     });
 
-    // Función para añadir un recurso a un step
+    // Function to add a resource to a step
     const addResource = $((stepIndex: number) => {
         insert(projectForm, `steps.${stepIndex}.resources`, {
             value: {
@@ -410,7 +401,7 @@ export default component$<FormProjectProps>(({
                                     {...props}
                                     type="number"
                                     class="pl-7 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                                    placeholder={_`Enter target amount (optional)`}
+                                    placeholder={_`Enter goal amount (optional)`}
                                     value={field.value}
                                     min="0"
                                     step="0.01"
@@ -419,7 +410,7 @@ export default component$<FormProjectProps>(({
                             {field.error && (
                                 <div class="text-sm text-destructive">{field.error}</div>
                             )}
-                            <p class="text-xs text-muted-foreground">{_`Leave empty if no specific funding goal`}</p>
+                            <p class="text-xs text-muted-foreground">{_`Leave empty if there is no specific funding goal`}</p>
                         </div>
                     )}
                 </Field>
@@ -447,7 +438,7 @@ export default component$<FormProjectProps>(({
                     <h2 class="font-medium text-foreground">{_`Project Steps`}</h2>
                     <button
                         type="button"
-                        class="inline-flex items-center rounded-md bg-primary px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90"
+                        class="inline-flex items-center rounded-md bg-cyan-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-cyan-700"
                         onClick$={addStep}
                     >
                         <LuPlus class="w-4 h-4 mr-1" />
@@ -526,10 +517,10 @@ export default component$<FormProjectProps>(({
                                         {/* Resources Section */}
                                         <div class="space-y-2">
                                             <div class="flex items-center justify-between">
-                                                <h4 class="text-sm font-medium">{_`Resources Needed`}</h4>
+                                                <h4 class="text-sm font-medium">{_`Required Resources`}</h4>
                                                 <button
                                                     type="button"
-                                                    class="inline-flex items-center rounded-md bg-gray-200 hover:bg-gray-300 px-2 py-1 text-xs font-medium text-gray-700"
+                                                    class="inline-flex items-center rounded-md bg-cyan-100 hover:bg-cyan-200 dark:bg-cyan-900/30 dark:hover:bg-cyan-900/50 px-2 py-1 text-xs font-medium text-cyan-700 dark:text-cyan-300"
                                                     onClick$={() => addResource(stepIndex)}
                                                 >
                                                     <LuPlus class="w-3 h-3 mr-1" />
@@ -599,7 +590,7 @@ export default component$<FormProjectProps>(({
                                                                                         {...props}
                                                                                         type="number"
                                                                                         class="w-full rounded-md border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                                                                                        placeholder={_`Amount`}
+                                                                                        placeholder={_`Quantity`}
                                                                                         value={field.value}
                                                                                         min="0"
                                                                                         step="0.01"
@@ -652,30 +643,6 @@ export default component$<FormProjectProps>(({
                         </div>
                     )}
                 </FieldArray>
-            </div>
-
-            {/* Additional settings */}
-            <div class="space-y-4">
-                <h2 class="font-medium text-foreground">{_`Additional Settings`}</h2>
-                <div class="pt-4 border-t">
-                    <CustomToggle
-                        label={_`Anonymous project`}
-                        checked={isAnonymous.value}
-                        onChange$={$((checked) => {
-                            isAnonymous.value = checked;
-                        })}
-                    />
-                    <Field name="is_anonymous" type="boolean">
-                        {(field, props) => (
-                            <input type="hidden" {...props} value={isAnonymous.value ? 'true' : 'false'} />
-                        )}
-                    </Field>
-                    <p class="mt-2 text-sm text-muted-foreground">
-                        {isAnonymous.value
-                            ? _`Your identity will be hidden as project creator.`
-                            : _`Your username will be visible as project creator.`}
-                    </p>
-                </div>
             </div>
 
             {/* Form footer */}

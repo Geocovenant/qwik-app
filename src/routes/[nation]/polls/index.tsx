@@ -13,9 +13,9 @@ import { capitalizeFirst } from "~/utils/capitalizeFirst";
 // Import necessary loaders
 import { useGetNationalPolls } from "~/shared/national/loaders";
 
-export { useVotePoll, useReactPoll, useFormReportAction, useDeletePoll } from "~/shared/actions";
 export { useFormPollLoader } from "~/shared/forms/loaders";
 export { useFormPollAction } from "~/shared/forms/actions";
+export { useVotePoll, useReactPoll, useFormReportAction, useDeletePoll } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();

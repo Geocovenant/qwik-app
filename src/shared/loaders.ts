@@ -8,7 +8,13 @@ import { useGetRegions } from "./national/loaders";
 export const useGetUser = routeLoader$(async ({ cookie }) => {
     const token = cookie.get('authjs.session-token')
     if (!token) {
-        return null
+        return {
+            id: null,
+            username: null,
+            email: null,
+            image: null,
+            communities: null
+        }
     }
     const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/me`, {
         headers: {
@@ -35,7 +41,6 @@ export const useGetCommunityIdByName = routeLoader$(async ({ query }) => {
 });
 
 export const useGetRegionalPolls = routeLoader$(async ({ cookie, params, resolveValue }) => {
-    console.log('============ useGetRegionalPolls ============')
     const token = cookie.get('authjs.session-token');
     if (!token) {
         return [];
@@ -48,11 +53,9 @@ export const useGetRegionalPolls = routeLoader$(async ({ cookie, params, resolve
         .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
     const regionData = regions.find((r: { name: string; }) => r.name === normalizedRegionName);
-    console.log('regionData', regionData)
 
     const regionId = regionData?.id
     if (!regionId) {
-        console.error('Region not found:', params.region);
         return [];
     }
 
@@ -71,13 +74,11 @@ export const useGetRegionalPolls = routeLoader$(async ({ cookie, params, resolve
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error fetching regional polls:', error);
         return [];
     }
 })
 
 export const useGetDebateBySlug = routeLoader$(async ({ cookie, params }) => {
-    console.log('============ useGetDebateBySlug ============')
     const token = cookie.get('authjs.session-token');
     if (!token) {
         return undefined;
@@ -116,7 +117,6 @@ export const useGetDebateBySlug = routeLoader$(async ({ cookie, params }) => {
 });
 
 export const useGetRegionalDebates = routeLoader$(async ({ cookie, params, resolveValue }) => {
-    console.log('============ useGetRegionalDebates ============')
     const token = cookie.get('authjs.session-token');
     if (!token) {
         return [];
@@ -132,7 +132,6 @@ export const useGetRegionalDebates = routeLoader$(async ({ cookie, params, resol
 
     const regionId = regionData?.id
     if (!regionId) {
-        console.error('Region not found:', params.region);
         return [];
     }
 
@@ -151,7 +150,6 @@ export const useGetRegionalDebates = routeLoader$(async ({ cookie, params, resol
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error fetching regional polls:', error);
         return [];
     }
 })
@@ -218,7 +216,6 @@ export const useFormOpinionLoader = routeLoader$<InitialValues<OpinionForm>>(asy
 });
 
 export const useGetPollBySlug = routeLoader$(async ({ cookie, params }) => {
-    console.log('============ useGetPollBySlug ============')
     const token = cookie.get('authjs.session-token');
     if (!token) {
         return undefined;
@@ -233,14 +230,12 @@ export const useGetPollBySlug = routeLoader$(async ({ cookie, params }) => {
         });
 
         if (!response.ok) {
-            console.error('Error fetching poll details:', response.statusText);
             return undefined;
         }
 
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error fetching poll details:', error);
         return undefined;
     }
 });
@@ -257,7 +252,6 @@ export const useGetRegionalProjects = routeLoader$(async ({ params }) => {
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error fetching regional projects:', error);
         return [];
     }
 });
@@ -275,13 +269,11 @@ export const useGetRegionalIssues = routeLoader$(async ({ params }) => {
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error fetching regional issues:', error);
         return [];
     }
 });
 
 export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue }) => {
-    console.log('============ useGetCountryDivisions ============')
     const token = cookie.get('authjs.session-token');
     if (!token) {
         return [];
@@ -304,7 +296,6 @@ export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue
     }
 
     if (!countryCode) {
-        console.error('Country code not found', countryCode);
         return [];
     }
 
@@ -323,13 +314,11 @@ export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue
         const divisions = await response.json();
         return divisions;
     } catch (error) {
-        console.error('Error fetching country divisions:', error);
         return [];
     }
 });
 
 export const useCheckCommunityMembership = routeLoader$(async ({ cookie, params }) => {
-    console.log('============ useCheckCommunityMembership ============')
     const token = cookie.get('authjs.session-token');
     if (!token) {
         return { isMember: false };
@@ -338,7 +327,6 @@ export const useCheckCommunityMembership = routeLoader$(async ({ cookie, params 
     // Get the community ID
     const communityId = params.communityId || params.id;
     if (!communityId) {
-        console.error('Community ID not provided');
         return { isMember: false };
     }
 
@@ -362,13 +350,11 @@ export const useCheckCommunityMembership = routeLoader$(async ({ cookie, params 
 
         return { isMember };
     } catch (error) {
-        console.error('Error checking community membership:', error);
         return { isMember: false };
     }
 });
 
 export const useGetLocalityPolls = routeLoader$(async ({ params, query, cookie }) => {
-    console.log('============ useGetLocalityPolls ============');
     const page = query.get('page') || '1';
     const size = query.get('size') || '10';
     const nationParam = params.nation;
@@ -377,7 +363,6 @@ export const useGetLocalityPolls = routeLoader$(async ({ params, query, cookie }
     const localityParam = params.locality;
     
     if (!nationParam || !regionParam || !subregionParam || !localityParam) {
-        console.error('Missing required parameters for locality polls');
         return { items: [], total: 0, page: 1, size: 10, pages: 1 };
     }
     
@@ -404,14 +389,12 @@ export const useGetLocalityPolls = routeLoader$(async ({ params, query, cookie }
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error fetching locality polls:', error);
         return { items: [], total: 0, page: 1, size: 10, pages: 1 };
     }
 });
 
 // Loader to get debates at the locality level
 export const useGetLocalityDebates = routeLoader$(async ({ params, query, cookie }) => {
-    console.log('============ useGetLocalityDebates ============');
     const page = query.get('page') || '1';
     const size = query.get('size') || '10';
     const nationParam = params.nation;
@@ -420,7 +403,6 @@ export const useGetLocalityDebates = routeLoader$(async ({ params, query, cookie
     const localityParam = params.locality;
     
     if (!nationParam || !regionParam || !subregionParam || !localityParam) {
-        console.error('Missing required parameters for locality debates');
         return { items: [], total: 0, page: 1, size: 10, pages: 1 };
     }
     
@@ -447,14 +429,12 @@ export const useGetLocalityDebates = routeLoader$(async ({ params, query, cookie
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error fetching locality debates:', error);
         return { items: [], total: 0, page: 1, size: 10, pages: 1 };
     }
 });
 
 // Loader to get projects at the locality level
 export const useGetLocalityProjects = routeLoader$(async ({ params, query, cookie }) => {
-    console.log('============ useGetLocalityProjects ============');
     const page = query.get('page') || '1';
     const size = query.get('size') || '10';
     const nationParam = params.nation;
@@ -463,7 +443,6 @@ export const useGetLocalityProjects = routeLoader$(async ({ params, query, cooki
     const localityParam = params.locality;
     
     if (!nationParam || !regionParam || !subregionParam || !localityParam) {
-        console.error('Missing required parameters for locality projects');
         return { items: [], total: 0, page: 1, size: 10, pages: 1 };
     }
     
@@ -490,14 +469,12 @@ export const useGetLocalityProjects = routeLoader$(async ({ params, query, cooki
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error fetching locality projects:', error);
         return { items: [], total: 0, page: 1, size: 10, pages: 1 };
     }
 });
 
 // Loader to get reported issues at the locality level
 export const useGetLocalityIssues = routeLoader$(async ({ params, query, cookie }) => {
-    console.log('============ useGetLocalityIssues ============');
     const page = query.get('page') || '1';
     const size = query.get('size') || '10';
     const nationParam = params.nation;
@@ -506,7 +483,6 @@ export const useGetLocalityIssues = routeLoader$(async ({ params, query, cookie 
     const localityParam = params.locality;
     
     if (!nationParam || !regionParam || !subregionParam || !localityParam) {
-        console.error('Missing required parameters for locality issues');
         return { items: [], total: 0, page: 1, size: 10, pages: 1 };
     }
     
@@ -533,7 +509,6 @@ export const useGetLocalityIssues = routeLoader$(async ({ params, query, cookie 
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error fetching locality issues:', error);
         return { items: [], total: 0, page: 1, size: 10, pages: 1 };
     }
 });
@@ -548,7 +523,6 @@ export const useFormCommunityRequestLoader = routeLoader$<InitialValues<Communit
 });
 
 export const useGetProjectBySlug = routeLoader$(async ({ cookie, params }) => {
-    console.log('============ useGetProjectBySlug ============')
     const token = cookie.get('authjs.session-token')
     if (!token) {
         return undefined
@@ -563,7 +537,6 @@ export const useGetProjectBySlug = routeLoader$(async ({ cookie, params }) => {
         })
 
         if (!response.ok) {
-            console.error('Error fetching project details:', response.statusText)
             return undefined
         }
 
@@ -573,7 +546,6 @@ export const useGetProjectBySlug = routeLoader$(async ({ cookie, params }) => {
             is_creator: data.creator?.id === data.current_user_id
         }
     } catch (error) {
-        console.error('Error fetching project details:', error)
         return undefined
     }
 })

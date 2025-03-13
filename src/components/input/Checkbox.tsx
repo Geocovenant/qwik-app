@@ -24,7 +24,6 @@ type CheckboxProps = {
 export const Checkbox = component$(
     ({ label, error, class: className, ...props }: CheckboxProps) => {
         const { name, required } = props;
-        console.log('props', props)
         return (
             <div class={clsx('', className)}>
                 <label class="flex select-none space-x-4 font-medium md:text-lg lg:text-xl">

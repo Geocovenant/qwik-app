@@ -1,13 +1,10 @@
-import { component$, useComputed$ } from "@builder.io/qwik";
+import { component$ } from "@builder.io/qwik";
 import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
-import { LuBarChart2, LuFlag, LuUsers, LuMessageSquare, LuBriefcase, LuAlertTriangle, LuUserPlus, LuUserMinus, LuMapPin, LuHome } from "@qwikest/icons/lucide";
+import { LuBarChart2, LuFlag, LuUsers, LuMessageSquare, LuBriefcase, LuAlertTriangle, LuMapPin, LuHome } from "@qwikest/icons/lucide";
 import { capitalizeFirst } from '~/utils/capitalizeFirst';
 import { Image } from "@unpic/qwik";
-import { Button } from "~/components/ui";
-import { useJoinCommunity, useLeaveCommunity } from "~/shared/actions";
 import { _ } from "compiled-i18n";
 
-import { useGetUser } from "~/shared/loaders";
 import { useGetLocality, useGetLocalDebates, useGetLocalPolls, useGetLocalProjects, useGetLocalIssues } from "~/shared/local/loaders";
 
 import type { Debate } from "~/types/debate";
@@ -22,21 +19,11 @@ export default component$(() => {
     const subregionName = location.params.subregion;
     const localityName = location.params.locality;
     
-    const user = useGetUser();
     const locality = useGetLocality();
     const polls = useGetLocalPolls();
     const debates = useGetLocalDebates();
     const projects = useGetLocalProjects();
     const issues = useGetLocalIssues();
-
-    const joinCommunityAction = useJoinCommunity();
-    const leaveCommunityAction = useLeaveCommunity();
-
-    const isMember = useComputed$(() => {
-        return user.value.communities?.some(
-            (community: any) => community.id === locality.value.community_id
-        );
-    });
 
     const pollsCount = polls.value.total || 0;
     const debatesCount = debates.value.total || 0;
@@ -59,37 +46,6 @@ export default component$(() => {
                 <p class="text-gray-600 dark:text-gray-300 mb-4">
                     {_`Welcome to the local community where neighbors collaborate on specific neighborhood issues.`}
                 </p>
-                
-                <Button
-                    class={`flex items-center gap-2 font-medium py-2 px-4 rounded-lg transition-colors ${
-                        isMember.value 
-                            ? 'bg-red-600 hover:bg-red-700 text-white' 
-                            : 'bg-blue-600 hover:bg-blue-700 text-white'
-                    }`}
-                    onClick$={() => {
-                        if (isMember.value) {
-                            leaveCommunityAction.submit({
-                                communityId: locality.value.community_id
-                            });
-                        } else {
-                            joinCommunityAction.submit({
-                                communityId: locality.value.community_id
-                            });
-                        }
-                    }}
-                >
-                    {isMember.value ? (
-                        <>
-                            <LuUserMinus class="w-5 h-5" />
-                            <span>{_`Leave Community`}</span>
-                        </>
-                    ) : (
-                        <>
-                            <LuUserPlus class="w-5 h-5" />
-                            <span>{_`Join the Community`}</span>
-                        </>
-                    )}
-                </Button>
             </div>
 
             {/* Main Content */}

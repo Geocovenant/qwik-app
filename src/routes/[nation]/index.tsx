@@ -1,14 +1,11 @@
 import { component$, useComputed$ } from "@builder.io/qwik";
 import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
-import { LuBarChart2, LuFlag, LuUsers, LuMessageSquare, LuBriefcase, LuAlertTriangle, LuUserPlus, LuUserMinus } from "@qwikest/icons/lucide";
+import { LuBarChart2, LuFlag, LuUsers, LuMessageSquare, LuBriefcase, LuAlertTriangle } from "@qwikest/icons/lucide";
 import { dataArray as countries, getFlagByCca2 } from "~/data/countries";
 import { capitalizeFirst } from '~/utils/capitalizeFirst';
 import { Image } from "@unpic/qwik";
-import { Button } from "~/components/ui";
-import { useJoinCommunity, useLeaveCommunity } from "~/shared/actions";
 import { _ } from "compiled-i18n";
 
-import { useGetUser } from "~/shared/loaders";
 import { useGetCountry, useGetNationalDebates, useGetNationalPolls, useGetNationalProjects, useGetNationalIssues } from "~/shared/national/loaders";
 
 import type { Debate } from "~/types/debate";
@@ -23,22 +20,11 @@ export default component$(() => {
         return countries.find(country => country.name.toLowerCase() === nationName.toLowerCase());
     });
     
-    const user = useGetUser();
     const country = useGetCountry();
     const polls = useGetNationalPolls();
     const debates = useGetNationalDebates();
     const projects = useGetNationalProjects();
     const issues = useGetNationalIssues();
-
-    const joinCommunityAction = useJoinCommunity();
-    const leaveCommunityAction = useLeaveCommunity();
-
-    // Verify if the user is already a member of the community
-    const isMember = useComputed$(() => {
-        return user.value.communities?.some(
-            (community: any) => community.id === country.value.community_id
-        );
-    });
 
     const pollsCount = polls.value.total || 0;
     const debatesCount = debates.value.total || 0;
@@ -59,37 +45,6 @@ export default component$(() => {
                 <p class="text-gray-600 dark:text-gray-300 mb-4">
                     {_`Welcome to the national community where citizens connect, share ideas, and work together.`}
                 </p>
-                
-                <Button
-                    class={`flex items-center gap-2 font-medium py-2 px-4 rounded-lg transition-colors ${
-                        isMember.value 
-                            ? 'bg-red-600 hover:bg-red-700 text-white' 
-                            : 'bg-blue-600 hover:bg-blue-700 text-white'
-                    }`}
-                    onClick$={() => {
-                        if (isMember.value) {
-                            leaveCommunityAction.submit({
-                                communityId: country.value.community_id
-                            });
-                        } else {
-                            joinCommunityAction.submit({
-                                communityId: country.value.community_id
-                            });
-                        }
-                    }}
-                >
-                    {isMember.value ? (
-                        <>
-                            <LuUserMinus class="w-5 h-5" />
-                            <span>{_`Leave Community`}</span>
-                        </>
-                    ) : (
-                        <>
-                            <LuUserPlus class="w-5 h-5" />
-                            <span>{_`Join Community`}</span>
-                        </>
-                    )}
-                </Button>
             </div>
 
             {/* Main Content */}

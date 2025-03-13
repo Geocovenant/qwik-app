@@ -46,7 +46,7 @@ export const StepSchema = v.object({
     description: v.optional(v.string()),
     order: v.optional(v.number()),
     status: v.enum(STEP_STATUS_ENUM),
-    resources: v.array(ResourceSchema)
+    resources: v.optional(v.array(ResourceSchema))
 });
 
 // Definition of the main project schema
@@ -72,7 +72,6 @@ export const ProjectSchema = v.object({
     status: v.enum(PROJECT_STATUS_ENUM),
     goal_amount: v.optional(v.number()),
     tags: v.optional(v.array(v.string())),
-    is_anonymous: v.boolean(),
     steps: v.pipe(
         v.array(StepSchema),
         v.minLength(1, _`At least one step is required`)

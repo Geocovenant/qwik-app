@@ -360,7 +360,6 @@ export default component$<FormPollProps>(({
                 <ToggleGroup.Root
                     value={pollForm.internal.fields.type?.value}
                     onChange$={(v: string) => {
-                        console.log('v', v)
                         setValue(pollForm, 'type', v as PollType);
                     }}
                 >

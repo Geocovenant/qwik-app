@@ -26,7 +26,7 @@ export const useGetRegion = routeLoader$(async ({ params }) => {
 export const useGetSubregions = routeLoader$(async ({ resolveValue }) => {
     const region = await resolveValue(useGetRegion);
     try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/countries/${region.region_id}/divisions`);
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/regions/${region.region_id}/subregions`);
         if (!response.ok) {
             throw new Error('Error fetching country divisions');
         }

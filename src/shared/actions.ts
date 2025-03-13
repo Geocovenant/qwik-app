@@ -15,13 +15,9 @@ import { _ } from 'compiled-i18n';
 // eslint-disable-next-line qwik/loader-location
 export const useVotePoll = routeAction$(
     async (data, { cookie }) => {
-        console.log('### useVotePoll ###')
         const token = cookie.get('authjs.session-token')?.value;
-        console.log('token', token)
         const { pollId } = data
-        console.log('data: ', data)
         const payload = { option_ids: data.optionIds }
-        console.log('payload', payload)
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${pollId}/vote`, {
                 method: 'POST',
@@ -43,11 +39,8 @@ export const useVotePoll = routeAction$(
 // eslint-disable-next-line qwik/loader-location
 export const useReactPoll = routeAction$(
     async (data, { cookie }) => {
-        console.log('### useReactPoll ###')
-        console.log('data', data)
         const token = cookie.get('authjs.session-token')?.value;
         const payload = { reaction: data.reaction }
-        console.log('payload', payload)
         
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${data.pollId}/react`, {
@@ -70,14 +63,11 @@ export const useReactPoll = routeAction$(
 // eslint-disable-next-line qwik/loader-location
 export const useReactOpinion = routeAction$(
     async (data, { cookie }) => {
-        console.log('### useReactOpinion ###')
-        console.log('data', data)
         const token = cookie.get('authjs.session-token')?.value;
         const payload = {
             opinion_id: data.opinionId,
             value: data.reaction === "LIKE" ? 1 : -1
         }
-        console.log('payload', payload)
         
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/opinions/${data.opinionId}/vote`, {
@@ -100,11 +90,8 @@ export const useReactOpinion = routeAction$(
 // eslint-disable-next-line qwik/loader-location
 export const useSetUsername = routeAction$(
     async (data, { cookie }) => {
-        console.log('### useSetUsername ###')
-        console.log('data', data)
         const token = cookie.get('authjs.session-token')?.value;
         const payload = { base_name: data.username }
-        console.log('payload', payload)
         
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/generate-username`, {
@@ -139,8 +126,6 @@ export interface UserResponseData {
 
 export const useFormUserAction = formAction$<UserForm, UserResponseData>(
     async (values, event) => {
-        console.log('############ useFormUserAction ############');
-        console.log('values', values);
 
         const token = event.cookie.get('authjs.session-token')?.value;
 
@@ -152,8 +137,6 @@ export const useFormUserAction = formAction$<UserForm, UserResponseData>(
             name: values.name,
             website: values.website || "",
         };
-
-        console.log('payload', payload);
 
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/me`, {
@@ -198,18 +181,13 @@ export interface OpinionResponseData {
 
 export const useFormOpinionAction = formAction$<OpinionForm, OpinionResponseData>(
     async (values, event) => {
-        console.log('############ useFormOpinionAction ############');
         const token = event.cookie.get('authjs.session-token')?.value;
-
-        console.log('values', values)
 
         const payload = {
             content: values.opinion,
             country_cca2: values.country,
             region_id: values.region_id ? parseInt(values.region_id) : null,
         }
-
-        console.log('payload', payload)
 
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/${values.debate_id}/opinions`, {
@@ -223,21 +201,21 @@ export const useFormOpinionAction = formAction$<OpinionForm, OpinionResponseData
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al crear el comentario');
+                throw new Error(errorData.message || 'Error creating the comment');
             }
 
             const data = await response.json();
 
             return {
                 success: true,
-                message: _`Opinión compartida exitosamente`,
+                message: _`Opinion shared successfully`,
                 data: data,
             };
         } catch (error: any) {
             console.error('Error in useFormOpinionAction:', error);
             return {
                 success: false,
-                message: error.message || 'Ocurrió un error inesperado',
+                message: error.message || 'An unexpected error occurred',
             };
         }
     },
@@ -253,16 +231,12 @@ export interface CommentResponseData {
 
 export const useFormCommentAction = formAction$<CommentForm, CommentResponseData>(
     async (values, event) => {
-        console.log('############ useFormCommentAction ############');
-        console.log('values', values);
 
         const token = event.cookie.get('authjs.session-token')?.value;
 
         const payload = {
             content: values.text,
         };
-
-        console.log('payload', payload);
 
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${values.pollId}/comments`, {
@@ -276,21 +250,21 @@ export const useFormCommentAction = formAction$<CommentForm, CommentResponseData
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al crear el comentario');
+                throw new Error(errorData.message || 'Error creating the comment');
             }
 
             const data = await response.json();
 
             return {
                 success: true,
-                message: _`Comentario añadido exitosamente`,
+                message: _`Comment added successfully`,
                 data: data,
             };
         } catch (error: any) {
             console.error('Error in useFormCommentAction:', error);
             return {
                 success: false,
-                message: error.message || 'Ocurrió un error inesperado',
+                message: error.message || 'An unexpected error occurred',
             };
         }
     },
@@ -300,7 +274,6 @@ export const useFormCommentAction = formAction$<CommentForm, CommentResponseData
 // eslint-disable-next-line qwik/loader-location
 export const useCheckUserOpinionInDebate = routeAction$(
     async (data, { cookie }) => {
-        console.log('### useCheckUserOpinionInDebate ###')
         const { debateId } = data
         const token = cookie.get('authjs.session-token')?.value;
         
@@ -319,7 +292,7 @@ export const useCheckUserOpinionInDebate = routeAction$(
                 return {
                     success: false,
                     hasOpinion: false,
-                    message: errorData.message || 'Error al verificar opinión'
+                    message: errorData.message || 'Error checking opinion'
                 };
             }
             
@@ -328,24 +301,23 @@ export const useCheckUserOpinionInDebate = routeAction$(
             return {
                 success: true,
                 hasOpinion: responseData.hasOpinion || false,
-                message: responseData.hasOpinion ? 'Ya has opinado en este debate' : ''
+                message: responseData.hasOpinion ? 'You have already expressed an opinion in this debate' : ''
             };
         } catch (err) {
             console.error('err', err)
             return {
                 success: false,
                 hasOpinion: false,
-                message: 'Error al verificar opinión'
+                message: 'Error checking opinion'
             }
         }
     }
 )
 
-// Acción para actualizar la visibilidad del usuario en una comunidad específica
+// Action to update the user's visibility in a specific community
 // eslint-disable-next-line qwik/loader-location
 export const useUpdateCommunityVisibility = routeAction$(
     async (data, { cookie }) => {
-        console.log('### useUpdateCommunityVisibility ###');
         const { communityId, isPublic } = data
         const token = cookie.get('authjs.session-token');
         if (!token) {
@@ -376,13 +348,11 @@ export const useUpdateCommunityVisibility = routeAction$(
     }
 );
 
-// Acción para unirse a una comunidad
+// Action to join a community
 // eslint-disable-next-line qwik/loader-location
 export const useJoinCommunity = routeAction$(
     async (data, { cookie }) => {
         const { communityId } = data;
-        console.log('### useJoinCommunity ###');
-        console.log('communityId', communityId)
         const token = cookie.get('authjs.session-token');
         if (!token) {
             return { success: false, error: "No authentication token found" };
@@ -399,7 +369,7 @@ export const useJoinCommunity = routeAction$(
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al unirse a la comunidad');
+                throw new Error(errorData.message || 'Error joining the community');
             }
 
             const result = await response.json();
@@ -411,11 +381,10 @@ export const useJoinCommunity = routeAction$(
     }
 );
 
-// Acción para abandonar una comunidad
+// Action to leave a community
 // eslint-disable-next-line qwik/loader-location
 export const useLeaveCommunity = routeAction$(
     async (data, { cookie }) => {
-        console.log('### useLeaveCommunity ###');
         const { communityId } = data;
         const token = cookie.get('authjs.session-token');
         if (!token) {
@@ -433,7 +402,7 @@ export const useLeaveCommunity = routeAction$(
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al abandonar la comunidad');
+                throw new Error(errorData.message || 'Error leaving the community');
             }
 
             const result = await response.json();
@@ -448,7 +417,6 @@ export const useLeaveCommunity = routeAction$(
 // eslint-disable-next-line qwik/loader-location
 export const useReportItem = routeAction$(
     async (data, { cookie }) => {
-        console.log('### useReportItem ###');
         const token = cookie.get('authjs.session-token');
         if (!token) {
             return { success: false, error: "No authentication token found" };
@@ -472,7 +440,7 @@ export const useReportItem = routeAction$(
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.detail || 'Error al enviar el reporte');
+                throw new Error(errorData.detail || 'Error reporting the item');
             }
 
             const result = await response.json();
@@ -481,7 +449,7 @@ export const useReportItem = routeAction$(
             console.error("Error reporting item:", error);
             return { 
                 success: false, 
-                message: error instanceof Error ? error.message : "Ha ocurrido un error inesperado al enviar el reporte" 
+                message: error instanceof Error ? error.message : "An unexpected error occurred while reporting the item" 
             };
         }
     }
@@ -491,7 +459,6 @@ export const useReportItem = routeAction$(
 // eslint-disable-next-line qwik/loader-location
 export const useDeletePoll = routeAction$(
     async (data, { cookie }) => {
-        console.log('### useDeletePoll ###');
         const token = cookie.get('authjs.session-token');
         if (!token) {
             return { success: false, error: "No authentication token found" };
@@ -530,24 +497,21 @@ export interface ReportResponseData {
 
 export const useFormReportAction = formAction$<ReportForm, ReportResponseData>(
     async (values, event) => {
-        console.log('############ useFormReportAction ############');
         const token = event.cookie.get('authjs.session-token')?.value;
         
         if (!token) {
             return {
                 success: false,
-                error: _`Debes iniciar sesión para reportar contenido.`
+                error: _`You must be logged in to report content.`
             };
         }
 
-        console.log('values', values)
         const payload = {
             item_type: values.itemType,
             item_id: values.itemId,
             reason: values.reason,
             details: values.details || ""
         }
-        console.log('payload', payload)
 
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/reports`, {
@@ -560,22 +524,21 @@ export const useFormReportAction = formAction$<ReportForm, ReportResponseData>(
                 body: JSON.stringify(payload),
             });
 
-            console.log('response', response)
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.detail || 'Error al enviar el reporte');
+                throw new Error(errorData.detail || 'Error reporting the item');
             }
 
             await response.json();
             return { 
                 success: true, 
-                message: _`Reporte enviado correctamente. Gracias por tu colaboración.` 
+                message: _`Report submitted successfully. Thank you for your cooperation.` 
             };
         } catch (error) {
             console.error("Error reporting item:", error);
             return { 
                 success: false, 
-                error: error instanceof Error ? error.message : _`Ha ocurrido un error inesperado al enviar el reporte` 
+                error: error instanceof Error ? error.message : _`An unexpected error occurred while submitting the report` 
             };
         }
     },
@@ -585,15 +548,12 @@ export const useFormReportAction = formAction$<ReportForm, ReportResponseData>(
 // eslint-disable-next-line qwik/loader-location
 export const useDeleteOpinion = routeAction$(
     async (data, { fail, cookie }) => {
-        console.log('### useDeleteOpinion ###')
-        console.log('data', data)
         const token = cookie.get('authjs.session-token')?.value;
-        console.log('token', token)
         
         if (!token) {
             return fail(401, {
                 success: false,
-                message: "No estás autenticado",
+                message: "You are not authenticated",
             });
         }
         
@@ -605,24 +565,23 @@ export const useDeleteOpinion = routeAction$(
                     "Authorization": `Bearer ${token}`,
                 },
             });
-            console.log('response', response)
             
             if (!response.ok) {
                 return fail(response.status, {
                     success: false,
-                    message: "Error al eliminar la opinión",
+                    message: "Error deleting the opinion",
                 });
             }
             
             return {
                 success: true,
-                message: "Opinión eliminada correctamente",
+                message: "Opinion deleted successfully",
             };
         } catch (error) {
-            console.error("Error al eliminar la opinión:", error);
+            console.error("Error deleting the opinion:", error);
             return fail(500, {
                 success: false,
-                message: "Error al eliminar la opinión",
+                message: "Error deleting the opinion",
             });
         }
     }
@@ -631,8 +590,6 @@ export const useDeleteOpinion = routeAction$(
 // eslint-disable-next-line qwik/loader-location
 export const useFollowUser = routeAction$(
     async (data, { cookie }) => {
-        console.log('### useFollowUser ###');
-        console.log('data', data);
 
         const token = cookie.get('authjs.session-token')?.value;
         if (!token) {
@@ -651,18 +608,18 @@ export const useFollowUser = routeAction$(
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.detail || 'Error al seguir al usuario');
+                throw new Error(errorData.detail || 'Error following the user');
             }
 
             return {
                 success: true,
-                message: "Usuario seguido correctamente",
+                message: "User followed successfully",
             };
         } catch (error) {
-            console.error("Error al seguir al usuario:", error);
+            console.error("Error following the user:", error);
             return {
                 success: false,
-                message: "Error al seguir al usuario",
+                message: "Error following the user",
             };
         }
     }
@@ -671,8 +628,6 @@ export const useFollowUser = routeAction$(
 // eslint-disable-next-line qwik/loader-location
 export const useUnfollowUser = routeAction$(
     async (data, { cookie }) => {
-        console.log('### useUnfollowUser ###');
-        console.log('data', data);
 
         const token = cookie.get('authjs.session-token')?.value;
         if (!token) {
@@ -691,18 +646,18 @@ export const useUnfollowUser = routeAction$(
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.detail || 'Error al seguir al usuario');
+                throw new Error(errorData.detail || 'Error unfollowing the user');
             }
 
             return {
                 success: true,
-                message: "Usuario dejado de seguir correctamente",
+                message: "User unfollowed successfully",
             };
         } catch (error) {
-            console.error("Error al seguir al usuario:", error);
+            console.error("Error unfollowing the user:", error);
             return {
                 success: false,
-                message: "Error al dejar de seguir al usuario",
+                message: "Error unfollowing the user",
             };
         }
     }
@@ -711,7 +666,6 @@ export const useUnfollowUser = routeAction$(
 // eslint-disable-next-line qwik/loader-location
 export const useDeleteDebate = routeAction$(
     async (data, { cookie }) => {
-        console.log('### useDeleteDebate ###');
         const token = cookie.get('authjs.session-token');
         if (!token) {
             return { success: false, error: "No authentication token found" };
@@ -728,15 +682,15 @@ export const useDeleteDebate = routeAction$(
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.detail || 'Error al eliminar el debate');
+                throw new Error(errorData.detail || 'Error deleting the debate');
             }
 
             return { success: true };
         } catch (error) {
-            console.error("Error al eliminar el debate:", error);
+            console.error("Error deleting the debate:", error);
             return { 
                 success: false, 
-                message: error instanceof Error ? error.message : "Ha ocurrido un error inesperado al eliminar el debate" 
+                message: error instanceof Error ? error.message : "An unexpected error occurred while deleting the debate" 
             };
         }
     }
@@ -745,7 +699,6 @@ export const useDeleteDebate = routeAction$(
 // eslint-disable-next-line qwik/loader-location
 export const useDeleteProject = routeAction$(
     async (data, { cookie }) => {
-        console.log('### useDeleteProject ###');
         const token = cookie.get('authjs.session-token');
         if (!token) {
             return { success: false, error: "No authentication token found" };
@@ -786,18 +739,15 @@ export interface CommunityRequestResponseData {
 
 export const useFormCommunityRequestAction = formAction$<CommunityRequestForm, CommunityRequestResponseData>(
     async (values, event) => {
-        console.log('############ useFormCommunityRequestAction ############');
         const token = event.cookie.get('authjs.session-token')?.value;
         
         if (!token) {
             return {
                 status: "error",
-                message: _`Debes iniciar sesión para enviar solicitudes.`
+                message: _`You must be logged in to submit requests.`
             };
         }
 
-        console.log('values', values);
-        
         const payload = {
             country: values.country,
             region: values.region,
@@ -805,8 +755,6 @@ export const useFormCommunityRequestAction = formAction$<CommunityRequestForm, C
             email: values.email
         };
         
-        console.log('payload', payload);
-
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/requests/`, {
                 method: 'POST',
@@ -819,17 +767,17 @@ export const useFormCommunityRequestAction = formAction$<CommunityRequestForm, C
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al enviar la solicitud de comunidad');
+                throw new Error(errorData.message || 'Error submitting the community request');
             }
 
             const data = await response.json();
 
             return {
                 status: "success",
-                message: _`Solicitud enviada correctamente`,
+                message: _`Request submitted successfully`,
                 data: {
                     success: true,
-                    message: _`Tu solicitud ha sido recibida. Te contactaremos pronto.`,
+                    message: _`Your request has been received. We will contact you soon.`,
                     request_id: data.request_id || ""
                 }
             };
@@ -837,10 +785,10 @@ export const useFormCommunityRequestAction = formAction$<CommunityRequestForm, C
             console.error('Error in useFormCommunityRequestAction:', error);
             return {
                 status: "error",
-                message: error.message || _`Ha ocurrido un error inesperado`,
+                message: error.message || _`An unexpected error occurred`,
                 data: {
                     success: false,
-                    message: error.message || _`Ha ocurrido un error inesperado`
+                    message: error.message || _`An unexpected error occurred`
                 }
             };
         }

@@ -13,6 +13,10 @@ import { useGetTags } from "~/shared/loaders";
 import { useGetSubregions } from "~/shared/regional/loaders";
 import { useGetSubregionalProjects } from "~/shared/subregional/loaders";
 
+export { useFormProjectLoader } from "~/shared/forms/loaders";
+export { useFormProjectAction } from "~/shared/forms/actions";
+export { useDeleteProject } from "~/shared/actions";
+
 export default component$(() => {
     const session = useSession();
     const showModalProject = useSignal(false);

@@ -12,8 +12,9 @@ import { capitalizeFirst } from "~/utils/capitalizeFirst";
 import { useGetSubregions } from "~/shared/regional/loaders";
 import { useGetSubregionalPolls } from "~/shared/subregional/loaders";
 
-export { useVotePoll, useReactPoll } from "~/shared/actions";
+export { useFormPollLoader } from "~/shared/forms/loaders";
 export { useFormPollAction } from "~/shared/forms/actions";
+export { useVotePoll, useReactPoll } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();

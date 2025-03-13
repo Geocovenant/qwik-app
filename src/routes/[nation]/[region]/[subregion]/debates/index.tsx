@@ -13,7 +13,9 @@ import { useGetTags } from "~/shared/loaders";
 import { useGetSubregions } from "~/shared/regional/loaders";
 import { useGetSubregionalDebates } from "~/shared/subregional/loaders";
 
+export { useFormDebateLoader } from "~/shared/forms/loaders";
 export { useFormDebateAction } from "~/shared/forms/actions";
+export { useDeleteDebate } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();

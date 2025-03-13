@@ -1,13 +1,10 @@
-import { component$, useComputed$ } from "@builder.io/qwik";
+import { component$ } from "@builder.io/qwik";
 import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
-import { LuBarChart2, LuFlag, LuUsers, LuMessageSquare, LuBriefcase, LuAlertTriangle, LuUserPlus, LuUserMinus } from "@qwikest/icons/lucide";
+import { LuBarChart2, LuFlag, LuUsers, LuMessageSquare, LuBriefcase, LuAlertTriangle } from "@qwikest/icons/lucide";
 import { capitalizeFirst } from '~/utils/capitalizeFirst';
 import { Image } from "@unpic/qwik";
-import { Button } from "~/components/ui";
-import { useJoinCommunity, useLeaveCommunity } from "~/shared/actions";
 import { _ } from "compiled-i18n";
 
-import { useGetUser } from "~/shared/loaders";
 import { useGetSubregion, useGetSubregionalDebates, useGetSubregionalPolls, useGetSubregionalProjects, useGetSubregionalIssues } from "~/shared/subregional/loaders";
 
 import type { Debate } from "~/types/debate";
@@ -21,21 +18,11 @@ export default component$(() => {
     const regionName = location.params.region;
     const subregionName = location.params.subregion;
     
-    const user = useGetUser();
     const subregion = useGetSubregion();
     const polls = useGetSubregionalPolls();
     const debates = useGetSubregionalDebates();
     const projects = useGetSubregionalProjects();
     const issues = useGetSubregionalIssues();
-
-    const joinCommunityAction = useJoinCommunity();
-    const leaveCommunityAction = useLeaveCommunity();
-
-    const isMember = useComputed$(() => {
-        return user.value.communities?.some(
-            (community: any) => community.id === subregion.value.community_id
-        );
-    });
 
     const pollsCount = polls.value.total || 0;
     const debatesCount = debates.value.total || 0;
@@ -58,37 +45,6 @@ export default component$(() => {
                 <p class="text-gray-600 dark:text-gray-300 mb-4">
                     {_`Bienvenido a la comunidad local donde los ciudadanos colaboran en asuntos específicos de la subregión.`}
                 </p>
-                
-                <Button
-                    class={`flex items-center gap-2 font-medium py-2 px-4 rounded-lg transition-colors ${
-                        isMember.value 
-                            ? 'bg-red-600 hover:bg-red-700 text-white' 
-                            : 'bg-blue-600 hover:bg-blue-700 text-white'
-                    }`}
-                    onClick$={() => {
-                        if (isMember.value) {
-                            leaveCommunityAction.submit({
-                                communityId: subregion.value.community_id
-                            });
-                        } else {
-                            joinCommunityAction.submit({
-                                communityId: subregion.value.community_id
-                            });
-                        }
-                    }}
-                >
-                    {isMember.value ? (
-                        <>
-                            <LuUserMinus class="w-5 h-5" />
-                            <span>{_`Abandonar Comunidad`}</span>
-                        </>
-                    ) : (
-                        <>
-                            <LuUserPlus class="w-5 h-5" />
-                            <span>{_`Unirse a la Comunidad`}</span>
-                        </>
-                    )}
-                </Button>
             </div>
 
             {/* Main Content */}

@@ -179,7 +179,7 @@ export default component$<ProjectCardProps>(({
                 </div>
 
                 {/* Progress bar if there is a goal */}
-                {goalAmount && (
+                {!!goalAmount && (
                     <div class="mb-3">
                         <div class="flex justify-between text-sm mb-1">
                             <span class="text-gray-700 dark:text-gray-300">{_`Progress`}</span>

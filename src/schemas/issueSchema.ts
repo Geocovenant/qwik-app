@@ -4,6 +4,7 @@ import { CommunityType } from '~/constants/communityType';
 
 export const MAX_TITLE_LENGTH = 100;
 export const MAX_DESCRIPTION_LENGTH = 2000;
+export const MAX_ORGANIZATION_NAME_LENGTH = 100;
 
 // Crear un objeto Enum adecuado para el tipo de status
 const STATUS_ENUM = {
@@ -33,6 +34,10 @@ export const IssueSchema = object({
         minLength(10, _`Description must have at least 10 characters`),
         maxLength(MAX_DESCRIPTION_LENGTH, _`Description must have ${MAX_DESCRIPTION_LENGTH} characters or less`)
     ),
+    organization_name: optional(pipe(
+        string(),
+        maxLength(MAX_ORGANIZATION_NAME_LENGTH, _`Organization name must have ${MAX_ORGANIZATION_NAME_LENGTH} characters or less`)
+    )),
     status: enum_(STATUS_ENUM),
     scope: enum_(COMMUNITY_TYPE_ENUM),
     community_ids: pipe(
@@ -46,6 +51,7 @@ export const IssueSchema = object({
 export type IssueForm = {
     title: string;
     description: string;
+    organization_name?: string;
     status: 'OPEN' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED';
     scope: CommunityType;
     community_ids: string[];

@@ -1,7 +1,7 @@
 import { component$, Slot } from "@builder.io/qwik";
 import { Breadcrumb } from "~/components/ui";
-import { _ } from "compiled-i18n";
 import { NavLink } from "~/components/NavLink";
+import { _ } from "compiled-i18n";
 
 export { useGetGlobalPolls, useGetGlobalDebates, useGetGlobalProjects } from "~/shared/global/loaders"
 
@@ -13,18 +13,20 @@ export default component$(() => {
         <div class="container mx-auto px-4 pt-1 pb-4">
             <div class="bg-white dark:bg-gray-900 shadow-sm mb-3 rounded-lg">
                 <div class="py-1 px-4">
-                    <Breadcrumb.Root>
-                        <Breadcrumb.List>
-                            <Breadcrumb.Item>
-                                <Breadcrumb.Link href="/" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                                    {_`Global`}
-                                </Breadcrumb.Link>
-                            </Breadcrumb.Item>
-                        </Breadcrumb.List>
-                    </Breadcrumb.Root>
+                    <div class="flex justify-between items-center flex-wrap gap-2">
+                        <Breadcrumb.Root>
+                            <Breadcrumb.List>
+                                <Breadcrumb.Item>
+                                    <Breadcrumb.Link href="/" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                        {_`Global`}
+                                    </Breadcrumb.Link>
+                                </Breadcrumb.Item>
+                            </Breadcrumb.List>
+                        </Breadcrumb.Root>
+                    </div>
                 </div>
                 <div>
-                    <nav class="flex border-b border-gray-200 dark:border-gray-700">
+                    <nav class="flex border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
                         <NavLink
                             href="/global"
                             class={baseClass}

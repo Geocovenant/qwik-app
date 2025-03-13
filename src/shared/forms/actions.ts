@@ -101,7 +101,6 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
 
 export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
     async (values, event) => {
-        console.log('values4', values)
 
         const token = event.cookie.get('authjs.session-token')?.value;
 
@@ -134,7 +133,6 @@ export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
         //     // 2. File type validation
         //     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         //     if (values.image.type && !allowedTypes.includes(values.image.type)) {
-        //         console.log(7)
         //         return {
         //             success: false,
         //             message: _`Invalid image format. Allowed formats are: JPG, PNG, GIF, and WEBP.`,
@@ -183,7 +181,6 @@ export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
                 break;
         }
 
-        console.log('payload', payload)
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates`, {
                 method: 'POST',
@@ -235,7 +232,6 @@ export const useFormProjectAction = formAction$<ProjectForm, ProjectResponseData
             description: values.description,
             goal_amount: values.goal_amount,
             status: values.status,
-            is_anonymous: values.is_anonymous,
             scope: values.scope,
             tags: values.tags || [],
             steps: values.steps.map(step => ({
@@ -243,12 +239,12 @@ export const useFormProjectAction = formAction$<ProjectForm, ProjectResponseData
                 description: step.description || "",
                 order: step.order || "0",
                 status: step.status,
-                resources: step.resources.map(resource => ({
+                resources: step.resources?.map(resource => ({
                     type: resource.type,
                     description: resource.description,
                     quantity: resource.quantity || "",
                     unit: resource.unit || ""
-                }))
+                })) || []
             }))
         };
 
@@ -306,8 +302,6 @@ export const useFormProjectAction = formAction$<ProjectForm, ProjectResponseData
 
 export const useFormIssueAction = formAction$<IssueForm, IssueResponseData>(
     async (values, event) => {
-        console.log('############ useFormIssueAction ############');
-        console.log('values', values);
 
         const token = event.cookie.get('authjs.session-token')?.value;
 
@@ -315,6 +309,7 @@ export const useFormIssueAction = formAction$<IssueForm, IssueResponseData>(
         const payload = {
             title: values.title,
             description: values.description,
+            organization_name: values.organization_name || null,
             status: values.status,
             is_anonymous: values.is_anonymous,
             scope: values.scope,
@@ -339,8 +334,6 @@ export const useFormIssueAction = formAction$<IssueForm, IssueResponseData>(
                 Object.assign(payload, { subregion_id: values.community_ids[0] });
                 break;
         }
-
-        console.log('payload', payload);
 
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/issues`, {
