@@ -12,6 +12,7 @@ import { useGetUser } from "~/shared/loaders";
 import { useGetLocality } from "~/shared/local/loaders";
 import { useJoinCommunity, useLeaveCommunity } from "~/shared/actions";
 
+export { useGetLocalities } from "~/shared/subregional/loaders";
 export { useGetLocality, useGetLocalPolls, useGetLocalDebates, useGetLocalProjects, useGetLocalIssues, useGetLocalMembers } from "~/shared/local/loaders";
 
 export default component$(() => {
@@ -109,7 +110,7 @@ export default component$(() => {
                             class={baseClass}
                             activeClass={activeClass}
                         >
-                            {_`Summary`}
+                            {_`Overview`}
                         </NavLink>
                         <NavLink
                             href={`/${nationParam}/${regionParam}/${subregionParam}/${localityParam}/polls`}

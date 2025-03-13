@@ -21,7 +21,7 @@ export const useGetRegion = routeLoader$(async ({ params }) => {
 
 /**
  * Loader to fetch regions data
- * Returns regions data or empty array if error occurs
+ * Returns subregions data or empty array if error occurs
  */
 export const useGetSubregions = routeLoader$(async ({ resolveValue }) => {
     const region = await resolveValue(useGetRegion);

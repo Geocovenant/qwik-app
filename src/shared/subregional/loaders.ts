@@ -20,6 +20,25 @@ export const useGetSubregion = routeLoader$(async ({ params }) => {
 });
 
 /**
+ * Loader to fetch subregions data
+ * Returns localities data or empty array if error occurs
+ */
+export const useGetLocalities = routeLoader$(async ({ resolveValue }) => {
+    const subregion = await resolveValue(useGetSubregion);
+    try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/subregions/${subregion.subregion_id}/localities`);
+        if (!response.ok) {
+            throw new Error('Error fetching subregions localities');
+        }
+        const localities = await response.json();
+        return localities;
+    } catch (error) {
+        console.error('Error fetching subregions localities:', error);
+        return [];
+    }
+});
+
+/**
  * Loader to get subregional polls with pagination
  * Returns poll data or an empty array if an error occurs
  */

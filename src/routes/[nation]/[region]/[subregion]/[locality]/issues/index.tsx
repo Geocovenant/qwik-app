@@ -11,6 +11,7 @@ import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
 // Import specific loaders for locality
 import { useGetTags } from "~/shared/loaders";
+import { useGetLocalities } from "~/shared/subregional/loaders";
 import { useGetLocality, useGetLocalIssues } from "~/shared/local/loaders";
 
 export { useFormIssueLoader } from "~/shared/forms/loaders";
@@ -24,7 +25,10 @@ export default component$(() => {
     const regionName = location.params.region;
     const subregionName = location.params.subregion;
     const localityName = location.params.locality;
-    
+
+    // This request fetches the other localities of the subregion
+    const localities = useGetLocalities();
+
     const tags = useGetTags();
     const locality = useGetLocality();
     const issues = useGetLocalIssues();
@@ -61,6 +65,7 @@ export default component$(() => {
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.LOCAL}
                                 defaultLocalityId={locality.value.id}
+                                localities={Array.isArray(localities.value) ? localities.value : []}
                                 tags={tags.value}
                             />
                             : <SocialLoginButtons />

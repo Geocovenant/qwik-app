@@ -66,7 +66,7 @@ export default component$(() => {
                         </div>
                         <div class="mt-4 sm:mt-0 flex items-center gap-2 pl-3">
                             <span class="text-lg font-semibold text-blue-700 dark:text-blue-400">
-                                {members.value.total || 0} {_`members`}
+                                {members.value.total_public + members.value.total_anonymous} {_`members`}
                             </span>
                         </div>
                     </div>

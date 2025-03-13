@@ -9,11 +9,13 @@ import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Import specific loaders for locality
 import { useGetTags } from "~/shared/loaders";
+import { useGetLocalities } from "~/shared/subregional/loaders";
 import { useGetLocality, useGetLocalDebates } from "~/shared/local/loaders";
 
+export { useFormDebateLoader } from "~/shared/forms/loaders";
 export { useFormDebateAction } from "~/shared/forms/actions";
+export { useDeleteDebate } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
@@ -24,6 +26,9 @@ export default component$(() => {
     const subregionName = location.params.subregion;
     const localityName = location.params.locality;
     
+    // This request fetches the other localities of the subregion
+    const localities = useGetLocalities();
+
     const locality = useGetLocality();
     const tags = useGetTags();
     const debates = useGetLocalDebates();
@@ -58,6 +63,7 @@ export default component$(() => {
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.LOCAL}
                                 defaultLocalityId={locality.value.id}
+                                localities={Array.isArray(localities.value) ? localities.value : []}
                                 tags={tags.value}
                             />
                         </Modal>

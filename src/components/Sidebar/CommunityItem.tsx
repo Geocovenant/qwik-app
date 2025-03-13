@@ -100,39 +100,39 @@ export const CommunityItem = component$(({
         }
     });
 
-    // Significantly increase the indentation for each level
+    // Ajustar la indentación y los indicadores visuales de nivel
     const calculateIndent = (level: number) => {
         if (isCollapsed) return "";
         switch (level) {
             case 0: return "";
-            case 1: return "ml-8";
-            case 2: return "ml-16";
-            case 3: return "ml-24";
-            default: return `ml-${8 * level}`;
+            case 1: return "ml-6";
+            case 2: return "ml-12";
+            case 3: return "ml-18";
+            case 4: return "ml-24"; // Añadido caso para nivel 4 (localidades)
+            default: return `ml-${6 * level}`;
         }
     };
     
     const indentClass = calculateIndent(level);
     
     const itemClass = `
-        flex items-center gap-2 px-3 py-1.5 rounded-lg
+        flex items-center gap-2 py-1.5 rounded-lg
         ${isActive 
             ? "bg-primary/20 dark:bg-primary/20 text-primary dark:text-primary-foreground font-medium border-l-2 border-primary shadow-sm" 
             : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-primary dark:hover:text-primary-foreground"
         }
-        ${indentClass}
-        ${isCollapsed ? "justify-center" : ""}
+        ${isCollapsed ? "justify-center px-3" : "px-2"}
         transition-all duration-200 ease-in-out
     `;
 
-    // Improved visual indicator for levels
+    // Ajustar también el indicador visual de nivel para que coincida con la nueva indentación
     const levelIndicator = !isCollapsed && level > 0 ? (
         <div class="absolute left-0 top-0 bottom-0 flex h-full">
             {[...Array(level)].map((_, i) => (
                 <div 
                     key={i}
                     class="h-full w-0.5 bg-gray-200 dark:bg-gray-700"
-                    style={{ marginLeft: `${i * 8 + 3}px` }}
+                    style={{ marginLeft: `${i * 6 + 3}px` }} // Cambiar multiplicador de 8 a 6
                 />
             ))}
         </div>
@@ -153,23 +153,10 @@ export const CommunityItem = component$(({
                             boxShadow: isOpen.value ? '0 1px 2px 0 rgba(0,0,0,0.05)' : 'none'
                         }}
                     >
-                        <div class="flex items-center group">
-                            <Link
-                                href={`/${community.path}`}
-                                class={`flex flex-1 items-center gap-2 ${itemClass}`}
-                                onClick$={onClick$}
-                                prefetch={false}
-                            >
-                                <div class="h-5 w-5 flex-shrink-0 transition-transform group-hover:scale-110">
-                                    {community.icon}
-                                </div>
-                                {!isCollapsed && (
-                                    <span class="font-medium">{community.name}</span>
-                                )}
-                            </Link>
+                        <div class={`flex items-center group ${indentClass}`}>
                             {!isCollapsed && (
                                 <Collapsible.Trigger 
-                                    class="p-1.5 mr-2 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 
+                                    class="p-1 flex-shrink-0 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 
                                            hover:text-primary dark:hover:text-primary-foreground rounded-md 
                                            transition-all duration-200 ease-in-out"
                                 >
@@ -178,6 +165,19 @@ export const CommunityItem = component$(({
                                     </div>
                                 </Collapsible.Trigger>
                             )}
+                            <Link
+                                href={`/${community.path}`}
+                                class={itemClass}
+                                onClick$={onClick$}
+                                prefetch={false}
+                            >
+                                <div class="h-5 w-5 flex-shrink-0 transition-transform group-hover:scale-110">
+                                    {community.icon}
+                                </div>
+                                {!isCollapsed && (
+                                    <span class="font-medium truncate whitespace-nowrap">{community.name}</span>
+                                )}
+                            </Link>
                         </div>
                         {isOpen.value && (
                             <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
