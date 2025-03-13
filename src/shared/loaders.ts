@@ -240,39 +240,6 @@ export const useGetPollBySlug = routeLoader$(async ({ cookie, params }) => {
     }
 });
 
-export const useGetRegionalProjects = routeLoader$(async ({ params }) => {
-    const regionId = params.region;
-    if (!regionId) return [];
-    try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects?scope=REGIONAL&region=${regionId}`, {
-            headers: {
-                Accept: 'application/json'
-            }
-        });
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        return [];
-    }
-});
-
-// eslint-disable-next-line qwik/loader-location
-export const useGetRegionalIssues = routeLoader$(async ({ params }) => {
-    const regionId = params.region;
-    if (!regionId) return [];
-    try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/issues?scope=REGIONAL&region=${regionId}`, {
-            headers: {
-                Accept: 'application/json'
-            }
-        });
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        return [];
-    }
-});
-
 export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue }) => {
     const token = cookie.get('authjs.session-token');
     if (!token) {

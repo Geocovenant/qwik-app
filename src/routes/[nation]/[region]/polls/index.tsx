@@ -10,9 +10,8 @@ import { useSession } from "~/routes/plugin@auth";
 import { dataArray as countries } from "~/data/countries";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-// Regional polls loader
-import { useGetRegion, useGetRegionalPolls } from "~/shared/regional/loaders";
 import { useGetRegions } from "~/shared/national/loaders";
+import { useGetRegion, useGetRegionalPolls } from "~/shared/regional/loaders";
 
 export { useFormPollLoader } from "~/shared/forms/loaders";
 export { useFormPollAction } from "~/shared/forms/actions";
@@ -66,8 +65,7 @@ export default component$(() => {
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.REGIONAL}
                                 defaultRegionId={region.value.id}
-                                // @ts-ignore
-                                regions={regions.value}
+                                regions={Array.isArray(regions.value) ? regions.value : []}
                             />
                         </Modal>
                         : <Modal

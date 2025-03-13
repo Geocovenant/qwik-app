@@ -10,7 +10,7 @@ import { useSession } from "~/routes/plugin@auth";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
 import { useGetSubregions } from "~/shared/regional/loaders";
-import { useGetSubregionalPolls } from "~/shared/subregional/loaders";
+import { useGetSubregion, useGetSubregionalPolls } from "~/shared/subregional/loaders";
 
 export { useFormPollLoader } from "~/shared/forms/loaders";
 export { useFormPollAction } from "~/shared/forms/actions";
@@ -24,7 +24,10 @@ export default component$(() => {
     const regionName = location.params.region;
     const subregionName = location.params.subregion;
     
+    // This request fetches the other subregions of the region
     const subregions = useGetSubregions();
+
+    const subregion = useGetSubregion();
     const polls = useGetSubregionalPolls();
     const currentPage = useSignal(1);
     const nav = useNavigate();
@@ -58,6 +61,7 @@ export default component$(() => {
                             <FormPoll
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.SUBREGIONAL}
+                                defaultSubregionId={subregion.value.id}
                                 subregions={Array.isArray(subregions.value) ? subregions.value : []}
                             />
                         </Modal>

@@ -156,8 +156,7 @@ export const useGetLocalIssues = routeLoader$(async ({ cookie, query, resolveVal
 
     try {
         const url = new URL(baseUrl);
-        url.searchParams.append('scope', 'LOCAL');
-        url.searchParams.append('locality', locality.id);
+        url.searchParams.append('community_id', locality.id);
         if (page) url.searchParams.append('page', page);
 
         const response = await fetch(url.toString(), {

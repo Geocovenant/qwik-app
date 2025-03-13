@@ -11,7 +11,8 @@ import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
 // Updated imports for regional data
 import { useGetTags } from "~/shared/loaders";
-import { useGetRegionalIssues } from "~/shared/regional/loaders";
+import { useGetRegion, useGetRegionalIssues } from "~/shared/regional/loaders";
+import { useGetRegions } from "~/shared/national/loaders";
 
 export { useFormIssueLoader } from "~/shared/forms/loaders";
 export { useFormIssueAction } from "~/shared/forms/actions";
@@ -22,6 +23,11 @@ export default component$(() => {
     const location = useLocation();
     const nationName = location.params.nation;
     const regionName = location.params.region;
+
+    // This request fetches the other regions of the nation
+    const regions = useGetRegions();
+
+    const region = useGetRegion();
 
     const tags = useGetTags();
     const issues = useGetRegionalIssues();
@@ -56,6 +62,8 @@ export default component$(() => {
                             ? <FormIssue
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.REGIONAL}
+                                defaultRegionId={region.value.id}
+                                regions={Array.isArray(regions.value) ? regions.value : []}
                                 tags={tags.value}
                             />
                             : <SocialLoginButtons />

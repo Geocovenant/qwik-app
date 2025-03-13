@@ -11,7 +11,7 @@ import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
 import { useGetTags } from "~/shared/loaders";
 import { useGetSubregions } from "~/shared/regional/loaders";
-import { useGetSubregionalDebates } from "~/shared/subregional/loaders";
+import { useGetSubregion, useGetSubregionalDebates } from "~/shared/subregional/loaders";
 
 export { useFormDebateLoader } from "~/shared/forms/loaders";
 export { useFormDebateAction } from "~/shared/forms/actions";
@@ -25,7 +25,10 @@ export default component$(() => {
     const regionName = location.params.region;
     const subregionName = location.params.subregion;
     
+    // This request fetches the other subregions of the region
     const subregions = useGetSubregions();
+
+    const subregion = useGetSubregion();
     const tags = useGetTags();
     const debates = useGetSubregionalDebates();
     const currentPage = useSignal(1);
@@ -61,6 +64,7 @@ export default component$(() => {
                             <FormDebate
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.SUBREGIONAL}
+                                defaultSubregionId={subregion.value.id}
                                 subregions={Array.isArray(subregions.value) ? subregions.value : []}
                                 tags={tags.value}
                             />

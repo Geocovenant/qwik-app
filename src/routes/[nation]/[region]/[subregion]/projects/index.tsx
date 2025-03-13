@@ -11,7 +11,7 @@ import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
 import { useGetTags } from "~/shared/loaders";
 import { useGetSubregions } from "~/shared/regional/loaders";
-import { useGetSubregionalProjects } from "~/shared/subregional/loaders";
+import { useGetSubregion, useGetSubregionalProjects } from "~/shared/subregional/loaders";
 
 export { useFormProjectLoader } from "~/shared/forms/loaders";
 export { useFormProjectAction } from "~/shared/forms/actions";
@@ -25,7 +25,10 @@ export default component$(() => {
     const regionName = location.params.region;
     const subregionName = location.params.subregion;
     
+    // This request fetches the other subregions of the region
     const subregions = useGetSubregions();
+    
+    const subregion = useGetSubregion();
     const tags = useGetTags();
     const projects = useGetSubregionalProjects();
     const currentPage = useSignal(1);
@@ -56,6 +59,7 @@ export default component$(() => {
                             ? <FormProject
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.SUBREGIONAL}
+                                defaultSubregionId={subregion.value.id}
                                 subregions={Array.isArray(subregions.value) ? subregions.value : []}
                                 tags={tags.value}
                             />

@@ -154,8 +154,7 @@ export const useGetSubregionalIssues = routeLoader$(async ({ cookie, query, reso
 
     try {
         const url = new URL(baseUrl);
-        url.searchParams.append('scope', 'SUBREGIONAL');
-        url.searchParams.append('subregion', subregion.id);
+        url.searchParams.append('community_id', subregion.id);
         if (page) url.searchParams.append('page', page);
 
         const response = await fetch(url.toString(), {

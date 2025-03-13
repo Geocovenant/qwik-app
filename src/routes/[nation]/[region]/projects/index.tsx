@@ -68,8 +68,7 @@ export default component$(() => {
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.REGIONAL}
                                 defaultRegionId={region.value.id}
-                                // @ts-ignore
-                                regions={regions.value}
+                                regions={Array.isArray(regions.value) ? regions.value : []}
                                 tags={tags.value}
                             />
                             : <SocialLoginButtons />

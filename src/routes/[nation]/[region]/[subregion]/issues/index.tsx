@@ -10,7 +10,8 @@ import { useSession } from "~/routes/plugin@auth";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
 import { useGetTags } from "~/shared/loaders";
-import { useGetSubregionalIssues } from "~/shared/subregional/loaders";
+import { useGetSubregion, useGetSubregionalIssues } from "~/shared/subregional/loaders";
+import { useGetSubregions } from "~/shared/regional/loaders";
 
 export { useFormIssueLoader } from "~/shared/forms/loaders";
 export { useFormIssueAction } from "~/shared/forms/actions";
@@ -22,6 +23,11 @@ export default component$(() => {
     const nationName = location.params.nation;
     const regionName = location.params.region;
     const subregionName = location.params.subregion;
+
+    // This request fetches the other subregions of the region
+    const subregions = useGetSubregions();
+    
+    const subregion = useGetSubregion();
     
     const tags = useGetTags();
     const issues = useGetSubregionalIssues();
@@ -58,6 +64,8 @@ export default component$(() => {
                             ? <FormIssue
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.SUBREGIONAL}
+                                defaultSubregionId={subregion.value.id}
+                                subregions={Array.isArray(subregions.value) ? subregions.value : []}
                                 tags={tags.value}
                             />
                             : <SocialLoginButtons />

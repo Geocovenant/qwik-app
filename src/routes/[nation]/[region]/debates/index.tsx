@@ -66,10 +66,9 @@ export default component$(() => {
                             <FormDebate
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.REGIONAL}
-                                tags={tags.value}
                                 defaultRegionId={region.value.id}
-                                // @ts-ignore
-                                regions={regions.value}
+                                regions={Array.isArray(regions.value) ? regions.value : []}
+                                tags={tags.value}
                             />
                         </Modal>
                         : <Modal

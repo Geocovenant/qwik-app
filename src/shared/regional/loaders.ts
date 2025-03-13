@@ -173,10 +173,10 @@ export const useGetRegionalIssues = routeLoader$(async ({ cookie, query, resolve
 
     try {
         const url = new URL(baseUrl);
-        url.searchParams.append('scope', 'REGIONAL');
-        url.searchParams.append('region', region.id);
+        url.searchParams.append('community_id', region.id);
         if (page) url.searchParams.append('page', page);
 
+        console.log('url.toString()', url.toString())
         const response = await fetch(url.toString(), {
             headers: {
                 Accept: 'application/json',
