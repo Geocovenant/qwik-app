@@ -1,7 +1,7 @@
 import { type QRL, component$, Resource, useResource$, useSignal, useTask$ } from "@builder.io/qwik";
 import { Link, useLocation } from "@builder.io/qwik-city";
 import { Collapsible } from '@qwik-ui/headless';
-import { LuBuilding, LuChevronRight } from "@qwikest/icons/lucide";
+import { LuBuilding, LuChevronRight, LuMapPin } from "@qwikest/icons/lucide";
 import { _ } from "compiled-i18n";
 
 // Define the Community interface for the community structure
@@ -15,8 +15,9 @@ export interface Community {
     divisionType?: string
 }
 
-// Reusable icon component
+// Reusable icon components
 export const LuBuildingIcon = component$(() => <LuBuilding class="h-5 w-5" />);
+export const LuMapPinIcon = component$(() => <LuMapPin class="h-5 w-5" />);
 
 export const CommunityItem = component$(({ 
     community, 
@@ -50,6 +51,11 @@ export const CommunityItem = component$(({
     
     // Determine if it can have subdivisions
     const canHaveSubdivisions = community.id !== 'global' && community.id !== 'international';
+    
+    // Determine if this is a subregion that might have localities
+    // Now using a more reliable approach based on path structure and level
+    const isSubregion = level === 3 || 
+                        (community.path.split('/').length >= 3 && !community.cca2);
 
     const divisions = useResource$(async ({ track, cleanup }) => {
         track(() => isOpen.value);
@@ -61,11 +67,19 @@ export const CommunityItem = component$(({
         cleanup(() => controller.abort());
         
         try {
-            // If it is a country (has cca2), use the country route
-            // If not, use the regions route
-            const url = community.cca2 
-                ? `/api/v1/countries/${community.cca2}/divisions`
-                : `/api/v1/regions/${community.id}/subregions`;
+            let url;
+            
+            // Determine the appropriate endpoint based on the type of community
+            if (isSubregion) {
+                // If it's a subregion, use the localities endpoint
+                url = `/api/v1/subregions/${community.id}/localities`;
+            } else if (community.cca2) {
+                // If it is a country (has cca2), use the country route
+                url = `/api/v1/countries/${community.cca2}/divisions`;
+            } else {
+                // Otherwise, use the regions route
+                url = `/api/v1/regions/${community.id}/subregions`;
+            }
             
             const response = await fetch(url, {
                 signal: controller.signal,
@@ -194,6 +208,11 @@ export const CommunityItem = component$(({
                                                 .replace(/\s+/g, '-')
                                                 .replace(/[^a-z0-9-]/g, '');
                                             
+                                            // Determine correct icon based on division type
+                                            const icon = division.type === 'locality' 
+                                                ? <LuMapPinIcon /> 
+                                                : <LuBuildingIcon />;
+                                            
                                             return (
                                                 <CommunityItem 
                                                     key={division.id}
@@ -201,7 +220,7 @@ export const CommunityItem = component$(({
                                                         id: division.id,
                                                         name: division.name,
                                                         path: `${community.path}/${slug}`,
-                                                        icon: <LuBuildingIcon />,
+                                                        icon: icon,
                                                         children: [],
                                                         divisionType: division.type
                                                     }} 

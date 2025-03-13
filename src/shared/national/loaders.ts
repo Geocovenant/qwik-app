@@ -190,7 +190,6 @@ export const useGetNationalIssues = routeLoader$(async ({ cookie, query, resolve
         url.searchParams.append('country', country.cca2);
         if (page) url.searchParams.append('page', page);
 
-        console.log('url.toString()2', url.toString())
         const response = await fetch(url.toString(), {
             headers: {
                 Accept: 'application/json',
