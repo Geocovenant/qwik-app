@@ -1,4 +1,4 @@
-import { component$, useSignal } from '@builder.io/qwik';
+import { $, component$, useSignal } from '@builder.io/qwik';
 import { _ } from 'compiled-i18n';
 import {
     LuCoffee,
@@ -10,27 +10,35 @@ import {
     LuCopy,
     LuCheckCircle,
 } from '@qwikest/icons/lucide';
-
 import { Accordion } from '~/components/ui/accordion/accordion';
 
-export default component$(() => {
-    const copiedAddress = useSignal<string | null>(null);
+import BitcoinIcon from '~/icons/bitcoin.svg?jsx';
+import EthereumIcon from '~/icons/ethereum.svg?jsx';
+import DogeIcon from '~/icons/dogecoin.svg?jsx';
+import UsdtIcon from '~/icons/usdt.svg?jsx';
+import UsdcIcon from '~/icons/usdc.svg?jsx';
+import BnbIcon from '~/icons/bnb.svg?jsx';
+import DaiIcon from '~/icons/dai.svg?jsx';
+import SolanaIcon from '~/icons/solana.svg?jsx';
+import RippleIcon from '~/icons/xrp.svg?jsx';
 
-    // TODO: Add copy to clipboard
-    // const copyToClipboard$ = $((text: string) => {
-    //     navigator.clipboard.writeText(text);
-    //     copiedAddress.value = text;
-    //     setTimeout(() => {
-    //         copiedAddress.value = null;
-    //     }, 2000);
-    // });
+export default component$(() => {
+    // Add signal to control the visibility of the copied message
+    const showCopiedMessage = useSignal(false);
+
+    const copyToClipboard = $((text: string) => {
+        navigator.clipboard.writeText(text);
+        showCopiedMessage.value = true;
+        setTimeout(() => {
+            showCopiedMessage.value = false;
+        }, 2000);
+    });
 
     const cryptoData = [
         {
             name: "Bitcoin (BTC)",
             address: "bc1qv2yjs9mrf3376uzrf0dnhsfy9tarf6s0mxk7w0",
             network: "BTC",
-            //   icon: Bitcoin,
             color: "text-[#F7931A]",
             bgColor: "bg-[#F7931A]/10",
         },
@@ -38,15 +46,20 @@ export default component$(() => {
             name: "Ethereum (ETH)",
             address: "0x4A0c64171bba525b580e0d1fAb4ED83a314CB082",
             network: "ERC20",
-            //   icon: Ethereum,
             color: "text-[#627EEA]",
             bgColor: "bg-[#627EEA]/10",
+        },
+        {
+            name: "Dogecoin (DOGE)",
+            address: "DPkfwL6uR9uhm1P2NqD1TmA6LarNugrXyD",
+            network: "DOGE",
+            color: "text-[#C2A633]",
+            bgColor: "bg-[#C2A633]/10",
         },
         {
             name: "Tether (USDT)",
             address: "0x4A0c64171bba525b580e0d1fAb4ED83a314CB082",
             network: "BEP20",
-            //   icon: Server,
             color: "text-[#26A17B]",
             bgColor: "bg-[#26A17B]/10",
         },
@@ -54,31 +67,27 @@ export default component$(() => {
             name: "USD Coin (USDC)",
             address: "0x4A0c64171bba525b580e0d1fAb4ED83a314CB082",
             network: "BEP20",
-            //   icon: Server,
             color: "text-[#2775CA]",
             bgColor: "bg-[#2775CA]/10",
-        },
-        {
-            name: "Dai (DAI)",
-            address: "0x4A0c64171bba525b580e0d1fAb4ED83a314CB082",
-            network: "BEP20",
-            //   icon: Server,
-            color: "text-[#F5AC37]",
-            bgColor: "bg-[#F5AC37]/10",
         },
         {
             name: "Binance Coin (BNB)",
             address: "0x4A0c64171bba525b580e0d1fAb4ED83a314CB082",
             network: "BEP20",
-            //   icon: Server,
             color: "text-[#F3BA2F]",
             bgColor: "bg-[#F3BA2F]/10",
+        },
+        {
+            name: "Dai (DAI)",
+            address: "0x4A0c64171bba525b580e0d1fAb4ED83a314CB082",
+            network: "BEP20",
+            color: "text-[#F5AC37]",
+            bgColor: "bg-[#F5AC37]/10",
         },
         {
             name: "Solana (SOL)",
             address: "6upJMmLsgdMnuPEJiE9863uLEsd8KFVGaCVSneJ2u4uM",
             network: "SOL",
-            //   icon: Server,
             color: "text-[#00FFA3]",
             bgColor: "bg-[#00FFA3]/10",
         },
@@ -87,17 +96,8 @@ export default component$(() => {
             address: "radpYi88bTTf1QQVVjDaQGi9WEiLQ5ZUBY",
             network: "RIPPLE",
             memo: "2171582678",
-            //   icon: Server,
             color: "text-[#23292F]",
             bgColor: "bg-[#23292F]/10 dark:bg-[#23292F]/30",
-        },
-        {
-            name: "Dogecoin (DOGE)",
-            address: "DPkfwL6uR9uhm1P2NqD1TmA6LarNugrXyD",
-            network: "DOGE",
-            //   icon: Server,
-            color: "text-[#C2A633]",
-            bgColor: "bg-[#C2A633]/10",
         },
     ]
 
@@ -269,7 +269,51 @@ export default component$(() => {
                                         <Accordion.Trigger class="hover:no-underline w-full">
                                             <div class="flex items-center">
                                                 <div class={`p-2 rounded-full mr-3 ${crypto.bgColor}`}>
-                                                    xxx
+                                                    {index === 0 && (
+                                                        <BitcoinIcon
+                                                            style={{ width: '24px', height: '24px' }}
+                                                        />
+                                                    )}
+                                                    {index === 1 && (
+                                                        <EthereumIcon
+                                                            style={{ width: '24px', height: '24px' }}
+                                                        />
+                                                    )}
+                                                    {index === 2 && (
+                                                        <DogeIcon
+                                                            style={{ width: '24px', height: '24px' }}
+                                                        />
+                                                    )}
+                                                    {index === 3 && (
+                                                        <UsdtIcon
+                                                            style={{ width: '24px', height: '24px' }}
+                                                        />
+                                                    )}
+                                                    {index === 4 && (
+                                                        <UsdcIcon
+                                                            style={{ width: '24px', height: '24px' }}
+                                                        />
+                                                    )}
+                                                    {index === 5 && (
+                                                        <BnbIcon
+                                                            style={{ width: '24px', height: '24px' }}
+                                                        />
+                                                    )}
+                                                    {index === 6 && (
+                                                        <DaiIcon
+                                                            style={{ width: '24px', height: '24px' }}
+                                                        />
+                                                    )}
+                                                    {index === 7 && (
+                                                        <SolanaIcon
+                                                            style={{ width: '24px', height: '24px' }}
+                                                        />
+                                                    )}
+                                                    {index === 8 && (
+                                                        <RippleIcon
+                                                            style={{ width: '24px', height: '24px' }}
+                                                        />
+                                                    )}
                                                 </div>
                                                 <span>{crypto.name}</span>
                                             </div>
@@ -279,16 +323,25 @@ export default component$(() => {
                                                 <div class="flex flex-col space-y-2">
                                                     <div class="flex justify-between items-center">
                                                         <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{_`Address:`}</span>
-                                                        <button
-                                                            class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
-                                                            title={_`Copy address`}
-                                                        >
-                                                            {copiedAddress.value === crypto.address ? (
-                                                                <LuCheckCircle class="h-4 w-4 text-green-500" />
-                                                            ) : (
-                                                                <LuCopy class="h-4 w-4" />
-                                                            )}
-                                                        </button>
+                                                        <div class="relative">
+                                                            <button
+                                                                onClick$={() => copyToClipboard(crypto.address)}
+                                                                class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                                                                title={_`Copy address`}
+                                                            >
+                                                                {showCopiedMessage.value ? (
+                                                                    <LuCheckCircle class="h-4 w-4 text-green-500" />
+                                                                ) : (
+                                                                    <LuCopy class="h-4 w-4" />
+                                                                )}
+                                                            </button>
+                                                            {showCopiedMessage.value && <div class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded-md text-sm shadow-lg z-50 transition-opacity">
+                                                                <div class="flex items-center">
+                                                                    <LuCheckCircle class="h-4 w-4 mr-2" />
+                                                                    {_`Link copied!`}
+                                                                </div>
+                                                            </div>}
+                                                        </div>
                                                     </div>
                                                     <div class="font-mono text-sm break-all bg-gray-100 dark:bg-gray-800 p-2 rounded border border-gray-200 dark:border-gray-700">
                                                         {crypto.address}
