@@ -1,6 +1,6 @@
-import { $, component$, useSignal, useTask$ } from "@builder.io/qwik";
+import { $, component$, useSignal, useTask$, useComputed$ } from "@builder.io/qwik";
 import { Form, useNavigate } from "@builder.io/qwik-city";
-import { LuLoader2 } from "@qwikest/icons/lucide";
+import { LuLoader2, LuCheckCircle, LuAlertCircle, LuInfo } from "@qwikest/icons/lucide";
 import { Image } from "@unpic/qwik";
 import { _ } from "compiled-i18n";
 import { useSession } from "~/routes/plugin@auth";
@@ -16,6 +16,8 @@ export default component$(() => {
     const usernameAction = useSetUsername();
     const errorMessage = useSignal("");
     const isLoading = useSignal(false);
+    const isFocused = useSignal(false);
+    
     // Generar sugerencia de nombre de usuario basada en session.user.name
     useTask$(({ track }) => {
         track(() => session.value?.user?.name);
@@ -40,80 +42,125 @@ export default component$(() => {
         // Validación simple
         if (usernameSignal.value && !/^[a-zA-Z0-9_]+$/.test(usernameSignal.value)) {
             errorMessage.value = "Username must contain only letters, numbers, and underscores";
+        } else if (usernameSignal.value && usernameSignal.value.length < 3) {
+            errorMessage.value = "Username must be at least 3 characters long";
         } else {
             errorMessage.value = "";
         }
     });
 
-    const handleSubmit = $(() => {
-        setTimeout(() => {
-            nav(`/global`)
-        }, 2500)
+    const onSubmitCompleted = $(() => {
+        nav(`/global`)
+    });
+
+    const isValid = useComputed$(() => {
+        return usernameSignal.value && 
+               usernameSignal.value.length >= 3 && 
+               /^[a-zA-Z0-9_]+$/.test(usernameSignal.value) &&
+               !errorMessage.value;
     });
 
     return (
-        <div class="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900">
-            <div class="w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <button class="text-gray-500 dark:text-gray-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
-                    <div class="flex justify-center flex-grow">
-                        <Image src="/src/icons/logo.svg" width="32" height="32" alt="Logo" />
+        <div class="flex justify-center items-center min-h-screen bg-gradient-to-b from-[#713fc2]/10 via-[#713fc2]/5 to-white dark:from-[#713fc2]/20 dark:via-[#713fc2]/10 dark:to-gray-900">
+            {/* Decorative circles */}
+            <div class="fixed -bottom-32 -left-32 w-64 h-64 rounded-full bg-gradient-to-r from-[#713fc2]/10 to-[#9333EA]/10 blur-3xl dark:from-[#713fc2]/5 dark:to-[#9333EA]/5 -z-10"></div>
+            <div class="fixed -top-32 -right-32 w-64 h-64 rounded-full bg-gradient-to-r from-[#9333EA]/10 to-[#713fc2]/10 blur-3xl dark:from-[#9333EA]/5 dark:to-[#713fc2]/5 -z-10"></div>
+            
+            <div class="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-[#713fc2]/15 dark:border-[#9333EA]/15 relative overflow-hidden animate-fadeIn">
+                {/* Decorative header line */}
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#713fc2] to-[#9333EA]"></div>
+                
+                <div class="flex justify-center mb-6">
+                    <div class="p-3 bg-white/30 dark:bg-gray-800/30 rounded-full shadow-md mb-2">
+                        <Image 
+                            src="/src/icons/logo.svg" 
+                            width="48" 
+                            height="48" 
+                            alt="Geounity Logo"
+                            class="text-[#6B48FF] dark:text-[#9333EA]" 
+                        />
                     </div>
-                    <div class="w-6"></div> {/* Empty div for balance */}
                 </div>
 
-                <div class="mb-6">
-                    <h2 class="text-2xl font-bold mb-2 text-gray-900 dark:text-white">{_`Choose your username`}</h2>
-                    <p class="text-gray-600 dark:text-gray-300 mb-4">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-3 text-center text-gray-900 dark:text-white">
+                        {_`Choose your username`}
+                    </h2>
+                    <p class="text-gray-600 dark:text-gray-300 text-center mb-6">
                         {_`Your username is how others will find you on the platform. Choose something memorable and unique.`}
                     </p>
 
-                    <Form action={usernameAction} onSubmit$={handleSubmit}>
-                        <div class="mb-4">
-                            <input
-                                type="text"
-                                name="username"
-                                value={usernameSignal.value}
-                                onInput$={(e, el) => usernameSignal.value = el.value}
-                                placeholder="username"
-                                class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
-                                required
-                            />
+                    <Form action={usernameAction} onSubmitCompleted$={onSubmitCompleted} class="space-y-6">
+                        <div class="relative">
+                            <div class={`flex items-center border-2 rounded-lg overflow-hidden transition-all duration-200 ${isFocused.value ? 'border-[#713fc2] dark:border-[#9333EA] shadow-md' : 'border-gray-200 dark:border-gray-600'} ${errorMessage.value ? 'border-red-500 dark:border-red-400' : ''}`}>
+                                <span class="pl-4 text-gray-400">@</span>
+                                <input
+                                    type="text"
+                                    name="username"
+                                    value={usernameSignal.value}
+                                    onInput$={(e, el) => usernameSignal.value = el.value}
+                                    onFocus$={() => isFocused.value = true}
+                                    onBlur$={() => isFocused.value = false}
+                                    placeholder="username"
+                                    maxLength={15}
+                                    class="w-full p-4 bg-transparent focus:outline-none dark:text-white"
+                                    required
+                                />
+                                {usernameSignal.value && !errorMessage.value && usernameSignal.value.length >= 3 && (
+                                    <span class="pr-4 text-green-500 dark:text-green-400">
+                                        <LuCheckCircle />
+                                    </span>
+                                )}
+                                {errorMessage.value && (
+                                    <span class="pr-4 text-red-500 dark:text-red-400">
+                                        <LuAlertCircle />
+                                    </span>
+                                )}
+                            </div>
+                            
                             {errorMessage.value && (
-                                <p class="text-red-500 dark:text-red-400 text-sm mt-1">{errorMessage.value}</p>
+                                <p class="text-red-500 dark:text-red-400 text-sm mt-2 flex items-center">
+                                    <LuAlertCircle class="inline mr-1" /> {errorMessage.value}
+                                </p>
                             )}
+                            
                             {usernameAction.value?.failed && (
-                                <p class="text-red-500 dark:text-red-400 text-sm mt-1">
+                                <p class="text-red-500 dark:text-red-400 text-sm mt-2 flex items-center">
+                                    <LuAlertCircle class="inline mr-1" />
                                     {usernameAction.value.fieldErrors?.username || "Something went wrong. Please try again."}
                                 </p>
                             )}
+                            
+                            <div class="mt-3 text-sm text-gray-500 dark:text-gray-400 flex items-start">
+                                <LuInfo class="inline mr-1 mt-0.5 flex-shrink-0" />
+                                <span>
+                                    {_`This will be your unique identifier and your profile URL: geounity.org/user/`}<strong class="text-[#713fc2] dark:text-[#9333EA]">{usernameSignal.value || "username"}</strong>
+                                </span>
+                            </div>
                         </div>
 
-                        <div class="mb-4">
-                            <button
-                                type="submit"
-                                class="flex justify-center items-center w-full py-3 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition duration-200 disabled:bg-gray-400"
-                                disabled={!!errorMessage.value || !usernameSignal.value || usernameSignal.value.length < 3}
-                                onClick$={() => {
-                                    isLoading.value = true;
-                                }}
-                            >
+                        <button
+                            type="submit"
+                            class="w-full py-4 px-6 flex items-center justify-center rounded-xl font-medium transition-all duration-200 relative overflow-hidden group"
+                            disabled={!isValid.value || isLoading.value}
+                            onClick$={() => {
+                                isLoading.value = true;
+                            }}
+                        >
+                            <div class={`absolute inset-0 ${isValid.value ? 'bg-gradient-to-r from-[#713fc2] to-[#9333EA] group-hover:from-[#9333EA] group-hover:to-[#713fc2]' : 'bg-gray-300 dark:bg-gray-600'} transition-all duration-300`}></div>
+                            <span class="relative text-white flex items-center">
                                 {isLoading.value ? (
-                                    <LuLoader2 class="mr-2 h-5 w-5 animate-spin" />
+                                    <><LuLoader2 class="mr-2 h-5 w-5 animate-spin" /> {_`Processing...`}</>
                                 ) : (
                                     _`Continue`
                                 )}
-                            </button>
-                        </div>
+                            </span>
+                        </button>
                     </Form>
 
-                    <div class="text-center">
-                        <a href="/help" class="text-purple-500 dark:text-purple-400 hover:underline text-sm">
+                    <div class="text-center mt-8">
+                        <a href="/help" class="text-[#713fc2] dark:text-[#9333EA] hover:underline text-sm flex items-center justify-center">
+                            <LuInfo class="inline mr-1" />
                             {_`Why am I being asked for this information?`}
                         </a>
                     </div>
