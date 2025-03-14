@@ -21,11 +21,11 @@ export default component$(() => {
           <h1 class="text-center text-5xl font-bold bg-gradient-to-r from-[#713fc2] to-[#8255c9] bg-clip-text text-transparent dark:from-[#9333EA] dark:to-[#A855F7]">
             {_`Welcome to Geounity`}
           </h1>
-          
+
           <p class="mt-4 text-center text-2xl font-medium text-gray-700 dark:text-gray-300">
             {_`Transform your community with collective decisions`}
           </p>
-          
+
           <p class="mt-3 text-center text-lg text-gray-600 dark:text-gray-400 max-w-2xl px-4">
             {_`Connect with neighbors, organizations, and governments to create real change in your locality and worldwide`}
           </p>
@@ -38,7 +38,7 @@ export default component$(() => {
                 <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200">
                   {_`Together we can:`}
                 </h3>
-                
+
                 <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
                   {[
                     { icon: '📊', text: _`Create and participate in polls` },
@@ -60,7 +60,7 @@ export default component$(() => {
                 <p class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">
                   {_`Join over 10,000 active community builders!`}
                 </p>
-                
+
                 <div class="relative">
                   <div class="absolute inset-0 flex items-center">
                     <div class="w-full border-t border-gray-200 dark:border-gray-700"></div>
@@ -76,9 +76,9 @@ export default component$(() => {
 
             <div class="space-y-4">
               <SocialLoginButtons />
-              
-              <a 
-                href="/email-signup" 
+
+              <a
+                href="/email-signup"
                 class="block w-full px-4 py-3 border-2 border-[#713fc2]/20 dark:border-[#9333EA]/30 text-[#713fc2] dark:text-[#9333EA] hover:bg-[#713fc2]/5 dark:hover:bg-[#9333EA]/10 rounded-lg font-medium text-center transition-colors"
               >
                 {_`Continue with Email`}
