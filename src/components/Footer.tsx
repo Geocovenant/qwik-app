@@ -37,12 +37,12 @@ export default component$<FooterProps>(({
                     {_`About us`}
                 </a>
                 {(!isSidebarCollapsed) && <span>·</span>}
-                <a href="/donation" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
-                    {_`Donation`}
-                </a>
-                {(!isSidebarCollapsed) && <span>·</span>}
                 <a href="/roadmap" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
                     {_`Roadmap`}
+                </a>
+                {(!isSidebarCollapsed) && <span>·</span>}
+                <a href="/donation" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
+                    {_`Donation`}
                 </a>
 
                 {/* Copyright en línea cuando hay espacio, o en línea separada cuando colapsa */}
