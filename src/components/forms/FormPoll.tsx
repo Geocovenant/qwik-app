@@ -96,7 +96,6 @@ export default component$<FormPollProps>(({
         console.log('event', event);
         // eslint-disable-next-line qwik/valid-lexical-scope
         onSubmitCompleted()
-        // Here you can perform the submit action (client-side or progressively enhanced with action)
     });
 
     const handleChangeSelectNational = $((value: string | string[]) => {
@@ -160,7 +159,6 @@ export default component$<FormPollProps>(({
 
             {/* Poll Settings Section */}
             <div class="space-y-4">
-                {/* <h2 class="font-medium text-foreground">{_`Poll Settings`}</h2> */}
                 {/* Hidden field for scope */}
                 <Field name="scope">
                     {(field, props) => (

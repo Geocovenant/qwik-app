@@ -183,8 +183,6 @@ export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
                 break;
         }
         
-        console.log('payload', payload)
-
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates`, {
                 method: 'POST',

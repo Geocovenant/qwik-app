@@ -55,7 +55,7 @@ export default component$(() => {
                                 </Breadcrumb.Item>
                                 <Breadcrumb.Separator class="dark:text-gray-500" />
                                 <Breadcrumb.Item>
-                                    <Breadcrumb.Link href={`/${nationParam}/${regionParam}`} class="dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">{capitalizeFirst(regionParam.replace(/-/g, ' '))}</Breadcrumb.Link>
+                                    <Breadcrumb.Link href={`/${nationParam}/${regionParam}`} class="dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">{capitalizeFirst(regionParam?.replace(/-/g, ' '))}</Breadcrumb.Link>
                                 </Breadcrumb.Item>
                                 <Breadcrumb.Separator class="dark:text-gray-500" />
                                 <Breadcrumb.Item>
@@ -119,13 +119,6 @@ export default component$(() => {
                             activeClass={activeClass}
                         >
                             {_`Polls`}
-                        </NavLink>
-                        <NavLink
-                            href={`/${nationParam}/${regionParam}/${subregionParam}/${localityParam}/debates`}
-                            class={baseClass}
-                            activeClass={activeClass}
-                        >
-                            {_`Debates`}
                         </NavLink>
                         <NavLink
                             href={`/${nationParam}/${regionParam}/${subregionParam}/${localityParam}/projects`}

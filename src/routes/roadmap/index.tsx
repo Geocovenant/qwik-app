@@ -142,6 +142,18 @@ export default component$(() => {
                             </span>
                         </div>
 
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-5 rounded-lg border-l-4 border-blue-500 dark:border-blue-400">
+                            <h3 class="font-medium text-lg text-gray-800 dark:text-white mb-2">
+                                {_`Integrated Content Relationships`}
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                {_`Association of surveys to debates, requiring respondents to answer the survey in order to express their opinion, and direct linkage between projects and debates to enrich participation and obtain structured feedback.`}
+                            </p>
+                            <span class="inline-block mt-2 text-xs font-medium px-2 py-1 bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full">
+                                {_`Coming Soon`}
+                            </span>
+                        </div>
+
                         {/* Research */}
                         <div class="bg-blue-50 dark:bg-blue-900/20 p-5 rounded-lg border-l-4 border-blue-500 dark:border-blue-400">
                             <h3 class="font-medium text-lg text-gray-800 dark:text-white mb-2">

@@ -99,6 +99,7 @@ export const useGetDebateBySlug = routeLoader$(async ({ cookie, params }) => {
         created_at: string;
         description: string;
         dislikes_count: number;
+        divisions: Array<any>;
         id: number;
         images: string[];
         language: string;
@@ -209,9 +210,9 @@ export const useFormOpinionLoader = routeLoader$<InitialValues<OpinionForm>>(asy
     const debate = await resolveValue(useGetDebateBySlug)
     return {
         debate_id: debate?.id,
+        debate_type: debate?.type,
+        community_id: '',
         opinion: '',
-        country: '',
-        region_id: '',
     };
 });
 

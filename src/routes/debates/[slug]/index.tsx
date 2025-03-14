@@ -18,11 +18,9 @@ import { useSession } from "~/routes/plugin@auth"
 import { formatDateISO } from "~/utils/formatDateISO"
 import { dataArray as countriesList } from "~/data/countries"
 import { useStylesScoped$ } from "@builder.io/qwik"
-import { FormOpinionGlobalDebate } from "~/components/forms/FormOpinionGlobalDebate"
+import { FormOpinion } from "~/components/forms/FormOpinion"
 import { useGetDebateBySlug } from "~/shared/loaders"
 import styles from "./debate-page.css?inline"
-import { FormOpinionInternationalDebate } from "~/components/forms/FormOpinionInternationalDebate"
-import { FormOpinionNationalDebate } from "~/components/forms/FormOpinionNationalDebate"
 import Modal from "~/components/Modal"
 import SocialLoginButtons from "~/components/SocialLoginButtons"
 import ViewPointCard from "~/components/debates/ViewPointCard"
@@ -136,7 +134,6 @@ export default component$(() => {
     
     const onSubmitCompleted$ = $(() => {
         // Reload the debate data after submitting an opinion
-        window.location.reload()
     })
     
     const onShowLoginModal$ = $(() => {
@@ -432,22 +429,13 @@ export default component$(() => {
                             </Alert.Root>
                         ) : (
                             <div class="bg-white dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/80 dark:border-gray-700/50 p-8">
-                                {debate.value?.type === "GLOBAL" ? (
-                                    <FormOpinionGlobalDebate
-                                        onSubmitCompleted$={onSubmitCompleted$}
-                                        defaultCountryCca2={defaultCountryCca2.value || ""}
-                                    />
-                                ) : debate.value?.type === "INTERNATIONAL" ? (
-                                    <FormOpinionInternationalDebate
-                                        onSubmitCompleted$={onSubmitCompleted$}
-                                        defaultCountryCca2={defaultCountryCca2.value || ""}
-                                        pointsOfView={debate.value.points_of_view}
-                                    />
-                                ) : (
-                                    <FormOpinionNationalDebate
-                                        onSubmitCompleted$={onSubmitCompleted$}
-                                    />
-                                )}
+                                <FormOpinion
+                                    onSubmitCompleted$={onSubmitCompleted$}
+                                    defaultCountryCca2={defaultCountryCca2.value || ""}
+                                    debateType={debate.value?.type || "GLOBAL"}
+                                    pointsOfView={debate.value?.points_of_view || []}
+                                    divisions={debate.value?.divisions || []}
+                                />
                             </div>
                         )
                     ) : (

@@ -11,6 +11,7 @@ import { ReportSchema } from "~/schemas/reportSchema";
 import type { CommunityRequestForm } from "~/schemas/communityRequestSchema";
 import { CommunityRequestSchema } from "~/schemas/communityRequestSchema";
 import { _ } from 'compiled-i18n';
+import { CommunityType } from '~/constants/communityType';
 
 // eslint-disable-next-line qwik/loader-location
 export const useVotePoll = routeAction$(
@@ -185,8 +186,22 @@ export const useFormOpinionAction = formAction$<OpinionForm, OpinionResponseData
 
         const payload = {
             content: values.opinion,
-            country_cca2: values.country,
-            region_id: values.region_id ? parseInt(values.region_id) : null,
+        }
+
+        // Add specific fields according to the scope
+        switch (values.debate_type) {
+            case CommunityType.GLOBAL:
+                Object.assign(payload, { country_cca2: values.community_id });
+                break;
+            case CommunityType.INTERNATIONAL:
+            case CommunityType.NATIONAL:
+            case CommunityType.REGIONAL:
+            case CommunityType.SUBREGIONAL:
+            case CommunityType.LOCAL:
+                Object.assign(payload, { community_id: values.community_id });
+                break;
+            default:
+                break;
         }
 
         try {
@@ -201,7 +216,7 @@ export const useFormOpinionAction = formAction$<OpinionForm, OpinionResponseData
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Error creating the comment');
+                throw new Error(errorData.detail || 'Error creating the comment');
             }
 
             const data = await response.json();
@@ -212,7 +227,6 @@ export const useFormOpinionAction = formAction$<OpinionForm, OpinionResponseData
                 data: data,
             };
         } catch (error: any) {
-            console.error('Error in useFormOpinionAction:', error);
             return {
                 success: false,
                 message: error.message || 'An unexpected error occurred',
@@ -231,15 +245,12 @@ export interface CommentResponseData {
 
 export const useFormCommentAction = formAction$<CommentForm, CommentResponseData>(
     async (values, event) => {
-        console.log('useFormCommentAction')
-        console.log('values', values)
 
         const token = event.cookie.get('authjs.session-token')?.value;
 
         const payload = {
             content: values.text,
         };
-        console.log('payload', payload)
 
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${values.pollId}/comments`, {

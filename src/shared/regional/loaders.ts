@@ -9,6 +9,9 @@ import type { IssueResponse } from "~/types/issue";
  * Returns region data or an empty array if an error occurs
  */
 export const useGetRegion = routeLoader$(async ({ params }) => {
+    if (!params.region) {
+        return { region: null };
+    }
     try {
         const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/search?level=REGIONAL&country=${params.nation}&region=${params.region}`);
         const data = await response.json();
@@ -25,6 +28,9 @@ export const useGetRegion = routeLoader$(async ({ params }) => {
  */
 export const useGetSubregions = routeLoader$(async ({ resolveValue }) => {
     const region = await resolveValue(useGetRegion);
+    if (!region.region_id) {
+        return { subregions: [] };
+    }
     try {
         const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/regions/${region.region_id}/subregions`);
         if (!response.ok) {

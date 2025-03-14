@@ -9,6 +9,13 @@ export enum DebateType {
     LOCAL = 'LOCAL',
 }
 
+export interface Division {
+    id: number;
+    name: string;
+    type: string;
+    community_id: number;
+}
+
 export type PointOfView = {
     country: string;
     comments: {
@@ -39,6 +46,7 @@ export interface Debate {
     slug: string;
     tags?: string[];
     type: DebateType;
+    divisions?: Division[];
     title: string;
     views_count: number;
 }

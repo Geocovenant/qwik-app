@@ -65,6 +65,7 @@ export const useGetNationalPolls = routeLoader$(async ({ cookie, query, resolveV
     try {
         const url = new URL(baseUrl);
         url.searchParams.append('community_id', country.community_id);
+        url.searchParams.append('scope', 'NATIONAL');
         if (page) url.searchParams.append('page', page);
 
         const response = await fetch(url.toString(), {
