@@ -58,10 +58,11 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
                 Object.assign(payload, { country_code: values.community_ids[0] });
                 break;
             case CommunityType.REGIONAL:
+            case CommunityType.SUBREGIONAL:
+            case CommunityType.LOCAL:
                 Object.assign(payload, { community_ids: values.community_ids });
                 break;
-            case CommunityType.SUBREGIONAL:
-                Object.assign(payload, { subregion_id: values.community_ids[0] });
+            default:
                 break;
         }
 
@@ -174,12 +175,15 @@ export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
                 Object.assign(payload, { country_code: values.community_ids[0] });
                 break;
             case CommunityType.REGIONAL:
+            case CommunityType.SUBREGIONAL:
+            case CommunityType.LOCAL:
                 Object.assign(payload, { community_ids: values.community_ids });
                 break;
-            case CommunityType.SUBREGIONAL:
-                Object.assign(payload, { subregion_id: values.community_ids[0] });
+            default:
                 break;
         }
+        
+        console.log('payload', payload)
 
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates`, {
@@ -260,10 +264,11 @@ export const useFormProjectAction = formAction$<ProjectForm, ProjectResponseData
                 Object.assign(payload, { country_code: values.community_ids[0] });
                 break;
             case CommunityType.REGIONAL:
+            case CommunityType.SUBREGIONAL:
+            case CommunityType.LOCAL:
                 Object.assign(payload, { community_ids: values.community_ids });
                 break;
-            case CommunityType.SUBREGIONAL:
-                Object.assign(payload, { subregion_id: values.community_ids[0] });
+            default:
                 break;
         }
 
@@ -328,10 +333,11 @@ export const useFormIssueAction = formAction$<IssueForm, IssueResponseData>(
                 Object.assign(payload, { country_code: values.community_ids[0] });
                 break;
             case CommunityType.REGIONAL:
+            case CommunityType.SUBREGIONAL:
+            case CommunityType.LOCAL:
                 Object.assign(payload, { community_ids: values.community_ids });
                 break;
-            case CommunityType.SUBREGIONAL:
-                Object.assign(payload, { subregion_id: values.community_ids[0] });
+            default:
                 break;
         }
 

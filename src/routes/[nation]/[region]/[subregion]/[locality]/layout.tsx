@@ -25,13 +25,14 @@ export default component$(() => {
     const user = useGetUser();
     const session = useSession();
     const locality = useGetLocality();
+    console.log('locality2', locality.value)
     
     const joinCommunityAction = useJoinCommunity();
     const leaveCommunityAction = useLeaveCommunity();
 
     const isMember = useComputed$(() => {
-        return user.value?.communities?.some(
-            (community: any) => community.id === locality.value?.community_id
+        return user.value.communities?.some(
+            (community: any) => community.id === locality.value.id
         );
     });
 
@@ -77,11 +78,11 @@ export default component$(() => {
                                 onClick$={() => {
                                     if (isMember.value) {
                                         leaveCommunityAction.submit({
-                                            communityId: locality.value.community_id
+                                            communityId: locality.value.id
                                         });
                                     } else {
                                         joinCommunityAction.submit({
-                                            communityId: locality.value.community_id
+                                            communityId: locality.value.id
                                         });
                                     }
                                 }}

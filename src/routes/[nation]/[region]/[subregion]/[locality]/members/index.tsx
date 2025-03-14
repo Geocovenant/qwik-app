@@ -27,14 +27,13 @@ export default component$(() => {
     const updateCommunityVisibilityAction = useUpdateCommunityVisibility();
     
     // Handle member visibility setting
-    const isPublic = useSignal(members.value.find((m: any) => m.is_current_user)?.is_public || false);
+    const isPublic = useSignal(members.value.items.find((m: any) => m.is_current_user)?.is_public || false);
     const currentPage = useSignal(1);
     const nav = useNavigate();
     const isAuthenticated = useComputed$(() => !!session.value?.user);
     const localityDisplayName = capitalizeFirst(localityName.replace(/-/g, ' '));
 
-    // Use community ID from locality data
-    const localCommunityId = locality.value.id || 5; // Default ID if not available
+    const localCommunityId = locality.value.id
 
     // Toggle to change user visibility
     const togglePublicVisibility = $(async () => {

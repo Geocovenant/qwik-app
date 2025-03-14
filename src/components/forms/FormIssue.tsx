@@ -282,7 +282,7 @@ export default component$<FormIssueProps>(({
                                         </Select.Trigger>
                                         <Select.Popover>
                                             {localities.length > 0 ? localities.map((locality) => (
-                                                <Select.Item key={locality.id} value={locality.id}>
+                                                <Select.Item key={locality.id} value={locality.community_id.toString()}>
                                                     <Select.ItemLabel>
                                                         {locality.name}
                                                     </Select.ItemLabel>

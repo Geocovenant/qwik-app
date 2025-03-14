@@ -6,8 +6,7 @@ import { useSession } from "~/routes/plugin@auth";
 import { Image } from "@unpic/qwik";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-import { useGetSubregions } from "~/shared/regional/loaders";
-import { useGetSubregionalMembers } from "~/shared/subregional/loaders";
+import { useGetSubregion, useGetSubregionalMembers } from "~/shared/subregional/loaders";
 import { useUpdateCommunityVisibility } from "~/shared/actions";
 
 export { useUpdateCommunityVisibility } from "~/shared/actions";
@@ -19,28 +18,19 @@ export default component$(() => {
     const regionName = location.params.region;
     const subregionName = location.params.subregion;
     
-    const subregions = useGetSubregions();
+    const subregion = useGetSubregion();
     
     // Temporary: use global loader until we have a specific subregional one
     const members = useGetSubregionalMembers();
     const updateCommunityVisibilityAction = useUpdateCommunityVisibility();
     
-    const defaultSubregion = useComputed$(() => {
-        const normalizedSubregionName = subregionName
-            .split('-')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-        
-        return subregions.value.find((r: { name: string; }) => r.name === normalizedSubregionName);
-    });
-    
-    // Assume the subregional community has ID 4 (adjust as necessary)
-    const subregionalCommunityId = defaultSubregion.value?.id || 4;
     const isPublic = useSignal(members.value.items.find((m: any) => m.is_current_user)?.is_public || false);
     const currentPage = useSignal(1);
     const nav = useNavigate();
     const isAuthenticated = useComputed$(() => !!session.value?.user);
     const subregionDisplayName = capitalizeFirst(subregionName.replace(/-/g, ' '));
+    
+    const subregionalCommunityId = subregion.value.id;
 
     // Toggle to change user visibility
     const togglePublicVisibility = $(async () => {

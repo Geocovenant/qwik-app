@@ -30,7 +30,7 @@ export default component$(() => {
 
     const isMember = useComputed$(() => {
         return user.value.communities?.some(
-            (community: any) => community.id === region.value.community_id
+            (community: any) => community.id === region.value.id
         );
     });
 
@@ -77,11 +77,11 @@ export default component$(() => {
                                 onClick$={() => {
                                     if (isMember.value) {
                                         leaveCommunityAction.submit({
-                                            communityId: region.value.community_id
+                                            communityId: region.value.id
                                         });
                                     } else {
                                         joinCommunityAction.submit({
-                                            communityId: region.value.community_id
+                                            communityId: region.value.id
                                         });
                                     }
                                 }}
