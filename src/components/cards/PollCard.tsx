@@ -6,15 +6,15 @@ import {
     LuMessageSquare,
     LuTimer,
     LuLink,
-    LuGlobe,
     LuUser2,
     LuTrash2,
     LuFlag,
     LuTag,
+    LuCheck,
+    LuX,
 } from "@qwikest/icons/lucide"
 import { timeAgo } from "~/utils/dateUtils"
 import { dataArray } from "~/data/countries"
-import { CommunityType } from "~/constants/communityType"
 import { Avatar } from "~/components/ui"
 import FormReport from "~/components/forms/FormReport";
 import Modal from "~/components/Modal";
@@ -55,7 +55,6 @@ export default component$<PollCardProps>(
         description,
         options,
         type,
-        scope,
         isAnonymous,
         endsAt,
         createdAt,
@@ -221,35 +220,47 @@ export default component$<PollCardProps>(
             switch (type) {
                 case "BINARY":
                     return {
-                        text: _`Single vote`,
-                        description: _`You can only vote for one option`,
+                        text: _`Binary Poll`,
+                        description: _`Choose one option only`,
+                        icon: <LuX class="w-4 h-4 mr-1" />,
                         bgColor: "bg-cyan-100 dark:bg-cyan-900/30",
                         textColor: "text-cyan-700 dark:text-cyan-300",
-                        borderColor: "border-cyan-200 dark:border-cyan-800"
+                        borderColor: "border-cyan-200 dark:border-cyan-800",
+                        ribbonBg: "bg-cyan-500",
+                        ribbonText: "text-white"
                     }
                 case "SINGLE_CHOICE":
                     return {
-                        text: _`Single vote`,
-                        description: _`You can only vote for one option`,
+                        text: _`Single Choice`,
+                        description: _`Choose one option only`,
+                        icon: <LuCheck class="w-4 h-4 mr-1" />,
                         bgColor: "bg-purple-100 dark:bg-purple-900/30",
                         textColor: "text-purple-700 dark:text-purple-300",
-                        borderColor: "border-purple-200 dark:border-purple-800"
+                        borderColor: "border-purple-200 dark:border-purple-800",
+                        ribbonBg: "bg-purple-500",
+                        ribbonText: "text-white"
                     }
                 case "MULTIPLE_CHOICE":
                     return {
-                        text: _`Multiple votes`,
-                        description: _`You can vote for multiple options`,
+                        text: _`Multiple Choice`,
+                        description: _`Choose multiple options`,
+                        icon: <span class="mr-1 font-bold">+</span>,
                         bgColor: "bg-emerald-100 dark:bg-emerald-900/30",
                         textColor: "text-emerald-700 dark:text-emerald-300",
-                        borderColor: "border-emerald-200 dark:border-emerald-800"
+                        borderColor: "border-emerald-200 dark:border-emerald-800",
+                        ribbonBg: "bg-emerald-500",
+                        ribbonText: "text-white"
                     }
                 default:
                     return {
                         text: _`Poll`,
                         description: _`Participate in this poll`,
+                        icon: <LuCheck class="w-4 h-4 mr-1" />,
                         bgColor: "bg-blue-100 dark:bg-blue-900/30",
                         textColor: "text-blue-700 dark:text-blue-300",
-                        borderColor: "border-blue-200 dark:border-blue-800"
+                        borderColor: "border-blue-200 dark:border-blue-800",
+                        ribbonBg: "bg-blue-500",
+                        ribbonText: "text-white"
                     }
             }
         }
@@ -289,37 +300,30 @@ export default component$<PollCardProps>(
 
         return (
             <div class="poll-card bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 overflow-hidden relative">
-                {/* Replace the ribbon with a badge inside the card */}
-                
+                <div class="absolute -right-12 top-7 transform rotate-45 z-10">
+                    <div class={`py-1 px-12 text-xs font-bold uppercase ${getPollTypeInfo().ribbonBg} ${getPollTypeInfo().ribbonText}`}>
+                        {getPollTypeInfo().text}
+                    </div>
+                </div>
                 {/* Header */}
                 <div class="mb-5">
-                    <div class="flex justify-between items-start mb-3">
-                        <div class="flex items-center gap-2">
-                            <h3 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white line-clamp-2">{title}</h3>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            {isClosed.value && (
-                                <div class="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-bold uppercase px-3 py-1.5 rounded-full border border-red-200 dark:border-red-700">
-                                    {_`Closed`}
-                                </div>
-                            )}
-                            {isCreator && (
-                                <div class="bg-slate-200 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase px-3 py-1.5 rounded-full border border-slate-300 dark:border-slate-600">
-                                    {_`Owner`}
-                                </div>
-                            )}
-                            {scope === CommunityType.GLOBAL && (
-                                <div
-                                    class="flex items-center justify-center w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400"
-                                    title={_`Global`}
-                                >
-                                    <LuGlobe class="w-5 h-5" />
-                                </div>
-                            )}
-                        </div>
+                    <div class="flex items-center flex-wrap gap-2 mb-3">
+                        <h3 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white">{title}</h3>
+                        
+                        {isClosed.value && (
+                            <div class="inline-flex bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-bold uppercase px-3 py-1 rounded-full border border-red-200 dark:border-red-700">
+                                {_`Closed`}
+                            </div>
+                        )}
+                        {isCreator && (
+                            <div class="inline-flex bg-slate-200 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase px-3 py-1 rounded-full border border-slate-300 dark:border-slate-600">
+                                {_`Owner`}
+                            </div>
+                        )}
                     </div>
-
-                    {description && <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">{description}</p>}
+                    {description && (
+                        <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">{description}</p>
+                    )}
                     
                     {/* Tags */}
                     {tags.length > 0 && (
@@ -355,8 +359,8 @@ export default component$<PollCardProps>(
                         </div>
                     )}
 
-                    <div class="flex items-center justify-between text-sm">
-                        <div class="flex items-center gap-2">
+                    <div class="flex flex-wrap items-center justify-between text-sm">
+                        <div class="flex items-center gap-2 mb-2 sm:mb-0">
                             <span class="text-gray-500 dark:text-gray-400">{_`Total votes:`}</span>
                             <span class="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full font-medium text-gray-700 dark:text-gray-300">
                                 {totalVotes.value}
@@ -365,10 +369,21 @@ export default component$<PollCardProps>(
                         
                         {/* Informative badge of the poll type */}
                         <div class={`inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full border ${getPollTypeInfo().bgColor} ${getPollTypeInfo().textColor} ${getPollTypeInfo().borderColor}`}>
-                            {getPollTypeInfo().text} • {getPollTypeInfo().description}
+                            {getPollTypeInfo().icon}
+                            <span class="ml-1">{getPollTypeInfo().description}</span>
                         </div>
                     </div>
                 </div>
+
+                {pollState.userVotedOptions.length > 0 && (
+                    <div class="mb-3 p-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                        <p class="text-sm text-green-700 dark:text-green-300 flex items-center">
+                            <LuCheck class="text-green-500 dark:text-green-400 mr-2" />
+                            {_`You voted for ${pollState.userVotedOptions.length} option${pollState.userVotedOptions.length > 1 ? 's' : ''}.`}
+                            {type === "MULTIPLE_CHOICE" && _` You can select multiple options.`}
+                        </p>
+                    </div>
+                )}
 
                 {/* Voting options */}
                 <div class="space-y-3 mb-6">
@@ -379,24 +394,47 @@ export default component$<PollCardProps>(
                         return (
                             <div
                                 key={option.id}
-                                class={`poll-option p-4 rounded-lg cursor-pointer transition-all duration-300 transform ${isSelected
-                                        ? "bg-gray-50 dark:bg-gray-700 border-2 shadow-md scale-[1.01]"
-                                        : "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border hover:scale-[1.01] border-gray-200 dark:border-gray-700"
-                                    } ${isSelected ? getBorderColorClass() : ""}`}
+                                class={`relative poll-option p-4 rounded-lg cursor-pointer transition-all duration-300 transform ${
+                                    isSelected
+                                    ? "bg-gray-50 dark:bg-gray-700/80 border-2 shadow-md scale-[1.01]"
+                                    : "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border hover:scale-[1.01] border-gray-200 dark:border-gray-700"
+                                } ${isSelected ? getBorderColorClass() : ""}`}
                                 onClick$={() => !isClosed.value && handleVote(option.id)}
                             >
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class={`${isSelected ? "text-lg font-bold" : "text-gray-700 dark:text-gray-300 font-medium"}`}>
-                                        {option.text}
-                                    </span>
+                                {/* Indicador visual de voto */}
+                                <div class={`absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center ${
+                                    isSelected 
+                                    ? getCheckboxColorClass() 
+                                    : 'border-2 border-gray-300 dark:border-gray-600'
+                                }`}>
+                                    {isSelected && <LuCheck class="w-4 h-4 text-white" />}
+                                </div>
+
+                                <div class="flex justify-between items-center pl-8 mb-2">
+                                    <div class="flex-1">
+                                        <span class={`${isSelected 
+                                            ? "text-lg font-bold " + getTextColorClass() 
+                                            : "text-gray-700 dark:text-gray-300 font-medium"}`}>
+                                            {option.text}
+                                        </span>
+                                        
+                                        {isSelected && (
+                                            <span class="inline-flex items-center ml-2 text-xs font-bold px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-300">
+                                                <LuCheck class="w-3 h-3 mr-1" /> {_`Your vote`}
+                                            </span>
+                                        )}
+                                    </div>
                                     <span
-                                        class={`text-sm font-medium ${isSelected ? "px-2 py-1 rounded-full" : "text-gray-500 dark:text-gray-400"
-                                            } ${isSelected ? getBadgeColorClass() : ""}`}
+                                        class={`text-sm font-medium flex items-center ${isSelected 
+                                            ? "py-1 px-2 rounded-lg " + getBadgeColorClass() 
+                                            : "text-gray-500 dark:text-gray-400"}`}
                                     >
-                                        {option.votes} {_`votes`} ({percentage.toFixed(1)}%)
+                                        {option.votes} {_`votes`}
+                                        <span class="ml-1 text-xs">({percentage.toFixed(1)}%)</span>
                                     </span>
                                 </div>
-                                <div class="poll-progress h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                
+                                <div class="poll-progress h-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden ml-8">
                                     <div
                                         class={`poll-progress-bar h-full transition-all duration-500 ease-out ${getProgressBarColor(isSelected)}`}
                                         style={{ width: `${percentage}%` }}
@@ -407,12 +445,12 @@ export default component$<PollCardProps>(
                     })}
                 </div>
 
-                {/* Footer */}
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-sm">
+                {/* Footer mejorado */}
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-sm border-t border-gray-100 dark:border-gray-700 pt-4 mt-4">
                     <div class="flex flex-wrap items-center gap-3">
                         {isAnonymous ? (
                             <div class="flex items-center">
-                                <div class="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                <div class="w-7 h-7 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
                                     <LuUser2 class="w-4 h-4 text-gray-500 dark:text-gray-400" />
                                 </div>
                                 <span class="text-gray-600 dark:text-gray-400 italic ml-1">
@@ -420,21 +458,21 @@ export default component$<PollCardProps>(
                                 </span>
                             </div>
                         ) : (
-                            <Link class="flex items-center" href={`/user/${creatorUsername}`}>
-                                <Avatar.Root>
+                            <Link class="flex items-center group" href={`/user/${creatorUsername}`}>
+                                <Avatar.Root class="border-2 border-transparent group-hover:border-[#713fc2] dark:group-hover:border-[#9333EA] transition-all duration-300">
                                     <Avatar.Image
                                         src={creatorAvatar}
                                         alt={creatorUsername}
-                                        class="w-6 h-6 rounded-full"
+                                        class="w-7 h-7 rounded-full"
                                     />
                                 </Avatar.Root>
-                                <span class="hover:text-cyan-600 dark:hover:text-cyan-400 cursor-pointer ml-1">
+                                <span class="group-hover:text-[#713fc2] dark:group-hover:text-[#9333EA] transition-colors ml-1">
                                     {creatorUsername}
                                 </span>
                             </Link>
                         )}
 
-                        <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-full">
+                        <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700/70 px-3 py-1.5 rounded-full">
                             <LuTimer class="w-4 h-4 text-gray-500 dark:text-gray-400" />
                             <span class="text-gray-700 dark:text-gray-300">{timeAgo(new Date(createdAt))}</span>
                         </div>
@@ -520,7 +558,7 @@ export default component$<PollCardProps>(
                             title={_`Copy link`}
                         >
                             {showCopiedMessage.value && (
-                                <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-80 text-white px-3 py-1.5 rounded-md text-sm whitespace-nowrap animate-fade-in">
+                                <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-80 text-white px-3 py-1.5 rounded-md text-sm whitespace-nowrap animate-fadeIn">
                                     {_`Link copied!`}
                                     <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black bg-opacity-80 rotate-45"></div>
                                 </div>
@@ -549,9 +587,10 @@ export default component$<PollCardProps>(
                         )}
                     </div>
                 </div>
+                
                 <ConfirmationModal
-                    title={_`Report poll`}
-                    description={_`Are you sure you want to report this poll?`}
+                    title={_`Delete poll`}
+                    description={_`Are you sure you want to delete this poll?`}
                     show={showConfirmDeleteModal}
                     onConfirm$={handleDelete}
                 />
@@ -567,7 +606,32 @@ export default component$<PollCardProps>(
             </div>
         )
 
-        // Function to get border color based on poll type
+        function getCheckboxColorClass() {
+            switch (type) {
+                case "BINARY":
+                    return "bg-cyan-500 dark:bg-cyan-600"
+                case "SINGLE_CHOICE":
+                    return "bg-purple-500 dark:bg-purple-600"
+                case "MULTIPLE_CHOICE":
+                    return "bg-emerald-500 dark:bg-emerald-600"
+                default:
+                    return "bg-blue-500 dark:bg-blue-600"
+            }
+        }
+
+        function getTextColorClass() {
+            switch (type) {
+                case "BINARY":
+                    return "text-cyan-700 dark:text-cyan-300"
+                case "SINGLE_CHOICE":
+                    return "text-purple-700 dark:text-purple-300"
+                case "MULTIPLE_CHOICE":
+                    return "text-emerald-700 dark:text-emerald-300"
+                default:
+                    return "text-blue-700 dark:text-blue-300"
+            }
+        }
+
         function getBorderColorClass() {
             switch (type) {
                 case "BINARY":
@@ -581,7 +645,6 @@ export default component$<PollCardProps>(
             }
         }
 
-        // Function to get badge color based on poll type
         function getBadgeColorClass() {
             switch (type) {
                 case "BINARY":

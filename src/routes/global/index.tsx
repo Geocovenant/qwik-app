@@ -1,6 +1,6 @@
 import { component$ } from "@builder.io/qwik"
 import type { DocumentHead } from "@builder.io/qwik-city"
-import { LuGlobe, LuUsers, LuBarChart2, LuMessageSquare, LuBriefcase, LuFlag, LuInfo } from "@qwikest/icons/lucide"
+import { LuGlobe, LuUsers, LuBarChart2, LuMessageSquare, LuBriefcase, LuFlag, LuInfo, LuBuilding2, LuBuilding } from "@qwikest/icons/lucide"
 import { Alert } from "~/components/ui/alert/alert"
 import { _ } from "compiled-i18n"
 
@@ -63,13 +63,13 @@ export default component$(() => {
                             </div>
                         </div>
                         <div class="flex items-start gap-3">
-                            <LuGlobe class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
+                            <LuBuilding class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                             <div class="dark:text-gray-300">
                                 <span class="font-medium">{_`Sub Regions`}:</span> 131 {_`registered in the platform`}
                             </div>
                         </div>
                         <div class="flex items-start gap-3">
-                            <LuGlobe class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
+                            <LuBuilding2 class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                             <div class="dark:text-gray-300">
                                 <span class="font-medium">{_`Localities`}:</span> 0 {_`registered in the platform`}
                             </div>
