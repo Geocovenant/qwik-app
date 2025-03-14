@@ -43,7 +43,7 @@ export default component$(() => {
                     </h1>
                 </div>
                 <p class="text-gray-600 dark:text-gray-300 mb-4">
-                    {_`Bienvenido a la comunidad local donde los ciudadanos colaboran en asuntos específicos de la subregión.`}
+                    {_`Welcome to the local community where citizens collaborate on specific subregion issues.`}
                 </p>
             </div>
 
@@ -53,7 +53,7 @@ export default component$(() => {
                 <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuFlag class="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        {_`Información de la Subregión`}
+                        {_`Subregion Information`}
                     </h2>
                     
                     <div class="flex flex-col sm:flex-row gap-6">
@@ -61,7 +61,7 @@ export default component$(() => {
                             <div class="flex justify-center">
                                 <Image 
                                     src={subregion.value.emblem_svg} 
-                                    alt={`Emblema de ${subregion.value.name || capitalizeFirst(subregionName)}`} 
+                                    alt={`Emblem of ${subregion.value.name || capitalizeFirst(subregionName)}`} 
                                     class="h-32 w-auto max-w-[150px] object-contain"
                                 />
                             </div>
@@ -72,7 +72,7 @@ export default component$(() => {
                                 <div class="flex items-start gap-3">
                                     <LuUsers class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                     <div class="dark:text-gray-300">
-                                        <span class="font-medium">{_`Población`}:</span> {subregion.value.population.toLocaleString()}
+                                        <span class="font-medium">{_`Population`}:</span> {subregion.value.population.toLocaleString()}
                                     </div>
                                 </div>
                             )}
@@ -81,7 +81,7 @@ export default component$(() => {
                                 <div class="flex items-start gap-3">
                                     <LuFlag class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                     <div class="dark:text-gray-300">
-                                        <span class="font-medium">{_`Área`}:</span> {subregion.value.area.toLocaleString()} km²
+                                        <span class="font-medium">{_`Area`}:</span> {subregion.value.area.toLocaleString()} km²
                                     </div>
                                 </div>
                             )}
@@ -90,7 +90,7 @@ export default component$(() => {
                                 <div class="flex items-start gap-3">
                                     <LuUsers class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                     <div class="dark:text-gray-300">
-                                        <span class="font-medium">{_`Ciudad Principal`}:</span> {subregion.value.main_city}
+                                        <span class="font-medium">{_`Main City`}:</span> {subregion.value.main_city}
                                     </div>
                                 </div>
                             )}
@@ -99,7 +99,7 @@ export default component$(() => {
                                 <div class="flex items-start gap-3">
                                     <LuUsers class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                     <div class="dark:text-gray-300">
-                                        <span class="font-medium">{_`Gobierno Local`}:</span> {subregion.value.local_government}
+                                        <span class="font-medium">{_`Local Government`}:</span> {subregion.value.local_government}
                                     </div>
                                 </div>
                             )}
@@ -108,7 +108,7 @@ export default component$(() => {
                                 <div class="flex items-start gap-3">
                                     <LuFlag class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                     <div class="dark:text-gray-300">
-                                        <span class="font-medium">{_`Código Postal`}:</span> {subregion.value.postal_code}
+                                        <span class="font-medium">{_`Postal Code`}:</span> {subregion.value.postal_code}
                                     </div>
                                 </div>
                             )}
@@ -117,7 +117,7 @@ export default component$(() => {
                                 <div class="flex items-start gap-3">
                                     <LuFlag class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                                     <div class="dark:text-gray-300">
-                                        <span class="font-medium">{_`Fundación`}:</span> {subregion.value.founding_year}
+                                        <span class="font-medium">{_`Foundation`}:</span> {subregion.value.founding_year}
                                     </div>
                                 </div>
                             )}
@@ -132,7 +132,7 @@ export default component$(() => {
                                 rel="noopener noreferrer"
                                 class="text-sm bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 text-blue-800 dark:text-blue-200 px-3 py-1.5 rounded flex items-center gap-1"
                             >
-                                <span>{_`Sitio Web Oficial`}</span>
+                                <span>{_`Official Website`}</span>
                             </a>
                         )}
                         {subregion.value.map_link && (
@@ -142,7 +142,7 @@ export default component$(() => {
                                 rel="noopener noreferrer"
                                 class="text-sm bg-green-100 hover:bg-green-200 dark:bg-green-900 dark:hover:bg-green-800 text-green-800 dark:text-green-200 px-3 py-1.5 rounded flex items-center gap-1"
                             >
-                                <span>{_`Ver en Mapa`}</span>
+                                <span>{_`View on Map`}</span>
                             </a>
                         )}
                     </div>
@@ -152,12 +152,12 @@ export default component$(() => {
                 <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuBarChart2 class="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        {_`Estadísticas de la Plataforma`}
+                        {_`Platform Statistics`}
                     </h2>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
                             <div class="text-3xl font-bold text-blue-600 dark:text-blue-400">{pollsCount}</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-300">{_`Encuestas`}</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-300">{_`Polls`}</div>
                         </div>
                         <div class="bg-green-50 dark:bg-green-900/30 p-4 rounded-lg">
                             <div class="text-3xl font-bold text-green-600 dark:text-green-400">{debatesCount}</div>
@@ -165,11 +165,11 @@ export default component$(() => {
                         </div>
                         <div class="bg-amber-50 dark:bg-amber-900/30 p-4 rounded-lg">
                             <div class="text-3xl font-bold text-amber-600 dark:text-amber-400">{issuesCount}</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-300">{_`Problemas`}</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-300">{_`Issues`}</div>
                         </div>
                         <div class="bg-purple-50 dark:bg-purple-900/30 p-4 rounded-lg">
                             <div class="text-3xl font-bold text-purple-600 dark:text-purple-400">{projectsCount}</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-300">{_`Proyectos`}</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-300">{_`Projects`}</div>
                         </div>
                     </div>
                 </div>
@@ -180,7 +180,7 @@ export default component$(() => {
                 <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow col-span-1 lg:col-span-2">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuMessageSquare class="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        {_`Temas Destacados en ${subregion.value.name || capitalizeFirst(subregionName)}`}
+                        {_`Featured Topics in ${subregion.value.name || capitalizeFirst(subregionName)}`}
                     </h2>
                     <div class="space-y-4">
                         {Array.isArray(debates.value) && debates.value.slice(0, 3).map((debate: Debate, index: number) => (
@@ -191,10 +191,10 @@ export default component$(() => {
                                 </p>
                                 <div class="flex gap-2 mt-2">
                                     <span class="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
-                                        {debate.views_count || 0} {_`vistas`}
+                                        {debate.views_count || 0} {_`views`}
                                     </span>
                                     <span class="text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded">
-                                        {debate.comments_count || 0} {_`comentarios`}
+                                        {debate.comments_count || 0} {_`comments`}
                                     </span>
                                 </div>
                             </div>
@@ -202,7 +202,7 @@ export default component$(() => {
 
                         {(!Array.isArray(debates.value) || debates.value.length === 0) && (
                             <div class="text-center py-6 text-gray-500 dark:text-gray-400">
-                                {_`No hay debates destacados aún. ¡Sé el primero en crear uno!`}
+                                {_`There are no featured debates yet. Be the first to create one!`}
                             </div>
                         )}
                     </div>
@@ -211,26 +211,26 @@ export default component$(() => {
                 <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuBriefcase class="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        {_`Proyectos Activos`}
+                        {_`Active Projects`}
                     </h2>
                     <div class="space-y-4">
                         {projects.value.items.slice(0, 3).map((project: Project, index: number) => (
                             <div key={project.id || index} class="border-b border-gray-200 dark:border-gray-700 pb-3">
                                 <h3 class="font-medium text-gray-900 dark:text-white">{project.title}</h3>
                                 <div class="flex justify-between text-sm mt-1 text-gray-700 dark:text-gray-300">
-                                    <span>{_`Progreso`}:</span>
+                                    <span>{_`Progress`}:</span>
                                     <span>{project.progress || 0}%</span>
                                 </div>
                                 <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
                                     <div class="bg-blue-600 dark:bg-blue-500 h-2 rounded-full" style={`width: ${project.progress || 0}%`}></div>
                                 </div>
-                                <div class="text-xs text-gray-600 dark:text-gray-400 mt-2">{project.participants_count || 0} {_`participantes`}</div>
+                                <div class="text-xs text-gray-600 dark:text-gray-400 mt-2">{project.participants_count || 0} {_`participants`}</div>
                             </div>
                         ))}
 
                         {(projects.value.items.length === 0) && (
                             <div class="text-center py-6 text-gray-500 dark:text-gray-400">
-                                {_`No hay proyectos activos aún. ¡Inicia el primero!`}
+                                {_`There are no active projects yet. Start the first one!`}
                             </div>
                         )}
                     </div>
@@ -242,29 +242,29 @@ export default component$(() => {
                 <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuAlertTriangle class="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        {_`Problemas Reportados`}
+                        {_`Reported Issues`}
                     </h2>
                     <div class="space-y-3">
                         {issues.value.items.slice(0, 5).map((issue: Issue, index: number) => (
                             <div key={issue.id || index} class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
                                 <div>
                                     <h3 class="font-medium text-gray-900 dark:text-white">{issue.title}</h3>
-                                    <p class="text-xs text-gray-600 dark:text-gray-400">{issue.location || _`Sin ubicación específica`}</p>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400">{issue.location || _`No specific location`}</p>
                                 </div>
                                 <span class={`text-xs px-2 py-1 rounded ${issue.status === 'OPEN' ? 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200' :
                                     issue.status === 'IN_PROGRESS' ? 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-200' :
                                         'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200'
                                     }`}>
-                                    {issue.status === 'OPEN' ? _`Abierto` :
-                                        issue.status === 'IN_PROGRESS' ? _`En Progreso` :
-                                            _`Resuelto`}
+                                    {issue.status === 'OPEN' ? _`Open` :
+                                        issue.status === 'IN_PROGRESS' ? _`In Progress` :
+                                            _`Resolved`}
                                 </span>
                             </div>
                         ))}
 
                         {(issues.value.items.length === 0) && (
                             <div class="text-center py-6 text-gray-500 dark:text-gray-400">
-                                {_`No hay problemas reportados aún.`}
+                                {_`There are no reported issues yet.`}
                             </div>
                         )}
                     </div>
@@ -273,7 +273,7 @@ export default component$(() => {
                 <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow">
                     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
                         <LuBarChart2 class="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        {_`Encuestas Activas`}
+                        {_`Active Polls`}
                     </h2>
                     <div class="space-y-3">
                         {polls.value.items.slice(0, 5).map((poll: Poll, index: number) => (
@@ -281,11 +281,11 @@ export default component$(() => {
                                 <h3 class="font-medium text-gray-900 dark:text-white">{poll.title}</h3>
                                 <div class="flex justify-between items-center mt-1">
                                     <span class="text-xs text-gray-600 dark:text-gray-400">
-                                        {poll.votes_count || 0} {_`votos`}
+                                        {poll.votes_count || 0} {_`votes`}
                                     </span>
                                     {poll.ends_at && (
                                         <span class="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
-                                            {_`Finaliza: `}{new Date(poll.ends_at).toLocaleDateString()}
+                                            {_`Ends: `}{new Date(poll.ends_at).toLocaleDateString()}
                                         </span>
                                     )}
                                 </div>
@@ -294,7 +294,7 @@ export default component$(() => {
 
                         {(polls.value.items.length === 0) && (
                             <div class="text-center py-6 text-gray-500 dark:text-gray-400">
-                                {_`No hay encuestas activas actualmente.`}
+                                {_`There are no active polls currently.`}
                             </div>
                         )}
                     </div>
@@ -309,11 +309,11 @@ export const head: DocumentHead = ({ params }) => {
     const regionName = capitalizeFirst(params.region.replace(/-/g, ' ') || "");
     const nationName = capitalizeFirst(params.nation || "");
     return {
-        title: _`${subregionName}, ${regionName}, ${nationName} - Comunidad`,
+        title: _`${subregionName}, ${regionName}, ${nationName} - Community`,
         meta: [
             {
                 name: "description",
-                content: _`Plataforma de participación local para la comunidad de ${subregionName} en ${regionName}, ${nationName}`,
+                content: _`Local participation platform for the community of ${subregionName} in ${regionName}, ${nationName}`,
             },
         ],
     };

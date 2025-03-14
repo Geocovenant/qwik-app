@@ -11,7 +11,7 @@ export default component$(() => {
                     <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-200">{_`1. Introduction`}</h2>
                     <p class="mt-2 text-gray-600 dark:text-gray-300">
                         {_`Welcome to Geounity. These Terms of Service (Terms) govern your access to and use of our platform available at `}
-                        <a href="http://geounity.org/" class="text-blue-500 dark:text-blue-400 underline hover:text-blue-600 dark:hover:text-blue-300">{_`geounity.org`}</a>
+                        <a href="http://geounity.org/" class="text-blue-500 dark:text-blue-400 underline hover:text-blue-600 dark:hover:text-blue-300">geounity.org</a>
                         {_` (Service). By using our Service, you agree to comply with these Terms. If you do not agree, do not use the Service.`}
                     </p>
                 </section>
@@ -79,8 +79,7 @@ export default component$(() => {
                     <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-200">{_`10. Contact`}</h2>
                     <p class="mt-2 text-gray-600 dark:text-gray-300">
                         {_`If you have any questions about these Terms, contact us at `}
-                        <a href="mailto:contact@geounity.org" class="text-blue-500 dark:text-blue-400 underline hover:text-blue-600 dark:hover:text-blue-300">{_`contact@geounity.org`}</a>
-                        {_`.`}
+                        <a href="mailto:contact@geounity.org" class="text-blue-500 dark:text-blue-400 underline hover:text-blue-600 dark:hover:text-blue-300">contact@geounity.org</a>
                     </p>
                 </section>
             </div>
