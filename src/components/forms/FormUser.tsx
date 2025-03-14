@@ -8,7 +8,6 @@ import type { UserForm } from "~/schemas/userSchema";
 import { UserSchema } from "~/schemas/userSchema";
 import { useFormUserLoader } from "~/shared/loaders";
 import { useFormUserAction, type UserResponseData } from "~/shared/actions";
-import { Image } from "@unpic/qwik";
 
 export interface FormUserProps {
   onSubmitCompleted$: QRL<() => void>;
@@ -93,58 +92,6 @@ export default component$<FormUserProps>(({ onSubmitCompleted$ }) => {
           </div>
         )}
       </Field>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Field name="image">
-          {(field, props) => (
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {_`Profile Image URL`}
-              </label>
-              <div class="mt-1 flex items-center space-x-5">
-                <div class="flex-shrink-0 h-24 w-24 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden border border-gray-300 dark:border-gray-600">
-                  {field.value && <Image src={field.value} alt="Preview" class="h-full w-full object-cover" />}
-                </div>
-                <input
-                  {...props}
-                  type="text"
-                  placeholder={_`Enter image URL`}
-                  class="flex-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
-                  value={field.value || ''}
-                />
-              </div>
-              {field.error && (
-                <div class="text-sm text-destructive">{field.error}</div>
-              )}
-            </div>
-          )}
-        </Field>
-        
-        <Field name="coverImage">
-          {(field, props) => (
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {_`Cover Image URL`}
-              </label>
-              <div class="mt-1 flex items-center space-x-5">
-                <div class="flex-shrink-0 h-16 w-24 bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden rounded-md border border-gray-300 dark:border-gray-600">
-                  {field.value && <Image src={field.value} alt="Preview" class="h-full w-full object-cover" />}
-                </div>
-                <input
-                  {...props}
-                  type="text"
-                  placeholder={_`Enter image URL`}
-                  class="flex-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
-                  value={field.value || ''}
-                />
-              </div>
-              {field.error && (
-                <div class="text-sm text-destructive">{field.error}</div>
-              )}
-            </div>
-          )}
-        </Field>
-      </div>
 
       {/* Form footer */}
       <div class="sticky bottom-0 bg-background py-4 border-t mt-4">

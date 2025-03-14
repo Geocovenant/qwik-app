@@ -186,7 +186,7 @@ export const useGetUserByUsername = routeLoader$(async ({ cookie, params }) => {
         },
     });
     if (!response.ok) {
-        throw new Error('Error fetching user by username');
+        return null;
     }
     const data = await response.json();
     return data;

@@ -1,4 +1,4 @@
-import { $, component$, useSignal, useStore } from "@builder.io/qwik";
+import { $, component$, useSignal } from "@builder.io/qwik";
 import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
 import { LuImageOff, LuCalendar, LuGlobe, LuUser, LuLineChart, LuUsers } from "@qwikest/icons/lucide";
 import { Image } from "@unpic/qwik";
@@ -10,22 +10,33 @@ import ImgMars from '~/icons/male.svg?jsx';
 import { useSession } from "~/routes/plugin@auth";
 import { useGetUserByUsername } from "~/shared/loaders";
 import { _ } from "compiled-i18n";
-import { useFollowUser, useUnfollowUser } from "~/shared/actions";
+import { useFollowUser, useUnfollowUser, useUpdateCommunityVisibility } from "~/shared/actions";
 
 export { useGetUserByUsername, useFormUserLoader } from "~/shared/loaders";
-export { useFormUserAction, useFollowUser, useUnfollowUser } from "~/shared/actions";
+export { useFormUserAction, useFollowUser, useUnfollowUser, useUpdateCommunityVisibility } from "~/shared/actions";
+
+// Add this interface at the top of the file, after the imports
+interface Community {
+    id: number;
+    name: string;
+    level: string;
+    description: string;
+    is_public: boolean;
+}
 
 export default component$(() => {
     const session = useSession();
     const actionFollow = useFollowUser();
     const actionUnfollow = useUnfollowUser();
+    const updateCommunityVisibility = useUpdateCommunityVisibility();
 
     // @ts-ignore
     const currentUsername = session.value?.user?.username;
-    
+
     const location = useLocation();
     const { username } = location.params;
     const user = useGetUserByUsername();
+    console.log('user', user.value)
 
     const editProfileModalVisible = useSignal<boolean>(false);
 
@@ -34,21 +45,6 @@ export default component$(() => {
     });
 
     const isOwnProfile = currentUsername === username;
-
-    const stats = useStore({
-        polls: { created: 12, available: 5, answered: 32 },
-        debates: { created: 8, available: 10, participated: 24 },
-        projects: { created: 3, available: 2, contributed: 7 },
-        issues: { created: 15, available: 10, solved: 22 }
-    });
-
-    const communities = useStore({
-        list: [
-            { id: 1, name: "Urban Politics", members: 1245, showMembership: true },
-            { id: 2, name: "Climate Change", members: 3782, showMembership: true },
-            { id: 3, name: "Social Economy", members: 876, showMembership: false }
-        ]
-    });
 
     return (
         <main class="w-full bg-gray-50 dark:bg-gray-900 min-h-screen pb-12">
@@ -90,8 +86,8 @@ export default component$(() => {
                     <div>
                         <h1 class="text-3xl font-bold text-gray-800 dark:text-white">{user.value.name}</h1>
                         <p class="text-gray-500 dark:text-gray-400 text-lg">@{username}</p>
-                        
-                        {/* Contadores de seguidores y seguidos */}
+
+                        {/* Followers and following counters */}
                         <div class="flex items-center mt-2 text-sm text-gray-600 dark:text-gray-400">
                             <div class="mr-4">
                                 <span class="font-semibold text-gray-800 dark:text-white">{user.value.followers_count || 0}</span> {_`Followers`}
@@ -114,25 +110,25 @@ export default component$(() => {
                                     </Button>
                                 </>
                             )
-                            : user.value.is_following 
+                            : user.value.is_following
                                 ? (
                                     <Button
                                         onClick$={() => actionUnfollow.submit({ username })}
-                                        class={`flex items-center gap-2 ${user.value.is_following 
-                                            ? 'bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white' 
+                                        class={`flex items-center gap-2 ${user.value.is_following
+                                            ? 'bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white'
                                             : 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700'}`}
                                     >
-                                        {_`Unfollow`}       
+                                        {_`Unfollow`}
                                     </Button>
                                 )
                                 : (
                                     <Button
                                         onClick$={() => actionFollow.submit({ username })}
-                                        class={`flex items-center gap-2 ${user.value.is_following 
-                                            ? 'bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white' 
+                                        class={`flex items-center gap-2 ${user.value.is_following
+                                            ? 'bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white'
                                             : 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700'}`}
                                     >
-                                        {_`Follow`}       
+                                        {_`Follow`}
                                     </Button>
                                 )
                         }
@@ -140,47 +136,49 @@ export default component$(() => {
                 </div>
 
                 {/* Bio and details */}
-                <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
-                    {user.value.bio && (
-                        <p class="mt-4 text-gray-700 dark:text-gray-300">{user.value.bio}</p>
-                    )}
-
-                    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600 dark:text-gray-400">
-                        {user.value.website && (
-                            <div class="flex items-center gap-2">
-                                <LuGlobe class="text-blue-500" />
-                                <a
-                                    href={user.value.website}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="text-blue-500 hover:underline"
-                                >
-                                    {user.value.website}
-                                </a>
-                            </div>
+                {(user.value.bio || user.value.website || user.value.gender || user.value.last_login) && (
+                    <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+                        {user.value.bio && (
+                            <p class="mt-4 text-gray-700 dark:text-gray-300">{user.value.bio}</p>
                         )}
 
-                        {user.value.gender && (
-                            <div class="flex items-center gap-2">
-                                {user.value.gender === 'M' && <ImgMars class="text-blue-500" />}
-                                {user.value.gender === 'F' && <ImgVenus class="text-pink-500" />}
-                                {user.value.gender === 'X' && <LuUser class="text-purple-500" />}
-                                <span>
-                                    {user.value.gender === 'M' && _`Male`}
-                                    {user.value.gender === 'F' && _`Female`}
-                                    {user.value.gender === 'X' && _`Non-binary`}
-                                </span>
-                            </div>
-                        )}
+                        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600 dark:text-gray-400">
+                            {user.value.website && (
+                                <div class="flex items-center gap-2">
+                                    <LuGlobe class="text-blue-500" />
+                                    <a
+                                        href={user.value.website}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="text-blue-500 hover:underline"
+                                    >
+                                        {user.value.website}
+                                    </a>
+                                </div>
+                            )}
 
-                        {user.value.last_login && (
-                            <div class="flex items-center gap-2">
-                                <LuCalendar class="text-blue-500" />
-                                <span>{_`Last login`}: {new Date(user.value.last_login).toLocaleDateString()}</span>
-                            </div>
-                        )}
+                            {user.value.gender && (
+                                <div class="flex items-center gap-2">
+                                    {user.value.gender === 'M' && <ImgMars class="text-blue-500" />}
+                                    {user.value.gender === 'F' && <ImgVenus class="text-pink-500" />}
+                                    {user.value.gender === 'X' && <LuUser class="text-purple-500" />}
+                                    <span>
+                                        {user.value.gender === 'M' && _`Male`}
+                                        {user.value.gender === 'F' && _`Female`}
+                                        {user.value.gender === 'X' && _`Non-binary`}
+                                    </span>
+                                </div>
+                            )}
+
+                            {user.value.last_login && (
+                                <div class="flex items-center gap-2">
+                                    <LuCalendar class="text-blue-500" />
+                                    <span>{_`Last login`}: {new Date(user.value.last_login).toLocaleDateString()}</span>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
 
                 <section class="mt-8">
                     <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
@@ -194,15 +192,15 @@ export default component$(() => {
                             <div class="space-y-2">
                                 <div class="flex justify-between items-center">
                                     <span class="text-gray-600 dark:text-gray-400">{_`Created`}</span>
-                                    <span class="font-bold text-gray-800 dark:text-white">{stats.polls.created}</span>
+                                    <span class="font-bold text-gray-800 dark:text-white">{user.value.activity_stats?.polls.created || 0}</span>
                                 </div>
                                 <div class="flex justify-between items-center">
-                                    <span class="text-gray-600 dark:text-gray-400">{_`Available`}</span>
-                                    <span class="font-bold text-gray-800 dark:text-white">{stats.polls.available}</span>
+                                    <span class="text-gray-600 dark:text-gray-400">{_`Voted`}</span>
+                                    <span class="font-bold text-gray-800 dark:text-white">{user.value.activity_stats?.polls.voted || 0}</span>
                                 </div>
                                 <div class="flex justify-between items-center">
-                                    <span class="text-gray-600 dark:text-gray-400">{_`Answered`}</span>
-                                    <span class="font-bold text-gray-800 dark:text-white">{stats.polls.answered}</span>
+                                    <span class="text-gray-600 dark:text-gray-400">{_`Total Participation`}</span>
+                                    <span class="font-bold text-gray-800 dark:text-white">{user.value.activity_stats?.polls.total_participation || 0}</span>
                                 </div>
                             </div>
                         </div>
@@ -213,15 +211,15 @@ export default component$(() => {
                             <div class="space-y-2">
                                 <div class="flex justify-between items-center">
                                     <span class="text-gray-600 dark:text-gray-400">{_`Created`}</span>
-                                    <span class="font-bold text-gray-800 dark:text-white">{stats.debates.created}</span>
+                                    <span class="font-bold text-gray-800 dark:text-white">{user.value.activity_stats?.debates.created || 0}</span>
                                 </div>
                                 <div class="flex justify-between items-center">
-                                    <span class="text-gray-600 dark:text-gray-400">{_`Available`}</span>
-                                    <span class="font-bold text-gray-800 dark:text-white">{stats.debates.available}</span>
+                                    <span class="text-gray-600 dark:text-gray-400">{_`Opinions`}</span>
+                                    <span class="font-bold text-gray-800 dark:text-white">{user.value.activity_stats?.debates.opinions || 0}</span>
                                 </div>
                                 <div class="flex justify-between items-center">
-                                    <span class="text-gray-600 dark:text-gray-400">{_`Participated`}</span>
-                                    <span class="font-bold text-gray-800 dark:text-white">{stats.debates.participated}</span>
+                                    <span class="text-gray-600 dark:text-gray-400">{_`Total Participation`}</span>
+                                    <span class="font-bold text-gray-800 dark:text-white">{user.value.activity_stats?.debates.total_participation || 0}</span>
                                 </div>
                             </div>
                         </div>
@@ -232,15 +230,15 @@ export default component$(() => {
                             <div class="space-y-2">
                                 <div class="flex justify-between items-center">
                                     <span class="text-gray-600 dark:text-gray-400">{_`Created`}</span>
-                                    <span class="font-bold text-gray-800 dark:text-white">{stats.projects.created}</span>
+                                    <span class="font-bold text-gray-800 dark:text-white">{user.value.activity_stats?.projects.created || 0}</span>
                                 </div>
                                 <div class="flex justify-between items-center">
-                                    <span class="text-gray-600 dark:text-gray-400">{_`Available`}</span>
-                                    <span class="font-bold text-gray-800 dark:text-white">{stats.projects.available}</span>
+                                    <span class="text-gray-600 dark:text-gray-400">{_`Commitments`}</span>
+                                    <span class="font-bold text-gray-800 dark:text-white">{user.value.activity_stats?.projects.commitments || 0}</span>
                                 </div>
                                 <div class="flex justify-between items-center">
-                                    <span class="text-gray-600 dark:text-gray-400">{_`Contributed`}</span>
-                                    <span class="font-bold text-gray-800 dark:text-white">{stats.projects.contributed}</span>
+                                    <span class="text-gray-600 dark:text-gray-400">{_`Donations`}</span>
+                                    <span class="font-bold text-gray-800 dark:text-white">{user.value.activity_stats?.projects.donations || 0}</span>
                                 </div>
                             </div>
                         </div>
@@ -251,15 +249,15 @@ export default component$(() => {
                             <div class="space-y-2">
                                 <div class="flex justify-between items-center">
                                     <span class="text-gray-600 dark:text-gray-400">{_`Created`}</span>
-                                    <span class="font-bold text-gray-800 dark:text-white">{stats.issues.created}</span>
+                                    <span class="font-bold text-gray-800 dark:text-white">{user.value.activity_stats?.issues.created || 0}</span>
                                 </div>
                                 <div class="flex justify-between items-center">
-                                    <span class="text-gray-600 dark:text-gray-400">{_`Available`}</span>
-                                    <span class="font-bold text-gray-800 dark:text-white">{stats.issues.available}</span>
+                                    <span class="text-gray-600 dark:text-gray-400">{_`Supports`}</span>
+                                    <span class="font-bold text-gray-800 dark:text-white">{user.value.activity_stats?.issues.supports || 0}</span>
                                 </div>
                                 <div class="flex justify-between items-center">
-                                    <span class="text-gray-600 dark:text-gray-400">{_`Solved`}</span>
-                                    <span class="font-bold text-gray-800 dark:text-white">{stats.issues.solved}</span>
+                                    <span class="text-gray-600 dark:text-gray-400">{_`Comments`}</span>
+                                    <span class="font-bold text-gray-800 dark:text-white">{user.value.activity_stats?.issues.comments || 0}</span>
                                 </div>
                             </div>
                         </div>
@@ -273,28 +271,39 @@ export default component$(() => {
                         {_`Communities`}
                     </h2>
 
-                    {communities.list.length > 0 ? (
+                    {isOwnProfile && (
+                        <div class="mb-4 p-4 bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 dark:border-blue-800">
+                            <p class="text-sm">
+                                <span class="font-medium">Information:</span> By enabling "Show membership", other users will be able to see that you belong to this community.
+                            </p>
+                        </div>
+                    )}
+
+                    {user.value.communities && user.value.communities.length > 0 ? (
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {communities.list.map((community) =>
-                                (!isOwnProfile && !community.showMembership) ? null : (
+                            {user.value.communities.map((community: Community) =>
+                                (!isOwnProfile && !community.is_public) ? null : (
                                     <div key={community.id} class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md">
                                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{community.name}</h3>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                            {community.members} {_`members`}
-                                        </p>
-                                        
+
                                         {isOwnProfile && (
                                             <div class="mt-4 flex items-center justify-between">
                                                 <span class="text-sm text-gray-600 dark:text-gray-400">{_`Show membership`}</span>
                                                 <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        class="sr-only peer" 
-                                                        checked={community.showMembership}
-                                                        onClick$={() => {
-                                                            const index = communities.list.findIndex(c => c.id === community.id);
+                                                    <input
+                                                        type="checkbox"
+                                                        class="sr-only peer"
+                                                        checked={community.is_public}
+                                                        onClick$={async () => {
+                                                            const index = user.value.communities.findIndex((c: Community) => c.id === community.id);
                                                             if (index !== -1) {
-                                                                communities.list[index].showMembership = !communities.list[index].showMembership;
+                                                                const newPublicValue = !user.value.communities[index].is_public;
+                                                                user.value.communities[index].is_public = newPublicValue;
+                                                                
+                                                                await updateCommunityVisibility.submit({
+                                                                    communityId: community.id,
+                                                                    isPublic: newPublicValue
+                                                                });
                                                             }
                                                         }}
                                                     />
