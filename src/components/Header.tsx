@@ -1,5 +1,4 @@
 import { $, component$, useSignal } from "@builder.io/qwik";
-import { _ } from "compiled-i18n";
 import { NestedDropdown } from "~/components/NestedDropdown";
 import { useSession } from "~/routes/plugin@auth";
 import { Button } from "./ui";
@@ -8,9 +7,12 @@ import Modal from "~/components/Modal";
 import Logo from '~/icons/logo.svg?jsx';
 import { Link } from "@builder.io/qwik-city";
 import { LuSearch, LuMenu } from "@qwikest/icons/lucide";
+import { useGetUser } from "~/shared/loaders";
+import { _ } from "compiled-i18n";
 
 export default component$(() => {
     const session = useSession();
+    const user = useGetUser();
     const loginModalVisible = useSignal<boolean>(false);
     const searchValue = useSignal<string>('');
     const showSearchMessage = useSignal<boolean>(false);
@@ -88,8 +90,7 @@ export default component$(() => {
                         <div class="flex items-center gap-2 sm:gap-3">
                             <NestedDropdown
                                 userId={session.value.user.id}
-                                // @ts-ignore
-                                username={session.value.user.username || undefined}
+                                username={user.value.username || undefined}
                                 name={session.value.user.name || undefined}
                                 email={session.value.user.email || undefined}
                                 image={session.value.user.image || undefined}

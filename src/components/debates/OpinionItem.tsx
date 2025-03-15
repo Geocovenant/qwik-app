@@ -115,7 +115,6 @@ export default component$<OpinionProps>(({
   })
   
   const handleDelete = $(async () => {
-    console.log('handleDelete')
     const result = await actionDeleteOpinion.submit({
       opinionId: opinion.id
     });

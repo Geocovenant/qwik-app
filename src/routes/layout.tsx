@@ -4,18 +4,13 @@ import { guessLocale } from 'compiled-i18n'
 import Header from "~/components/Header";
 import Sidebar from "~/components/Sidebar/Sidebar";
 import { useLocation } from "@builder.io/qwik-city";
-import { type CustomSession } from "~/shared/types";
 import { dataArray } from "~/data/countries";
 
 export { useFormCommunityRequestLoader, useGetUser, useGetTags } from "~/shared/loaders";
 export { useFormReportLoader } from "~/shared/forms/loaders";
 export { useFormCommunityRequestAction, useJoinCommunity, useLeaveCommunity } from "~/shared/actions";
 
-export const onRequest: RequestHandler = async ({ params, query, headers, locale, sharedMap, redirect }) => {
-  const session: CustomSession | null = sharedMap.get('session');
-  if(session?.user?.id && !session.user.username) {
-    throw redirect(302, '/onboarding/username')
-  }
+export const onRequest: RequestHandler = async ({ params, query, headers, locale, redirect }) => {
   if (params.nation) {
     const isValidCountry = dataArray.some(country => country.path === params.nation);
     if (!isValidCountry) {

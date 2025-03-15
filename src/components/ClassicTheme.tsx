@@ -31,8 +31,8 @@ export default component$(() => {
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 aria-hidden="true"
-                width="1.2em"
-                height="1.2em"
+                width="1em"
+                height="1em"
                 fill="currentColor"
                 stroke-linecap="round"
                 class={`theme-toggle__classic ${theme.value === 'dark' ? 'theme-toggle__classic--dark' : ''}`}

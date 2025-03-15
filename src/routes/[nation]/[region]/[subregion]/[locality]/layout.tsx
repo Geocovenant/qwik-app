@@ -25,7 +25,6 @@ export default component$(() => {
     const user = useGetUser();
     const session = useSession();
     const locality = useGetLocality();
-    console.log('locality2', locality.value)
     
     const joinCommunityAction = useJoinCommunity();
     const leaveCommunityAction = useLeaveCommunity();

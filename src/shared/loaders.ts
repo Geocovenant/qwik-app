@@ -5,7 +5,7 @@ import type { OpinionForm } from "~/schemas/opinionSchema";
 import type { CommunityRequestForm } from "~/schemas/communityRequestSchema";
 import { useGetRegions } from "./national/loaders";
 
-export const useGetUser = routeLoader$(async ({ cookie }) => {
+export const useGetUser = routeLoader$(async ({ cookie, redirect }) => {
     const token = cookie.get('authjs.session-token')
     if (!token) {
         return {
@@ -23,6 +23,9 @@ export const useGetUser = routeLoader$(async ({ cookie }) => {
         }
     })
     const data = await response.json()
+    if (!data.username) {
+        throw redirect(302, '/onboarding/username')
+    }
     return data
 })
 
