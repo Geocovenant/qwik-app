@@ -134,7 +134,7 @@ export default component$(() => {
                 </div>
 
                 {/* Bio and details */}
-                {(user.value.bio || user.value.website || user.value.gender || user.value.last_login) && (
+                {(user.value.id && (user.value.bio || user.value.website || user.value.gender || user.value.last_login)) && (
                     <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
                         {user.value.bio && (
                             <p class="mt-4 text-gray-700 dark:text-gray-300">{user.value.bio}</p>

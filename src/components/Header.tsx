@@ -6,9 +6,9 @@ import SocialLoginButtons from "./SocialLoginButtons";
 import Modal from "~/components/Modal";
 import Logo from '~/icons/logo.svg?jsx';
 import { Link } from "@builder.io/qwik-city";
-import { LuSearch, LuMenu } from "@qwikest/icons/lucide";
+import { LuSearch, LuMenu, LuGlobe } from "@qwikest/icons/lucide";
 import { useGetUser } from "~/shared/loaders";
-import { _ } from "compiled-i18n";
+import { _, getLocale, locales } from "compiled-i18n";
 
 export default component$(() => {
     const session = useSession();
@@ -17,6 +17,8 @@ export default component$(() => {
     const searchValue = useSignal<string>('');
     const showSearchMessage = useSignal<boolean>(false);
     const isMobileMenuOpen = useSignal<boolean>(false);
+    const showLanguageDropdown = useSignal<boolean>(false);
+    const currentLocale = getLocale();
 
     // Function to open/close the sidebar on mobile devices
     const toggleMobileSidebar = $(() => {
@@ -28,6 +30,16 @@ export default component$(() => {
             }));
         }
     });
+
+    const toggleLanguageDropdown = $(() => {
+        showLanguageDropdown.value = !showLanguageDropdown.value;
+    });
+
+    // Map de idiomas para mostrar nombres más amigables
+    const languageNames: Record<string, string> = {
+        'es': 'Español',
+        'en': 'English',
+    };
 
     return (
         <header class="bg-[#713fc2] border-b border-[#8255c9] h-16 flex items-center px-3 sm:px-6 shadow-sm">
@@ -84,8 +96,39 @@ export default component$(() => {
                     </div>
                 </div>
                 
-                {/* User/login area with a more compact button on mobile */}
-                <div>
+                {/* User/login area with language selector */}
+                <div class="flex items-center gap-2">
+                    {/* Language selector */}
+                    <div class="relative">
+                        <button 
+                            onClick$={toggleLanguageDropdown}
+                            class="flex items-center justify-center p-2 text-white hover:bg-white/10 rounded-lg transition-colors"
+                            aria-label={_`Change language`}
+                        >
+                            <LuGlobe class="w-5 h-5" />
+                            <span class="ml-1 text-sm hidden sm:inline">{languageNames[currentLocale] || currentLocale}</span>
+                        </button>
+                        
+                        {showLanguageDropdown.value && (
+                            <div class="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20 animate-fadeIn">
+                                {locales.map((locale) => (
+                                    <a
+                                        key={locale}
+                                        href={`?locale=${locale}`}
+                                        class={`block px-4 py-2 text-sm ${locale === currentLocale ? 
+                                            'bg-[#713fc2]/10 text-[#713fc2] font-medium' : 
+                                            'text-gray-700 hover:bg-gray-100'}`}
+                                    >
+                                        {languageNames[locale] || locale}
+                                        {locale === currentLocale && (
+                                            <span class="ml-2">✓</span>
+                                        )}
+                                    </a>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
                     {session.value && user.value.username ? (
                         <div class="flex items-center gap-2 sm:gap-3">
                             <NestedDropdown

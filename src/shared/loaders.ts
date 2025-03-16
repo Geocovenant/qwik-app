@@ -13,7 +13,11 @@ export const useGetUser = routeLoader$(async ({ cookie, redirect, url }) => {
             username: null,
             email: null,
             image: null,
-            communities: null
+            communities: null,
+            bio: null,
+            website: null,
+            gender: null,
+            last_login: null
         }
     }
     const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/me`, {
@@ -181,7 +185,17 @@ export const useGetTags = routeLoader$(async ({ cookie }) => {
 export const useGetUserByUsername = routeLoader$(async ({ cookie, params }) => {
     const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
     if (!token) {
-        return undefined;
+        return {
+            id: null,
+            username: null,
+            email: null,
+            image: null,
+            communities: null,
+            bio: null,
+            website: null,
+            gender: null,
+            last_login: null
+        };
     }
     const username = params.username;
     if (!username) return null;
