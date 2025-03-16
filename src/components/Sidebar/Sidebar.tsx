@@ -17,14 +17,14 @@ const LuGlobeIcon = component$(() => <LuGlobe class="h-5 w-5" />);
 const baseCommunities: Community[] = [
     {
         id: "global",
-        name: "Global",
+        name: _`Global`,
         path: "/global",
         icon: "🌎",
         children: []
     },
     {
         id: "international",
-        name: "International",
+        name: _`International`,
         path: "/international",
         icon: <LuGlobeIcon />,
         children: []
