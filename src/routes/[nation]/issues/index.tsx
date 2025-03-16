@@ -11,7 +11,7 @@ import { dataArray as countries } from "~/data/countries";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
 // Import necessary loaders
-import { useGetTags } from "~/shared/loaders";
+import { useGetTags, useGetUser } from "~/shared/loaders";
 import { useGetNationalIssues } from "~/shared/national/loaders";
 
 export { useFormIssueLoader } from "~/shared/forms/loaders";
@@ -19,6 +19,7 @@ export { useFormIssueAction } from "~/shared/forms/actions";
 
 export default component$(() => {
     const session = useSession();
+    const user = useGetUser();
     const showModalIssue = useSignal(false);
     const location = useLocation();
     const nationName = location.params.nation;
@@ -32,8 +33,8 @@ export default component$(() => {
     const nav = useNavigate();
 
     // @ts-ignore
-    const currentUsername = useComputed$(() => session.value?.user?.username || "");
-    const isAuthenticated = useComputed$(() => !!session.value?.user);
+    const currentUsername = useComputed$(() => user.value.username || "");
+    const isAuthenticated = useComputed$(() => !!session.value);
 
     const onSubmitCompleted = $(() => {
         showModalIssue.value = false;
@@ -55,7 +56,7 @@ export default component$(() => {
                         title={_`Report issue in ${nation.value?.name || capitalizeFirst(nationName)}`} 
                         show={showModalIssue}
                     >
-                        {session.value?.user
+                        {session.value
                             ? <FormIssue
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.NATIONAL}

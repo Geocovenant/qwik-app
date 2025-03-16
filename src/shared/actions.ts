@@ -343,8 +343,8 @@ export const useUpdateCommunityVisibility = routeAction$(
                 method: "PATCH",
                 headers: {
                     "Accept": "application/json",
-                    "Authorization": token.value,
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token.value}`,
                 },
                 body: JSON.stringify({ is_public: isPublic }),
             });
@@ -377,7 +377,7 @@ export const useJoinCommunity = routeAction$(
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
-                    "Authorization": token.value,
+                    "Authorization": `Bearer ${token.value}`,
                 },
             });
 
@@ -410,7 +410,7 @@ export const useLeaveCommunity = routeAction$(
                 method: "DELETE",
                 headers: {
                     "Accept": "application/json",
-                    "Authorization": token.value,
+                    "Authorization": `Bearer ${token.value}`,
                 },
             });
 
@@ -441,8 +441,8 @@ export const useReportItem = routeAction$(
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
-                    "Authorization": token.value,
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token.value}`,
                 },
                 body: JSON.stringify({
                     item_type: data.itemType,
@@ -483,7 +483,7 @@ export const useDeletePoll = routeAction$(
                 method: "DELETE",
                 headers: {
                     "Accept": "application/json",
-                    "Authorization": token.value,
+                    "Authorization": `Bearer ${token.value}`,
                 },
             });
 
@@ -690,7 +690,7 @@ export const useDeleteDebate = routeAction$(
                 method: "DELETE",
                 headers: {
                     "Accept": "application/json",
-                    "Authorization": token.value,
+                    "Authorization": `Bearer ${token.value}`,
                 },
             });
 
@@ -723,7 +723,7 @@ export const useDeleteProject = routeAction$(
                 method: "DELETE",
                 headers: {
                     "Accept": "application/json",
-                    "Authorization": token.value,
+                    "Authorization": `Bearer ${token.value}`,
                 },
             });
 
@@ -823,7 +823,7 @@ export const useReactProject = routeAction$(async (data, { cookie, fail }) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: token.value
+                Authorization: `Bearer ${token.value}`
             },
             body: JSON.stringify({
                 reaction: data.reaction

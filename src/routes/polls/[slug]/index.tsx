@@ -39,7 +39,7 @@ interface PollOption {
 
 export default component$(() => {
     const session = useSession()
-    const isAuthenticated = !!session.value?.user
+    const isAuthenticated = !!session.value
     const pollData = useGetPollBySlug()
     const showLoginModal = useSignal(false)
     const showCopiedMessage = useSignal(false)

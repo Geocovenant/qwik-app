@@ -86,30 +86,30 @@ export default component$(() => {
                 
                 {/* User/login area with a more compact button on mobile */}
                 <div>
-                    {session.value?.user ? (
+                    {session.value && user.value.username ? (
                         <div class="flex items-center gap-2 sm:gap-3">
                             <NestedDropdown
-                                userId={session.value.user.id}
+                                userId={user.value.id}
                                 username={user.value.username || undefined}
-                                name={session.value.user.name || undefined}
-                                email={session.value.user.email || undefined}
-                                image={session.value.user.image || undefined}
+                                name={user.value.name || undefined}
+                                email={user.value.email || undefined}
+                                image={user.value.image || undefined}
                             />
                         </div>
                     ) : (
                         <Button
                             onClick$={() => loginModalVisible.value = true}
                             class="bg-white text-[#713fc2] font-medium
-                                   px-3 sm:px-6 py-1.5 sm:py-2.5 rounded-full 
-                                   hover:bg-gray-100
-                                   dark:bg-white/90 dark:hover:bg-white
-                                   shadow-lg hover:shadow-xl
-                                   transform hover:scale-105
-                                   transition-all duration-200
-                                   border border-white/10
-                                   hover:ring-2 hover:ring-white/30
-                                   flex items-center gap-1 sm:gap-2
-                                   text-sm sm:text-base"
+                                px-3 sm:px-6 py-1.5 sm:py-2.5 rounded-full 
+                                hover:bg-gray-100
+                                dark:bg-white/90 dark:hover:bg-white
+                                shadow-lg hover:shadow-xl
+                                transform hover:scale-105
+                                transition-all duration-200
+                                border border-white/10
+                                hover:ring-2 hover:ring-white/30
+                                flex items-center gap-1 sm:gap-2
+                                text-sm sm:text-base"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 sm:w-4 sm:h-4">
                                 <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>

@@ -236,7 +236,7 @@ export const useGetNationalMembers = routeLoader$(async ({ cookie, query, resolv
         const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${communityId}/members?page=${page}&size=${size}`, {
             headers: {
                 Accept: 'application/json',
-                Authorization: token.value
+                Authorization: `Bearer ${token.value}`
             }
         });
 

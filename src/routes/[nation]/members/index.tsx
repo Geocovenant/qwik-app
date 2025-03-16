@@ -29,7 +29,7 @@ export default component$(() => {
     // Assume the national community has ID 2 (adjust as necessary)
     const nationalCommunityId = country.value.community_id;
     const nav = useNavigate();
-    const isAuthenticated = useComputed$(() => !!session.value?.user);
+    const isAuthenticated = useComputed$(() => !!session.value);
 
     // Toggle to change user visibility
     const togglePublicVisibility = $(async () => {

@@ -10,7 +10,7 @@ import { useSession } from "~/routes/plugin@auth";
 import { dataArray as countries } from "~/data/countries";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-import { useGetTags } from "~/shared/loaders";
+import { useGetTags, useGetUser } from "~/shared/loaders";
 import { useGetRegion, useGetRegionalProjects } from "~/shared/regional/loaders";
 import { useGetRegions } from "~/shared/national/loaders";
 
@@ -20,6 +20,7 @@ export { useDeleteProject } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
+    const user = useGetUser();
     const showModalProject = useSignal(false);
     const location = useLocation();
     const nationName = location.params.nation;
@@ -40,8 +41,8 @@ export default component$(() => {
     const nav = useNavigate();
 
     // @ts-ignore
-    const currentUsername = useComputed$(() => session.value?.user?.username || "");
-    const isAuthenticated = useComputed$(() => !!session.value?.user);
+    const currentUsername = useComputed$(() => user.value.username || "");
+    const isAuthenticated = useComputed$(() => !!session.value);
 
     const onSubmitCompleted = $(() => {
         showModalProject.value = false;
@@ -63,7 +64,7 @@ export default component$(() => {
                         title={_`Create project for ${capitalizeFirst(regionName)}, ${nation.value?.name || capitalizeFirst(nationName)}`} 
                         show={showModalProject}
                     >
-                        {session.value?.user
+                        {session.value
                             ? <FormProject
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.REGIONAL}

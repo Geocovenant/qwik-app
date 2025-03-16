@@ -9,6 +9,7 @@ import FormProject from "~/components/forms/FormProject";
 import { _ } from "compiled-i18n";
 
 import { useGetGlobalProjects } from "~/shared/global/loaders";
+import { useGetUser } from "~/shared/loaders";
 
 export { useFormProjectLoader } from "~/shared/forms/loaders";
 export { useFormProjectAction } from "~/shared/forms/actions";
@@ -16,14 +17,15 @@ export { useDeleteProject } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
+    const user = useGetUser();
     const showModalProject = useSignal(false);
     const projects = useGetGlobalProjects();
     const currentPage = useSignal(1);
     const nav = useNavigate();
 
     // @ts-ignore
-    const currentUsername = useComputed$(() => session.value?.user?.username || "");
-    const isAuthenticated = useComputed$(() => !!session.value?.user);
+    const currentUsername = useComputed$(() => user.value.username || "");
+    const isAuthenticated = useComputed$(() => !!session.value);
 
     const onSubmitCompleted = $(() => {
         showModalProject.value = false;
@@ -41,7 +43,7 @@ export default component$(() => {
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
             <div class="flex flex-col min-h-0">
                 <div class="h-full overflow-y-auto">
-                    {session.value?.user
+                    {session.value
                         ? <Modal
                             title={_`Create Project`}
                             show={showModalProject}

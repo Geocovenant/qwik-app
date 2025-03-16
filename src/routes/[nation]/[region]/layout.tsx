@@ -67,7 +67,7 @@ export default component$(() => {
                             </Breadcrumb.List>
                         </Breadcrumb.Root>
                         
-                        {session.value?.user && (
+                        {session.value && (
                             <Button
                                 class={`flex items-center gap-2 font-medium py-1.5 px-3 rounded-lg transition-colors text-sm ${
                                     isMember.value 

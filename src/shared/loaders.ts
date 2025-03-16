@@ -66,7 +66,7 @@ export const useGetRegionalPolls = routeLoader$(async ({ cookie, params, resolve
         const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=REGIONAL&region=${regionId}`, {
             headers: {
                 Accept: 'application/json',
-                Authorization: token.value
+                Authorization: `Bearer ${token.value}`
             }
         });
 
@@ -89,7 +89,7 @@ export const useGetDebateBySlug = routeLoader$(async ({ cookie, params }) => {
     const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/${params.slug}`, {
         headers: {
             Accept: 'application/json',
-            Authorization: token.value
+            Authorization: `Bearer ${token.value}`
         },
     });
     return (await response.json()) as {
@@ -143,7 +143,7 @@ export const useGetRegionalDebates = routeLoader$(async ({ cookie, params, resol
         const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates?type=REGIONAL&region=${regionId}`, {
             headers: {
                 Accept: 'application/json',
-                Authorization: token.value
+                Authorization: `Bearer ${token.value}`
             }
         });
 
@@ -166,7 +166,7 @@ export const useGetTags = routeLoader$(async ({ cookie }) => {
     const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/tags`, {
         headers: {
             Accept: 'application/json',
-            Authorization: token.value
+            Authorization: `Bearer ${token.value}`
         },
     });
     return (await response.json()) as Array<{
@@ -186,7 +186,7 @@ export const useGetUserByUsername = routeLoader$(async ({ cookie, params }) => {
     const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/${username}`, {
         headers: {
             Accept: 'application/json',
-            Authorization: token.value
+            Authorization: `Bearer ${token.value}`
         },
     });
     if (!response.ok) {
@@ -229,7 +229,7 @@ export const useGetPollBySlug = routeLoader$(async ({ cookie, params }) => {
         const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${params.slug}`, {
             headers: {
                 Accept: 'application/json',
-                Authorization: token.value
+                Authorization: `Bearer ${token.value}`
             },
         });
 
@@ -274,7 +274,7 @@ export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue
         const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/countries/${countryCode}/divisions`, {
             headers: {
                 Accept: 'application/json',
-                Authorization: token.value
+                Authorization: `Bearer ${token.value}`
             }
         });
 
@@ -307,7 +307,7 @@ export const useCheckCommunityMembership = routeLoader$(async ({ cookie, params 
         const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${communityId}/members?size=1`, {
             headers: {
                 Accept: 'application/json',
-                Authorization: token.value
+                Authorization: `Bearer ${token.value}`
             }
         });
 
@@ -388,7 +388,7 @@ export const useGetLocalityDebates = routeLoader$(async ({ params, query, cookie
         };
         
         if (token) {
-            headers.Authorization = token.value;
+            headers.Authorization = `Bearer ${token.value}`;
         }
         
         const response = await fetch(url, { headers });
@@ -428,7 +428,7 @@ export const useGetLocalityProjects = routeLoader$(async ({ params, query, cooki
         };
         
         if (token) {
-            headers.Authorization = token.value;
+            headers.Authorization = `Bearer ${token.value}`;
         }
         
         const response = await fetch(url, { headers });
@@ -468,7 +468,7 @@ export const useGetLocalityIssues = routeLoader$(async ({ params, query, cookie 
         };
         
         if (token) {
-            headers.Authorization = token.value;
+            headers.Authorization = `Bearer ${token.value}`;
         }
         
         const response = await fetch(url, { headers });
@@ -503,7 +503,7 @@ export const useGetProjectBySlug = routeLoader$(async ({ cookie, params }) => {
         const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects/${params.slug}`, {
             headers: {
                 Accept: 'application/json',
-                Authorization: token.value
+                Authorization: `Bearer ${token.value}`
             },
         })
 

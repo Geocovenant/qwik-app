@@ -51,7 +51,7 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
             case CommunityType.GLOBAL:
                 Object.assign(payload, { community_ids: [1] });
                 break;
-            case CommunityType.INTERNATIONAL:
+                case CommunityType.INTERNATIONAL:
                 Object.assign(payload, { country_codes: values.community_ids });
                 break;
             case CommunityType.NATIONAL:
@@ -66,8 +66,10 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
                 break;
         }
 
+        console.log('payload', payload)
+
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -76,6 +78,7 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
                 body: JSON.stringify(payload),
             });
 
+            console.log('response', response)
             // Check if the response is correct, otherwise throw an error
             if (!response.ok) {
                 const errorData = await response.json();
@@ -83,6 +86,7 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
             }
 
             const data = await response.json();
+            console.log('data', data)
 
             return {
                 success: true,
@@ -184,7 +188,7 @@ export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
         }
         
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -271,7 +275,7 @@ export const useFormProjectAction = formAction$<ProjectForm, ProjectResponseData
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -340,7 +344,7 @@ export const useFormIssueAction = formAction$<IssueForm, IssueResponseData>(
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/issues`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/issues/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

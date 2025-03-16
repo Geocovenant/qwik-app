@@ -2,14 +2,14 @@ import { $, component$, useSignal, useTask$, useComputed$ } from "@builder.io/qw
 import { Form, useNavigate } from "@builder.io/qwik-city";
 import { LuLoader2, LuCheckCircle, LuAlertCircle, LuInfo } from "@qwikest/icons/lucide";
 import { Image } from "@unpic/qwik";
-import { _ } from "compiled-i18n";
-import { useSession } from "~/routes/plugin@auth";
 import { useSetUsername } from "~/shared/actions";
+import { useGetUser } from "~/shared/loaders";
+import { _ } from "compiled-i18n";
 
 export { useSetUsername } from "~/shared/actions";
 
 export default component$(() => {
-    const session = useSession();
+    const user = useGetUser();
     const nav = useNavigate();
     
     const usernameSignal = useSignal("");
@@ -20,11 +20,11 @@ export default component$(() => {
     
     // Generar sugerencia de nombre de usuario basada en session.user.name
     useTask$(({ track }) => {
-        track(() => session.value?.user?.name);
+        track(() => user.value.name);
         
-        if (session.value?.user?.name) {
+        if (user.value.name) {
             // Transformar el nombre a un formato válido para nombre de usuario
-            const suggestedUsername = session.value.user.name
+            const suggestedUsername = user.value.name
                 .toLowerCase()
                 .replace(/\s+/g, '') // Quitar espacios
                 .replace(/[^a-z0-9_]/g, '') // Quitar caracteres especiales

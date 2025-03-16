@@ -8,7 +8,7 @@ import { CommunityType } from "~/constants/communityType";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 
-import { useGetTags } from "~/shared/loaders";
+import { useGetTags, useGetUser } from "~/shared/loaders";
 import { useGetGlobalDebates } from "~/shared/global/loaders";
 
 export { useFormDebateLoader } from "~/shared/forms/loaders";
@@ -17,6 +17,7 @@ export { useDeleteDebate } from "~/shared/actions"
 
 export default component$(() => {
     const session = useSession();
+    const user = useGetUser();
     const showModalDebate = useSignal(false);
     const debates = useGetGlobalDebates();
     const tags = useGetTags();
@@ -24,8 +25,8 @@ export default component$(() => {
     const nav = useNavigate();
 
     // @ts-ignore
-    const currentUsername = useComputed$(() => session.value?.user?.username || "");
-    const isAuthenticated = useComputed$(() => !!session.value?.user);
+    const currentUsername = useComputed$(() => user.value.username || "");
+    const isAuthenticated = useComputed$(() => !!session.value);
 
     const onSubmitCompleted = $(() => {
         showModalDebate.value = false;
@@ -43,7 +44,7 @@ export default component$(() => {
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
             <div class="flex flex-col min-h-0">
                 <div class="h-full overflow-y-auto">
-                    {session.value?.user
+                    {session.value
                         ? <Modal
                             title={_`Create debate`}
                             show={showModalDebate}

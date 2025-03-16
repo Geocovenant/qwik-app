@@ -11,6 +11,7 @@ import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
 import { useGetSubregions } from "~/shared/regional/loaders";
 import { useGetSubregion, useGetSubregionalPolls } from "~/shared/subregional/loaders";
+import { useGetUser } from "~/shared/loaders";
 
 export { useFormPollLoader } from "~/shared/forms/loaders";
 export { useFormPollAction } from "~/shared/forms/actions";
@@ -18,6 +19,7 @@ export { useVotePoll, useReactPoll } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
+    const user = useGetUser();
     const showModalPoll = useSignal(false);
     const location = useLocation();
     const nationName = location.params.nation;
@@ -33,8 +35,8 @@ export default component$(() => {
     const nav = useNavigate();
 
     // @ts-ignore
-    const currentUsername = useComputed$(() => session.value?.user?.username || "");
-    const isAuthenticated = useComputed$(() => !!session.value?.user);
+    const currentUsername = useComputed$(() => user.value.username || "");
+    const isAuthenticated = useComputed$(() => !!session.value);
     const subregionDisplayName = capitalizeFirst(subregionName.replace(/-/g, ' '));
 
     const onSubmitCompleted = $(() => {
@@ -53,7 +55,7 @@ export default component$(() => {
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
             <div class="flex flex-col min-h-0">
                 <div class="h-full overflow-y-auto">
-                    {session.value?.user
+                    {session.value
                         ? <Modal
                             title={_`Create poll for ${subregionDisplayName}`}
                             show={showModalPoll}

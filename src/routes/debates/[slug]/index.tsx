@@ -19,7 +19,7 @@ import { formatDateISO } from "~/utils/formatDateISO"
 import { dataArray as countriesList } from "~/data/countries"
 import { useStylesScoped$ } from "@builder.io/qwik"
 import { FormOpinion } from "~/components/forms/FormOpinion"
-import { useGetDebateBySlug } from "~/shared/loaders"
+import { useGetDebateBySlug, useGetUser } from "~/shared/loaders"
 import styles from "./debate-page.css?inline"
 import Modal from "~/components/Modal"
 import SocialLoginButtons from "~/components/SocialLoginButtons"
@@ -66,6 +66,7 @@ const ScrollArrow = component$(
 export default component$(() => {
     useStylesScoped$(styles)
     const session = useSession()
+    const user = useGetUser()
     const debate = useGetDebateBySlug()
     const searchTerm = useSignal("")
     const isDescriptionExpanded = useSignal(false)
@@ -77,16 +78,16 @@ export default component$(() => {
     const showRightArrow = useSignal(true)
 
     const hasCommented = useComputed$(() => {
-        if (!session.value?.user) return false
+        if (!user.value.username) return false
         return debate.value?.points_of_view.some((view) =>
             // @ts-ignore
-            view.opinions.some((opinion: any) => opinion.user.username === session.value.user?.username),
+            view.opinions.some((opinion: any) => opinion.user.username === user.value.username),
         )
     })
 
     const defaultCountryCca2 = useComputed$(() => {
-        if (!session.value?.user) return null
-        const countryName = session.value.user.name
+        if (!user.value.username) return null
+        const countryName = user.value.name
         if (!countryName) return null
         
         const foundCountry = countriesList.find(
@@ -419,7 +420,7 @@ export default component$(() => {
                         </Alert.Description>
                     </Alert.Root>
 
-                    {session.value?.user ? (
+                    {session.value ? (
                         hasCommented.value ? (
                             <Alert.Root class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/50 text-yellow-800 dark:text-yellow-200 rounded-xl p-5 shadow-md">
                                 <LuInfo class="h-5 w-5" />
@@ -514,10 +515,9 @@ export default component$(() => {
                                     <div key={view.community.id || view.community.cca2 || view.id} class="snap-start snap-always card-hover-effect">
                                         <ViewPointCard 
                                             view={view} 
-                                            isAuthenticated={!!session.value?.user}
+                                            isAuthenticated={!!session.value}
                                             onShowLoginModal$={onShowLoginModal$}
-                                            // @ts-ignore
-                                            currentUsername={session.value?.user?.username || ""}
+                                            currentUsername={user.value.username || ""}
                                         />
                                     </div>
                                 ))}

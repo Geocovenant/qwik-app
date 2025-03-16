@@ -30,7 +30,7 @@ export default component$(() => {
     const isPublic = useSignal(members.value.items.find((m: any) => m.is_current_user)?.is_public || false);
     const currentPage = useSignal(1);
     const nav = useNavigate();
-    const isAuthenticated = useComputed$(() => !!session.value?.user);
+    const isAuthenticated = useComputed$(() => !!session.value);
     const localityDisplayName = capitalizeFirst(localityName.replace(/-/g, ' '));
 
     const localCommunityId = locality.value.id

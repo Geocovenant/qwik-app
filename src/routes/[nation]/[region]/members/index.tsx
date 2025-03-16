@@ -25,7 +25,7 @@ export default component$(() => {
     
     const regionalCommunityId = region.value.community_id;
     const nav = useNavigate();
-    const isAuthenticated = useComputed$(() => !!session.value?.user);
+    const isAuthenticated = useComputed$(() => !!session.value);
 
     const togglePublicVisibility = $(async () => {
         if (!isAuthenticated.value) return;

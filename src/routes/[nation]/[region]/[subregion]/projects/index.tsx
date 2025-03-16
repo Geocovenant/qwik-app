@@ -9,7 +9,7 @@ import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-import { useGetTags } from "~/shared/loaders";
+import { useGetTags, useGetUser } from "~/shared/loaders";
 import { useGetSubregions } from "~/shared/regional/loaders";
 import { useGetSubregion, useGetSubregionalProjects } from "~/shared/subregional/loaders";
 
@@ -19,6 +19,7 @@ export { useDeleteProject } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
+    const user = useGetUser();
     const showModalProject = useSignal(false);
     const location = useLocation();
     const nationName = location.params.nation;
@@ -35,8 +36,8 @@ export default component$(() => {
     const nav = useNavigate();
 
     // @ts-ignore
-    const currentUsername = useComputed$(() => session.value?.user?.username || "");
-    const isAuthenticated = useComputed$(() => !!session.value?.user);
+    const currentUsername = useComputed$(() => user.value.username || "");
+    const isAuthenticated = useComputed$(() => !!session.value);
     const subregionDisplayName = capitalizeFirst(subregionName.replace(/-/g, ' '));
 
     const onSubmitCompleted = $(() => {
@@ -55,7 +56,7 @@ export default component$(() => {
                         title={_`Create project for ${subregionDisplayName}`} 
                         show={showModalProject}
                     >
-                        {session.value?.user
+                        {session.value
                             ? <FormProject
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.SUBREGIONAL}

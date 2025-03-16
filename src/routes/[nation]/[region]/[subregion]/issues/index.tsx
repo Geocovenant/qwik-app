@@ -35,8 +35,8 @@ export default component$(() => {
     const nav = useNavigate();
 
     // @ts-ignore
-    const currentUsername = useComputed$(() => session.value?.user?.username || "");
-    const isAuthenticated = useComputed$(() => !!session.value?.user);
+    const currentUsername = useComputed$(() => user.value.username || "");
+    const isAuthenticated = useComputed$(() => !!session.value);
 
     const subregionDisplayName = capitalizeFirst(subregionName.replace(/-/g, ' '));
 
@@ -60,7 +60,7 @@ export default component$(() => {
                         title={_`Report issue in ${subregionDisplayName}`} 
                         show={showModalIssue}
                     >
-                        {session.value?.user
+                        {session.value
                             ? <FormIssue
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.SUBREGIONAL}

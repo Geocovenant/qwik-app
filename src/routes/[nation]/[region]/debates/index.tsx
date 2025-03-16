@@ -10,7 +10,7 @@ import { useSession } from "~/routes/plugin@auth";
 import { dataArray as countries } from "~/data/countries";
 import { capitalizeFirst } from "~/utils/capitalizeFirst";
 
-import { useGetTags } from "~/shared/loaders";
+import { useGetTags, useGetUser } from "~/shared/loaders";
 import { useGetRegion, useGetRegionalDebates } from "~/shared/regional/loaders";
 import { useGetRegions } from "~/shared/national/loaders";
 
@@ -20,6 +20,7 @@ export { useDeleteDebate } from "~/shared/actions";
 
 export default component$(() => {
     const session = useSession();
+    const user = useGetUser();
     const showModalDebate = useSignal(false);
     const location = useLocation();
     const nationName = location.params.nation;
@@ -39,8 +40,8 @@ export default component$(() => {
     const nav = useNavigate();
 
     // @ts-ignore
-    const currentUsername = useComputed$(() => session.value?.user?.username || "");
-    const isAuthenticated = useComputed$(() => !!session.value?.user);
+    const currentUsername = useComputed$(() => user.value.username || "");
+    const isAuthenticated = useComputed$(() => !!session.value);
 
     const onSubmitCompleted = $(() => {
         showModalDebate.value = false;
@@ -58,7 +59,7 @@ export default component$(() => {
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
             <div class="flex flex-col min-h-0">
                 <div class="h-full overflow-y-auto">
-                    {session.value?.user
+                    {session.value
                         ? <Modal
                             title={_`Create debate for ${regionName || capitalizeFirst(regionName)}, ${nation.value?.name || capitalizeFirst(nationName)}`}
                             show={showModalDebate}

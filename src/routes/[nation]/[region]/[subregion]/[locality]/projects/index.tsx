@@ -37,8 +37,8 @@ export default component$(() => {
     const nav = useNavigate();
 
     // @ts-ignore
-    const currentUsername = useComputed$(() => session.value?.user?.username || "");
-    const isAuthenticated = useComputed$(() => !!session.value?.user);
+    const currentUsername = useComputed$(() => user.value.username || "");
+    const isAuthenticated = useComputed$(() => !!session.value);
     const localityDisplayName = capitalizeFirst(localityName.replace(/-/g, ' '));
 
     const onSubmitCompleted = $(() => {
@@ -61,7 +61,7 @@ export default component$(() => {
                         title={_`Create project for ${localityDisplayName}`} 
                         show={showModalProject}
                     >
-                        {session.value?.user
+                        {session.value
                             ? <FormProject
                                 onSubmitCompleted={onSubmitCompleted}
                                 defaultScope={CommunityType.LOCAL}

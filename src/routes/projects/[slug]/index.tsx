@@ -51,7 +51,7 @@ interface Resource {
 
 export default component$(() => {
     const session = useSession()
-    const isAuthenticated = !!session.value?.user
+    const isAuthenticated = !!session.value
     const projectData = useGetProjectBySlug()
     const showLoginModal = useSignal(false)
     const showReportModal = useSignal(false)

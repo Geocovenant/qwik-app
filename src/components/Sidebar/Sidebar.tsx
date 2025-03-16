@@ -1,14 +1,14 @@
 import { $, component$, useSignal, useResource$, useVisibleTask$ } from "@builder.io/qwik";
 import { LuGlobe, LuPanelLeftClose, LuPanelLeftOpen, LuPlusCircle } from "@qwikest/icons/lucide";
 import { dataArray } from "~/data/countries";
-import { _ } from "compiled-i18n";
 import CommunityItem, { type Community } from "./CommunityItem";
 import ClassicTheme from "~/components/ClassicTheme";
 import Modal from "~/components/Modal";
 import RequestCommunityForm from "~/components/forms/RequestCommunityForm";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
-import { useSession } from "~/routes/plugin@auth";
 import Footer from "~/components/Footer";
+import { useGetUser } from "~/shared/loaders";
+import { _ } from "compiled-i18n";
 
 // Component for the LuGlobe icon
 const LuGlobeIcon = component$(() => <LuGlobe class="h-5 w-5" />);
@@ -42,7 +42,7 @@ const countryCommunities: Community[] = dataArray.map(country => ({
 }));
 
 export default component$(() => {
-    const session = useSession();
+    const user = useGetUser();
     const isCollapsed = useSignal<boolean>(false);
     const isMobileView = useSignal<boolean>(false);
     const isSidebarOpen = useSignal<boolean>(false);
@@ -279,7 +279,7 @@ export default component$(() => {
                 title={_`Request new community`}
                 show={showNewCommunityModal}
             >
-                {session.value?.user
+                {user.value.username
                     ? <RequestCommunityForm 
                         onClose$={() => showNewCommunityModal.value = false}
                     />

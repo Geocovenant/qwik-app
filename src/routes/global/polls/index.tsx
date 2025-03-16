@@ -8,7 +8,7 @@ import { CommunityType } from "~/constants/communityType";
 import SocialLoginButtons from "~/components/SocialLoginButtons";
 import { useSession } from "~/routes/plugin@auth";
 
-import { useGetTags } from "~/shared/loaders";
+import { useGetTags, useGetUser } from "~/shared/loaders";
 import { useGetGlobalPolls } from "~/shared/global/loaders";
 
 export { useFormPollLoader } from "~/shared/forms/loaders";
@@ -16,16 +16,17 @@ export { useFormPollAction } from "~/shared/forms/actions";
 export { useVotePoll, useReactPoll, useDeletePoll } from "~/shared/actions";
 
 export default component$(() => {
-    const polls = useGetGlobalPolls();
+    const user = useGetUser();
     const session = useSession();
+    const polls = useGetGlobalPolls();
     const showModalPoll = useSignal(false);
     const tags = useGetTags();
     const currentPage = useSignal(1);
     const nav = useNavigate();
-    
+
     // @ts-ignore
-    const currentUsername = useComputed$(() => session.value?.user?.username || "");
-    const isAuthenticated = useComputed$(() => !!session.value?.user);
+    const currentUsername = useComputed$(() => user.value.username || "");
+    const isAuthenticated = useComputed$(() => !!session.value);
 
     const onSubmitCompleted = $(() => {
         showModalPoll.value = false;
@@ -43,7 +44,7 @@ export default component$(() => {
         <div class="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
             <div class="flex flex-col min-h-0">
                 <div class="h-full overflow-y-auto">
-                    {session.value?.user
+                    {session.value
                         ? <Modal
                             title={_`Create poll`}
                             show={showModalPoll}
