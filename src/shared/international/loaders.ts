@@ -9,7 +9,7 @@ import type { ProjectResponse } from "~/types/project";
  */
 export const useGetInternationalPolls = routeLoader$(async ({ cookie, query }) => {
     const page = query.get('page');
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=INTERNATIONAL`;
 
     try {
@@ -48,7 +48,7 @@ export const useGetInternationalPolls = routeLoader$(async ({ cookie, query }) =
  */
 export const useGetInternationalDebates = routeLoader$(async ({ cookie, query }) => {
     const page = query.get('page');
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates?type=INTERNATIONAL`;
 
     try {
@@ -87,7 +87,7 @@ export const useGetInternationalDebates = routeLoader$(async ({ cookie, query })
  */
 export const useGetInternationalProjects = routeLoader$(async ({ cookie, query }) => {
     const page = query.get('page');
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/projects?scope=INTERNATIONAL`;
 
     try {

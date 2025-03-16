@@ -7,8 +7,8 @@ import { useLocation } from "@builder.io/qwik-city";
 import { dataArray } from "~/data/countries";
 
 export { useFormCommunityRequestLoader, useGetUser, useGetTags } from "~/shared/loaders";
-export { useFormReportLoader } from "~/shared/forms/loaders";
 export { useFormCommunityRequestAction, useJoinCommunity, useLeaveCommunity } from "~/shared/actions";
+export { useFormReportLoader } from "~/shared/forms/loaders";
 
 export const onRequest: RequestHandler = async ({ params, query, headers, locale, redirect }) => {
   if (params.nation) {

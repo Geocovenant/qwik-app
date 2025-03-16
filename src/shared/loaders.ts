@@ -5,8 +5,8 @@ import type { OpinionForm } from "~/schemas/opinionSchema";
 import type { CommunityRequestForm } from "~/schemas/communityRequestSchema";
 import { useGetRegions } from "./national/loaders";
 
-export const useGetUser = routeLoader$(async ({ cookie, redirect }) => {
-    const token = cookie.get('authjs.session-token')
+export const useGetUser = routeLoader$(async ({ cookie, redirect, url }) => {
+    const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)
     if (!token) {
         return {
             id: null,
@@ -23,7 +23,10 @@ export const useGetUser = routeLoader$(async ({ cookie, redirect }) => {
         }
     })
     const data = await response.json()
-    if (!data.username) {
+    if (data.id && !data.username) {
+        if (url.pathname === '/onboarding/username/') {
+            return data
+        }
         throw redirect(302, '/onboarding/username')
     }
     return data
@@ -44,7 +47,7 @@ export const useGetCommunityIdByName = routeLoader$(async ({ query }) => {
 });
 
 export const useGetRegionalPolls = routeLoader$(async ({ cookie, params, resolveValue }) => {
-    const token = cookie.get('authjs.session-token');
+    const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
     if (!token) {
         return [];
     }
@@ -82,7 +85,7 @@ export const useGetRegionalPolls = routeLoader$(async ({ cookie, params, resolve
 })
 
 export const useGetDebateBySlug = routeLoader$(async ({ cookie, params }) => {
-    const token = cookie.get('authjs.session-token');
+    const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
     if (!token) {
         return undefined;
     }
@@ -121,7 +124,7 @@ export const useGetDebateBySlug = routeLoader$(async ({ cookie, params }) => {
 });
 
 export const useGetRegionalDebates = routeLoader$(async ({ cookie, params, resolveValue }) => {
-    const token = cookie.get('authjs.session-token');
+    const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
     if (!token) {
         return [];
     }
@@ -159,7 +162,7 @@ export const useGetRegionalDebates = routeLoader$(async ({ cookie, params, resol
 })
 
 export const useGetTags = routeLoader$(async ({ cookie }) => {
-    const token = cookie.get('authjs.session-token');
+    const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
     if (!token) {
         return [];
     }
@@ -176,7 +179,7 @@ export const useGetTags = routeLoader$(async ({ cookie }) => {
 });
 
 export const useGetUserByUsername = routeLoader$(async ({ cookie, params }) => {
-    const token = cookie.get('authjs.session-token');
+    const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
     if (!token) {
         return undefined;
     }
@@ -220,7 +223,7 @@ export const useFormOpinionLoader = routeLoader$<InitialValues<OpinionForm>>(asy
 });
 
 export const useGetPollBySlug = routeLoader$(async ({ cookie, params }) => {
-    const token = cookie.get('authjs.session-token');
+    const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
     if (!token) {
         return undefined;
     }
@@ -245,7 +248,7 @@ export const useGetPollBySlug = routeLoader$(async ({ cookie, params }) => {
 });
 
 export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue }) => {
-    const token = cookie.get('authjs.session-token');
+    const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
     if (!token) {
         return [];
     }
@@ -290,7 +293,7 @@ export const useGetCountryDivisions = routeLoader$(async ({ cookie, resolveValue
 });
 
 export const useCheckCommunityMembership = routeLoader$(async ({ cookie, params }) => {
-    const token = cookie.get('authjs.session-token');
+    const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
     if (!token) {
         return { isMember: false };
     }
@@ -337,7 +340,7 @@ export const useGetLocalityPolls = routeLoader$(async ({ params, query, cookie }
         return { items: [], total: 0, page: 1, size: 10, pages: 1 };
     }
     
-    const token = cookie.get('authjs.session-token');
+    const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
     
     try {
         let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=LOCALITY`;
@@ -377,7 +380,7 @@ export const useGetLocalityDebates = routeLoader$(async ({ params, query, cookie
         return { items: [], total: 0, page: 1, size: 10, pages: 1 };
     }
     
-    const token = cookie.get('authjs.session-token');
+    const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
     
     try {
         let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates?scope=LOCALITY`;
@@ -417,7 +420,7 @@ export const useGetLocalityProjects = routeLoader$(async ({ params, query, cooki
         return { items: [], total: 0, page: 1, size: 10, pages: 1 };
     }
     
-    const token = cookie.get('authjs.session-token');
+    const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
     
     try {
         let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/projects?scope=LOCALITY`;
@@ -457,7 +460,7 @@ export const useGetLocalityIssues = routeLoader$(async ({ params, query, cookie 
         return { items: [], total: 0, page: 1, size: 10, pages: 1 };
     }
     
-    const token = cookie.get('authjs.session-token');
+    const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
     
     try {
         let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/issues?scope=LOCALITY`;
@@ -494,7 +497,7 @@ export const useFormCommunityRequestLoader = routeLoader$<InitialValues<Communit
 });
 
 export const useGetProjectBySlug = routeLoader$(async ({ cookie, params }) => {
-    const token = cookie.get('authjs.session-token')
+    const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)
     if (!token) {
         return undefined
     }

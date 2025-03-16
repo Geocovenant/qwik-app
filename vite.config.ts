@@ -29,15 +29,10 @@ export default defineConfig(({ command, mode }): UserConfig => {
       i18nPlugin({
         locales: [
           'en_US',   // English (United States)
-          'es_AR',   // Spanish (Argentina)
-          'zh_CN',   // Mandarin Chinese
-          'hi_IN',   // Hindi
-          'fr_FR',   // French
-          'ru_RU',   // Russian
-          'pt_BR',   // Portuguese (Brazil)
-          'bn_BD',   // Bengali
           'de_DE',   // German
-          'ja_JP',   // Japanese
+          'es_AR',   // Spanish (Argentina)
+          'pt_BR',   // Portuguese (Brazil)
+          'ru_RU',   // Russian
         ],
       }),
     ],

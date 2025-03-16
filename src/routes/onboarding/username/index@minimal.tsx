@@ -2,10 +2,11 @@ import { $, component$, useSignal, useTask$, useComputed$ } from "@builder.io/qw
 import { Form, useNavigate } from "@builder.io/qwik-city";
 import { LuLoader2, LuCheckCircle, LuAlertCircle, LuInfo } from "@qwikest/icons/lucide";
 import { Image } from "@unpic/qwik";
-import { useSetUsername } from "~/shared/actions";
-import { useGetUser } from "~/shared/loaders";
 import { _ } from "compiled-i18n";
 
+import { useGetUser } from "~/shared/loaders";
+import { useSetUsername } from "~/shared/actions";
+export { useGetUser } from "~/shared/loaders";
 export { useSetUsername } from "~/shared/actions";
 
 export default component$(() => {
@@ -18,17 +19,15 @@ export default component$(() => {
     const isLoading = useSignal(false);
     const isFocused = useSignal(false);
     
-    // Generar sugerencia de nombre de usuario basada en session.user.name
     useTask$(({ track }) => {
         track(() => user.value.name);
         
         if (user.value.name) {
-            // Transformar el nombre a un formato válido para nombre de usuario
             const suggestedUsername = user.value.name
                 .toLowerCase()
-                .replace(/\s+/g, '') // Quitar espacios
-                .replace(/[^a-z0-9_]/g, '') // Quitar caracteres especiales
-                .substring(0, 15); // Limitar longitud a 15 caracteres
+                .replace(/\s+/g, '')
+                .replace(/[^a-z0-9_]/g, '')
+                .substring(0, 15);
             
             if (suggestedUsername.length >= 3) {
                 usernameSignal.value = suggestedUsername;
@@ -39,11 +38,10 @@ export default component$(() => {
     useTask$(({ track }) => {
         track(() => usernameSignal.value);
 
-        // Validación simple
         if (usernameSignal.value && !/^[a-zA-Z0-9_]+$/.test(usernameSignal.value)) {
-            errorMessage.value = "Username must contain only letters, numbers, and underscores";
+            errorMessage.value = _`Username must contain only letters, numbers, and underscores`;
         } else if (usernameSignal.value && usernameSignal.value.length < 3) {
-            errorMessage.value = "Username must be at least 3 characters long";
+            errorMessage.value = _`Username must be at least 3 characters long`;
         } else {
             errorMessage.value = "";
         }
@@ -55,9 +53,9 @@ export default component$(() => {
 
     const isValid = useComputed$(() => {
         return usernameSignal.value && 
-               usernameSignal.value.length >= 3 && 
-               /^[a-zA-Z0-9_]+$/.test(usernameSignal.value) &&
-               !errorMessage.value;
+            usernameSignal.value.length >= 3 && 
+            /^[a-zA-Z0-9_]+$/.test(usernameSignal.value) &&
+            !errorMessage.value;
     });
 
     return (

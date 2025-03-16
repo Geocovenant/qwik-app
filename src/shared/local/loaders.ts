@@ -28,7 +28,7 @@ export const useGetLocality = routeLoader$(async ({ params }) => {
 export const useGetLocalPolls = routeLoader$(async ({ cookie, query, resolveValue }) => {
     const locality = await resolveValue(useGetLocality);
     const page = query.get('page');
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls`;
 
     try {
@@ -69,7 +69,7 @@ export const useGetLocalPolls = routeLoader$(async ({ cookie, query, resolveValu
 export const useGetLocalDebates = routeLoader$(async ({ cookie, query, resolveValue }) => {
     const locality = await resolveValue(useGetLocality);
     const page = query.get('page');
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates`;
 
     try {
@@ -110,7 +110,7 @@ export const useGetLocalDebates = routeLoader$(async ({ cookie, query, resolveVa
 export const useGetLocalProjects = routeLoader$(async ({ cookie, query, resolveValue }) => {
     const locality = await resolveValue(useGetLocality);
     const page = query.get('page');
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/projects`;
 
     try {
@@ -151,7 +151,7 @@ export const useGetLocalProjects = routeLoader$(async ({ cookie, query, resolveV
 export const useGetLocalIssues = routeLoader$(async ({ cookie, query, resolveValue }) => {
     const locality = await resolveValue(useGetLocality);
     const page = query.get('page');
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/issues`;
 
     try {
@@ -193,7 +193,7 @@ export const useGetLocalMembers = routeLoader$(async ({ cookie, query, resolveVa
     const locality = await resolveValue(useGetLocality);
     const page = Number(query.get("page") || "1");
     const size = Number(query.get("size") || "100");
-    const token = cookie.get('authjs.session-token');
+    const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
     if (!token) {
         return { items: [], total: 0, page: 1, size: 20, pages: 1 };
     }

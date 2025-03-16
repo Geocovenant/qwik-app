@@ -1,10 +1,10 @@
 import { component$, useSignal, $, useStylesScoped$, useVisibleTask$ } from '@builder.io/qwik';
 import { Link } from '@builder.io/qwik-city';
 import { LuUser, LuChevronRight, LuGlobe, LuLogOut, LuCheck } from '@qwikest/icons/lucide';
-import { _ } from 'compiled-i18n';
 import styles from './nested-dropdown.css?inline';
 import { useSignOut } from '~/routes/plugin@auth';
 import { Avatar } from '~/components/ui';
+import { _ } from 'compiled-i18n';
 
 interface NestedDropdownProps {
     userId?: string;

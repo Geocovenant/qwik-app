@@ -914,6 +914,8 @@
     "Report First Issue": "Сообщить о первой проблеме",
     "This action cannot be undone.": "Это действие нельзя будет отменить.",
     "Confirm": "Подтвердить",
-    "This poll will be visible to users from selected country": ""
+    "This poll will be visible to users from selected country": "",
+    "Information: ": "",
+    "By enabling Show membership, other users will be able to see that you belong to this community.": ""
   }
 }

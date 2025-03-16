@@ -913,6 +913,8 @@
     "No regions found matching $1": "",
     "No subregions found matching $1": "",
     "No localities found matching $1": "",
-    "No countries found matching $1": ""
+    "No countries found matching $1": "",
+    "Information: ": "",
+    "By enabling Show membership, other users will be able to see that you belong to this community.": ""
   }
 }

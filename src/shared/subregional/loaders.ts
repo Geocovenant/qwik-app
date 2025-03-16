@@ -45,7 +45,7 @@ export const useGetLocalities = routeLoader$(async ({ resolveValue }) => {
 export const useGetSubregionalPolls = routeLoader$(async ({ cookie, query, resolveValue }) => {
     const subregion = await resolveValue(useGetSubregion);
     const page = query.get('page');
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls`;
 
     try {
@@ -86,7 +86,7 @@ export const useGetSubregionalPolls = routeLoader$(async ({ cookie, query, resol
 export const useGetSubregionalDebates = routeLoader$(async ({ cookie, query, resolveValue }) => {
     const subregion = await resolveValue(useGetSubregion);
     const page = query.get('page');
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates`;
 
     try {
@@ -127,7 +127,7 @@ export const useGetSubregionalDebates = routeLoader$(async ({ cookie, query, res
 export const useGetSubregionalProjects = routeLoader$(async ({ cookie, query, resolveValue }) => {
     const subregion = await resolveValue(useGetSubregion);
     const page = query.get('page');
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/projects`;
 
     try {
@@ -168,7 +168,7 @@ export const useGetSubregionalProjects = routeLoader$(async ({ cookie, query, re
 export const useGetSubregionalIssues = routeLoader$(async ({ cookie, query, resolveValue }) => {
     const subregion = await resolveValue(useGetSubregion);
     const page = query.get('page');
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/issues`;
 
     try {
@@ -210,7 +210,7 @@ export const useGetSubregionalMembers = routeLoader$(async ({ cookie, query, res
     const subregion = await resolveValue(useGetSubregion);
     const page = Number(query.get("page") || "1");
     const size = Number(query.get("size") || "100");
-    const token = cookie.get('authjs.session-token');
+    const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
     if (!token) {
         return { items: [], total: 0, page: 1, size: 20, pages: 1 };
     }

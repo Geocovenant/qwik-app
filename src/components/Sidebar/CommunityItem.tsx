@@ -72,13 +72,13 @@ export const CommunityItem = component$(({
             // Determine the appropriate endpoint based on the type of community
             if (isSubregion) {
                 // If it's a subregion, use the localities endpoint
-                url = `/api/v1/subregions/${community.id}/localities`;
+                url = `https://fastapi-production-c234e.up.railway.app/api/v1/subregions/${community.id}/localities`;
             } else if (community.cca2) {
                 // If it is a country (has cca2), use the country route
-                url = `/api/v1/countries/${community.cca2}/divisions`;
+                url = `https://fastapi-production-c234e.up.railway.app/api/v1/countries/${community.cca2}/divisions`;
             } else {
                 // Otherwise, use the regions route
-                url = `/api/v1/regions/${community.id}/subregions`;
+                url = `https://fastapi-production-c234e.up.railway.app/api/v1/regions/${community.id}/subregions`;
             }
             
             const response = await fetch(url, {

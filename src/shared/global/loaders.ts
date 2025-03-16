@@ -9,7 +9,7 @@ import type { ProjectResponse } from "~/types/project";
  */
 export const useGetGlobalPolls = routeLoader$(async ({ cookie, query }) => {
     const page = query.get('page');
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls`;
 
     try {
@@ -49,7 +49,7 @@ export const useGetGlobalPolls = routeLoader$(async ({ cookie, query }) => {
  */
 export const useGetGlobalDebates = routeLoader$(async ({ cookie, query }) => {
     const page = query.get('page');
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates`;
 
     try {
@@ -89,7 +89,7 @@ export const useGetGlobalDebates = routeLoader$(async ({ cookie, query }) => {
  */
 export const useGetGlobalProjects = routeLoader$(async ({ cookie, query }) => {
     const page = query.get('page');
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/projects`;
 
     try {
@@ -130,7 +130,7 @@ export const useGetGlobalProjects = routeLoader$(async ({ cookie, query }) => {
 export const useGetGlobalMembers = routeLoader$(async ({ cookie, query }) => {
     const page = query.get('page') || '1';
     const size = query.get('size') || '100';
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/communities/1/members`;
 
     try {

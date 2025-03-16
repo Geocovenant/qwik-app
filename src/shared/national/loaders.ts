@@ -59,7 +59,7 @@ export const useGetRegions = routeLoader$(async ({ params }) => {
 export const useGetNationalPolls = routeLoader$(async ({ cookie, query, resolveValue }) => {
     const country = await resolveValue(useGetCountry);
     const page = query.get('page');
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls`;
 
     try {
@@ -101,7 +101,7 @@ export const useGetNationalPolls = routeLoader$(async ({ cookie, query, resolveV
 export const useGetNationalDebates = routeLoader$(async ({ cookie, query, resolveValue }) => {
     const country = await resolveValue(useGetCountry);
     const page = query.get('page');
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates`;
 
     try {
@@ -142,7 +142,7 @@ export const useGetNationalDebates = routeLoader$(async ({ cookie, query, resolv
 export const useGetNationalProjects = routeLoader$(async ({ cookie, query, resolveValue }) => {
     const country = await resolveValue(useGetCountry);
     const page = query.get('page');
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/projects`;
 
     try {
@@ -183,7 +183,7 @@ export const useGetNationalProjects = routeLoader$(async ({ cookie, query, resol
 export const useGetNationalIssues = routeLoader$(async ({ cookie, query, resolveValue }) => {
     const country = await resolveValue(useGetCountry);
     const page = query.get('page');
-    const authToken = cookie.get('authjs.session-token')?.value;
+    const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
     const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/issues`;
 
     try {
@@ -225,7 +225,7 @@ export const useGetNationalMembers = routeLoader$(async ({ cookie, query, resolv
     const country = await resolveValue(useGetCountry);
     const page = Number(query.get("page") || "1");
     const size = Number(query.get("size") || "100");
-    const token = cookie.get('authjs.session-token');
+    const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
     if (!token) {
         return { items: [], total: 0, page: 1, size: 20, pages: 1 };
     }

@@ -16,11 +16,11 @@ import { CommunityType } from '~/constants/communityType';
 // eslint-disable-next-line qwik/loader-location
 export const useVotePoll = routeAction$(
     async (data, { cookie }) => {
-        const token = cookie.get('authjs.session-token')?.value;
+        const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
         const { pollId } = data
         const payload = { option_ids: data.optionIds }
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${pollId}/vote`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${pollId}/vote/`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -40,11 +40,11 @@ export const useVotePoll = routeAction$(
 // eslint-disable-next-line qwik/loader-location
 export const useReactPoll = routeAction$(
     async (data, { cookie }) => {
-        const token = cookie.get('authjs.session-token')?.value;
+        const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
         const payload = { reaction: data.reaction }
         
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${data.pollId}/react`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${data.pollId}/react/`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -64,14 +64,14 @@ export const useReactPoll = routeAction$(
 // eslint-disable-next-line qwik/loader-location
 export const useReactOpinion = routeAction$(
     async (data, { cookie }) => {
-        const token = cookie.get('authjs.session-token')?.value;
+        const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
         const payload = {
             opinion_id: data.opinionId,
             value: data.reaction === "LIKE" ? 1 : -1
         }
         
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/opinions/${data.opinionId}/vote`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/opinions/${data.opinionId}/vote/`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -91,11 +91,11 @@ export const useReactOpinion = routeAction$(
 // eslint-disable-next-line qwik/loader-location
 export const useSetUsername = routeAction$(
     async (data, { cookie }) => {
-        const token = cookie.get('authjs.session-token')?.value;
+        const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
         const payload = { base_name: data.username }
         
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/generate-username`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/generate-username/`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -128,13 +128,11 @@ export interface UserResponseData {
 export const useFormUserAction = formAction$<UserForm, UserResponseData>(
     async (values, event) => {
 
-        const token = event.cookie.get('authjs.session-token')?.value;
+        const token = event.cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
 
         const payload = {
             bio: values.bio || "",
-            cover: values.coverImage || "",
             gender: values.gender === "female" ? "F" : values.gender === "male" ? "M" : values.gender === "non-binary" ? "X" : "",
-            image: values.image || "",
             name: values.name,
             website: values.website || "",
         };
@@ -182,7 +180,7 @@ export interface OpinionResponseData {
 
 export const useFormOpinionAction = formAction$<OpinionForm, OpinionResponseData>(
     async (values, event) => {
-        const token = event.cookie.get('authjs.session-token')?.value;
+        const token = event.cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
 
         const payload = {
             content: values.opinion,
@@ -205,7 +203,7 @@ export const useFormOpinionAction = formAction$<OpinionForm, OpinionResponseData
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/${values.debate_id}/opinions`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/${values.debate_id}/opinions/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -246,14 +244,14 @@ export interface CommentResponseData {
 export const useFormCommentAction = formAction$<CommentForm, CommentResponseData>(
     async (values, event) => {
 
-        const token = event.cookie.get('authjs.session-token')?.value;
+        const token = event.cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
 
         const payload = {
             content: values.text,
         };
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${values.pollId}/comments`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${values.pollId}/comments/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -289,7 +287,7 @@ export const useFormCommentAction = formAction$<CommentForm, CommentResponseData
 export const useCheckUserOpinionInDebate = routeAction$(
     async (data, { cookie }) => {
         const { debateId } = data
-        const token = cookie.get('authjs.session-token')?.value;
+        const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
         
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/${debateId}/user-has-opinion`, {
@@ -333,7 +331,7 @@ export const useCheckUserOpinionInDebate = routeAction$(
 export const useUpdateCommunityVisibility = routeAction$(
     async (data, { cookie }) => {
         const { communityId, isPublic } = data
-        const token = cookie.get('authjs.session-token');
+        const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
         if (!token) {
             return { success: false, error: "No authentication token found" };
         }
@@ -367,13 +365,13 @@ export const useUpdateCommunityVisibility = routeAction$(
 export const useJoinCommunity = routeAction$(
     async (data, { cookie }) => {
         const { communityId } = data;
-        const token = cookie.get('authjs.session-token');
+        const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
         if (!token) {
             return { success: false, error: "No authentication token found" };
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${communityId}/join`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${communityId}/join/`, {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
@@ -400,7 +398,7 @@ export const useJoinCommunity = routeAction$(
 export const useLeaveCommunity = routeAction$(
     async (data, { cookie }) => {
         const { communityId } = data;
-        const token = cookie.get('authjs.session-token');
+        const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
         if (!token) {
             return { success: false, error: "No authentication token found" };
         }
@@ -431,13 +429,13 @@ export const useLeaveCommunity = routeAction$(
 // eslint-disable-next-line qwik/loader-location
 export const useReportItem = routeAction$(
     async (data, { cookie }) => {
-        const token = cookie.get('authjs.session-token');
+        const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
         if (!token) {
             return { success: false, error: "No authentication token found" };
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/reports`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/reports/`, {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
@@ -473,7 +471,7 @@ export const useReportItem = routeAction$(
 // eslint-disable-next-line qwik/loader-location
 export const useDeletePoll = routeAction$(
     async (data, { cookie }) => {
-        const token = cookie.get('authjs.session-token');
+        const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
         if (!token) {
             return { success: false, error: "No authentication token found" };
         }
@@ -511,7 +509,7 @@ export interface ReportResponseData {
 
 export const useFormReportAction = formAction$<ReportForm, ReportResponseData>(
     async (values, event) => {
-        const token = event.cookie.get('authjs.session-token')?.value;
+        const token = event.cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
         
         if (!token) {
             return {
@@ -528,7 +526,7 @@ export const useFormReportAction = formAction$<ReportForm, ReportResponseData>(
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/reports`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/reports/`, {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
@@ -562,7 +560,7 @@ export const useFormReportAction = formAction$<ReportForm, ReportResponseData>(
 // eslint-disable-next-line qwik/loader-location
 export const useDeleteOpinion = routeAction$(
     async (data, { fail, cookie }) => {
-        const token = cookie.get('authjs.session-token')?.value;
+        const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
         
         if (!token) {
             return fail(401, {
@@ -605,13 +603,13 @@ export const useDeleteOpinion = routeAction$(
 export const useFollowUser = routeAction$(
     async (data, { cookie }) => {
 
-        const token = cookie.get('authjs.session-token')?.value;
+        const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
         if (!token) {
             return { success: false, error: "No authentication token found" };
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/${data.username}/follow`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/${data.username}/follow/`, {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
@@ -643,13 +641,13 @@ export const useFollowUser = routeAction$(
 export const useUnfollowUser = routeAction$(
     async (data, { cookie }) => {
 
-        const token = cookie.get('authjs.session-token')?.value;
+        const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
         if (!token) {
             return { success: false, error: "No authentication token found" };
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/${data.username}/follow`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/${data.username}/follow/`, {
                 method: "DELETE",
                 headers: {
                     "Accept": "application/json",
@@ -680,13 +678,13 @@ export const useUnfollowUser = routeAction$(
 // eslint-disable-next-line qwik/loader-location
 export const useDeleteDebate = routeAction$(
     async (data, { cookie }) => {
-        const token = cookie.get('authjs.session-token');
+        const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
         if (!token) {
             return { success: false, error: "No authentication token found" };
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/${data.debateId}`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/${data.debateId}/`, {
                 method: "DELETE",
                 headers: {
                     "Accept": "application/json",
@@ -713,13 +711,13 @@ export const useDeleteDebate = routeAction$(
 // eslint-disable-next-line qwik/loader-location
 export const useDeleteProject = routeAction$(
     async (data, { cookie }) => {
-        const token = cookie.get('authjs.session-token');
+        const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
         if (!token) {
             return { success: false, error: "No authentication token found" };
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects/${data.projectId}`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects/${data.projectId}/  `, {
                 method: "DELETE",
                 headers: {
                     "Accept": "application/json",
@@ -753,7 +751,7 @@ export interface CommunityRequestResponseData {
 
 export const useFormCommunityRequestAction = formAction$<CommunityRequestForm, CommunityRequestResponseData>(
     async (values, event) => {
-        const token = event.cookie.get('authjs.session-token')?.value;
+        const token = event.cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
         
         if (!token) {
             return {
@@ -770,7 +768,7 @@ export const useFormCommunityRequestAction = formAction$<CommunityRequestForm, C
         };
         
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/requests/`, {
+                const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/requests/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -811,7 +809,7 @@ export const useFormCommunityRequestAction = formAction$<CommunityRequestForm, C
 );
 
 export const useReactProject = routeAction$(async (data, { cookie, fail }) => {
-    const token = cookie.get('authjs.session-token')
+    const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)
     if (!token) {
         return fail(401, {
             message: 'Unauthorized'
@@ -819,7 +817,7 @@ export const useReactProject = routeAction$(async (data, { cookie, fail }) => {
     }
 
     try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects/${data.projectId}/react`, {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects/${data.projectId}/react/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -8,7 +8,7 @@ import { _ } from "compiled-i18n";
 
 export const useFormPollAction = formAction$<PollForm, PollResponseData>(
     async (values, event) => {
-        const token = event.cookie.get('authjs.session-token')?.value;
+        const token = event.cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
 
         // Validate token existence
         if (!token) {
@@ -66,8 +66,6 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
                 break;
         }
 
-        console.log('payload', payload)
-
         try {
             const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/`, {
                 method: 'POST',
@@ -78,7 +76,6 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
                 body: JSON.stringify(payload),
             });
 
-            console.log('response', response)
             // Check if the response is correct, otherwise throw an error
             if (!response.ok) {
                 const errorData = await response.json();
@@ -86,7 +83,6 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
             }
 
             const data = await response.json();
-            console.log('data', data)
 
             return {
                 success: true,
@@ -107,7 +103,7 @@ export const useFormPollAction = formAction$<PollForm, PollResponseData>(
 export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
     async (values, event) => {
 
-        const token = event.cookie.get('authjs.session-token')?.value;
+        const token = event.cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
 
         if (!token) {
             return {
@@ -223,7 +219,7 @@ export const useFormDebateAction = formAction$<DebateForm, DebateResponseData>(
 export const useFormProjectAction = formAction$<ProjectForm, ProjectResponseData>(
     async (values, event) => {
 
-        const token = event.cookie.get('authjs.session-token')?.value;
+        const token = event.cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
 
         if (!token) {
             return {
@@ -310,7 +306,7 @@ export const useFormProjectAction = formAction$<ProjectForm, ProjectResponseData
 export const useFormIssueAction = formAction$<IssueForm, IssueResponseData>(
     async (values, event) => {
 
-        const token = event.cookie.get('authjs.session-token')?.value;
+        const token = event.cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
 
         // Preparar payload según el scope
         const payload = {

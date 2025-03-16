@@ -31,7 +31,7 @@ export default component$(() => {
 
     const isMember = useComputed$(() => {
         return user.value?.communities?.some(
-            (community: any) => community.id === subregion.value?.community_id
+            (community: any) => community.id === subregion.value?.id
         );
     });
 
@@ -72,7 +72,7 @@ export default component$(() => {
                             </Breadcrumb.List>
                         </Breadcrumb.Root>
                         
-                        {session.value.user && (
+                        {session.value && (
                             <Button
                                 class={`flex items-center gap-2 font-medium py-1.5 px-3 rounded-lg transition-colors text-sm ${
                                     isMember.value 
@@ -82,11 +82,11 @@ export default component$(() => {
                                 onClick$={() => {
                                     if (isMember.value) {
                                         leaveCommunityAction.submit({
-                                            communityId: subregion.value.community_id
+                                            communityId: subregion.value.id
                                         });
                                     } else {
                                         joinCommunityAction.submit({
-                                            communityId: subregion.value.community_id
+                                            communityId: subregion.value.id
                                         });
                                     }
                                 }}

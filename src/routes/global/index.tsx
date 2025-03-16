@@ -65,13 +65,13 @@ export default component$(() => {
                         <div class="flex items-start gap-3">
                             <LuBuilding class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                             <div class="dark:text-gray-300">
-                                <span class="font-medium">{_`Sub Regions`}:</span> 131 {_`registered in the platform`}
+                                <span class="font-medium">{_`Sub Regions`}:</span> 145 {_`registered in the platform`}
                             </div>
                         </div>
                         <div class="flex items-start gap-3">
                             <LuBuilding2 class="w-5 h-5 text-gray-600 dark:text-gray-400 mt-1" />
                             <div class="dark:text-gray-300">
-                                <span class="font-medium">{_`Localities`}:</span> 0 {_`registered in the platform`}
+                                <span class="font-medium">{_`Localities`}:</span> 88 {_`registered in the platform`}
                             </div>
                         </div>
                     </div>
@@ -105,38 +105,9 @@ export default component$(() => {
                         <LuMessageSquare class="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         {_`Global Trending Topics`}
                     </h2>
-                    <div class="space-y-4">
-                        <div class="border-b border-gray-200 dark:border-gray-700 pb-3">
-                            <h3 class="font-medium text-gray-900 dark:text-white">{_`Climate Change Initiatives`}</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-300">
-                                {_`Discussions about global efforts to combat climate change and reduce carbon emissions.`}
-                            </p>
-                            <div class="flex gap-2 mt-2">
-                                <span class="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">{_`128 countries participating`}</span>
-                                <span class="text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded">{_`3.2k discussions`}</span>
-                            </div>
-                        </div>
-                        <div class="border-b border-gray-200 dark:border-gray-700 pb-3">
-                            <h3 class="font-medium text-gray-900 dark:text-white">{_`Global Economic Cooperation`}</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-300">
-                                {_`Exploring new frameworks for international trade and economic partnerships.`}
-                            </p>
-                            <div class="flex gap-2 mt-2">
-                                <span class="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">{_`94 countries participating`}</span>
-                                <span class="text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded">{_`2.7k discussions`}</span>
-                            </div>
-                        </div>
-                        <div class="border-b border-gray-200 dark:border-gray-700 pb-3">
-                            <h3 class="font-medium text-gray-900 dark:text-white">{_`Sustainable Development Goals`}</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-300">
-                                {_`Tracking progress on the UN's 17 Sustainable Development Goals worldwide.`}
-                            </p>
-                            <div class="flex gap-2 mt-2">
-                                <span class="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">{_`193 countries participating`}</span>
-                                <span class="text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded">{_`4.5k discussions`}</span>
-                            </div>
-                        </div>
-                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 text-center py-8 italic">
+                        {_`No trending topics available yet. Be the first to start a global conversation!`}
+                    </p>
                 </div>
 
                 <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow dark:shadow-gray-700">
@@ -144,57 +115,11 @@ export default component$(() => {
                         <LuBriefcase class="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         {_`Active Global Projects`}
                     </h2>
-                    <div class="space-y-4">
-                        <div class="border-b border-gray-200 dark:border-gray-700 pb-3">
-                            <h3 class="font-medium text-gray-900 dark:text-white">{_`Ocean Cleanup Initiative`}</h3>
-                            <div class="flex justify-between text-sm mt-1 text-gray-700 dark:text-gray-300">
-                                <span>{_`Progress`}:</span>
-                                <span>68%</span>
-                            </div>
-                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                <div class="bg-blue-600 dark:bg-blue-500 h-2 rounded-full" style="width: 68%"></div>
-                            </div>
-                            <div class="text-xs text-gray-600 dark:text-gray-400 mt-2">{_`42 countries collaborating`}</div>
-                        </div>
-                        <div class="border-b border-gray-200 dark:border-gray-700 pb-3">
-                            <h3 class="font-medium text-gray-900 dark:text-white">{_`Global Education Access`}</h3>
-                            <div class="flex justify-between text-sm mt-1 text-gray-700 dark:text-gray-300">
-                                <span>{_`Progress`}:</span>
-                                <span>45%</span>
-                            </div>
-                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                <div class="bg-blue-600 dark:bg-blue-500 h-2 rounded-full" style="width: 45%"></div>
-                            </div>
-                            <div class="text-xs text-gray-600 dark:text-gray-400 mt-2">{_`78 countries collaborating`}</div>
-                        </div>
-                        <div class="border-b border-gray-200 dark:border-gray-700 pb-3">
-                            <h3 class="font-medium text-gray-900 dark:text-white">{_`Renewable Energy Network`}</h3>
-                            <div class="flex justify-between text-sm mt-1 text-gray-700 dark:text-gray-300">
-                                <span>{_`Progress`}:</span>
-                                <span>32%</span>
-                            </div>
-                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                <div class="bg-blue-600 dark:bg-blue-500 h-2 rounded-full" style="width: 32%"></div>
-                            </div>
-                            <div class="text-xs text-gray-600 dark:text-gray-400 mt-2">{_`56 countries collaborating`}</div>
-                        </div>
-                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 text-center py-8 italic">
+                        {_`No active global projects available yet. Consider proposing a new initiative!`}
+                    </p>
                 </div>
             </div>
-
-            {/* <div class="bg-white p-6 rounded-lg shadow mb-6">
-                <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
-                    <LuFileText class="w-5 h-5 text-blue-600" />
-                    {_`Global Community Map`}
-                </h2>
-                <div class="aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
-                    <div class="text-center">
-                        <LuGlobe class="w-16 h-16 text-gray-400 mx-auto" />
-                        <p class="text-gray-500 mt-2">{_`Interactive world map showing community activity`}</p>
-                    </div>
-                </div>
-            </div> */}
-            
         </div>
     )
 })

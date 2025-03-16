@@ -1,21 +1,20 @@
 import * as v from 'valibot';
+import { _ } from 'compiled-i18n';
 
 export const UserSchema = v.object({
   bio: v.optional(v.pipe(
     v.string(),
-    v.maxLength(500, "Bio cannot exceed 500 characters")
+    v.maxLength(500, _`Bio cannot exceed 500 characters`)
   )),
-  coverImage: v.optional(v.string()),
   gender: v.optional(v.string()),
-  image: v.optional(v.string()),
   name: v.pipe(
     v.string(),
-    v.minLength(2, "Name must have at least 2 characters"),
-    v.maxLength(50, "Name cannot exceed 50 characters")
+    v.minLength(2, _`Name must have at least 2 characters`),
+    v.maxLength(50, _`Name cannot exceed 50 characters`)
   ),
   website: v.optional(v.pipe(
     v.string(),
-    v.maxLength(200, "Website URL cannot exceed 200 characters")
+    v.maxLength(200, _`Website URL cannot exceed 200 characters`)
   )),
 });
 
