@@ -9,32 +9,32 @@ importers:
   .:
     devDependencies:
       '@auth/qwik':
-        specifier: 0.5.4
-        version: 0.5.4
+        specifier: 0.6.0
+        version: 0.6.0
       '@builder.io/qwik':
-        specifier: 1.12.0
-        version: 1.12.0(vite@5.4.12(@types/node@20.14.11))
+        specifier: 1.12.1
+        version: 1.12.1(vite@5.4.12(@types/node@20.14.11))
       '@builder.io/qwik-city':
-        specifier: 1.12.0
-        version: 1.12.0(acorn@8.14.1)(rollup@4.35.0)(typescript@5.4.5)(vite@5.4.12(@types/node@20.14.11))
+        specifier: 1.12.1
+        version: 1.12.1(acorn@8.14.1)(rollup@4.35.0)(typescript@5.4.5)(vite@5.4.12(@types/node@20.14.11))
       '@modular-forms/qwik':
         specifier: ^0.29.0
-        version: 0.29.1(@builder.io/qwik-city@1.12.0(acorn@8.14.1)(rollup@4.35.0)(typescript@5.4.5)(vite@5.4.12(@types/node@20.14.11)))(@builder.io/qwik@1.12.0(vite@5.4.12(@types/node@20.14.11)))(typescript@5.4.5)
+        version: 0.29.1(@builder.io/qwik-city@1.12.1(acorn@8.14.1)(rollup@4.35.0)(typescript@5.4.5)(vite@5.4.12(@types/node@20.14.11)))(@builder.io/qwik@1.12.1(vite@5.4.12(@types/node@20.14.11)))(typescript@5.4.5)
       '@netlify/edge-functions':
         specifier: ^2.0.0
         version: 2.11.1
       '@qwik-ui/headless':
         specifier: 0.6.5
-        version: 0.6.5(@builder.io/qwik@1.12.0(vite@5.4.12(@types/node@20.14.11)))
+        version: 0.6.5(@builder.io/qwik@1.12.1(vite@5.4.12(@types/node@20.14.11)))
       '@qwik-ui/styled':
         specifier: ^0.3.0
-        version: 0.3.0(@builder.io/qwik@1.12.0(vite@5.4.12(@types/node@20.14.11)))
+        version: 0.3.0(@builder.io/qwik@1.12.1(vite@5.4.12(@types/node@20.14.11)))
       '@qwik-ui/utils':
         specifier: ^0.3.1
         version: 0.3.1
       '@qwikest/icons':
         specifier: 0.0.13
-        version: 0.0.13(@builder.io/qwik@1.12.0(vite@5.4.12(@types/node@20.14.11)))
+        version: 0.0.13(@builder.io/qwik@1.12.1(vite@5.4.12(@types/node@20.14.11)))
       '@types/eslint':
         specifier: 8.56.10
         version: 8.56.10
@@ -49,7 +49,7 @@ importers:
         version: 7.16.1(eslint@8.57.0)(typescript@5.4.5)
       '@unpic/qwik':
         specifier: ^1.0.0
-        version: 1.0.0(@builder.io/qwik@1.12.0(vite@5.4.12(@types/node@20.14.11)))
+        version: 1.0.0(@builder.io/qwik@1.12.1(vite@5.4.12(@types/node@20.14.11)))
       autoprefixer:
         specifier: ^10.4.19
         version: 10.4.21(postcss@8.5.3)
@@ -61,7 +61,7 @@ importers:
         version: 2.1.1
       compiled-i18n:
         specifier: 1.1.1
-        version: 1.1.1(@builder.io/qwik@1.12.0(vite@5.4.12(@types/node@20.14.11)))
+        version: 1.1.1(@builder.io/qwik@1.12.1(vite@5.4.12(@types/node@20.14.11)))
       eslint:
         specifier: 8.57.0
         version: 8.57.0
@@ -121,8 +121,8 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@auth/core@0.37.4':
-    resolution: {integrity: sha512-HOXJwXWXQRhbBDHlMU0K/6FT1v+wjtzdKhsNg0ZN7/gne6XPsIrjZ4daMcFnbq0Z/vsAbYBinQhhua0d77v7qw==}
+  '@auth/core@0.38.0':
+    resolution: {integrity: sha512-ClHl44x4cY3wfJmHLpW+XrYqED0fZIzbHmwbExltzroCjR5ts3DLTWzADRba8mJFYZ8JIEJDa+lXnGl0E9Bl7Q==}
     peerDependencies:
       '@simplewebauthn/browser': ^9.0.1
       '@simplewebauthn/server': ^9.0.2
@@ -135,8 +135,8 @@ packages:
       nodemailer:
         optional: true
 
-  '@auth/qwik@0.5.4':
-    resolution: {integrity: sha512-fbTXkEMOp+s/4wq0iZ6sZDrtLHNE3/BleMeWsSa+Rrv/QTsY2HSDjqvzSavT6lqcQWdb+Rdh4gRiDo2GsraGyg==}
+  '@auth/qwik@0.6.0':
+    resolution: {integrity: sha512-CNHgJ3UAlYAEndnZh+CwsLnVlUR6MyQDOX0GV4Diq19Ji2DI8vH/3Gyc5oNyh657ZiVVy7osgTXMRe/BVpOpRA==}
     engines: {node: '>=18.17'}
 
   '@babel/code-frame@7.26.2':
@@ -234,14 +234,14 @@ packages:
   '@bugsnag/safe-json-stringify@6.0.0':
     resolution: {integrity: sha512-htzFO1Zc57S8kgdRK9mLcPVTW1BY2ijfH7Dk2CeZmspTWKdKqSo1iwmqrq2WtRjFlo8aRZYgLX0wFrDXF/9DLA==}
 
-  '@builder.io/qwik-city@1.12.0':
-    resolution: {integrity: sha512-jMPh/M1a0lfGtWlpwD6RYJv48+33G/o/p4fTheg1wlNnYNH3O30/mLNaoT5k4nLd++tKm47iDmdwQK1wgB6fFQ==}
+  '@builder.io/qwik-city@1.12.1':
+    resolution: {integrity: sha512-YLW+33PZVoc4O30J99Fs3uNNpi7BszPzaITKoW66Sphju5Ptn6HDQkfnBu2sHFB0bh8hWLWatAjOM1HXg/C96Q==}
     engines: {node: '>=16.8.0 <18.0.0 || >=18.11'}
     peerDependencies:
       vite: ^5
 
-  '@builder.io/qwik@1.12.0':
-    resolution: {integrity: sha512-j4TRqEIRoZrqklgWIXM+ioAdEu53t+Rp0nP9sGpdagOaB5KRTN5jZCykZQT+5/HOvE2ZIRf34WIe0bhr/EFQRg==}
+  '@builder.io/qwik@1.12.1':
+    resolution: {integrity: sha512-fL+GuzJ/fp9OwhegPkn2dZXp4RjWnY0mNhgg7OJDS2qxftLmuJHs4sSJZ9ayvLRBVUNVPVX92u+SodiO5GDsnQ==}
     engines: {node: '>=16.8.0 <18.0.0 || >=18.11'}
     hasBin: true
     peerDependencies:
@@ -2324,8 +2324,8 @@ packages:
     resolution: {integrity: sha512-xlx1yCK2Oc1APsPXDL2LdlNP6+uu8OCDdhOBSVT279M/S+y75O30C2VuD8T2ogdePBBl7PfPF4504tnLgX3zfw==}
     engines: {node: '>=14.16'}
 
-  caniuse-lite@1.0.30001704:
-    resolution: {integrity: sha512-+L2IgBbV6gXB4ETf0keSvLr7JUrRVbIaB/lrQ1+z8mRcQiisG5k+lG6O4n6Y5q6f5EuNfaYXKgymucphlEXQew==}
+  caniuse-lite@1.0.30001705:
+    resolution: {integrity: sha512-S0uyMMiYvA7CxNgomYBwwwPUnWzFD83f3B1ce5jHUfHTH//QL6hHsreI8RVC5606R4ssqravelYO5TU6t8sEyg==}
 
   ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
@@ -2911,8 +2911,8 @@ packages:
     engines: {node: '>=0.10.0'}
     hasBin: true
 
-  electron-to-chromium@1.5.118:
-    resolution: {integrity: sha512-yNDUus0iultYyVoEFLnQeei7LOQkL8wg8GQpkPCRrOlJXlcCwa6eGKZkxQ9ciHsqZyYbj8Jd94X1CTPzGm+uIA==}
+  electron-to-chromium@1.5.119:
+    resolution: {integrity: sha512-Ku4NMzUjz3e3Vweh7PhApPrZSS4fyiCIbcIrG9eKrriYVLmbMepETR/v6SU7xPm98QTqMSYiCwfO89QNjXLkbQ==}
 
   elegant-spinner@1.0.1:
     resolution: {integrity: sha512-B+ZM+RXvRqQaAmkMlO/oSe5nMUOaUnyfGYCEHoR8wrXsZR2mA0XVibsxV1bvTwxdRWah1PkQqso2EzhILGHtEQ==}
@@ -4132,8 +4132,8 @@ packages:
     resolution: {integrity: sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A==}
     hasBin: true
 
-  jose@5.10.0:
-    resolution: {integrity: sha512-s+3Al/p9g32Iq+oqXxkW//7jk2Vig6FF1CFqzVXoTUXt2qz89YWbL+OwS17NFYEvxC35n0FKeGO2LGYSxeM2Gg==}
+  jose@6.0.10:
+    resolution: {integrity: sha512-skIAxZqcMkOrSwjJvplIPYrlXGpxTPnro2/QWTDCxAdWQrSTV5/KqspMWmi5WAx5+ULswASJiZ0a+1B/Lxt9cw==}
 
   js-string-escape@1.0.1:
     resolution: {integrity: sha512-Smw4xcfIQ5LVjAOuJCvN/zIodzA/BBSsluuoSykP+lUvScIi4U6RJLfwHet5cxFnCswUjISV8oAXaqaJDY3chg==}
@@ -4708,8 +4708,8 @@ packages:
   nan@2.22.2:
     resolution: {integrity: sha512-DANghxFkS1plDdRsX0X9pm0Z6SJNN6gBdtXfanwoZ8hooC5gosGFSBGRYHUVPz1asKA/kMRqDRdHrluZ61SpBQ==}
 
-  nanoid@3.3.9:
-    resolution: {integrity: sha512-SppoicMGpZvbF1l3z4x7No3OlIjP7QJvC9XR7AhZr1kL133KHnKPztkKDc+Ir4aJ/1VhTySrtKhrsycmrMQfvg==}
+  nanoid@3.3.10:
+    resolution: {integrity: sha512-vSJJTG+t/dIKAUhUDw/dLdZ9s//5OxcHqLaDWWrW4Cdq7o6tdLIczUkMXt2MBNmk6sJRZBZRXVixs7URY1CmIg==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -6651,17 +6651,17 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@auth/core@0.37.4':
+  '@auth/core@0.38.0':
     dependencies:
       '@panva/hkdf': 1.2.1
-      jose: 5.10.0
+      jose: 6.0.10
       oauth4webapi: 3.3.1
       preact: 10.24.3
       preact-render-to-string: 6.5.11(preact@10.24.3)
 
-  '@auth/qwik@0.5.4':
+  '@auth/qwik@0.6.0':
     dependencies:
-      '@auth/core': 0.37.4
+      '@auth/core': 0.38.0
       set-cookie-parser: 2.7.1
     transitivePeerDependencies:
       - '@simplewebauthn/browser'
@@ -6808,7 +6808,7 @@ snapshots:
 
   '@bugsnag/safe-json-stringify@6.0.0': {}
 
-  '@builder.io/qwik-city@1.12.0(acorn@8.14.1)(rollup@4.35.0)(typescript@5.4.5)(vite@5.4.12(@types/node@20.14.11))':
+  '@builder.io/qwik-city@1.12.1(acorn@8.14.1)(rollup@4.35.0)(typescript@5.4.5)(vite@5.4.12(@types/node@20.14.11))':
     dependencies:
       '@mdx-js/mdx': 3.1.0(acorn@8.14.1)
       '@types/mdx': 2.0.13
@@ -6826,7 +6826,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@builder.io/qwik@1.12.0(vite@5.4.12(@types/node@20.14.11))':
+  '@builder.io/qwik@1.12.1(vite@5.4.12(@types/node@20.14.11))':
     dependencies:
       csstype: 3.1.3
       vite: 5.4.12(@types/node@20.14.11)
@@ -7294,10 +7294,10 @@ snapshots:
       - acorn
       - supports-color
 
-  '@modular-forms/qwik@0.29.1(@builder.io/qwik-city@1.12.0(acorn@8.14.1)(rollup@4.35.0)(typescript@5.4.5)(vite@5.4.12(@types/node@20.14.11)))(@builder.io/qwik@1.12.0(vite@5.4.12(@types/node@20.14.11)))(typescript@5.4.5)':
+  '@modular-forms/qwik@0.29.1(@builder.io/qwik-city@1.12.1(acorn@8.14.1)(rollup@4.35.0)(typescript@5.4.5)(vite@5.4.12(@types/node@20.14.11)))(@builder.io/qwik@1.12.1(vite@5.4.12(@types/node@20.14.11)))(typescript@5.4.5)':
     dependencies:
-      '@builder.io/qwik': 1.12.0(vite@5.4.12(@types/node@20.14.11))
-      '@builder.io/qwik-city': 1.12.0(acorn@8.14.1)(rollup@4.35.0)(typescript@5.4.5)(vite@5.4.12(@types/node@20.14.11))
+      '@builder.io/qwik': 1.12.1(vite@5.4.12(@types/node@20.14.11))
+      '@builder.io/qwik-city': 1.12.1(acorn@8.14.1)(rollup@4.35.0)(typescript@5.4.5)(vite@5.4.12(@types/node@20.14.11))
       decode-formdata: 0.8.0
       valibot: 1.0.0-rc.1(typescript@5.4.5)
     transitivePeerDependencies:
@@ -8102,18 +8102,18 @@ snapshots:
 
   '@protobufjs/utf8@1.1.0': {}
 
-  '@qwik-ui/headless@0.6.5(@builder.io/qwik@1.12.0(vite@5.4.12(@types/node@20.14.11)))':
+  '@qwik-ui/headless@0.6.5(@builder.io/qwik@1.12.1(vite@5.4.12(@types/node@20.14.11)))':
     dependencies:
-      '@builder.io/qwik': 1.12.0(vite@5.4.12(@types/node@20.14.11))
+      '@builder.io/qwik': 1.12.1(vite@5.4.12(@types/node@20.14.11))
       '@floating-ui/core': 1.6.9
       '@floating-ui/dom': 1.6.13
       '@oddbird/popover-polyfill': 0.4.3
       body-scroll-lock-upgrade: 1.1.0
       focus-trap: 7.5.4
 
-  '@qwik-ui/styled@0.3.0(@builder.io/qwik@1.12.0(vite@5.4.12(@types/node@20.14.11)))':
+  '@qwik-ui/styled@0.3.0(@builder.io/qwik@1.12.1(vite@5.4.12(@types/node@20.14.11)))':
     dependencies:
-      '@builder.io/qwik': 1.12.0(vite@5.4.12(@types/node@20.14.11))
+      '@builder.io/qwik': 1.12.1(vite@5.4.12(@types/node@20.14.11))
 
   '@qwik-ui/utils@0.3.1':
     dependencies:
@@ -8122,9 +8122,9 @@ snapshots:
       specificity: 1.0.0
       tailwind-merge: 1.14.0
 
-  '@qwikest/icons@0.0.13(@builder.io/qwik@1.12.0(vite@5.4.12(@types/node@20.14.11)))':
+  '@qwikest/icons@0.0.13(@builder.io/qwik@1.12.1(vite@5.4.12(@types/node@20.14.11)))':
     dependencies:
-      '@builder.io/qwik': 1.12.0(vite@5.4.12(@types/node@20.14.11))
+      '@builder.io/qwik': 1.12.1(vite@5.4.12(@types/node@20.14.11))
 
   '@rollup/pluginutils@4.2.1':
     dependencies:
@@ -8454,9 +8454,9 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@unpic/qwik@1.0.0(@builder.io/qwik@1.12.0(vite@5.4.12(@types/node@20.14.11)))':
+  '@unpic/qwik@1.0.0(@builder.io/qwik@1.12.1(vite@5.4.12(@types/node@20.14.11)))':
     dependencies:
-      '@builder.io/qwik': 1.12.0(vite@5.4.12(@types/node@20.14.11))
+      '@builder.io/qwik': 1.12.1(vite@5.4.12(@types/node@20.14.11))
 
   '@vercel/nft@0.23.1(supports-color@9.4.0)':
     dependencies:
@@ -8841,7 +8841,7 @@ snapshots:
   autoprefixer@10.4.21(postcss@8.5.3):
     dependencies:
       browserslist: 4.24.4
-      caniuse-lite: 1.0.30001704
+      caniuse-lite: 1.0.30001705
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.1.1
@@ -8987,8 +8987,8 @@ snapshots:
 
   browserslist@4.24.4:
     dependencies:
-      caniuse-lite: 1.0.30001704
-      electron-to-chromium: 1.5.118
+      caniuse-lite: 1.0.30001705
+      electron-to-chromium: 1.5.119
       node-releases: 2.0.19
       update-browserslist-db: 1.1.3(browserslist@4.24.4)
 
@@ -9080,7 +9080,7 @@ snapshots:
 
   camelcase@7.0.1: {}
 
-  caniuse-lite@1.0.30001704: {}
+  caniuse-lite@1.0.30001705: {}
 
   ccount@2.0.1: {}
 
@@ -9286,12 +9286,12 @@ snapshots:
 
   common-path-prefix@3.0.0: {}
 
-  compiled-i18n@1.1.1(@builder.io/qwik@1.12.0(vite@5.4.12(@types/node@20.14.11))):
+  compiled-i18n@1.1.1(@builder.io/qwik@1.12.1(vite@5.4.12(@types/node@20.14.11))):
     dependencies:
       '@babel/core': 7.26.10
       '@babel/plugin-syntax-typescript': 7.25.9(@babel/core@7.26.10)
     optionalDependencies:
-      '@builder.io/qwik': 1.12.0(vite@5.4.12(@types/node@20.14.11))
+      '@builder.io/qwik': 1.12.1(vite@5.4.12(@types/node@20.14.11))
     transitivePeerDependencies:
       - supports-color
 
@@ -9680,7 +9680,7 @@ snapshots:
     dependencies:
       jake: 10.9.2
 
-  electron-to-chromium@1.5.118: {}
+  electron-to-chromium@1.5.119: {}
 
   elegant-spinner@1.0.1: {}
 
@@ -11152,7 +11152,7 @@ snapshots:
 
   jiti@1.21.7: {}
 
-  jose@5.10.0: {}
+  jose@6.0.10: {}
 
   js-string-escape@1.0.1: {}
 
@@ -11900,7 +11900,7 @@ snapshots:
   nan@2.22.2:
     optional: true
 
-  nanoid@3.3.9: {}
+  nanoid@3.3.10: {}
 
   nanomatch@1.2.13:
     dependencies:
@@ -12553,7 +12553,7 @@ snapshots:
 
   postcss@8.5.3:
     dependencies:
-      nanoid: 3.3.9
+      nanoid: 3.3.10
       picocolors: 1.1.1
       source-map-js: 1.2.1
 

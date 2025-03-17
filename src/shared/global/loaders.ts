@@ -50,7 +50,7 @@ export const useGetGlobalPolls = routeLoader$(async ({ cookie, query }) => {
 export const useGetGlobalDebates = routeLoader$(async ({ cookie, query }) => {
     const page = query.get('page');
     const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
-    const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates`;
+    const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates/`;
 
     try {
         const url = new URL(baseUrl);

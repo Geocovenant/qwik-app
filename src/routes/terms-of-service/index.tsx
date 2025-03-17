@@ -79,7 +79,7 @@ export default component$(() => {
                     <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-200">{_`10. Contact`}</h2>
                     <p class="mt-2 text-gray-600 dark:text-gray-300">
                         {_`If you have any questions about these Terms, contact us at `}
-                        <a href="mailto:contact@geounity.org" class="text-blue-500 dark:text-blue-400 underline hover:text-blue-600 dark:hover:text-blue-300">contact@geounity.org</a>
+                        <a href="mailto:sebastiancardoso92@gmail.com" class="text-blue-500 dark:text-blue-400 underline hover:text-blue-600 dark:hover:text-blue-300">sebastiancardoso92@gmail.com</a>
                     </p>
                 </section>
             </div>

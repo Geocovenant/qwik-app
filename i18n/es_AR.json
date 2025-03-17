@@ -1116,6 +1116,6 @@
     "Name cannot exceed 50 characters": "El nombre no puede exceder los 50 caracteres",
     "Website URL cannot exceed 200 characters": "La URL del sitio web no puede exceder los 200 caracteres",
     "Mi Perfil": "Mi Perfil",
-    "Cerrar Sesión": "Cerrar Sesión"
+    "Sign Out": "Cerrar Sesión"
   }
 }

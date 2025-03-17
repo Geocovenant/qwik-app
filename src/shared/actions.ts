@@ -20,7 +20,7 @@ export const useVotePoll = routeAction$(
         const { pollId } = data
         const payload = { option_ids: data.optionIds }
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${pollId}/vote/`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${pollId}/vote`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -44,7 +44,7 @@ export const useReactPoll = routeAction$(
         const payload = { reaction: data.reaction }
         
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${data.pollId}/react/`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${data.pollId}/react`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -71,7 +71,7 @@ export const useReactOpinion = routeAction$(
         }
         
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/opinions/${data.opinionId}/vote/`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/opinions/${data.opinionId}/vote`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -95,7 +95,7 @@ export const useSetUsername = routeAction$(
         const payload = { base_name: data.username }
         
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/generate-username/`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/generate-username`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -203,7 +203,7 @@ export const useFormOpinionAction = formAction$<OpinionForm, OpinionResponseData
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/${values.debate_id}/opinions/`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/${values.debate_id}/opinions`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -251,7 +251,7 @@ export const useFormCommentAction = formAction$<CommentForm, CommentResponseData
         };
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${values.pollId}/comments/`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/${values.pollId}/comments`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -371,7 +371,7 @@ export const useJoinCommunity = routeAction$(
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${communityId}/join/`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/communities/${communityId}/join`, {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
@@ -609,7 +609,7 @@ export const useFollowUser = routeAction$(
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/${data.username}/follow/`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/${data.username}/follow`, {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
@@ -647,7 +647,7 @@ export const useUnfollowUser = routeAction$(
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/${data.username}/follow/`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/users/${data.username}/follow`, {
                 method: "DELETE",
                 headers: {
                     "Accept": "application/json",
@@ -684,7 +684,7 @@ export const useDeleteDebate = routeAction$(
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/${data.debateId}/`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/${data.debateId}`, {
                 method: "DELETE",
                 headers: {
                     "Accept": "application/json",
@@ -717,7 +717,7 @@ export const useDeleteProject = routeAction$(
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects/${data.projectId}/  `, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects/${data.projectId}`, {
                 method: "DELETE",
                 headers: {
                     "Accept": "application/json",
@@ -817,7 +817,7 @@ export const useReactProject = routeAction$(async (data, { cookie, fail }) => {
     }
 
     try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects/${data.projectId}/react/`, {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/projects/${data.projectId}/react`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -136,13 +136,14 @@ export default component$(() => {
     });
 
     // Filter the countries based on the search
-    const filteredCountries = !searchQuery.value 
-        ? countryCommunities // Show all countries always
+    // Now returns empty array when search is empty
+    const filteredCountries = searchQuery.value.trim() === '' 
+        ? [] // Don't show countries when there is no search
         : countryCommunities.filter(country => 
             country.name.toLowerCase().includes(searchQuery.value.toLowerCase())
         );
 
-    // Escuchar el evento del Header para abrir/cerrar el sidebar en móvil
+    // Listen to the Header event to open/close the sidebar on mobile
     // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(() => {
         const handleToggleSidebar = (event: CustomEvent) => {
@@ -179,10 +180,12 @@ export default component$(() => {
                 style={{ width: `${isMobileView.value ? '85%' : sidebarWidth.value}px`, maxWidth: '300px' }}
             >
                 <div class="sticky top-0 z-20 bg-white dark:bg-gray-900">
-                    <div class={`p-2 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between ${isCollapsed.value && !isMobileView.value ? 'justify-center' : ''}`}>
+                    <div class={`p-2 border-b border-gray-200 dark:border-gray-700 flex items-center ${isCollapsed.value && !isMobileView.value ? 'justify-center' : 'justify-between'}`}>
                         {(!isCollapsed.value || isMobileView.value) && (
                             <span class="font-semibold text-sm text-gray-500 dark:text-gray-400 transition-opacity duration-200">{_`Menu`}</span>
                         )}
+                        
+                        {/* Collapse/expand button aligned */}
                         {isMobileView.value ? (
                             <button
                                 onClick$={toggleMobileSidebar}
@@ -199,6 +202,13 @@ export default component$(() => {
                             </button>
                         )}
                     </div>
+                    
+                    {/* Theme button at the top when collapsed */}
+                    {isCollapsed.value && !isMobileView.value && (
+                        <div class="p-2 flex justify-center border-b border-gray-200 dark:border-gray-700">
+                            <ClassicTheme />
+                        </div>
+                    )}
                 </div>
 
                 <div class="flex-1 overflow-y-auto">
@@ -239,33 +249,55 @@ export default component$(() => {
                                 />
                             ))}
                             
-                            {(!isCollapsed.value || isMobileView.value) && filteredCountries.length === 0 && (
-                                <div class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400 transition-opacity duration-200">
-                                    {_`No countries found`}
-                                </div>
+                            {(!isCollapsed.value || isMobileView.value) && (
+                                <>
+                                    {searchQuery.value.trim() === '' ? (
+                                        <div class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400 transition-opacity duration-200">
+                                            {_`Type to search countries`}
+                                        </div>
+                                    ) : filteredCountries.length === 0 ? (
+                                        <div class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400 transition-opacity duration-200">
+                                            {_`No countries found`}
+                                        </div>
+                                    ) : null}
+                                </>
                             )}
                         </div>
                     </div>
                 </div>
 
                 <div class="mt-auto border-t border-gray-200 dark:border-gray-700">
-                    <div class="flex items-center justify-between p-4">
-                        <button
-                            onClick$={() => showNewCommunityModal.value = true}
-                            class="flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-[#713fc2] dark:hover:text-[#713fc2]"
-                        >
-                            <LuPlusCircle class="w-5 h-5 mr-2" />
-                            {(!isCollapsed.value || isMobileView.value) && <span class="transition-opacity duration-200">{_`New Community`}</span>}
-                        </button>
-                        <ClassicTheme />
-                    </div>
-                    
-                    {/* Reemplazar el footer con el nuevo componente */}
-                    <Footer 
-                        isCollapsed={isCollapsed.value} 
-                        isMobileView={isMobileView.value} 
-                        variant="sidebar"
-                    />
+                    {/* Show footer only when not collapsed or in mobile view */}
+                    {(!isCollapsed.value || isMobileView.value) ? (
+                        <>
+                            <div class="flex items-center justify-between p-4">
+                                <button
+                                    onClick$={() => showNewCommunityModal.value = true}
+                                    class="flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-[#713fc2] dark:hover:text-[#713fc2]"
+                                >
+                                    <LuPlusCircle class="w-5 h-5 mr-2" />
+                                    {(!isCollapsed.value || isMobileView.value) && <span class="transition-opacity duration-200">{_`New Community`}</span>}
+                                </button>
+                                <ClassicTheme />
+                            </div>
+                            
+                            <Footer 
+                                isCollapsed={isCollapsed.value} 
+                                isMobileView={isMobileView.value} 
+                                variant="sidebar"
+                            />
+                        </>
+                    ) : (
+                        // In collapsed mode, only show the New Community button centered
+                        <div class="flex justify-center p-4">
+                            <button
+                                onClick$={() => showNewCommunityModal.value = true}
+                                class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors duration-200"
+                            >
+                                <LuPlusCircle class="w-5 h-5" />
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 {!isMobileView.value && (

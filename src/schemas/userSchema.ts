@@ -14,6 +14,7 @@ export const UserSchema = v.object({
   ),
   website: v.optional(v.pipe(
     v.string(),
+    v.url(_`Please enter a valid URL`),
     v.maxLength(200, _`Website URL cannot exceed 200 characters`)
   )),
 });

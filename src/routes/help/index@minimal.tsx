@@ -120,8 +120,8 @@ export default component$(() => {
 
                         <p>
                             {_`If you have any questions or need assistance with choosing a username, please contact our support team at`}{" "}
-                            <a href="mailto:contact@geounity.org" class="text-[#713fc2] dark:text-[#9333EA] font-medium hover:underline">
-                                contact@geounity.org
+                            <a href="mailto:sebastiancardoso92@gmail.com" class="text-[#713fc2] dark:text-[#9333EA] font-medium hover:underline">
+                                sebastiancardoso92@gmail.com
                             </a>
                         </p>
                     </div>

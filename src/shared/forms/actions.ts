@@ -340,7 +340,7 @@ export const useFormIssueAction = formAction$<IssueForm, IssueResponseData>(
         }
 
         try {
-            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/issues/`, {
+            const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/issues`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

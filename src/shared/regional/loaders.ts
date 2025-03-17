@@ -93,7 +93,7 @@ export const useGetRegionalDebates = routeLoader$(async ({ cookie, query, resolv
     const region = await resolveValue(useGetRegion);
     const page = query.get('page');
     const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
-    const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates`;
+    const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates/`;
 
     try {
         const url = new URL(baseUrl);

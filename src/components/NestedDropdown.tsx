@@ -69,13 +69,13 @@ export const NestedDropdown = component$<NestedDropdownProps>((props) => {
                         class="flex items-center w-full"
                     >
                         <LuUser class="w-5 h-5" />
-                        <span>{_`Mi Perfil`}</span>
+                        <span>{_`My Profile`}</span>
                     </Link>
                 </div>
                 <div class="dropdown-divider"></div>
                 <div class="dropdown-item" onClick$={() => signOut.submit({ redirectTo: "/" })}>
                     <LuLogOut class="w-5 h-5" /> 
-                    <span>{_`Cerrar Sesión`}</span>
+                    <span>{_`Sign Out`}</span>
                 </div>
             </div>
         </div>

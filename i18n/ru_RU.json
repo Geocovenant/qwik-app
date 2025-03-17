@@ -1117,6 +1117,7 @@
     "Name cannot exceed 50 characters": "Имя не может превышать 50 символов",
     "Website URL cannot exceed 200 characters": "URL-адрес веб-сайта не может превышать 200 символов",
     "Mi Perfil": "Мой профиль",
-    "Cerrar Sesión": "Выйти"
+    "Cerrar Sesión": "Выйти",
+    "Sign Out": "Выйти"
   }
 }

@@ -1116,6 +1116,7 @@
     "Name cannot exceed 50 characters": "Der Name darf 50 Zeichen nicht überschreiten",
     "Website URL cannot exceed 200 characters": "Die Website-URL darf 200 Zeichen nicht überschreiten",
     "Mi Perfil": "Mein Profil",
-    "Cerrar Sesión": "Abmelden"
+    "Cerrar Sesión": "Abmelden",
+    "Sign Out": "Abmelden"
   }
 }

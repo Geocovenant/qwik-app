@@ -1,4 +1,5 @@
 import { component$ } from "@builder.io/qwik";
+import { Link } from "@builder.io/qwik-city";
 import { _ } from "compiled-i18n";
 
 export interface FooterProps {
@@ -17,33 +18,33 @@ export default component$<FooterProps>(({
 
     return (
         <div class={`
-      ${variant === 'sidebar' ? 'px-3 py-2 border-t border-gray-200 dark:border-gray-700' : 'p-4'} 
-      ${isSidebarCollapsed ? 'text-center' : ''}
+        ${variant === 'sidebar' ? 'px-3 py-2 border-t border-gray-200 dark:border-gray-700' : 'p-4'} 
+        ${isSidebarCollapsed ? 'text-center' : ''}
     `}>
             <div class={`flex ${isSidebarCollapsed ? 'flex-col items-center' : 'flex-wrap gap-2'} text-xs text-gray-500 dark:text-gray-400`}>
-                <a href="/privacy-policy" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
+                <Link href="/privacy-policy" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
                     {_`Privacy`}
-                </a>
+                </Link>
                 {(!isSidebarCollapsed) && <span>·</span>}
-                <a href="/terms-of-service" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
+                <Link href="/terms-of-service" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
                     {_`Terms`}
-                </a>
+                </Link>
                 {(!isSidebarCollapsed) && <span>·</span>}
-                <a href="/cookies" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
+                <Link href="/cookies" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
                     {_`Cookies`}
-                </a>
+                </Link>
                 {(!isSidebarCollapsed) && <span>·</span>}
-                <a href="/about-us" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
+                <Link href="/about-us" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
                     {_`About us`}
-                </a>
+                </Link>
                 {(!isSidebarCollapsed) && <span>·</span>}
-                <a href="/roadmap" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
+                <Link href="/roadmap" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
                     {_`Roadmap`}
-                </a>
+                </Link>
                 {(!isSidebarCollapsed) && <span>·</span>}
-                <a href="/donation" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
+                <Link href="/donation" class="hover:text-[#713fc2] dark:hover:text-[#713fc2]">
                     {_`Donation`}
-                </a>
+                </Link>
 
                 {/* Copyright en línea cuando hay espacio, o en línea separada cuando colapsa */}
                 {!isSidebarCollapsed ? (

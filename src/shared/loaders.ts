@@ -70,7 +70,7 @@ export const useGetRegionalPolls = routeLoader$(async ({ cookie, params, resolve
     }
 
     try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=REGIONAL&region=${regionId}`, {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/polls/?scope=REGIONAL&region=${regionId}`, {
             headers: {
                 Accept: 'application/json',
                 Authorization: `Bearer ${token.value}`
@@ -147,7 +147,7 @@ export const useGetRegionalDebates = routeLoader$(async ({ cookie, params, resol
     }
 
     try {
-        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates?type=REGIONAL&region=${regionId}`, {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/v1/debates/?type=REGIONAL&region=${regionId}`, {
             headers: {
                 Accept: 'application/json',
                 Authorization: `Bearer ${token.value}`
@@ -357,7 +357,7 @@ export const useGetLocalityPolls = routeLoader$(async ({ params, query, cookie }
     const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
     
     try {
-        let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls?scope=LOCALITY`;
+        let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/polls/?scope=LOCALITY`;
         url += `&locality=${localityParam}&page=${page}&size=${size}`;
         
         const headers: Record<string, string> = {
@@ -397,7 +397,7 @@ export const useGetLocalityDebates = routeLoader$(async ({ params, query, cookie
     const token = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME);
     
     try {
-        let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates?scope=LOCALITY`;
+        let url = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates/?scope=LOCALITY`;
         url += `&locality=${localityParam}&page=${page}&size=${size}`;
         
         const headers: Record<string, string> = {

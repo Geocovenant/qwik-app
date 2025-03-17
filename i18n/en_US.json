@@ -1116,6 +1116,8 @@
     "Name cannot exceed 50 characters": "",
     "Website URL cannot exceed 200 characters": "",
     "Mi Perfil": "",
-    "Cerrar Sesión": ""
+    "Cerrar Sesión": "",
+    "Continue with Google (coming soon)": "",
+    "Sign Out": ""
   }
 }

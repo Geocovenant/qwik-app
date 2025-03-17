@@ -49,7 +49,7 @@ export const useGetInternationalPolls = routeLoader$(async ({ cookie, query }) =
 export const useGetInternationalDebates = routeLoader$(async ({ cookie, query }) => {
     const page = query.get('page');
     const authToken = cookie.get(import.meta.env.PUBLIC_AUTH_COOKIE_NAME)?.value;
-    const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates?type=INTERNATIONAL`;
+    const baseUrl = `${import.meta.env.PUBLIC_API_URL}/api/v1/debates/?type=INTERNATIONAL`;
 
     try {
         const url = new URL(baseUrl);
