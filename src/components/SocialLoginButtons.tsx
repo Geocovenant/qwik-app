@@ -17,7 +17,7 @@ export default component$(() => {
                     loading.value = 'google'
                     await signInSig.submit({
                         providerId: 'google',
-                        options: { redirectTo: "/global" }
+                        redirectTo: '/global'
                     })
                 }}
             >
@@ -33,7 +33,7 @@ export default component$(() => {
                     loading.value = 'github'
                     await signInSig.submit({
                         providerId: 'github',
-                        options: { redirectTo: "/global" }
+                        redirectTo: '/global'
                     })
                 }}
             >

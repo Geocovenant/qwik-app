@@ -9,10 +9,12 @@ export const { onRequest, useSession, useSignIn, useSignOut } = QwikAuth$(
         GitHub({
           clientId: params.env.get("AUTH_GITHUB_ID"),
           clientSecret: params.env.get("AUTH_GITHUB_SECRET"),
+          checks: ["none"],
         }),
         Google({
           clientId: params.env.get("AUTH_GOOGLE_ID"),
           clientSecret: params.env.get("AUTH_GOOGLE_SECRET"),
+          checks: ["none"],
         }),
       ]
     };
