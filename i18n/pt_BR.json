@@ -1117,6 +1117,8 @@
     "Website URL cannot exceed 200 characters": "O URL do site não pode exceder 200 caracteres",
     "Mi Perfil": "Meu Perfil",
     "Cerrar Sesión": "Sair",
-    "Sign Out": "Sair"
+    "Sign Out": "Sair",
+    "Type to search countries": "",
+    "Please enter a valid URL": ""
   }
 }

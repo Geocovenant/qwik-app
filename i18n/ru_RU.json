@@ -1118,6 +1118,8 @@
     "Website URL cannot exceed 200 characters": "URL-адрес веб-сайта не может превышать 200 символов",
     "Mi Perfil": "Мой профиль",
     "Cerrar Sesión": "Выйти",
-    "Sign Out": "Выйти"
+    "Sign Out": "Выйти",
+    "Type to search countries": "",
+    "Please enter a valid URL": ""
   }
 }
