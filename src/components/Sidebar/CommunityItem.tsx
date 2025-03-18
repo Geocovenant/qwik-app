@@ -1,4 +1,4 @@
-import { type QRL, component$, Resource, useResource$, useSignal, useTask$ } from "@builder.io/qwik";
+import { type QRL, component$, Resource, useComputed$, useResource$, useSignal, useTask$ } from "@builder.io/qwik";
 import { Link, useLocation } from "@builder.io/qwik-city";
 import { Collapsible } from '@qwik-ui/headless';
 import { LuBuilding, LuChevronRight, LuMapPin } from "@qwikest/icons/lucide";
@@ -99,26 +99,23 @@ export const CommunityItem = component$(({
             return [];
         }
     });
-
-    // Ajustar la indentación y los indicadores visuales de nivel
-    const calculateIndent = (level: number) => {
+    
+    const indentClass = useComputed$(() => {
         if (isCollapsed) return "";
         switch (level) {
             case 0: return "";
-            case 1: return "ml-6";
-            case 2: return "ml-12";
-            case 3: return "ml-18";
-            case 4: return "ml-24"; // Añadido caso para nivel 4 (localidades)
+            case 1: return "ml-4";
+            case 2: return "ml-8";
+            case 3: return "ml-16";
+            case 4: return "ml-20";
             default: return `ml-${6 * level}`;
         }
-    };
-    
-    const indentClass = calculateIndent(level);
+    })
     
     const itemClass = `
         flex items-center gap-2 py-1.5 rounded-lg
         ${isActive 
-            ? "bg-primary/20 dark:bg-primary/20 text-primary dark:text-primary-foreground font-medium border-l-2 border-primary shadow-sm" 
+            ? "bg-primary/20 dark:bg-primary/20 text-primary dark:text-primary-foreground font-medium shadow-sm" 
             : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-primary dark:hover:text-primary-foreground"
         }
         ${isCollapsed ? "justify-center px-3" : "px-2"}
@@ -153,12 +150,12 @@ export const CommunityItem = component$(({
                             boxShadow: isOpen.value ? '0 1px 2px 0 rgba(0,0,0,0.05)' : 'none'
                         }}
                     >
-                        <div class={`flex items-center group ${indentClass}`}>
-                            {!isCollapsed && (
+                        <div class={`flex items-center group ${indentClass.value}`}>
+                            {!isCollapsed && level < 3 && (
                                 <Collapsible.Trigger 
                                     class="p-1 flex-shrink-0 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 
-                                           hover:text-primary dark:hover:text-primary-foreground rounded-md 
-                                           transition-all duration-200 ease-in-out"
+                                        hover:text-primary dark:hover:text-primary-foreground rounded-md 
+                                        transition-all duration-200 ease-in-out"
                                 >
                                     <div class={`transition-transform duration-200 ${isOpen.value ? "rotate-90" : ""}`}>
                                         <LuChevronRight class="h-3.5 w-3.5" />

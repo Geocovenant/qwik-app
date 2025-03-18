@@ -66,7 +66,7 @@ export default component$(() => {
                             <Button
                                 class={`flex items-center gap-2 font-medium py-1.5 px-3 rounded-lg transition-colors text-sm ${
                                     isMember.value 
-                                        ? 'bg-red-600 hover:bg-red-700 text-white' 
+                                        ? 'bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 text-white' 
                                         : 'bg-blue-600 hover:bg-blue-700 text-white'
                                 }`}
                                 onClick$={() => {
