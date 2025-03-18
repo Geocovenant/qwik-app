@@ -23,7 +23,7 @@ export default component$(() => {
     const isPublic = useSignal(members.value.current_user?.is_public || false);
     const currentPage = useSignal(1);
     
-    const regionalCommunityId = region.value.community_id;
+    const regionalCommunityId = region.value.id;
     const nav = useNavigate();
     const isAuthenticated = useComputed$(() => !!session.value);
 
