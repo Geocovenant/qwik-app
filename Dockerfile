@@ -57,4 +57,4 @@ ENV DOCKER=true
 EXPOSE 3000
 
 # Run the application.
-CMD npm serve
+CMD npm run serve
