@@ -12,12 +12,13 @@ WORKDIR /usr/src/app
 FROM base as deps
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
-# Leverage a cache mount to /root/.npm to speed up subsequent builds.
-# Leverage bind mounts to package.json and npm.lock to avoid having to copy them
+# Leverage a cache mount to /root/.pnpm to speed up subsequent builds.
+# Leverage bind mounts to package.json and pnpm.lock to avoid having to copy them
 # into this layer.
+RUN npm install -g pnpm
 
 COPY package.json .
-RUN npm install
+RUN pnpm install
 
 ################################################################################
 # Create a stage for building the application.
@@ -27,7 +28,7 @@ FROM deps as build
 COPY . .
 
 # Run the build script.
-RUN npm run build
+RUN pnpm run build
 
 ################################################################################
 # Create a new stage to run the application with minimal runtime dependencies
