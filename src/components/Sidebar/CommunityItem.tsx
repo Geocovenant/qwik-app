@@ -100,7 +100,7 @@ export const CommunityItem = component$(({
         }
     });
     
-    const indentClass = useComputed$(() => {
+    const calculateIndent = (level: number) => {
         if (isCollapsed) return "";
         switch (level) {
             case 0: return "";
@@ -110,7 +110,9 @@ export const CommunityItem = component$(({
             case 4: return "ml-20";
             default: return `ml-${6 * level}`;
         }
-    })
+    };
+    
+    const indentClass = calculateIndent(level);
     
     const itemClass = `
         flex items-center gap-2 py-1.5 rounded-lg
