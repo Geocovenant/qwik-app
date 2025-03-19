@@ -11,9 +11,10 @@ interface ModalProps {
     trigger?: string;
     position?: "center" | "top" | "bottom" | "left" | "right";
     class?: string;
+    showClose?: boolean;
 }
 
-export default component$<ModalProps>(({ title, description, show, trigger, ...props }) => {
+export default component$<ModalProps>(({ title, description, show, trigger, showClose = true, ...props }) => {
     useStyles$(styles);
     const isExpanded = useSignal<boolean>(false);
     return (
@@ -37,14 +38,16 @@ export default component$<ModalProps>(({ title, description, show, trigger, ...p
                     <Modal.Title class="modal-title text-gray-900 dark:text-gray-100">
                         {title}
                     </Modal.Title>
-                    <Modal.Close
-                        class={cn(
-                            buttonVariants({ size: 'icon', look: 'link' }),
-                            'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-                        )}
-                    >
-                        <LuX class="h-5 w-5" />
-                    </Modal.Close>
+                    {showClose && (
+                        <Modal.Close
+                            class={cn(
+                                buttonVariants({ size: 'icon', look: 'link' }),
+                                'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                            )}
+                        >
+                            <LuX class="h-5 w-5" />
+                        </Modal.Close>
+                    )}
                 </div>
                 
                 <Modal.Description class="text-gray-600 dark:text-gray-300">

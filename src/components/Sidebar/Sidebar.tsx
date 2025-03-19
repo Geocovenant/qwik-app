@@ -310,6 +310,7 @@ export default component$(() => {
             <Modal
                 title={_`Request new community`}
                 show={showNewCommunityModal}
+                showClose={false}
             >
                 {user.value.username
                     ? <RequestCommunityForm 
