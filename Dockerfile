@@ -15,10 +15,10 @@ FROM base as deps
 # Leverage a cache mount to /root/.pnpm to speed up subsequent builds.
 # Leverage bind mounts to package.json and pnpm.lock to avoid having to copy them
 # into this layer.
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=pnpm.lock,target=pnpm.lock \
-    --mount=type=cache,target=/root/.pnpm \
-    pnpm install --frozen-lockfile
+RUN npm install -g pnpm
+
+COPY package.json .
+RUN pnpm install
 
 ################################################################################
 # Create a stage for building the application.
@@ -50,6 +50,8 @@ COPY package.json .
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/server ./server
+
+ENV DOCKER=true
 
 # Expose the port that the application listens on.
 EXPOSE 3000
