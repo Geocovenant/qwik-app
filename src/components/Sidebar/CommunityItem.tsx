@@ -1,4 +1,4 @@
-import { type QRL, component$, Resource, useComputed$, useResource$, useSignal, useTask$ } from "@builder.io/qwik";
+import { type QRL, component$, Resource, useResource$, useSignal, useTask$ } from "@builder.io/qwik";
 import { Link, useLocation } from "@builder.io/qwik-city";
 import { Collapsible } from '@qwik-ui/headless';
 import { LuBuilding, LuChevronRight, LuMapPin } from "@qwikest/icons/lucide";
@@ -152,7 +152,7 @@ export const CommunityItem = component$(({
                             boxShadow: isOpen.value ? '0 1px 2px 0 rgba(0,0,0,0.05)' : 'none'
                         }}
                     >
-                        <div class={`flex items-center group ${indentClass.value}`}>
+                        <div class={`flex items-center group ${indentClass}`}>
                             {!isCollapsed && level < 3 && (
                                 <Collapsible.Trigger 
                                     class="p-1 flex-shrink-0 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 
